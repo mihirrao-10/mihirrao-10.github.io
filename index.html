@@ -8,7 +8,13 @@
 </head>
 <body>
   <div class="container py-5">
-    <h1 class="mb-4">Mihir Rao</h1>
+    <h1 class="mb-0">Mihir Rao</h1>
+    <p class="lead">M.S., B.S., B.A.</p>
+    <p>
+      <a href="mailto:mihirrao@uchicago.edu">mihirrao@uchicago.edu</a> •
+      +1 (267) 367-0431 •
+      <a href="https://www.linkedin.com/in/mihirrao">LinkedIn</a>
+    </p>
     <ul class="nav nav-tabs" id="cvTabs" role="tablist">
       <li class="nav-item" role="presentation">
         <button
@@ -41,6 +47,76 @@
       <li class="nav-item" role="presentation">
         <button
           class="nav-link"
+          id="industry-tab"
+          data-bs-toggle="tab"
+          data-bs-target="#industry"
+          type="button"
+          role="tab"
+          aria-controls="industry"
+          aria-selected="false"
+        >
+          Industry Experience
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button
+          class="nav-link"
+          id="projects-tab"
+          data-bs-toggle="tab"
+          data-bs-target="#projects"
+          type="button"
+          role="tab"
+          aria-controls="projects"
+          aria-selected="false"
+        >
+          Projects
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button
+          class="nav-link"
+          id="research-tab"
+          data-bs-toggle="tab"
+          data-bs-target="#research"
+          type="button"
+          role="tab"
+          aria-controls="research"
+          aria-selected="false"
+        >
+          Research Experience
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button
+          class="nav-link"
+          id="teaching-tab"
+          data-bs-toggle="tab"
+          data-bs-target="#teaching"
+          type="button"
+          role="tab"
+          aria-controls="teaching"
+          aria-selected="false"
+        >
+          Teaching Experience
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button
+          class="nav-link"
+          id="presentations-tab"
+          data-bs-toggle="tab"
+          data-bs-target="#presentations"
+          type="button"
+          role="tab"
+          aria-controls="presentations"
+          aria-selected="false"
+        >
+          Presentations
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button
+          class="nav-link"
           id="awards-tab"
           data-bs-toggle="tab"
           data-bs-target="#awards"
@@ -49,24 +125,176 @@
           aria-controls="awards"
           aria-selected="false"
         >
-          Awards
+          Awards & Honors
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button
+          class="nav-link"
+          id="memberships-tab"
+          data-bs-toggle="tab"
+          data-bs-target="#memberships"
+          type="button"
+          role="tab"
+          aria-controls="memberships"
+          aria-selected="false"
+        >
+          Memberships
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button
+          class="nav-link"
+          id="leadership-tab"
+          data-bs-toggle="tab"
+          data-bs-target="#leadership"
+          type="button"
+          role="tab"
+          aria-controls="leadership"
+          aria-selected="false"
+        >
+          Leadership
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button
+          class="nav-link"
+          id="skills-tab"
+          data-bs-toggle="tab"
+          data-bs-target="#skills"
+          type="button"
+          role="tab"
+          aria-controls="skills"
+          aria-selected="false"
+        >
+          Skills
         </button>
       </li>
     </ul>
     <div class="tab-content pt-3" id="cvTabsContent">
       <div class="tab-pane fade show active" id="about" role="tabpanel" aria-labelledby="about-tab">
-        <p>Placeholder for a short academic biography and research interests.</p>
+        <p>Mihir Rao is a computer scientist pursuing an M.S. in Computer Science at the University of Chicago, concentrating in Statistical Learning and Distributed Systems. He holds a B.S. in Computer Science and a B.A. in Mathematics from Drexel University and has experience in AI, data science, and teaching.</p>
       </div>
       <div class="tab-pane fade" id="education" role="tabpanel" aria-labelledby="education-tab">
         <ul>
-          <li>Ph.D. in Placeholder Studies, University of Somewhere, 2025</li>
-          <li>B.S. in Sample Sciences, Institute of Examples, 2020</li>
+          <li>
+            <strong>The University of Chicago</strong>, M.S. in Computer Science
+            <ul>
+              <li>Concentration(s): Statistical Learning & Distributed Systems</li>
+              <li>Chicago, IL, Sept 2025 - Dec 2026</li>
+            </ul>
+          </li>
+          <li>
+            <strong>Hanyang University</strong>, International Winter School Program
+            <ul>
+              <li>Grade: 95.7/100</li>
+              <li>Seoul, South Korea, Dec 2024 - Feb 2025</li>
+            </ul>
+          </li>
+          <li>
+            <strong>Drexel University</strong>, B.S. in Computer Science & B.A. in Mathematics
+            <ul>
+              <li>Grade: 3.75/4.00 (Magna Cum Laude with Honors)</li>
+              <li>Concentration(s): Algorithms & Data Structures, Artificial Intelligence</li>
+              <li>Philadelphia, PA, Sept 2020 - Jun 2025</li>
+            </ul>
+          </li>
         </ul>
+      </div>
+      <div class="tab-pane fade" id="industry" role="tabpanel" aria-labelledby="industry-tab">
+        <ul>
+          <li>
+            <strong>AI Data Scientist @ Resolution Life US</strong>, West Chester, PA (Apr 2024 - Sept 2024)
+            <ul>
+              <li>Developed PySpark scripts to migrate the Financial Market Database to AWS using Athena and Step Functions, saving $380,000/year.</li>
+              <li>Pruned Transformer models (e.g., finBERT) to predict bond prices via sentiment analysis of news headlines.</li>
+              <li>Created a Claims Interest calculator in Excel VBA for interest determinations based on U.S. State & Policy code.</li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      <div class="tab-pane fade" id="projects" role="tabpanel" aria-labelledby="projects-tab">
+        <ul>
+          <li>
+            <strong>Extracting Derivatives @ Bloomberg</strong> (Sept 2024 - Jun 2025)
+            <ul>
+              <li>Co-led a senior design team using LLMs (e.g., Llama3) to extract and structure data from corporate actions (e.g., EUREX) with techniques like NER and AWS integration.</li>
+            </ul>
+          </li>
+          <li>
+            <strong>Drosophila Fly</strong> (Apr 2023 - Sept 2023)
+            <ul>
+              <li>Research sponsored by the Ausborn Lab analyzing the Drosophila Hemibrain to identify neurons for escape behavior using clustering algorithms like Louvain and statistical tests like ANOVA.</li>
+            </ul>
+          </li>
+          <li>
+            <strong>Calculating Surface Areas</strong> (Jan 2022 - Jun 2022)
+            <ul>
+              <li>Implemented MATLAB programs with sequence acceleration algorithms (e.g., Richardson Extrapolation) to compute surface areas of Gaussian surfaces with machine epsilon accuracy.</li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      <div class="tab-pane fade" id="research" role="tabpanel" aria-labelledby="research-tab">
+        <ul>
+          <li>
+            <strong>Undergraduate Researcher @ Drexel University</strong>, Philadelphia, PA (Jun 2023 - Sept 2023)
+            <ul>
+              <li>Created a pipeline to test methods for suppressing disparity gaps in explanation quality (fidelity, consistency, sparsity, stability) for groups differentiated by sensitive attributes.</li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      <div class="tab-pane fade" id="teaching" role="tabpanel" aria-labelledby="teaching-tab">
+        <ul>
+          <li>
+            <strong>Teaching Assistant @ Drexel University</strong>, Philadelphia, PA (Jun 2022 - Jun 2024)
+            <ul>
+              <li>Courses: CS260 (Data Structures), CS277 (Algorithms and Analysis), CS380 (Artificial Intelligence), CS615 (Deep Learning)</li>
+              <li>Created assignments, readings, exam questions, and grading system for C programming in CS260.</li>
+              <li>Hosted exam review sessions and office hours to assist students with programming and theory assignments.</li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      <div class="tab-pane fade" id="presentations" role="tabpanel" aria-labelledby="presentations-tab">
+        <ul>
+          <li>Graph Machine Learning</li>
+          <li>Informational Asymmetry, Adverse Selection, and Reputation Systems</li>
+          <li>Analysis of Impartial Combinatorial Games II</li>
+          <li>Analysis of Impartial Combinatorial Games I</li>
+        </ul>
+        <p class="text-muted">Drexel Computer Science Theory Reading Group, Philadelphia, PA (Spring 2025)</p>
       </div>
       <div class="tab-pane fade" id="awards" role="tabpanel" aria-labelledby="awards-tab">
         <ul>
-          <li>Recipient of the Imaginary Fellowship, 2024</li>
-          <li>Best Paper Award at Sample Conference, 2023</li>
+          <li>A* Award, Drexel University (Jun 2024)</li>
+          <li>Student Teaching Excellence Award, Drexel University (Jun 2024)</li>
+          <li>Jeffrey L. Popyack Teaching Assistant Award, Drexel University (Jun 2023)</li>
+          <li>James G. Logan Scholarship, Drexel University (Sept 2021)</li>
+          <li>Founder’s Scholarship, Drexel University (Sept 2020)</li>
+        </ul>
+      </div>
+      <div class="tab-pane fade" id="memberships" role="tabpanel" aria-labelledby="memberships-tab">
+        <ul>
+          <li>Upsilon Pi Epsilon, International Honor Society for Computing (Jun 2023)</li>
+          <li>Supernova Undergraduate Research Fellows, Drexel University (Sept 2022)</li>
+          <li>Drexel Computer Science Theory Reading Group, Drexel University (Jan 2022)</li>
+          <li>Pennoni Honors College, Drexel University (Mar 2021)</li>
+        </ul>
+      </div>
+      <div class="tab-pane fade" id="leadership" role="tabpanel" aria-labelledby="leadership-tab">
+        <ul>
+          <li>Senior Dean’s Ambassador, Drexel University (Sept 2022 - Sept 2024)</li>
+          <li>Board Member, Upsilon Pi Epsilon (Sept 2023 - Sept 2024)</li>
+          <li>Vice President, Mathematics Student Organization (Sept 2022 - Sept 2023)</li>
+          <li>Board Member & Editor, Maya Literary Fiction Magazine (Sept 2022 - Sept 2023)</li>
+        </ul>
+      </div>
+      <div class="tab-pane fade" id="skills" role="tabpanel" aria-labelledby="skills-tab">
+        <ul>
+          <li>Languages: English, Hindi, Punjabi</li>
+          <li>Programming: Python, C, Java, Lisp, Racket, Haskell, MATLAB, Julia, MPI, OpenMP, CUDA</li>
         </ul>
       </div>
     </div>
