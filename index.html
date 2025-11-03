@@ -3,26 +3,26 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Mihir Rao | Computer Scientist</title>
+  <title>Mihir Rao | Theoretical Computer Scientist</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
-    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap"
+    href="https://fonts.googleapis.com/css2?family=STIX+Two+Text:wght@400;500;600;700&display=swap"
     rel="stylesheet"
   />
   <style>
     :root {
-      --background: #040819;
-      --background-gradient: radial-gradient(circle at top left, #0a2342, transparent 55%),
-        radial-gradient(circle at bottom right, #061432, transparent 55%),
-        linear-gradient(180deg, rgba(4, 8, 25, 0.95) 0%, #02040a 100%);
-      --card-background: rgba(255, 255, 255, 0.04);
-      --card-border: rgba(255, 255, 255, 0.06);
-      --text-primary: #f8fafc;
-      --text-secondary: #cbd5f5;
-      --accent: #64ffda;
-      --accent-soft: rgba(100, 255, 218, 0.15);
-      --shadow: 0 40px 80px rgba(2, 12, 27, 0.45);
+      --background: #140204;
+      --background-gradient: radial-gradient(circle at top left, rgba(112, 12, 32, 0.55), transparent 55%),
+        radial-gradient(circle at bottom right, rgba(62, 6, 18, 0.55), transparent 55%),
+        linear-gradient(180deg, rgba(20, 2, 4, 0.95) 0%, #050001 100%);
+      --card-background: rgba(255, 255, 255, 0.05);
+      --card-border: rgba(255, 120, 72, 0.16);
+      --text-primary: #fff5ee;
+      --text-secondary: #f3c3a2;
+      --accent: #ff7b3e;
+      --accent-soft: rgba(255, 123, 62, 0.18);
+      --shadow: 0 40px 80px rgba(57, 5, 14, 0.55);
     }
 
     * {
@@ -36,9 +36,8 @@
     body {
       margin: 0;
       min-height: 100vh;
-      font-family: "Space Grotesk", "IBM Plex Sans", system-ui, -apple-system, BlinkMacSystemFont,
-        "Segoe UI", sans-serif;
-      font-feature-settings: "ss03" 1, "liga" 1, "tnum" 1;
+      font-family: "STIX Two Text", "Latin Modern Roman", "Times New Roman", serif;
+      font-feature-settings: "tnum" 1, "liga" 1;
       background: var(--background);
       background-image: var(--background-gradient);
       color: var(--text-primary);
@@ -99,7 +98,7 @@
       top: 0;
       z-index: 100;
       padding: 1.25rem 0 0.5rem;
-      background: linear-gradient(180deg, rgba(4, 8, 25, 0.94) 0%, rgba(4, 8, 25, 0.7) 65%, transparent 100%);
+      background: linear-gradient(180deg, rgba(20, 2, 4, 0.94) 0%, rgba(20, 2, 4, 0.7) 65%, transparent 100%);
       backdrop-filter: blur(10px);
     }
 
@@ -110,10 +109,10 @@
       justify-content: center;
       flex-wrap: wrap;
       padding: 0.75rem clamp(1rem, 4vw, 2rem);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 123, 62, 0.25);
       border-radius: 999px;
-      background: rgba(10, 16, 40, 0.6);
-      box-shadow: 0 20px 40px rgba(5, 13, 45, 0.3);
+      background: rgba(64, 8, 16, 0.68);
+      box-shadow: 0 20px 40px rgba(82, 8, 18, 0.35);
     }
 
     .nav-bar a {
@@ -177,32 +176,9 @@
     .hero-title {
       margin: 0;
       font-size: clamp(1.4rem, 3vw, 2rem);
-      color: var(--text-secondary);
+      color: rgba(255, 200, 168, 0.72);
       letter-spacing: 0.08em;
       text-transform: uppercase;
-    }
-
-    .profile-card {
-      border-radius: 28px;
-      padding: clamp(1.5rem, 4vw, 2.5rem);
-      border: 1px solid var(--card-border);
-      background: linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.01));
-      box-shadow: var(--shadow);
-    }
-
-    .profile-card h2 {
-      margin-top: 0;
-      margin-bottom: 1.25rem;
-      font-size: clamp(1.3rem, 2.5vw, 1.6rem);
-    }
-
-    .profile-card ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-      display: grid;
-      gap: 0.85rem;
-      color: var(--text-secondary);
     }
 
     @keyframes blink {
@@ -248,7 +224,7 @@
       position: absolute;
       inset: 0 auto 0 12px;
       width: 2px;
-      background: linear-gradient(180deg, rgba(100, 255, 218, 0.2), transparent 90%);
+      background: linear-gradient(180deg, rgba(255, 123, 62, 0.28), transparent 90%);
     }
 
     .timeline-item {
@@ -257,7 +233,7 @@
       border-radius: 18px;
       background: var(--card-background);
       border: 1px solid var(--card-border);
-      box-shadow: 0 30px 60px rgba(3, 7, 18, 0.35);
+      box-shadow: 0 30px 60px rgba(69, 8, 18, 0.45);
       position: relative;
     }
 
@@ -270,20 +246,37 @@
       height: 12px;
       border-radius: 50%;
       border: 2px solid var(--accent);
-      background: rgba(4, 8, 25, 0.9);
-      box-shadow: 0 0 0 6px rgba(100, 255, 218, 0.16);
+      background: rgba(20, 2, 4, 0.92);
+      box-shadow: 0 0 0 6px rgba(255, 123, 62, 0.22);
+    }
+
+    .timeline-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 1.5rem;
+      margin-bottom: 0.85rem;
     }
 
     .timeline-item h3 {
-      margin: 0 0 0.35rem;
+      margin: 0;
       font-size: 1.2rem;
     }
 
-    .timeline-item h4 {
-      margin: 0 0 0.75rem;
-      font-size: 0.95rem;
+    .timeline-role {
+      margin: 0.35rem 0 0;
+      font-size: 0.98rem;
       font-weight: 600;
       color: var(--text-secondary);
+    }
+
+    .timeline-dates {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--accent);
+      white-space: nowrap;
+      letter-spacing: 0.02em;
+      align-self: center;
     }
 
     .timeline-item ul {
@@ -305,14 +298,14 @@
       border-radius: 22px;
       background: var(--card-background);
       border: 1px solid var(--card-border);
-      box-shadow: 0 30px 60px rgba(5, 12, 32, 0.35);
+      box-shadow: 0 30px 60px rgba(82, 8, 18, 0.4);
       transition: transform 300ms ease, border-color 300ms ease, box-shadow 300ms ease;
     }
 
     .card:hover {
       transform: translateY(-8px);
-      border-color: rgba(100, 255, 218, 0.45);
-      box-shadow: 0 40px 80px rgba(5, 12, 32, 0.45);
+      border-color: rgba(255, 123, 62, 0.42);
+      box-shadow: 0 40px 80px rgba(110, 12, 22, 0.5);
     }
 
     .card h3 {
@@ -344,7 +337,7 @@
     .tag {
       padding: 0.35rem 0.85rem;
       border-radius: 999px;
-      background: rgba(100, 255, 218, 0.12);
+      background: rgba(255, 123, 62, 0.16);
       color: var(--accent);
       font-size: 0.8rem;
       letter-spacing: 0.04em;
@@ -363,14 +356,14 @@
 
     .section-note {
       margin-top: 1rem;
-      color: rgba(203, 213, 245, 0.7);
+      color: rgba(243, 195, 162, 0.7);
       font-size: 0.9rem;
     }
 
     footer {
       padding: 3rem 0 4rem;
       text-align: center;
-      color: rgba(148, 163, 217, 0.7);
+      color: rgba(243, 195, 162, 0.7);
       font-size: 0.9rem;
     }
 
@@ -385,21 +378,21 @@
     .contact-links a {
       padding: 0.45rem 0.9rem;
       border-radius: 999px;
-      background: rgba(100, 255, 218, 0.12);
+      background: rgba(255, 123, 62, 0.16);
       color: var(--accent);
       font-weight: 600;
       transition: background 200ms ease, transform 200ms ease;
     }
 
     .contact-links a:hover {
-      background: rgba(100, 255, 218, 0.25);
+      background: rgba(255, 123, 62, 0.3);
       transform: translateY(-2px);
     }
 
     [data-animate] {
       opacity: 0;
       transform: translateY(32px);
-      transition: opacity 800ms cubic-bezier(0.16, 1, 0.3, 1), transform 800ms cubic-bezier(0.16, 1, 0.3, 1);
+      transition: opacity 500ms cubic-bezier(0.23, 1, 0.32, 1), transform 500ms cubic-bezier(0.23, 1, 0.32, 1);
     }
 
     [data-animate].visible {
@@ -423,6 +416,18 @@
 
       .two-column {
         columns: 1;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .timeline-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.6rem;
+      }
+
+      .timeline-dates {
+        align-self: flex-start;
       }
     }
 
@@ -470,7 +475,7 @@
 
     <section class="section" id="about">
       <h2 class="section-heading" data-animate><span data-typewriter>About</span> Me</h2>
-      <div class="content-grid" data-animate data-typewriter-group data-typewriter-step="200">
+      <div class="content-grid" data-animate data-typewriter-group data-typewriter-step="120">
         <p data-typewriter>
           I’m a graduate student pursuing an M.S. in Computer Science at the University of Chicago with dual concentrations in
           Statistical Learning and Distributed Systems. Previously, I completed dual degrees in Computer Science and Mathematics at
@@ -478,38 +483,51 @@
           thrive in roles that intersect research, data, and impactful product experiences. Outside of technical work, I invest in
           mentoring communities and leading organizations that uplift the next generation of technologists.
         </p>
-        <div class="profile-card" data-animate data-typewriter-group data-typewriter-base-delay="200" data-typewriter-step="180">
-          <h2 data-typewriter>At a Glance</h2>
-          <ul>
-            <li data-typewriter>M.S. Computer Science — University of Chicago (2025–2026)</li>
-            <li data-typewriter>B.S. Computer Science & B.A. Mathematics — Drexel University (2020–2025)</li>
-            <li data-typewriter>Based in Chicago, IL • +1 (267) 367-0431</li>
-            <li data-typewriter>Specialties in Statistical Learning, AI Systems, Technical Leadership</li>
-          </ul>
-        </div>
+        <p data-typewriter>
+          My work spans statistical learning theory, trustworthy AI, and large-scale computation. Whether I’m orchestrating data
+          platforms in industry or spearheading research collaborations, I bring a principled approach shaped by mathematics and a
+          passion for experimentation.
+        </p>
       </div>
     </section>
 
     <section class="section" id="education">
       <h2 class="section-heading" data-animate data-typewriter>Education</h2>
-      <div class="timeline" data-animate data-typewriter-group data-typewriter-step="160">
-        <article class="timeline-item" data-typewriter-group data-typewriter-step="180">
-          <h3 data-typewriter>University of Chicago</h3>
-          <h4 data-typewriter>M.S. Computer Science — Statistical Learning & Distributed Systems • Chicago, IL • Sept 2025 – Dec 2026</h4>
+      <div class="timeline" data-animate data-typewriter-group data-typewriter-step="120">
+        <article class="timeline-item" data-typewriter-group data-typewriter-step="110">
+          <div class="timeline-header">
+            <div>
+              <h3 data-typewriter>University of Chicago</h3>
+              <p class="timeline-role" data-typewriter>
+                M.S. Computer Science — Statistical Learning & Distributed Systems • Chicago, IL
+              </p>
+            </div>
+            <span class="timeline-dates" data-typewriter>Sept 2025 – Dec 2026</span>
+          </div>
           <p class="section-note" data-typewriter>
             Graduate coursework exploring large-scale learning systems, responsible AI, and distributed infrastructure.
           </p>
         </article>
-        <article class="timeline-item" data-typewriter-group data-typewriter-step="180">
-          <h3 data-typewriter>Hanyang University</h3>
-          <h4 data-typewriter>International Winter School Program • Seoul, South Korea • Dec 2024 – Feb 2025</h4>
+        <article class="timeline-item" data-typewriter-group data-typewriter-step="110">
+          <div class="timeline-header">
+            <div>
+              <h3 data-typewriter>Hanyang University</h3>
+              <p class="timeline-role" data-typewriter>International Winter School Program • Seoul, South Korea</p>
+            </div>
+            <span class="timeline-dates" data-typewriter>Dec 2024 – Feb 2025</span>
+          </div>
           <ul>
             <li data-typewriter>Achieved 95.7/100 in advanced computing and cultural immersion curriculum.</li>
           </ul>
         </article>
-        <article class="timeline-item" data-typewriter-group data-typewriter-step="180">
-          <h3 data-typewriter>Drexel University</h3>
-          <h4 data-typewriter>B.S. Computer Science & B.A. Mathematics • Philadelphia, PA • Sept 2020 – Jun 2025</h4>
+        <article class="timeline-item" data-typewriter-group data-typewriter-step="110">
+          <div class="timeline-header">
+            <div>
+              <h3 data-typewriter>Drexel University</h3>
+              <p class="timeline-role" data-typewriter>B.S. Computer Science & B.A. Mathematics • Philadelphia, PA</p>
+            </div>
+            <span class="timeline-dates" data-typewriter>Sept 2020 – Jun 2025</span>
+          </div>
           <ul>
             <li data-typewriter>Magna Cum Laude with Honors • GPA: 3.75/4.00</li>
             <li data-typewriter>Concentrations in Algorithms & Data Structures and Artificial Intelligence.</li>
@@ -520,9 +538,9 @@
 
     <section class="section" id="experience">
       <h2 class="section-heading" data-animate><span data-typewriter>Experience</span> Highlights</h2>
-      <div class="content-grid" data-animate data-typewriter-group data-typewriter-step="180">
+      <div class="content-grid" data-animate data-typewriter-group data-typewriter-step="130">
         <div class="card-grid">
-          <article class="card" data-typewriter-group data-typewriter-step="170">
+          <article class="card" data-typewriter-group data-typewriter-step="120">
             <h3 data-typewriter>Industry • AI Data Scientist</h3>
             <p data-typewriter data-typewriter-highlight="Resolution Life US">Resolution Life US • West Chester, PA • Apr 2024 – Sept 2024</p>
             <ul>
@@ -538,7 +556,7 @@
             </div>
           </article>
 
-          <article class="card" data-typewriter-group data-typewriter-step="170">
+          <article class="card" data-typewriter-group data-typewriter-step="120">
             <h3 data-typewriter>Research • Responsible AI Fellow</h3>
             <p data-typewriter data-typewriter-highlight="Drexel University">Drexel University • Philadelphia, PA • Jun 2023 – Sept 2023</p>
             <ul>
@@ -552,7 +570,7 @@
             </div>
           </article>
 
-          <article class="card" data-typewriter-group data-typewriter-step="170">
+          <article class="card" data-typewriter-group data-typewriter-step="120">
             <h3 data-typewriter>Teaching • Graduate & Undergraduate TA</h3>
             <p data-typewriter data-typewriter-highlight="Drexel University">Drexel University • Jun 2022 – Jun 2024</p>
             <ul>
@@ -567,7 +585,7 @@
             </div>
           </article>
 
-          <article class="card" data-typewriter-group data-typewriter-step="170">
+          <article class="card" data-typewriter-group data-typewriter-step="120">
             <h3 data-typewriter>Leadership & Service</h3>
             <ul>
               <li data-typewriter>Senior Dean’s Ambassador — Drexel University (Sept 2022 – Sept 2024)</li>
@@ -582,8 +600,8 @@
 
     <section class="section" id="projects">
       <h2 class="section-heading" data-animate data-typewriter>Selected Projects</h2>
-      <div class="card-grid" data-animate data-typewriter-group data-typewriter-step="170">
-        <article class="card" data-typewriter-group data-typewriter-step="160">
+      <div class="card-grid" data-animate data-typewriter-group data-typewriter-step="130">
+        <article class="card" data-typewriter-group data-typewriter-step="110">
           <h3 data-typewriter>Extracting Derivatives • Bloomberg</h3>
           <p data-typewriter>Senior design capstone • Sept 2024 – Jun 2025</p>
           <ul>
@@ -597,7 +615,7 @@
           </div>
         </article>
 
-        <article class="card" data-typewriter-group data-typewriter-step="160">
+        <article class="card" data-typewriter-group data-typewriter-step="110">
           <h3 data-typewriter>Drosophila Hemibrain Analytics</h3>
           <p data-typewriter>Ausborn Lab • Apr 2023 – Sept 2023</p>
           <ul>
@@ -611,7 +629,7 @@
           </div>
         </article>
 
-        <article class="card" data-typewriter-group data-typewriter-step="160">
+        <article class="card" data-typewriter-group data-typewriter-step="110">
           <h3 data-typewriter>Precision Surface Computation</h3>
           <p data-typewriter>Independent Research • Jan 2022 – Jun 2022</p>
           <ul>
@@ -628,8 +646,8 @@
 
     <section class="section" id="honors">
       <h2 class="section-heading" data-animate data-typewriter>Awards & Memberships</h2>
-      <div class="card-grid" data-animate data-typewriter-group data-typewriter-step="170">
-        <article class="card" data-typewriter-group data-typewriter-step="160">
+      <div class="card-grid" data-animate data-typewriter-group data-typewriter-step="130">
+        <article class="card" data-typewriter-group data-typewriter-step="110">
           <h3 data-typewriter>Recognition</h3>
           <ul>
             <li data-typewriter>A* Award — Drexel University (Jun 2024)</li>
@@ -639,7 +657,7 @@
             <li data-typewriter>Founder’s Scholarship — Drexel University (Sept 2020)</li>
           </ul>
         </article>
-        <article class="card" data-typewriter-group data-typewriter-step="160">
+        <article class="card" data-typewriter-group data-typewriter-step="110">
           <h3 data-typewriter>Communities</h3>
           <ul>
             <li data-typewriter>Upsilon Pi Epsilon — International Honor Society for Computing (Jun 2023)</li>
@@ -652,7 +670,7 @@
             <span class="tag">Leadership</span>
           </div>
         </article>
-        <article class="card" data-typewriter-group data-typewriter-step="160">
+        <article class="card" data-typewriter-group data-typewriter-step="110">
           <h3 data-typewriter>Toolkit</h3>
           <ul>
             <li data-typewriter>Programming: Python, C, Java, Lisp, Racket, Haskell, MATLAB, Julia, MPI, OpenMP, CUDA</li>
@@ -664,7 +682,7 @@
 
     <section class="section" id="presentations">
       <h2 class="section-heading" data-animate data-typewriter>Talks & Presentations</h2>
-      <div class="card" data-animate data-typewriter-group data-typewriter-step="160">
+      <div class="card" data-animate data-typewriter-group data-typewriter-step="120">
         <h3 data-typewriter>Drexel CS Theory Reading Group • Spring 2025</h3>
         <ul class="two-column">
           <li data-typewriter>Graph Machine Learning</li>
@@ -681,7 +699,7 @@
   </main>
 
   <footer id="contact">
-    <div class="contact-links" data-typewriter-group data-typewriter-step="160">
+    <div class="contact-links" data-typewriter-group data-typewriter-step="120">
       <a href="mailto:mihirrao@uchicago.edu" data-typewriter>mihirrao@uchicago.edu</a>
       <a href="tel:+12673670431" data-typewriter>+1 (267) 367-0431</a>
       <a href="https://www.linkedin.com/in/mihir-rao-6242a8209/" target="_blank" rel="noreferrer" data-typewriter>LinkedIn</a>
@@ -714,50 +732,118 @@
     };
 
     const revealObserver = new IntersectionObserver(
-      (entries, observer) => {
+      (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             entry.target.classList.add('visible');
-            observer.unobserve(entry.target);
+          } else {
+            entry.target.classList.remove('visible');
           }
         });
       },
       {
-        threshold: 0.2,
+        threshold: 0.15,
+        rootMargin: '0px 0px -10%',
       }
     );
 
     document.querySelectorAll('[data-animate]').forEach((el) => revealObserver.observe(el));
 
+    const scheduledTypewriterDelays = new WeakMap();
+    const activeTypewriterTimers = new WeakMap();
+
+    const resetTypewriter = (el) => {
+      if (!el) return;
+
+      const scheduled = scheduledTypewriterDelays.get(el);
+      if (scheduled) {
+        clearTimeout(scheduled);
+        scheduledTypewriterDelays.delete(el);
+      }
+
+      const active = activeTypewriterTimers.get(el);
+      if (active) {
+        clearTimeout(active);
+        activeTypewriterTimers.delete(el);
+      }
+
+      delete el.dataset.typewriterDone;
+      el.dataset.typewriterState = 'idle';
+      el.classList.remove('is-typing', 'has-typed');
+
+      const textSpan = el.querySelector('.typewriter-text');
+      if (textSpan) {
+        textSpan.innerHTML = '';
+      }
+
+      let caret = el.querySelector('.typewriter-caret');
+      if (!caret) {
+        caret = document.createElement('span');
+        caret.className = 'typewriter-caret';
+        caret.setAttribute('aria-hidden', 'true');
+        el.append(caret);
+      } else {
+        caret.style.display = '';
+      }
+    };
+
     function runTypewriter(el) {
-      if (!el || el.dataset.typewriterDone === 'true') return;
+      if (!el) return;
 
       const text = el.getAttribute('data-typewriter-text') || '';
       const textSpan = el.querySelector('.typewriter-text');
       const caret = el.querySelector('.typewriter-caret');
 
-      if (!textSpan) return;
+      if (!textSpan || !text) {
+        el.classList.add('has-typed');
+        el.dataset.typewriterState = 'done';
+        el.dataset.typewriterDone = 'true';
+        if (caret) {
+          caret.remove();
+        }
+        return;
+      }
 
-      el.dataset.typewriterDone = 'true';
+      const pendingDelay = scheduledTypewriterDelays.get(el);
+      if (pendingDelay) {
+        clearTimeout(pendingDelay);
+        scheduledTypewriterDelays.delete(el);
+      }
+
+      el.dataset.typewriterState = 'typing';
       el.classList.add('is-typing');
+      el.classList.remove('has-typed');
       textSpan.textContent = '';
+      textSpan.innerHTML = '';
 
       let index = 0;
 
+      const scheduleNext = (delay) => {
+        if (activeTypewriterTimers.has(el)) {
+          clearTimeout(activeTypewriterTimers.get(el));
+        }
+        const timeoutId = window.setTimeout(step, delay);
+        activeTypewriterTimers.set(el, timeoutId);
+      };
+
       const step = () => {
+        if (el.dataset.typewriterState !== 'typing') {
+          return;
+        }
+
         if (index < text.length) {
           index += 1;
           textSpan.textContent = text.slice(0, index);
           const char = text.charAt(index - 1);
-          let delay = 28 + Math.random() * 12;
+          let delay = 11 + Math.random() * 6;
           if (char === ' ' || char === '\n') {
-            delay = 12 + Math.random() * 10;
+            delay = 6 + Math.random() * 5;
           } else if (',;:'.includes(char)) {
-            delay = 120 + Math.random() * 40;
+            delay = 55 + Math.random() * 25;
           } else if ('.!?'.includes(char)) {
-            delay = 190 + Math.random() * 80;
+            delay = 85 + Math.random() * 35;
           }
-          setTimeout(step, delay);
+          scheduleNext(delay);
         } else {
           textSpan.textContent = text;
           applyTypewriterHighlight(el, textSpan, text);
@@ -766,32 +852,47 @@
           if (caret) {
             caret.remove();
           }
+          el.dataset.typewriterState = 'done';
+          el.dataset.typewriterDone = 'true';
+          activeTypewriterTimers.delete(el);
         }
       };
 
-      step();
+      scheduleNext(0);
     }
 
     const typewriterObserver = prefersReducedMotion
       ? null
       : new IntersectionObserver(
-          (entries, observer) => {
+          (entries) => {
             entries.forEach((entry) => {
+              const target = entry.target;
               if (entry.isIntersecting) {
-                observer.unobserve(entry.target);
-                const delayAttr = Number(entry.target.getAttribute('data-typewriter-delay') || 0);
+                if (target.dataset.typewriterState === 'typing' || target.dataset.typewriterState === 'scheduled') {
+                  return;
+                }
+                const delayAttr = Number(target.getAttribute('data-typewriter-delay') || 0);
                 const delay = Number.isFinite(delayAttr) ? Math.max(0, delayAttr) : 0;
                 if (delay > 0) {
-                  setTimeout(() => runTypewriter(entry.target), delay);
+                  target.dataset.typewriterState = 'scheduled';
+                  const timeoutId = window.setTimeout(() => {
+                    scheduledTypewriterDelays.delete(target);
+                    if (target.dataset.typewriterState === 'scheduled') {
+                      runTypewriter(target);
+                    }
+                  }, delay);
+                  scheduledTypewriterDelays.set(target, timeoutId);
                 } else {
-                  runTypewriter(entry.target);
+                  runTypewriter(target);
                 }
+              } else if (!target.hasAttribute('data-typewriter-immediate')) {
+                resetTypewriter(target);
               }
             });
           },
           {
-            threshold: 0.6,
-            rootMargin: '0px 0px -10%',
+            threshold: 0.45,
+            rootMargin: '0px 0px -15%',
           }
         );
 
@@ -799,7 +900,7 @@
       const baseDelayAttr = Number(group.getAttribute('data-typewriter-base-delay'));
       const stepAttr = Number(group.getAttribute('data-typewriter-step'));
       const baseDelay = Number.isFinite(baseDelayAttr) ? baseDelayAttr : 0;
-      const step = Number.isFinite(stepAttr) ? stepAttr : 140;
+      const step = Number.isFinite(stepAttr) ? stepAttr : 110;
 
       const members = Array.from(group.querySelectorAll('[data-typewriter]')).filter(
         (member) => member.closest('[data-typewriter-group]') === group && !member.hasAttribute('data-typewriter-immediate')
@@ -829,8 +930,12 @@
       caret.setAttribute('aria-hidden', 'true');
       el.append(caret);
 
+      el.dataset.typewriterState = 'idle';
+
       if (!text) {
         el.classList.add('has-typed');
+        el.dataset.typewriterState = 'done';
+        el.dataset.typewriterDone = 'true';
         caret.remove();
         return;
       }
@@ -840,6 +945,8 @@
         applyTypewriterHighlight(el, textSpan, text);
         el.dataset.reducedMotion = 'true';
         el.classList.add('has-typed');
+        el.dataset.typewriterState = 'done';
+        el.dataset.typewriterDone = 'true';
         caret.remove();
         return;
       }
@@ -847,7 +954,16 @@
       if (el.hasAttribute('data-typewriter-immediate')) {
         const delayAttr = Number(el.getAttribute('data-typewriter-delay') || 0);
         const delay = Number.isFinite(delayAttr) ? Math.max(0, delayAttr) : 0;
-        setTimeout(() => runTypewriter(el), delay);
+        if (delay > 0) {
+          el.dataset.typewriterState = 'scheduled';
+          const timeoutId = window.setTimeout(() => {
+            scheduledTypewriterDelays.delete(el);
+            runTypewriter(el);
+          }, delay);
+          scheduledTypewriterDelays.set(el, timeoutId);
+        } else {
+          runTypewriter(el);
+        }
       } else if (typewriterObserver) {
         typewriterObserver.observe(el);
       }
@@ -856,18 +972,30 @@
     const flushTypewriterForReducedMotion = (event) => {
       if (!event.matches) return;
       document.querySelectorAll('[data-typewriter]').forEach((el) => {
-        if (el.dataset.typewriterDone === 'true') return;
+        const scheduled = scheduledTypewriterDelays.get(el);
+        if (scheduled) {
+          clearTimeout(scheduled);
+          scheduledTypewriterDelays.delete(el);
+        }
+        const active = activeTypewriterTimers.get(el);
+        if (active) {
+          clearTimeout(active);
+          activeTypewriterTimers.delete(el);
+        }
+
         const text = el.getAttribute('data-typewriter-text') || '';
         const textSpan = el.querySelector('.typewriter-text');
-        const caret = el.querySelector('.typewriter-caret');
         if (textSpan) {
           textSpan.textContent = text;
           applyTypewriterHighlight(el, textSpan, text);
-          el.classList.add('has-typed');
         }
+        const caret = el.querySelector('.typewriter-caret');
         if (caret) {
           caret.remove();
         }
+        el.classList.add('has-typed');
+        el.dataset.typewriterState = 'done';
+        el.dataset.typewriterDone = 'true';
       });
     };
 
