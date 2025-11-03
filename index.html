@@ -1,304 +1,745 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Mihir Rao - CV</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mihir Rao | Theoretical Computer Scientist</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    :root {
+      --background: #020616;
+      --background-gradient: radial-gradient(circle at top left, rgba(26, 76, 186, 0.45), transparent 55%),
+        radial-gradient(circle at bottom right, rgba(14, 38, 84, 0.5), transparent 60%),
+        linear-gradient(180deg, rgba(2, 6, 22, 0.95) 0%, #01030d 100%);
+      --surface: rgba(10, 18, 40, 0.78);
+      --surface-border: rgba(120, 173, 255, 0.24);
+      --surface-hover: rgba(19, 39, 88, 0.9);
+      --text-primary: #f7faff;
+      --text-secondary: rgba(208, 224, 255, 0.82);
+      --accent: #7dd5ff;
+      --accent-soft: rgba(125, 213, 255, 0.18);
+      --shadow: 0 32px 80px rgba(1, 9, 30, 0.55);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--background);
+      background-image: var(--background-gradient);
+      color: var(--text-primary);
+      font-family: "IBM Plex Serif", "Nimbus Roman", "Times New Roman", serif;
+      font-feature-settings: "tnum" 1, "liga" 1, "case" 1;
+      line-height: 1.65;
+      overflow-x: hidden;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: 1.1rem 0 0.4rem;
+      background: linear-gradient(180deg, rgba(2, 6, 22, 0.92) 0%, rgba(2, 6, 22, 0.64) 65%, transparent 100%);
+      backdrop-filter: blur(12px);
+    }
+
+    .nav-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: clamp(1rem, 4vw, 3rem);
+      padding: 0.75rem clamp(1rem, 4vw, 2rem);
+      border: 1px solid rgba(125, 213, 255, 0.25);
+      border-radius: 999px;
+      background: rgba(6, 14, 32, 0.78);
+      box-shadow: 0 20px 50px rgba(1, 9, 28, 0.45);
+    }
+
+    .nav-bar a {
+      position: relative;
+      font-family: "Space Grotesk", "IBM Plex Sans", "Segoe UI", sans-serif;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      padding: 0.45rem 0.9rem;
+      border-radius: 999px;
+      transition: color 200ms ease, background 200ms ease, transform 200ms ease;
+    }
+
+    .nav-bar a::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background: var(--accent-soft);
+      opacity: 0;
+      transform: scale(0.85);
+      transition: opacity 200ms ease, transform 200ms ease;
+      z-index: -1;
+    }
+
+    .nav-bar a:hover,
+    .nav-bar a:focus-visible {
+      color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    .nav-bar a:hover::after,
+    .nav-bar a:focus-visible::after {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .page-shell {
+      width: min(1180px, 92vw);
+      margin: 0 auto;
+      padding-bottom: 6rem;
+    }
+
+    .hero {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      gap: 1.5rem;
+      padding: clamp(5rem, 16vw, 10rem) 0 clamp(3rem, 10vw, 6rem);
+      min-height: clamp(60vh, 74vh, 82vh);
+    }
+
+    .hero-text {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .hero-name {
+      font-size: clamp(3.6rem, 7.5vw, 5.4rem);
+      margin: 0;
+      letter-spacing: -0.045em;
+    }
+
+    .hero-title {
+      margin: 0;
+      font-size: clamp(1.3rem, 3vw, 2rem);
+      color: rgba(247, 250, 255, 0.72);
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+    }
+
+    .hero-line {
+      position: relative;
+      display: block;
+      min-height: 1.4em;
+    }
+
+    .hero-caret {
+      display: inline-block;
+      width: 2px;
+      height: 1.1em;
+      margin-left: 6px;
+      background: var(--accent);
+      vertical-align: text-bottom;
+      animation: blink 1s steps(2, start) infinite;
+    }
+
+    @keyframes blink {
+      0%,
+      49% {
+        opacity: 1;
+      }
+      50%,
+      100% {
+        opacity: 0;
+      }
+    }
+
+    .section {
+      padding: clamp(3.5rem, 9vw, 6rem) 0;
+      position: relative;
+    }
+
+    .section-heading {
+      font-size: clamp(2rem, 4vw, 2.7rem);
+      margin: 0 0 clamp(2rem, 4vw, 2.6rem);
+      letter-spacing: -0.02em;
+    }
+
+    .content-grid {
+      display: grid;
+      gap: clamp(1.6rem, 3vw, 2.6rem);
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    }
+
+    .stacked {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .timeline {
+      display: grid;
+      gap: clamp(1.6rem, 3vw, 2.4rem);
+      position: relative;
+    }
+
+    .timeline::before {
+      content: "";
+      position: absolute;
+      inset: 0 auto 0 14px;
+      width: 2px;
+      background: linear-gradient(180deg, rgba(125, 213, 255, 0.3), transparent 90%);
+    }
+
+    .timeline-item {
+      margin-left: 2.6rem;
+      padding: 1.5rem clamp(1.5rem, 4vw, 2rem);
+      border-radius: 20px;
+      background: var(--surface);
+      border: 1px solid var(--surface-border);
+      box-shadow: var(--shadow);
+      position: relative;
+    }
+
+    .timeline-item::before {
+      content: "";
+      position: absolute;
+      left: -2.35rem;
+      top: 1.6rem;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      border: 2px solid var(--accent);
+      background: rgba(3, 8, 20, 0.95);
+      box-shadow: 0 0 0 6px rgba(125, 213, 255, 0.18);
+    }
+
+    .timeline-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 1.5rem;
+      margin-bottom: 0.9rem;
+    }
+
+    .timeline-item h3 {
+      margin: 0;
+      font-size: 1.22rem;
+    }
+
+    .timeline-role {
+      margin: 0.35rem 0 0;
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+
+    .timeline-location {
+      margin: 0.25rem 0 0;
+      color: rgba(208, 224, 255, 0.65);
+      font-size: 0.95rem;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+
+    .timeline-dates {
+      font-size: 0.98rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      color: var(--accent);
+      white-space: nowrap;
+    }
+
+    .timeline-item ul {
+      margin: 0;
+      padding-left: 1.1rem;
+      color: var(--text-secondary);
+      display: grid;
+      gap: 0.6rem;
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: clamp(1.6rem, 3vw, 2.6rem);
+    }
+
+    .card {
+      padding: clamp(1.6rem, 4vw, 2.2rem);
+      border-radius: 22px;
+      background: var(--surface);
+      border: 1px solid var(--surface-border);
+      box-shadow: var(--shadow);
+      transition: transform 220ms ease, border-color 220ms ease, box-shadow 220ms ease;
+    }
+
+    .card:hover {
+      transform: translateY(-8px);
+      border-color: rgba(125, 213, 255, 0.45);
+      box-shadow: 0 42px 90px rgba(1, 10, 34, 0.58);
+    }
+
+    .card h3 {
+      margin: 0 0 0.75rem;
+      font-size: 1.3rem;
+    }
+
+    .card p,
+    .card ul {
+      margin: 0;
+      color: var(--text-secondary);
+      line-height: 1.65;
+    }
+
+    .card ul {
+      padding-left: 1.1rem;
+      display: grid;
+      gap: 0.55rem;
+    }
+
+    .tag-set {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      margin-top: 1rem;
+    }
+
+    .tag {
+      padding: 0.35rem 0.85rem;
+      border-radius: 999px;
+      background: rgba(125, 213, 255, 0.16);
+      color: var(--accent);
+      font-size: 0.8rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .two-column {
+      columns: 2;
+      column-gap: 2.6rem;
+    }
+
+    .two-column li {
+      break-inside: avoid;
+      margin-bottom: 0.75rem;
+      color: var(--text-secondary);
+    }
+
+    .section-note {
+      margin-top: 1rem;
+      color: rgba(208, 224, 255, 0.65);
+      font-size: 0.92rem;
+    }
+
+    footer {
+      padding: 3rem 0 4rem;
+      text-align: center;
+      color: rgba(208, 224, 255, 0.65);
+      font-size: 0.92rem;
+    }
+
+    .contact-links {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 0.9rem;
+      flex-wrap: wrap;
+    }
+
+    .contact-links a {
+      padding: 0.45rem 0.95rem;
+      border-radius: 999px;
+      background: rgba(125, 213, 255, 0.16);
+      color: var(--accent);
+      font-weight: 600;
+      transition: background 200ms ease, transform 200ms ease;
+    }
+
+    .contact-links a:hover {
+      background: rgba(125, 213, 255, 0.3);
+      transform: translateY(-2px);
+    }
+
+    [data-animate] {
+      opacity: 0;
+      transform: translateX(-36px);
+      transition: opacity 260ms cubic-bezier(0.4, 0, 0.2, 1), transform 260ms cubic-bezier(0.4, 0, 0.2, 1);
+      will-change: opacity, transform;
+    }
+
+    [data-animate].visible {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    @media (max-width: 820px) {
+      header {
+        padding-top: 0.8rem;
+      }
+
+      .nav-bar {
+        padding: 0.65rem 0.95rem;
+        border-radius: 20px;
+      }
+
+      .nav-bar a {
+        font-size: 0.85rem;
+        letter-spacing: 0.12em;
+      }
+
+      .two-column {
+        columns: 1;
+      }
+    }
+
+    @media (max-width: 620px) {
+      .timeline::before {
+        left: 8px;
+      }
+
+      .timeline-item {
+        margin-left: 2rem;
+      }
+
+      .timeline-item::before {
+        left: -2rem;
+      }
+
+      .timeline-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.6rem;
+      }
+
+      .timeline-dates {
+        align-self: flex-start;
+      }
+    }
+  </style>
 </head>
 <body>
-  <div class="container py-5">
-    <h1 class="mb-0">Mihir Rao</h1>
-    <p class="lead">M.S., B.S., B.A.</p>
-    <p>
-      <a href="mailto:mihirrao@uchicago.edu">mihirrao@uchicago.edu</a> •
-      +1 (267) 367-0431 •
-      <a href="https://www.linkedin.com/in/mihirrao">LinkedIn</a>
-    </p>
-    <ul class="nav nav-tabs" id="cvTabs" role="tablist">
-      <li class="nav-item" role="presentation">
-        <button
-          class="nav-link active"
-          id="about-tab"
-          data-bs-toggle="tab"
-          data-bs-target="#about"
-          type="button"
-          role="tab"
-          aria-controls="about"
-          aria-selected="true"
-        >
-          About Me
-        </button>
-      </li>
-      <li class="nav-item" role="presentation">
-        <button
-          class="nav-link"
-          id="education-tab"
-          data-bs-toggle="tab"
-          data-bs-target="#education"
-          type="button"
-          role="tab"
-          aria-controls="education"
-          aria-selected="false"
-        >
-          Education
-        </button>
-      </li>
-      <li class="nav-item" role="presentation">
-        <button
-          class="nav-link"
-          id="industry-tab"
-          data-bs-toggle="tab"
-          data-bs-target="#industry"
-          type="button"
-          role="tab"
-          aria-controls="industry"
-          aria-selected="false"
-        >
-          Industry Experience
-        </button>
-      </li>
-      <li class="nav-item" role="presentation">
-        <button
-          class="nav-link"
-          id="projects-tab"
-          data-bs-toggle="tab"
-          data-bs-target="#projects"
-          type="button"
-          role="tab"
-          aria-controls="projects"
-          aria-selected="false"
-        >
-          Projects
-        </button>
-      </li>
-      <li class="nav-item" role="presentation">
-        <button
-          class="nav-link"
-          id="research-tab"
-          data-bs-toggle="tab"
-          data-bs-target="#research"
-          type="button"
-          role="tab"
-          aria-controls="research"
-          aria-selected="false"
-        >
-          Research Experience
-        </button>
-      </li>
-      <li class="nav-item" role="presentation">
-        <button
-          class="nav-link"
-          id="teaching-tab"
-          data-bs-toggle="tab"
-          data-bs-target="#teaching"
-          type="button"
-          role="tab"
-          aria-controls="teaching"
-          aria-selected="false"
-        >
-          Teaching Experience
-        </button>
-      </li>
-      <li class="nav-item" role="presentation">
-        <button
-          class="nav-link"
-          id="presentations-tab"
-          data-bs-toggle="tab"
-          data-bs-target="#presentations"
-          type="button"
-          role="tab"
-          aria-controls="presentations"
-          aria-selected="false"
-        >
-          Presentations
-        </button>
-      </li>
-      <li class="nav-item" role="presentation">
-        <button
-          class="nav-link"
-          id="awards-tab"
-          data-bs-toggle="tab"
-          data-bs-target="#awards"
-          type="button"
-          role="tab"
-          aria-controls="awards"
-          aria-selected="false"
-        >
-          Awards & Honors
-        </button>
-      </li>
-      <li class="nav-item" role="presentation">
-        <button
-          class="nav-link"
-          id="memberships-tab"
-          data-bs-toggle="tab"
-          data-bs-target="#memberships"
-          type="button"
-          role="tab"
-          aria-controls="memberships"
-          aria-selected="false"
-        >
-          Memberships
-        </button>
-      </li>
-      <li class="nav-item" role="presentation">
-        <button
-          class="nav-link"
-          id="leadership-tab"
-          data-bs-toggle="tab"
-          data-bs-target="#leadership"
-          type="button"
-          role="tab"
-          aria-controls="leadership"
-          aria-selected="false"
-        >
-          Leadership
-        </button>
-      </li>
-      <li class="nav-item" role="presentation">
-        <button
-          class="nav-link"
-          id="skills-tab"
-          data-bs-toggle="tab"
-          data-bs-target="#skills"
-          type="button"
-          role="tab"
-          aria-controls="skills"
-          aria-selected="false"
-        >
-          Skills
-        </button>
-      </li>
-    </ul>
-    <div class="tab-content pt-3" id="cvTabsContent">
-      <div class="tab-pane fade show active" id="about" role="tabpanel" aria-labelledby="about-tab">
-        <p>Mihir Rao is a computer scientist pursuing an M.S. in Computer Science at the University of Chicago, concentrating in Statistical Learning and Distributed Systems. He holds a B.S. in Computer Science and a B.A. in Mathematics from Drexel University and has experience in AI, data science, and teaching.</p>
+  <header>
+    <nav class="nav-bar">
+      <a href="#about">About</a>
+      <a href="#education">Education</a>
+      <a href="#experience">Work</a>
+      <a href="#academia">Academia</a>
+      <a href="#projects">Projects</a>
+      <a href="#awards">Awards</a>
+      <a href="#presentations">Presentations</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </header>
+
+  <main class="page-shell">
+    <section class="hero" id="top">
+      <div class="hero-text">
+        <h1 class="hero-name hero-line" data-hero-type="Mihir Rao"></h1>
+        <p class="hero-title hero-line" data-hero-type="Theoretical Computer Scientist."></p>
       </div>
-      <div class="tab-pane fade" id="education" role="tabpanel" aria-labelledby="education-tab">
-        <ul>
-          <li>
-            <strong>The University of Chicago</strong>, M.S. in Computer Science
-            <ul>
-              <li>Concentration(s): Statistical Learning & Distributed Systems</li>
-              <li>Chicago, IL, Sept 2025 - Dec 2026</li>
-            </ul>
-          </li>
-          <li>
-            <strong>Hanyang University</strong>, International Winter School Program
-            <ul>
-              <li>Grade: 95.7/100</li>
-              <li>Seoul, South Korea, Dec 2024 - Feb 2025</li>
-            </ul>
-          </li>
-          <li>
-            <strong>Drexel University</strong>, B.S. in Computer Science & B.A. in Mathematics
-            <ul>
-              <li>Grade: 3.75/4.00 (Magna Cum Laude with Honors)</li>
-              <li>Concentration(s): Algorithms & Data Structures, Artificial Intelligence</li>
-              <li>Philadelphia, PA, Sept 2020 - Jun 2025</li>
-            </ul>
-          </li>
-        </ul>
+    </section>
+
+    <section class="section" id="about">
+      <h2 class="section-heading" data-animate>About Me</h2>
+      <div class="content-grid">
+        <p data-animate>
+          I’m a graduate student pursuing an M.S. in Computer Science at the University of Chicago with dual concentrations in
+          Statistical Learning and Distributed Systems. Previously, I completed dual degrees in Computer Science and Mathematics at
+          Drexel University. I love building intelligent systems that combine rigorous theory with pragmatic engineering, and I
+          thrive in roles that intersect research, data, and impactful product experiences. Outside of technical work, I invest in
+          mentoring communities and leading organizations that uplift the next generation of technologists.
+        </p>
+        <p data-animate>
+          My work spans statistical learning theory, trustworthy AI, and large-scale computation. Whether I’m orchestrating data
+          platforms in industry or spearheading research collaborations, I bring a principled approach shaped by mathematics and a
+          passion for experimentation.
+        </p>
       </div>
-      <div class="tab-pane fade" id="industry" role="tabpanel" aria-labelledby="industry-tab">
-        <ul>
-          <li>
-            <strong>AI Data Scientist @ Resolution Life US</strong>, West Chester, PA (Apr 2024 - Sept 2024)
-            <ul>
-              <li>Developed PySpark scripts to migrate the Financial Market Database to AWS using Athena and Step Functions, saving $380,000/year.</li>
-              <li>Pruned Transformer models (e.g., finBERT) to predict bond prices via sentiment analysis of news headlines.</li>
-              <li>Created a Claims Interest calculator in Excel VBA for interest determinations based on U.S. State & Policy code.</li>
-            </ul>
-          </li>
-        </ul>
+    </section>
+
+    <section class="section" id="education">
+      <h2 class="section-heading" data-animate>Education</h2>
+      <div class="timeline">
+        <article class="timeline-item" data-animate>
+          <div class="timeline-header">
+            <div>
+              <h3>University of Chicago</h3>
+              <p class="timeline-role">M.S. Computer Science — Statistical Learning & Distributed Systems</p>
+              <p class="timeline-location">Chicago, IL</p>
+            </div>
+            <span class="timeline-dates">Sept 2025 – Dec 2026</span>
+          </div>
+          <p class="section-note">
+            Graduate coursework exploring large-scale learning systems, responsible AI, and distributed infrastructure.
+          </p>
+        </article>
+        <article class="timeline-item" data-animate>
+          <div class="timeline-header">
+            <div>
+              <h3>Hanyang University</h3>
+              <p class="timeline-role">International Winter School Program</p>
+              <p class="timeline-location">Seoul, South Korea</p>
+            </div>
+            <span class="timeline-dates">Dec 2024 – Feb 2025</span>
+          </div>
+          <ul>
+            <li>Achieved 95.7/100 in advanced computing and cultural immersion curriculum.</li>
+          </ul>
+        </article>
+        <article class="timeline-item" data-animate>
+          <div class="timeline-header">
+            <div>
+              <h3>Drexel University</h3>
+              <p class="timeline-role">B.S. Computer Science & B.S. Mathematics</p>
+              <p class="timeline-location">Philadelphia, PA</p>
+            </div>
+            <span class="timeline-dates">Sept 2020 – Jun 2024</span>
+          </div>
+          <ul>
+            <li>Magna Cum Laude with Honors • GPA: 3.75/4.00</li>
+            <li>Concentrations in Algorithms & Data Structures and Artificial Intelligence.</li>
+          </ul>
+        </article>
       </div>
-      <div class="tab-pane fade" id="projects" role="tabpanel" aria-labelledby="projects-tab">
-        <ul>
-          <li>
-            <strong>Extracting Derivatives @ Bloomberg</strong> (Sept 2024 - Jun 2025)
-            <ul>
-              <li>Co-led a senior design team using LLMs (e.g., Llama3) to extract and structure data from corporate actions (e.g., EUREX) with techniques like NER and AWS integration.</li>
-            </ul>
-          </li>
-          <li>
-            <strong>Drosophila Fly</strong> (Apr 2023 - Sept 2023)
-            <ul>
-              <li>Research sponsored by the Ausborn Lab analyzing the Drosophila Hemibrain to identify neurons for escape behavior using clustering algorithms like Louvain and statistical tests like ANOVA.</li>
-            </ul>
-          </li>
-          <li>
-            <strong>Calculating Surface Areas</strong> (Jan 2022 - Jun 2022)
-            <ul>
-              <li>Implemented MATLAB programs with sequence acceleration algorithms (e.g., Richardson Extrapolation) to compute surface areas of Gaussian surfaces with machine epsilon accuracy.</li>
-            </ul>
-          </li>
-        </ul>
+    </section>
+
+    <section class="section" id="experience">
+      <h2 class="section-heading" data-animate>Work Experience</h2>
+      <div class="content-grid stacked">
+        <article class="card" data-animate>
+          <h3>AI Data Scientist</h3>
+          <p class="timeline-role">Resolution Life US • West Chester, PA</p>
+          <p class="timeline-dates">Apr 2024 – Sept 2024</p>
+          <ul>
+            <li>Engineered PySpark data pipelines to migrate the Financial Market Database onto AWS with Athena + Step Functions, saving $380K annually.</li>
+            <li>Pruned transformer models (finBERT and variants) to forecast bond prices using sentiment signals from financial headlines.</li>
+            <li>Automated a Claims Interest calculator in VBA to codify compliance with state-level regulations.</li>
+          </ul>
+          <div class="tag-set">
+            <span class="tag">PySpark</span>
+            <span class="tag">AWS</span>
+            <span class="tag">LLMs</span>
+            <span class="tag">Automation</span>
+          </div>
+        </article>
       </div>
-      <div class="tab-pane fade" id="research" role="tabpanel" aria-labelledby="research-tab">
-        <ul>
-          <li>
-            <strong>Undergraduate Researcher @ Drexel University</strong>, Philadelphia, PA (Jun 2023 - Sept 2023)
-            <ul>
-              <li>Created a pipeline to test methods for suppressing disparity gaps in explanation quality (fidelity, consistency, sparsity, stability) for groups differentiated by sensitive attributes.</li>
-            </ul>
-          </li>
-        </ul>
+    </section>
+
+    <section class="section" id="academia">
+      <h2 class="section-heading" data-animate>Academia Experience</h2>
+      <div class="content-grid stacked">
+        <article class="card" data-animate>
+          <h3>Graduate & Undergraduate Teaching Assistant</h3>
+          <p class="timeline-role">Drexel University</p>
+          <p class="timeline-dates">Jun 2022 – Jun 2024</p>
+          <ul>
+            <li>Supported courses including Data Structures, Algorithms, Artificial Intelligence, and Deep Learning.</li>
+            <li>Crafted programming assignments, exam materials, and grading frameworks for rigorous C programming curricula.</li>
+            <li>Led office hours and review sessions that improved student confidence in both theory and implementation.</li>
+          </ul>
+          <div class="tag-set">
+            <span class="tag">Mentorship</span>
+            <span class="tag">Curriculum Design</span>
+            <span class="tag">AI Education</span>
+          </div>
+        </article>
       </div>
-      <div class="tab-pane fade" id="teaching" role="tabpanel" aria-labelledby="teaching-tab">
-        <ul>
-          <li>
-            <strong>Teaching Assistant @ Drexel University</strong>, Philadelphia, PA (Jun 2022 - Jun 2024)
-            <ul>
-              <li>Courses: CS260 (Data Structures), CS277 (Algorithms and Analysis), CS380 (Artificial Intelligence), CS615 (Deep Learning)</li>
-              <li>Created assignments, readings, exam questions, and grading system for C programming in CS260.</li>
-              <li>Hosted exam review sessions and office hours to assist students with programming and theory assignments.</li>
-            </ul>
-          </li>
-        </ul>
+    </section>
+
+    <section class="section" id="projects">
+      <h2 class="section-heading" data-animate>Selected Projects</h2>
+      <div class="card-grid">
+        <article class="card" data-animate>
+          <h3>Extracting Derivatives • Bloomberg</h3>
+          <p class="timeline-role">Senior design capstone</p>
+          <p class="timeline-dates">Sept 2024 – Jun 2025</p>
+          <ul>
+            <li>Co-led an LLM-driven platform (Llama 3 + AWS) that structures derivatives data from complex corporate action documents.</li>
+            <li>Combined named-entity recognition, retrieval, and workflow automation to deliver analyst-ready insights.</li>
+          </ul>
+          <div class="tag-set">
+            <span class="tag">LLMs</span>
+            <span class="tag">NER</span>
+            <span class="tag">AWS</span>
+          </div>
+        </article>
+
+        <article class="card" data-animate>
+          <h3>Drosophila Hemibrain Analytics</h3>
+          <p class="timeline-role">Ausborn Lab</p>
+          <p class="timeline-dates">Apr 2023 – Sept 2023</p>
+          <ul>
+            <li>Analyzed neural circuitry to isolate neurons responsible for escape behavior using Louvain clustering and ANOVA.</li>
+            <li>Built reproducible data science workflows across high-dimensional connectome datasets.</li>
+          </ul>
+          <div class="tag-set">
+            <span class="tag">Neuroscience</span>
+            <span class="tag">Clustering</span>
+            <span class="tag">ANOVA</span>
+          </div>
+        </article>
+
+        <article class="card" data-animate>
+          <h3>Precision Surface Computation</h3>
+          <p class="timeline-role">Independent Research</p>
+          <p class="timeline-dates">Jan 2022 – Jun 2022</p>
+          <ul>
+            <li>Implemented MATLAB solvers with sequence acceleration (Richardson Extrapolation) for machine-precision Gaussian surface area calculations.</li>
+          </ul>
+          <div class="tag-set">
+            <span class="tag">Numerical Methods</span>
+            <span class="tag">MATLAB</span>
+            <span class="tag">Scientific Computing</span>
+          </div>
+        </article>
       </div>
-      <div class="tab-pane fade" id="presentations" role="tabpanel" aria-labelledby="presentations-tab">
-        <ul>
+    </section>
+
+    <section class="section" id="awards">
+      <h2 class="section-heading" data-animate>Awards</h2>
+      <div class="card-grid">
+        <article class="card" data-animate>
+          <h3>Recognition</h3>
+          <ul>
+            <li>A* Award — Drexel University (Jun 2024)</li>
+            <li>Student Teaching Excellence Award — Drexel University (Jun 2024)</li>
+            <li>Jeffrey L. Popyack Teaching Assistant Award — Drexel University (Jun 2023)</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="presentations">
+      <h2 class="section-heading" data-animate>Talks & Presentations</h2>
+      <div class="card" data-animate>
+        <h3>Drexel CS Theory Reading Group • Spring 2025</h3>
+        <ul class="two-column">
           <li>Graph Machine Learning</li>
           <li>Informational Asymmetry, Adverse Selection, and Reputation Systems</li>
           <li>Analysis of Impartial Combinatorial Games II</li>
           <li>Analysis of Impartial Combinatorial Games I</li>
         </ul>
-        <p class="text-muted">Drexel Computer Science Theory Reading Group, Philadelphia, PA (Spring 2025)</p>
+        <p class="section-note">
+          Presented original analysis and critical perspectives on complex theory topics to a cross-disciplinary academic audience.
+        </p>
       </div>
-      <div class="tab-pane fade" id="awards" role="tabpanel" aria-labelledby="awards-tab">
-        <ul>
-          <li>A* Award, Drexel University (Jun 2024)</li>
-          <li>Student Teaching Excellence Award, Drexel University (Jun 2024)</li>
-          <li>Jeffrey L. Popyack Teaching Assistant Award, Drexel University (Jun 2023)</li>
-          <li>James G. Logan Scholarship, Drexel University (Sept 2021)</li>
-          <li>Founder’s Scholarship, Drexel University (Sept 2020)</li>
-        </ul>
-      </div>
-      <div class="tab-pane fade" id="memberships" role="tabpanel" aria-labelledby="memberships-tab">
-        <ul>
-          <li>Upsilon Pi Epsilon, International Honor Society for Computing (Jun 2023)</li>
-          <li>Supernova Undergraduate Research Fellows, Drexel University (Sept 2022)</li>
-          <li>Drexel Computer Science Theory Reading Group, Drexel University (Jan 2022)</li>
-          <li>Pennoni Honors College, Drexel University (Mar 2021)</li>
-        </ul>
-      </div>
-      <div class="tab-pane fade" id="leadership" role="tabpanel" aria-labelledby="leadership-tab">
-        <ul>
-          <li>Senior Dean’s Ambassador, Drexel University (Sept 2022 - Sept 2024)</li>
-          <li>Board Member, Upsilon Pi Epsilon (Sept 2023 - Sept 2024)</li>
-          <li>Vice President, Mathematics Student Organization (Sept 2022 - Sept 2023)</li>
-          <li>Board Member & Editor, Maya Literary Fiction Magazine (Sept 2022 - Sept 2023)</li>
-        </ul>
-      </div>
-      <div class="tab-pane fade" id="skills" role="tabpanel" aria-labelledby="skills-tab">
-        <ul>
-          <li>Languages: English, Hindi, Punjabi</li>
-          <li>Programming: Python, C, Java, Lisp, Racket, Haskell, MATLAB, Julia, MPI, OpenMP, CUDA</li>
-        </ul>
-      </div>
+    </section>
+  </main>
+
+  <footer id="contact">
+    <div class="contact-links" data-animate>
+      <a href="mailto:mihirrao@uchicago.edu">mihirrao@uchicago.edu</a>
+      <a href="tel:+12673670431">+1 (267) 367-0431</a>
+      <a href="https://www.linkedin.com/in/mihir-rao-6242a8209/" target="_blank" rel="noreferrer">LinkedIn</a>
     </div>
-  </div>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <p>Crafted with intention • © <span id="year"></span> Mihir Rao</p>
+  </footer>
+
+  <script>
+    const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const prefersReducedMotion = motionQuery.matches;
+
+    const revealObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          } else {
+            entry.target.classList.remove('visible');
+          }
+        });
+      },
+      {
+        threshold: 0.1,
+        rootMargin: '0px 0px -10%',
+      }
+    );
+
+    document.querySelectorAll('[data-animate]').forEach((el) => {
+      if (prefersReducedMotion) {
+        el.classList.add('visible');
+        return;
+      }
+      revealObserver.observe(el);
+    });
+
+    const heroLines = document.querySelectorAll('[data-hero-type]');
+
+    const typeHeroLine = (element, text, delay = 0) => {
+      if (!element) return Promise.resolve();
+
+      return new Promise((resolve) => {
+        const run = () => {
+          if (prefersReducedMotion) {
+            element.textContent = text;
+            resolve();
+            return;
+          }
+
+          element.textContent = '';
+          const caret = document.createElement('span');
+          caret.className = 'hero-caret';
+          caret.setAttribute('aria-hidden', 'true');
+          element.append(caret);
+
+          let index = 0;
+          const step = () => {
+            if (index <= text.length) {
+              element.firstChild.textContent = text.slice(0, index);
+              index += 1;
+              const char = text.charAt(index - 1);
+              let stepDelay = 70;
+              if (char === ' ' || char === '') {
+                stepDelay = 45;
+              }
+              window.setTimeout(step, stepDelay);
+            } else {
+              caret.remove();
+              element.textContent = text;
+              resolve();
+            }
+          };
+
+          element.insertBefore(document.createTextNode(''), caret);
+          step();
+        };
+
+        if (delay > 0) {
+          window.setTimeout(run, delay);
+        } else {
+          run();
+        }
+      });
+    };
+
+    (async () => {
+      let accumulatedDelay = 0;
+      for (const line of heroLines) {
+        const text = line.getAttribute('data-hero-type') || '';
+        await typeHeroLine(line, text, accumulatedDelay);
+        accumulatedDelay += 160;
+      }
+    })();
+
+    const year = new Date().getFullYear();
+    document.getElementById('year').textContent = year;
+  </script>
 </body>
 </html>
