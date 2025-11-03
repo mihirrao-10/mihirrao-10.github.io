@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
-    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
     rel="stylesheet"
   />
   <style>
@@ -36,9 +36,7 @@
     body {
       margin: 0;
       min-height: 100vh;
-      font-family: "Space Grotesk", "IBM Plex Sans", system-ui, -apple-system, BlinkMacSystemFont,
-        "Segoe UI", sans-serif;
-      font-feature-settings: "ss03" 1, "liga" 1, "tnum" 1;
+      font-family: "Manrope", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       background: var(--background);
       background-image: var(--background-gradient);
       color: var(--text-primary);
@@ -49,38 +47,6 @@
     a {
       color: inherit;
       text-decoration: none;
-    }
-
-    [data-typewriter] {
-      position: relative;
-      display: block;
-      min-height: 1.5em;
-    }
-
-    .typewriter-text {
-      display: inline;
-      opacity: 0;
-      transition: opacity 220ms ease;
-    }
-
-    [data-typewriter].is-typing .typewriter-text,
-    [data-typewriter].has-typed .typewriter-text {
-      opacity: 1;
-    }
-
-    .typewriter-caret {
-      display: inline-block;
-      width: 2px;
-      height: 1.2em;
-      margin-left: 6px;
-      background: var(--accent);
-      vertical-align: text-bottom;
-      animation: blink 1s steps(2, start) infinite;
-    }
-
-    [data-typewriter].has-typed .typewriter-caret,
-    [data-typewriter][data-reduced-motion="true"] .typewriter-caret {
-      display: none;
     }
 
     .page-shell {
@@ -145,39 +111,27 @@
     }
 
     .hero {
-      display: flex;
-      flex-direction: column;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: clamp(2rem, 4vw, 4rem);
       align-items: center;
-      justify-content: center;
-      text-align: center;
-      gap: 1.25rem;
-      padding: clamp(5rem, 14vw, 9rem) 0 clamp(3rem, 10vw, 6rem);
-      min-height: clamp(60vh, 72vh, 82vh);
+      padding: clamp(4rem, 12vw, 8rem) 0 clamp(3rem, 10vw, 6rem);
     }
 
-    .hero-text {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.75rem;
-      max-width: 720px;
+    .hero-text h1 {
+      font-size: clamp(3rem, 6vw, 4.5rem);
+      margin: 0 0 1rem;
+      letter-spacing: -0.03em;
     }
 
-    .hero-name {
-      font-size: clamp(3.5rem, 7vw, 5.2rem);
-      margin: 0;
-      letter-spacing: -0.035em;
-    }
-
-    .hero-title {
-      margin: 0;
-      font-size: clamp(1.4rem, 3vw, 2rem);
+    .hero-text p.lead {
+      margin: 0 0 2.5rem;
+      font-size: clamp(1.1rem, 2.4vw, 1.35rem);
       color: var(--text-secondary);
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
+      max-width: 32ch;
     }
 
-    .profile-card {
+    .hero-card {
       border-radius: 28px;
       padding: clamp(1.5rem, 4vw, 2.5rem);
       border: 1px solid var(--card-border);
@@ -185,13 +139,13 @@
       box-shadow: var(--shadow);
     }
 
-    .profile-card h2 {
+    .hero-card h2 {
       margin-top: 0;
       margin-bottom: 1.25rem;
       font-size: clamp(1.3rem, 2.5vw, 1.6rem);
     }
 
-    .profile-card ul {
+    .hero-card ul {
       list-style: none;
       padding: 0;
       margin: 0;
@@ -200,15 +154,83 @@
       color: var(--text-secondary);
     }
 
-    @keyframes blink {
+    .hero-card li span {
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    .hero-image {
+      position: relative;
+      width: min(320px, 75%);
+      margin: 0 auto;
+    }
+
+    .hero-image::before {
+      content: "";
+      position: absolute;
+      inset: -12%;
+      border-radius: 28px;
+      background: radial-gradient(circle at top, rgba(100, 255, 218, 0.25), transparent 70%);
+      filter: blur(10px);
+      z-index: -1;
+      animation: pulse 5s ease-in-out infinite;
+    }
+
+    .hero-image img {
+      width: 100%;
+      border-radius: 24px;
+      border: 2px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 25px 50px rgba(3, 6, 23, 0.6);
+      display: block;
+    }
+
+    @keyframes pulse {
       0%,
-      49% {
+      100% {
+        transform: scale(1);
+        opacity: 0.6;
+      }
+      50% {
+        transform: scale(1.05);
         opacity: 1;
       }
-      50%,
-      100% {
-        opacity: 0;
-      }
+    }
+
+    .actions {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 2.5rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.7rem 1.4rem;
+      border-radius: 999px;
+      font-weight: 600;
+      transition: transform 200ms ease, box-shadow 200ms ease, color 200ms ease;
+      border: 1px solid transparent;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #021627;
+      box-shadow: 0 15px 30px rgba(100, 255, 218, 0.35);
+    }
+
+    .btn-outline {
+      border-color: rgba(255, 255, 255, 0.2);
+      color: var(--text-secondary);
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .btn:hover,
+    .btn:focus-visible {
+      transform: translateY(-2px);
+      box-shadow: 0 18px 36px rgba(100, 255, 218, 0.45);
     }
 
     .section {
@@ -229,7 +251,6 @@
     .content-grid {
       display: grid;
       gap: clamp(1.5rem, 3vw, 2.5rem);
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     }
 
     .timeline {
@@ -423,7 +444,20 @@
 
     @media (max-width: 540px) {
       .hero {
-        min-height: 60vh;
+        text-align: center;
+      }
+
+      .hero-text p.lead {
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .actions {
+        justify-content: center;
+      }
+
+      .hero-card {
+        text-align: left;
       }
 
       .timeline::before {
@@ -455,75 +489,80 @@
 
   <main class="page-shell">
     <section class="hero" id="top">
-      <div class="hero-text">
-        <h1 class="hero-name" data-typewriter data-typewriter-immediate>Mihir Rao</h1>
-        <p class="hero-title" data-typewriter data-typewriter-immediate data-typewriter-delay="700">
-          Theoretical Computer Scientist.
+      <div class="hero-text" data-animate>
+        <h1>Mihir Rao</h1>
+        <p class="lead">
+          Computer scientist focused on statistical learning, distributed systems, and human-centered AI.
         </p>
+        <div class="actions">
+          <a class="btn btn-primary" href="mailto:mihirrao@uchicago.edu">Let’s Connect</a>
+          <a class="btn btn-outline" href="https://www.linkedin.com/in/mihirrao" target="_blank" rel="noreferrer">LinkedIn</a>
+        </div>
+        <div class="hero-card">
+          <h2>At a Glance</h2>
+          <ul>
+            <li><span>M.S. Computer Science</span> — University of Chicago (2025–2026)</li>
+            <li><span>B.S. Computer Science & B.A. Mathematics</span> — Drexel University (2020–2025)</li>
+            <li><span>Based in</span> Chicago, IL • +1 (267) 367-0431</li>
+            <li><span>Specialties</span> Statistical Learning, AI Systems, Technical Leadership</li>
+          </ul>
+        </div>
+      </div>
+      <div class="hero-image" data-animate>
+        <img src="assets/images/profile.svg" alt="Stylized portrait illustration of Mihir Rao" />
       </div>
     </section>
 
     <section class="section" id="about">
-      <h2 class="section-heading" data-animate><span data-typewriter>About</span> Me</h2>
+      <h2 class="section-heading" data-animate><span>About</span> Me</h2>
       <div class="content-grid" data-animate>
-        <p data-typewriter>
+        <p>
           I’m a graduate student pursuing an M.S. in Computer Science at the University of Chicago with dual concentrations in
-          Statistical Learning and Distributed Systems. Previously, I completed dual degrees in Computer Science and Mathematics at
-          Drexel University. I love building intelligent systems that combine rigorous theory with pragmatic engineering, and I
+          Statistical Learning and Distributed Systems. Previously, I completed dual degrees in Computer Science and Mathematics
+          at Drexel University. I love building intelligent systems that combine rigorous theory with pragmatic engineering, and I
           thrive in roles that intersect research, data, and impactful product experiences. Outside of technical work, I invest in
           mentoring communities and leading organizations that uplift the next generation of technologists.
         </p>
-        <div class="profile-card" data-animate>
-          <h2 data-typewriter data-typewriter-delay="200">At a Glance</h2>
-          <ul>
-            <li data-typewriter data-typewriter-delay="300">M.S. Computer Science — University of Chicago (2025–2026)</li>
-            <li data-typewriter data-typewriter-delay="400">B.S. Computer Science & B.A. Mathematics — Drexel University (2020–2025)</li>
-            <li data-typewriter data-typewriter-delay="500">Based in Chicago, IL • +1 (267) 367-0431</li>
-            <li data-typewriter data-typewriter-delay="600">Specialties in Statistical Learning, AI Systems, Technical Leadership</li>
-          </ul>
-        </div>
       </div>
     </section>
 
     <section class="section" id="education">
-      <h2 class="section-heading" data-animate data-typewriter>Education</h2>
+      <h2 class="section-heading" data-animate>Education</h2>
       <div class="timeline" data-animate>
         <article class="timeline-item">
-          <h3 data-typewriter>University of Chicago</h3>
-          <h4 data-typewriter>M.S. Computer Science — Statistical Learning & Distributed Systems • Chicago, IL • Sept 2025 – Dec 2026</h4>
-          <p class="section-note" data-typewriter>
-            Graduate coursework exploring large-scale learning systems, responsible AI, and distributed infrastructure.
-          </p>
+          <h3>University of Chicago</h3>
+          <h4>M.S. Computer Science — Statistical Learning & Distributed Systems • Chicago, IL • Sept 2025 – Dec 2026</h4>
+          <p class="section-note">Graduate coursework exploring large-scale learning systems, responsible AI, and distributed infrastructure.</p>
         </article>
         <article class="timeline-item">
-          <h3 data-typewriter>Hanyang University</h3>
-          <h4 data-typewriter>International Winter School Program • Seoul, South Korea • Dec 2024 – Feb 2025</h4>
+          <h3>Hanyang University</h3>
+          <h4>International Winter School Program • Seoul, South Korea • Dec 2024 – Feb 2025</h4>
           <ul>
-            <li data-typewriter>Achieved 95.7/100 in advanced computing and cultural immersion curriculum.</li>
+            <li>Achieved 95.7/100 in advanced computing and cultural immersion curriculum.</li>
           </ul>
         </article>
         <article class="timeline-item">
-          <h3 data-typewriter>Drexel University</h3>
-          <h4 data-typewriter>B.S. Computer Science & B.A. Mathematics • Philadelphia, PA • Sept 2020 – Jun 2025</h4>
+          <h3>Drexel University</h3>
+          <h4>B.S. Computer Science & B.A. Mathematics • Philadelphia, PA • Sept 2020 – Jun 2025</h4>
           <ul>
-            <li data-typewriter>Magna Cum Laude with Honors • GPA: 3.75/4.00</li>
-            <li data-typewriter>Concentrations in Algorithms & Data Structures and Artificial Intelligence.</li>
+            <li>Magna Cum Laude with Honors • GPA: 3.75/4.00</li>
+            <li>Concentrations in Algorithms & Data Structures and Artificial Intelligence.</li>
           </ul>
         </article>
       </div>
     </section>
 
     <section class="section" id="experience">
-      <h2 class="section-heading" data-animate><span data-typewriter>Experience</span> Highlights</h2>
+      <h2 class="section-heading" data-animate><span>Experience</span> Highlights</h2>
       <div class="content-grid" data-animate>
         <div class="card-grid">
           <article class="card">
-            <h3 data-typewriter>Industry • AI Data Scientist</h3>
+            <h3>Industry • AI Data Scientist</h3>
             <p><strong>Resolution Life US</strong> • West Chester, PA • Apr 2024 – Sept 2024</p>
             <ul>
-              <li data-typewriter>Engineered PySpark data pipelines to migrate the Financial Market Database onto AWS with Athena + Step Functions, saving $380K annually.</li>
-              <li data-typewriter>Pruned transformer models (finBERT and variants) to forecast bond prices using sentiment signals from financial headlines.</li>
-              <li data-typewriter>Automated a Claims Interest calculator in VBA to codify compliance with state-level regulations.</li>
+              <li>Engineered PySpark data pipelines to migrate the Financial Market Database onto AWS with Athena + Step Functions, saving $380K annually.</li>
+              <li>Pruned transformer models (finBERT and variants) to forecast bond prices using sentiment signals from financial headlines.</li>
+              <li>Automated a Claims Interest calculator in VBA to codify compliance with state-level regulations.</li>
             </ul>
             <div class="tag-set">
               <span class="tag">PySpark</span>
@@ -534,11 +573,11 @@
           </article>
 
           <article class="card">
-            <h3 data-typewriter>Research • Responsible AI Fellow</h3>
+            <h3>Research • Responsible AI Fellow</h3>
             <p><strong>Drexel University</strong> • Philadelphia, PA • Jun 2023 – Sept 2023</p>
             <ul>
-              <li data-typewriter>Designed an evaluation pipeline to mitigate disparity gaps in explanation quality metrics across sensitive demographic attributes.</li>
-              <li data-typewriter>Benchmarked fidelity, consistency, sparsity, and stability for interpretable machine learning explanations.</li>
+              <li>Designed an evaluation pipeline to mitigate disparity gaps in explanation quality metrics across sensitive demographic attributes.</li>
+              <li>Benchmarked fidelity, consistency, sparsity, and stability for interpretable machine learning explanations.</li>
             </ul>
             <div class="tag-set">
               <span class="tag">Responsible AI</span>
@@ -548,12 +587,12 @@
           </article>
 
           <article class="card">
-            <h3 data-typewriter>Teaching • Graduate & Undergraduate TA</h3>
+            <h3>Teaching • Graduate & Undergraduate TA</h3>
             <p><strong>Drexel University</strong> • Jun 2022 – Jun 2024</p>
             <ul>
-              <li data-typewriter>Supported courses including Data Structures, Algorithms, Artificial Intelligence, and Deep Learning.</li>
-              <li data-typewriter>Crafted programming assignments, exam materials, and grading frameworks for rigorous C programming curricula.</li>
-              <li data-typewriter>Led office hours and review sessions that improved student confidence in both theory and implementation.</li>
+              <li>Supported courses including Data Structures, Algorithms, Artificial Intelligence, and Deep Learning.</li>
+              <li>Crafted programming assignments, exam materials, and grading frameworks for rigorous C programming curricula.</li>
+              <li>Led office hours and review sessions that improved student confidence in both theory and implementation.</li>
             </ul>
             <div class="tag-set">
               <span class="tag">Mentorship</span>
@@ -563,12 +602,12 @@
           </article>
 
           <article class="card">
-            <h3 data-typewriter>Leadership & Service</h3>
+            <h3>Leadership & Service</h3>
             <ul>
-              <li data-typewriter>Senior Dean’s Ambassador — Drexel University (Sept 2022 – Sept 2024)</li>
-              <li data-typewriter>Board Member — Upsilon Pi Epsilon (Sept 2023 – Sept 2024)</li>
-              <li data-typewriter>Vice President — Mathematics Student Organization (Sept 2022 – Sept 2023)</li>
-              <li data-typewriter>Board Member & Editor — Maya Literary Fiction Magazine (Sept 2022 – Sept 2023)</li>
+              <li>Senior Dean’s Ambassador — Drexel University (Sept 2022 – Sept 2024)</li>
+              <li>Board Member — Upsilon Pi Epsilon (Sept 2023 – Sept 2024)</li>
+              <li>Vice President — Mathematics Student Organization (Sept 2022 – Sept 2023)</li>
+              <li>Board Member & Editor — Maya Literary Fiction Magazine (Sept 2022 – Sept 2023)</li>
             </ul>
           </article>
         </div>
@@ -576,14 +615,14 @@
     </section>
 
     <section class="section" id="projects">
-      <h2 class="section-heading" data-animate data-typewriter>Selected Projects</h2>
+      <h2 class="section-heading" data-animate>Selected Projects</h2>
       <div class="card-grid" data-animate>
         <article class="card">
-          <h3 data-typewriter>Extracting Derivatives • Bloomberg</h3>
-          <p data-typewriter>Senior design capstone • Sept 2024 – Jun 2025</p>
+          <h3>Extracting Derivatives • Bloomberg</h3>
+          <p>Senior design capstone • Sept 2024 – Jun 2025</p>
           <ul>
-            <li data-typewriter>Co-led an LLM-driven platform (Llama 3 + AWS) that structures derivatives data from complex corporate action documents.</li>
-            <li data-typewriter>Combined named-entity recognition, retrieval, and workflow automation to deliver analyst-ready insights.</li>
+            <li>Co-led an LLM-driven platform (Llama 3 + AWS) that structures derivatives data from complex corporate action documents.</li>
+            <li>Combined named-entity recognition, retrieval, and workflow automation to deliver analyst-ready insights.</li>
           </ul>
           <div class="tag-set">
             <span class="tag">LLMs</span>
@@ -593,11 +632,11 @@
         </article>
 
         <article class="card">
-          <h3 data-typewriter>Drosophila Hemibrain Analytics</h3>
-          <p data-typewriter>Ausborn Lab • Apr 2023 – Sept 2023</p>
+          <h3>Drosophila Hemibrain Analytics</h3>
+          <p>Ausborn Lab • Apr 2023 – Sept 2023</p>
           <ul>
-            <li data-typewriter>Analyzed neural circuitry to isolate neurons responsible for escape behavior using Louvain clustering and ANOVA.</li>
-            <li data-typewriter>Built reproducible data science workflows across high-dimensional connectome datasets.</li>
+            <li>Analyzed neural circuitry to isolate neurons responsible for escape behavior using Louvain clustering and ANOVA.</li>
+            <li>Built reproducible data science workflows across high-dimensional connectome datasets.</li>
           </ul>
           <div class="tag-set">
             <span class="tag">Neuroscience</span>
@@ -607,10 +646,10 @@
         </article>
 
         <article class="card">
-          <h3 data-typewriter>Precision Surface Computation</h3>
-          <p data-typewriter>Independent Research • Jan 2022 – Jun 2022</p>
+          <h3>Precision Surface Computation</h3>
+          <p>Independent Research • Jan 2022 – Jun 2022</p>
           <ul>
-            <li data-typewriter>Implemented MATLAB solvers with sequence acceleration (Richardson Extrapolation) for machine-precision Gaussian surface area calculations.</li>
+            <li>Implemented MATLAB solvers with sequence acceleration (Richardson Extrapolation) for machine-precision Gaussian surface area calculations.</li>
           </ul>
           <div class="tag-set">
             <span class="tag">Numerical Methods</span>
@@ -622,25 +661,25 @@
     </section>
 
     <section class="section" id="honors">
-      <h2 class="section-heading" data-animate data-typewriter>Awards & Memberships</h2>
+      <h2 class="section-heading" data-animate>Awards & Memberships</h2>
       <div class="card-grid" data-animate>
         <article class="card">
-          <h3 data-typewriter>Recognition</h3>
+          <h3>Recognition</h3>
           <ul>
-            <li data-typewriter>A* Award — Drexel University (Jun 2024)</li>
-            <li data-typewriter>Student Teaching Excellence Award — Drexel University (Jun 2024)</li>
-            <li data-typewriter>Jeffrey L. Popyack Teaching Assistant Award — Drexel University (Jun 2023)</li>
-            <li data-typewriter>James G. Logan Scholarship — Drexel University (Sept 2021)</li>
-            <li data-typewriter>Founder’s Scholarship — Drexel University (Sept 2020)</li>
+            <li>A* Award — Drexel University (Jun 2024)</li>
+            <li>Student Teaching Excellence Award — Drexel University (Jun 2024)</li>
+            <li>Jeffrey L. Popyack Teaching Assistant Award — Drexel University (Jun 2023)</li>
+            <li>James G. Logan Scholarship — Drexel University (Sept 2021)</li>
+            <li>Founder’s Scholarship — Drexel University (Sept 2020)</li>
           </ul>
         </article>
         <article class="card">
-          <h3 data-typewriter>Communities</h3>
+          <h3>Communities</h3>
           <ul>
-            <li data-typewriter>Upsilon Pi Epsilon — International Honor Society for Computing (Jun 2023)</li>
-            <li data-typewriter>Supernova Undergraduate Research Fellows — Drexel University (Sept 2022)</li>
-            <li data-typewriter>Drexel Computer Science Theory Reading Group (Jan 2022)</li>
-            <li data-typewriter>Pennoni Honors College — Drexel University (Mar 2021)</li>
+            <li>Upsilon Pi Epsilon — International Honor Society for Computing (Jun 2023)</li>
+            <li>Supernova Undergraduate Research Fellows — Drexel University (Sept 2022)</li>
+            <li>Drexel Computer Science Theory Reading Group (Jan 2022)</li>
+            <li>Pennoni Honors College — Drexel University (Mar 2021)</li>
           </ul>
           <div class="tag-set">
             <span class="tag">Community</span>
@@ -658,19 +697,16 @@
     </section>
 
     <section class="section" id="presentations">
-      <h2 class="section-heading" data-animate data-typewriter>Talks & Presentations</h2>
+      <h2 class="section-heading" data-animate>Talks & Presentations</h2>
       <div class="card" data-animate>
-        <h3 data-typewriter>Drexel CS Theory Reading Group • Spring 2025</h3>
+        <h3>Drexel CS Theory Reading Group • Spring 2025</h3>
         <ul class="two-column">
-          <li data-typewriter>Graph Machine Learning</li>
-          <li data-typewriter>Informational Asymmetry, Adverse Selection, and Reputation Systems</li>
-          <li data-typewriter>Analysis of Impartial Combinatorial Games II</li>
-          <li data-typewriter>Analysis of Impartial Combinatorial Games I</li>
+          <li>Graph Machine Learning</li>
+          <li>Informational Asymmetry, Adverse Selection, and Reputation Systems</li>
+          <li>Analysis of Impartial Combinatorial Games II</li>
+          <li>Analysis of Impartial Combinatorial Games I</li>
         </ul>
-        <p class="section-note" data-typewriter>
-          Presented original analysis and critical perspectives on complex theory topics to a cross-disciplinary academic
-          audience.
-        </p>
+        <p class="section-note">Presented original analysis and critical perspectives on complex theory topics to a cross-disciplinary academic audience.</p>
       </div>
     </section>
   </main>
@@ -679,17 +715,14 @@
     <div class="contact-links">
       <a href="mailto:mihirrao@uchicago.edu">mihirrao@uchicago.edu</a>
       <a href="tel:+12673670431">+1 (267) 367-0431</a>
-      <a href="https://www.linkedin.com/in/mihir-rao-6242a8209/" target="_blank" rel="noreferrer">LinkedIn</a>
+      <a href="https://www.linkedin.com/in/mihirrao" target="_blank" rel="noreferrer">LinkedIn</a>
     </div>
     <p>Crafted with intention • © <span id="year"></span> Mihir Rao</p>
   </footer>
 
   <script>
-    const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const prefersReducedMotion = motionQuery.matches;
-
-    const revealObserver = new IntersectionObserver(
-      (entries, observer) => {
+    const observer = new IntersectionObserver(
+      (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             entry.target.classList.add('visible');
@@ -702,131 +735,7 @@
       }
     );
 
-    document.querySelectorAll('[data-animate]').forEach((el) => revealObserver.observe(el));
-
-    function runTypewriter(el) {
-      if (!el || el.dataset.typewriterDone === 'true') return;
-
-      const text = el.getAttribute('data-typewriter-text') || '';
-      const textSpan = el.querySelector('.typewriter-text');
-      const caret = el.querySelector('.typewriter-caret');
-
-      if (!textSpan) return;
-
-      el.dataset.typewriterDone = 'true';
-      el.classList.add('is-typing');
-      textSpan.textContent = '';
-
-      let index = 0;
-
-      const step = () => {
-        if (index < text.length) {
-          index += 1;
-          textSpan.textContent = text.slice(0, index);
-          const char = text.charAt(index - 1);
-          let delay = 28 + Math.random() * 12;
-          if (char === ' ' || char === '\n') {
-            delay = 12 + Math.random() * 10;
-          } else if (',;:'.includes(char)) {
-            delay = 120 + Math.random() * 40;
-          } else if ('.!?'.includes(char)) {
-            delay = 190 + Math.random() * 80;
-          }
-          setTimeout(step, delay);
-        } else {
-          el.classList.remove('is-typing');
-          el.classList.add('has-typed');
-          if (caret) {
-            caret.remove();
-          }
-        }
-      };
-
-      step();
-    }
-
-    const typewriterObserver = prefersReducedMotion
-      ? null
-      : new IntersectionObserver(
-          (entries, observer) => {
-            entries.forEach((entry) => {
-              if (entry.isIntersecting) {
-                observer.unobserve(entry.target);
-                const delayAttr = Number(entry.target.getAttribute('data-typewriter-delay') || 0);
-                const delay = Number.isFinite(delayAttr) ? Math.max(0, delayAttr) : 0;
-                if (delay > 0) {
-                  setTimeout(() => runTypewriter(entry.target), delay);
-                } else {
-                  runTypewriter(entry.target);
-                }
-              }
-            });
-          },
-          {
-            threshold: 0.6,
-            rootMargin: '0px 0px -10%',
-          }
-        );
-
-    document.querySelectorAll('[data-typewriter]').forEach((el) => {
-      const text = el.textContent.replace(/\s+/g, ' ').trim();
-      el.setAttribute('data-typewriter-text', text);
-      el.textContent = '';
-
-      const textSpan = document.createElement('span');
-      textSpan.className = 'typewriter-text';
-      el.append(textSpan);
-
-      const caret = document.createElement('span');
-      caret.className = 'typewriter-caret';
-      caret.setAttribute('aria-hidden', 'true');
-      el.append(caret);
-
-      if (!text) {
-        el.classList.add('has-typed');
-        caret.remove();
-        return;
-      }
-
-      if (prefersReducedMotion) {
-        textSpan.textContent = text;
-        el.dataset.reducedMotion = 'true';
-        el.classList.add('has-typed');
-        caret.remove();
-        return;
-      }
-
-      if (el.hasAttribute('data-typewriter-immediate')) {
-        const delayAttr = Number(el.getAttribute('data-typewriter-delay') || 0);
-        const delay = Number.isFinite(delayAttr) ? Math.max(0, delayAttr) : 0;
-        setTimeout(() => runTypewriter(el), delay);
-      } else if (typewriterObserver) {
-        typewriterObserver.observe(el);
-      }
-    });
-
-    const flushTypewriterForReducedMotion = (event) => {
-      if (!event.matches) return;
-      document.querySelectorAll('[data-typewriter]').forEach((el) => {
-        if (el.dataset.typewriterDone === 'true') return;
-        const text = el.getAttribute('data-typewriter-text') || '';
-        const textSpan = el.querySelector('.typewriter-text');
-        const caret = el.querySelector('.typewriter-caret');
-        if (textSpan) {
-          textSpan.textContent = text;
-          el.classList.add('has-typed');
-        }
-        if (caret) {
-          caret.remove();
-        }
-      });
-    };
-
-    if (typeof motionQuery.addEventListener === 'function') {
-      motionQuery.addEventListener('change', flushTypewriterForReducedMotion);
-    } else if (typeof motionQuery.addListener === 'function') {
-      motionQuery.addListener(flushTypewriterForReducedMotion);
-    }
+    document.querySelectorAll('[data-animate]').forEach((el) => observer.observe(el));
 
     document.getElementById('year').textContent = new Date().getFullYear();
   </script>
