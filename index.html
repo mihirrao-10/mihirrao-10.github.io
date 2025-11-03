@@ -12,18 +12,18 @@
   />
   <style>
     :root {
-      --background: #020616;
-      --background-gradient: radial-gradient(circle at top left, rgba(26, 76, 186, 0.45), transparent 55%),
-        radial-gradient(circle at bottom right, rgba(14, 38, 84, 0.5), transparent 60%),
-        linear-gradient(180deg, rgba(2, 6, 22, 0.95) 0%, #01030d 100%);
-      --surface: rgba(10, 18, 40, 0.78);
-      --surface-border: rgba(120, 173, 255, 0.24);
-      --surface-hover: rgba(19, 39, 88, 0.9);
-      --text-primary: #f7faff;
-      --text-secondary: rgba(208, 224, 255, 0.82);
-      --accent: #7dd5ff;
-      --accent-soft: rgba(125, 213, 255, 0.18);
-      --shadow: 0 32px 80px rgba(1, 9, 30, 0.55);
+      --background: #000311;
+      --background-gradient: radial-gradient(circle at top left, rgba(18, 54, 140, 0.4), transparent 50%),
+        radial-gradient(circle at bottom right, rgba(6, 20, 58, 0.6), transparent 55%),
+        linear-gradient(180deg, rgba(0, 5, 17, 0.97) 0%, #00020b 100%);
+      --surface: rgba(5, 14, 36, 0.84);
+      --surface-border: rgba(104, 160, 240, 0.24);
+      --surface-hover: rgba(10, 28, 70, 0.92);
+      --text-primary: #f6f9ff;
+      --text-secondary: rgba(206, 222, 255, 0.82);
+      --accent: #6fc5ff;
+      --accent-soft: rgba(111, 197, 255, 0.16);
+      --shadow: 0 32px 90px rgba(0, 6, 24, 0.62);
     }
 
     * {
@@ -55,9 +55,28 @@
       position: sticky;
       top: 0;
       z-index: 100;
-      padding: 1.1rem 0 0.4rem;
-      background: linear-gradient(180deg, rgba(2, 6, 22, 0.92) 0%, rgba(2, 6, 22, 0.64) 65%, transparent 100%);
-      backdrop-filter: blur(12px);
+      padding: 1.25rem 0 0.5rem;
+      background: linear-gradient(180deg, rgba(0, 5, 18, 0.95) 0%, rgba(0, 5, 18, 0.64) 65%, transparent 100%);
+      backdrop-filter: blur(14px);
+    }
+
+    .top-contact {
+      display: flex;
+      justify-content: center;
+      gap: clamp(0.6rem, 3vw, 1.4rem);
+      margin: 0 0 0.85rem;
+      padding: 0 1.5rem;
+      flex-wrap: wrap;
+      font-family: "Space Grotesk", "IBM Plex Sans", "Segoe UI", sans-serif;
+      font-size: 0.92rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+    }
+
+    .top-contact a {
+      color: var(--accent);
+      font-weight: 600;
     }
 
     .nav-bar {
@@ -67,7 +86,7 @@
       flex-wrap: wrap;
       gap: clamp(1rem, 4vw, 3rem);
       padding: 0.75rem clamp(1rem, 4vw, 2rem);
-      border: 1px solid rgba(125, 213, 255, 0.25);
+      border: 1px solid rgba(111, 197, 255, 0.25);
       border-radius: 999px;
       background: rgba(6, 14, 32, 0.78);
       box-shadow: 0 20px 50px rgba(1, 9, 28, 0.45);
@@ -142,7 +161,7 @@
     .hero-title {
       margin: 0;
       font-size: clamp(1.3rem, 3vw, 2rem);
-      color: rgba(247, 250, 255, 0.72);
+      color: rgba(247, 250, 255, 0.68);
       letter-spacing: 0.28em;
       text-transform: uppercase;
     }
@@ -151,6 +170,14 @@
       position: relative;
       display: block;
       min-height: 1.4em;
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity 280ms ease, transform 280ms ease;
+    }
+
+    .hero-line.visible {
+      opacity: 1;
+      transform: translateY(0);
     }
 
     .hero-caret {
@@ -191,10 +218,6 @@
       grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
     }
 
-    .stacked {
-      grid-template-columns: minmax(0, 1fr);
-    }
-
     .timeline {
       display: grid;
       gap: clamp(1.6rem, 3vw, 2.4rem);
@@ -206,7 +229,7 @@
       position: absolute;
       inset: 0 auto 0 14px;
       width: 2px;
-      background: linear-gradient(180deg, rgba(125, 213, 255, 0.3), transparent 90%);
+      background: linear-gradient(180deg, rgba(111, 197, 255, 0.28), transparent 90%);
     }
 
     .timeline-item {
@@ -229,7 +252,7 @@
       border-radius: 50%;
       border: 2px solid var(--accent);
       background: rgba(3, 8, 20, 0.95);
-      box-shadow: 0 0 0 6px rgba(125, 213, 255, 0.18);
+      box-shadow: 0 0 0 6px rgba(111, 197, 255, 0.18);
     }
 
     .timeline-header {
@@ -251,18 +274,33 @@
       color: var(--text-secondary);
     }
 
+    .timeline-details {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .timeline-meta {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      text-align: right;
+      gap: 0.35rem;
+      min-width: 180px;
+    }
+
     .timeline-location {
-      margin: 0.25rem 0 0;
+      margin: 0;
       color: rgba(208, 224, 255, 0.65);
       font-size: 0.95rem;
-      letter-spacing: 0.03em;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
     }
 
     .timeline-dates {
       font-size: 0.98rem;
       font-weight: 600;
-      letter-spacing: 0.04em;
+      letter-spacing: 0.06em;
       color: var(--accent);
       white-space: nowrap;
     }
@@ -281,6 +319,10 @@
       gap: clamp(1.6rem, 3vw, 2.6rem);
     }
 
+    .card-grid.stacked-grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
     .card {
       padding: clamp(1.6rem, 4vw, 2.2rem);
       border-radius: 22px;
@@ -292,13 +334,36 @@
 
     .card:hover {
       transform: translateY(-8px);
-      border-color: rgba(125, 213, 255, 0.45);
-      box-shadow: 0 42px 90px rgba(1, 10, 34, 0.58);
+      border-color: rgba(111, 197, 255, 0.4);
+      box-shadow: 0 42px 90px rgba(0, 10, 34, 0.6);
     }
 
     .card h3 {
-      margin: 0 0 0.75rem;
+      margin: 0;
       font-size: 1.3rem;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 1.2rem;
+      margin-bottom: 0.9rem;
+    }
+
+    .card-meta {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      text-align: right;
+      gap: 0.35rem;
+      min-width: 160px;
+    }
+
+    .card-dates {
+      font-size: 0.94rem;
+      letter-spacing: 0.06em;
+      color: var(--accent);
     }
 
     .card p,
@@ -324,7 +389,7 @@
     .tag {
       padding: 0.35rem 0.85rem;
       border-radius: 999px;
-      background: rgba(125, 213, 255, 0.16);
+      background: var(--accent-soft);
       color: var(--accent);
       font-size: 0.8rem;
       letter-spacing: 0.05em;
@@ -366,21 +431,21 @@
     .contact-links a {
       padding: 0.45rem 0.95rem;
       border-radius: 999px;
-      background: rgba(125, 213, 255, 0.16);
+      background: var(--accent-soft);
       color: var(--accent);
       font-weight: 600;
       transition: background 200ms ease, transform 200ms ease;
     }
 
     .contact-links a:hover {
-      background: rgba(125, 213, 255, 0.3);
+      background: rgba(111, 197, 255, 0.3);
       transform: translateY(-2px);
     }
 
     [data-animate] {
       opacity: 0;
-      transform: translateX(-36px);
-      transition: opacity 260ms cubic-bezier(0.4, 0, 0.2, 1), transform 260ms cubic-bezier(0.4, 0, 0.2, 1);
+      transform: translateX(-28px);
+      transition: opacity 220ms cubic-bezier(0.4, 0, 0.2, 1), transform 220ms cubic-bezier(0.4, 0, 0.2, 1);
       will-change: opacity, transform;
     }
 
@@ -391,7 +456,12 @@
 
     @media (max-width: 820px) {
       header {
-        padding-top: 0.8rem;
+        padding-top: 0.9rem;
+      }
+
+      .top-contact {
+        font-size: 0.82rem;
+        letter-spacing: 0.12em;
       }
 
       .nav-bar {
@@ -428,14 +498,25 @@
         gap: 0.6rem;
       }
 
-      .timeline-dates {
-        align-self: flex-start;
+      .timeline-meta {
+        align-items: flex-start;
+        text-align: left;
+      }
+
+      .card-meta {
+        align-items: flex-start;
+        text-align: left;
       }
     }
   </style>
 </head>
 <body>
   <header>
+    <div class="top-contact">
+      <a href="mailto:mihirrao@uchicago.edu">mihirrao@uchicago.edu</a>
+      <a href="tel:+12673670431">+1 (267) 367-0431</a>
+      <a href="https://www.linkedin.com/in/mihir-rao-6242a8209/" target="_blank" rel="noreferrer">LinkedIn</a>
+    </div>
     <nav class="nav-bar">
       <a href="#about">About</a>
       <a href="#education">Education</a>
@@ -479,12 +560,14 @@
       <div class="timeline">
         <article class="timeline-item" data-animate>
           <div class="timeline-header">
-            <div>
+            <div class="timeline-details">
               <h3>University of Chicago</h3>
-              <p class="timeline-role">M.S. Computer Science — Statistical Learning & Distributed Systems</p>
-              <p class="timeline-location">Chicago, IL</p>
+              <p class="timeline-role">M.S. Computer Science — Statistical Learning &amp; Distributed Systems</p>
             </div>
-            <span class="timeline-dates">Sept 2025 – Dec 2026</span>
+            <div class="timeline-meta">
+              <p class="timeline-location">Chicago, IL</p>
+              <span class="timeline-dates">Sept 2025 – Dec 2026</span>
+            </div>
           </div>
           <p class="section-note">
             Graduate coursework exploring large-scale learning systems, responsible AI, and distributed infrastructure.
@@ -492,12 +575,14 @@
         </article>
         <article class="timeline-item" data-animate>
           <div class="timeline-header">
-            <div>
+            <div class="timeline-details">
               <h3>Hanyang University</h3>
               <p class="timeline-role">International Winter School Program</p>
-              <p class="timeline-location">Seoul, South Korea</p>
             </div>
-            <span class="timeline-dates">Dec 2024 – Feb 2025</span>
+            <div class="timeline-meta">
+              <p class="timeline-location">Seoul, South Korea</p>
+              <span class="timeline-dates">Dec 2024 – Feb 2025</span>
+            </div>
           </div>
           <ul>
             <li>Achieved 95.7/100 in advanced computing and cultural immersion curriculum.</li>
@@ -505,12 +590,14 @@
         </article>
         <article class="timeline-item" data-animate>
           <div class="timeline-header">
-            <div>
+            <div class="timeline-details">
               <h3>Drexel University</h3>
-              <p class="timeline-role">B.S. Computer Science & B.S. Mathematics</p>
-              <p class="timeline-location">Philadelphia, PA</p>
+              <p class="timeline-role">B.S. Computer Science &amp; B.S. Mathematics</p>
             </div>
-            <span class="timeline-dates">Sept 2020 – Jun 2024</span>
+            <div class="timeline-meta">
+              <p class="timeline-location">Philadelphia, PA</p>
+              <span class="timeline-dates">Sept 2020 – Jun 2024</span>
+            </div>
           </div>
           <ul>
             <li>Magna Cum Laude with Honors • GPA: 3.75/4.00</li>
@@ -522,11 +609,18 @@
 
     <section class="section" id="experience">
       <h2 class="section-heading" data-animate>Work Experience</h2>
-      <div class="content-grid stacked">
-        <article class="card" data-animate>
-          <h3>AI Data Scientist</h3>
-          <p class="timeline-role">Resolution Life US • West Chester, PA</p>
-          <p class="timeline-dates">Apr 2024 – Sept 2024</p>
+      <div class="timeline">
+        <article class="timeline-item" data-animate>
+          <div class="timeline-header">
+            <div class="timeline-details">
+              <h3>AI Data Scientist</h3>
+              <p class="timeline-role">Resolution Life US</p>
+            </div>
+            <div class="timeline-meta">
+              <p class="timeline-location">West Chester, PA</p>
+              <span class="timeline-dates">Apr 2024 – Sept 2024</span>
+            </div>
+          </div>
           <ul>
             <li>Engineered PySpark data pipelines to migrate the Financial Market Database onto AWS with Athena + Step Functions, saving $380K annually.</li>
             <li>Pruned transformer models (finBERT and variants) to forecast bond prices using sentiment signals from financial headlines.</li>
@@ -544,11 +638,18 @@
 
     <section class="section" id="academia">
       <h2 class="section-heading" data-animate>Academia Experience</h2>
-      <div class="content-grid stacked">
-        <article class="card" data-animate>
-          <h3>Graduate & Undergraduate Teaching Assistant</h3>
-          <p class="timeline-role">Drexel University</p>
-          <p class="timeline-dates">Jun 2022 – Jun 2024</p>
+      <div class="timeline">
+        <article class="timeline-item" data-animate>
+          <div class="timeline-header">
+            <div class="timeline-details">
+              <h3>Graduate &amp; Undergraduate Teaching Assistant</h3>
+              <p class="timeline-role">Drexel University</p>
+            </div>
+            <div class="timeline-meta">
+              <p class="timeline-location">Philadelphia, PA</p>
+              <span class="timeline-dates">Jun 2022 – Jun 2024</span>
+            </div>
+          </div>
           <ul>
             <li>Supported courses including Data Structures, Algorithms, Artificial Intelligence, and Deep Learning.</li>
             <li>Crafted programming assignments, exam materials, and grading frameworks for rigorous C programming curricula.</li>
@@ -565,11 +666,17 @@
 
     <section class="section" id="projects">
       <h2 class="section-heading" data-animate>Selected Projects</h2>
-      <div class="card-grid">
+      <div class="card-grid stacked-grid">
         <article class="card" data-animate>
-          <h3>Extracting Derivatives • Bloomberg</h3>
-          <p class="timeline-role">Senior design capstone</p>
-          <p class="timeline-dates">Sept 2024 – Jun 2025</p>
+          <div class="card-header">
+            <div>
+              <h3>Extracting Derivatives • Bloomberg</h3>
+              <p class="timeline-role">Senior design capstone</p>
+            </div>
+            <div class="card-meta">
+              <span class="card-dates">Sept 2024 – Jun 2025</span>
+            </div>
+          </div>
           <ul>
             <li>Co-led an LLM-driven platform (Llama 3 + AWS) that structures derivatives data from complex corporate action documents.</li>
             <li>Combined named-entity recognition, retrieval, and workflow automation to deliver analyst-ready insights.</li>
@@ -582,9 +689,15 @@
         </article>
 
         <article class="card" data-animate>
-          <h3>Drosophila Hemibrain Analytics</h3>
-          <p class="timeline-role">Ausborn Lab</p>
-          <p class="timeline-dates">Apr 2023 – Sept 2023</p>
+          <div class="card-header">
+            <div>
+              <h3>Drosophila Hemibrain Analytics</h3>
+              <p class="timeline-role">Ausborn Lab</p>
+            </div>
+            <div class="card-meta">
+              <span class="card-dates">Apr 2023 – Sept 2023</span>
+            </div>
+          </div>
           <ul>
             <li>Analyzed neural circuitry to isolate neurons responsible for escape behavior using Louvain clustering and ANOVA.</li>
             <li>Built reproducible data science workflows across high-dimensional connectome datasets.</li>
@@ -597,9 +710,15 @@
         </article>
 
         <article class="card" data-animate>
-          <h3>Precision Surface Computation</h3>
-          <p class="timeline-role">Independent Research</p>
-          <p class="timeline-dates">Jan 2022 – Jun 2022</p>
+          <div class="card-header">
+            <div>
+              <h3>Precision Surface Computation</h3>
+              <p class="timeline-role">Independent Research</p>
+            </div>
+            <div class="card-meta">
+              <span class="card-dates">Jan 2022 – Jun 2022</span>
+            </div>
+          </div>
           <ul>
             <li>Implemented MATLAB solvers with sequence acceleration (Richardson Extrapolation) for machine-precision Gaussian surface area calculations.</li>
           </ul>
@@ -629,7 +748,7 @@
     <section class="section" id="presentations">
       <h2 class="section-heading" data-animate>Talks & Presentations</h2>
       <div class="card" data-animate>
-        <h3>Drexel CS Theory Reading Group • Spring 2025</h3>
+        <h3><a href="https://theory.cs.drexel.edu" target="_blank" rel="noreferrer">Drexel CS Theory Reading Group • Spring 2025</a></h3>
         <ul class="two-column">
           <li>Graph Machine Learning</li>
           <li>Informational Asymmetry, Adverse Selection, and Reputation Systems</li>
@@ -689,11 +808,13 @@
         const run = () => {
           if (prefersReducedMotion) {
             element.textContent = text;
+            element.classList.add('visible');
             resolve();
             return;
           }
 
           element.textContent = '';
+          element.classList.add('visible');
           const caret = document.createElement('span');
           caret.className = 'hero-caret';
           caret.setAttribute('aria-hidden', 'true');
@@ -705,9 +826,9 @@
               element.firstChild.textContent = text.slice(0, index);
               index += 1;
               const char = text.charAt(index - 1);
-              let stepDelay = 70;
+              let stepDelay = 45;
               if (char === ' ' || char === '') {
-                stepDelay = 45;
+                stepDelay = 30;
               }
               window.setTimeout(step, stepDelay);
             } else {
@@ -734,7 +855,7 @@
       for (const line of heroLines) {
         const text = line.getAttribute('data-hero-type') || '';
         await typeHeroLine(line, text, accumulatedDelay);
-        accumulatedDelay += 160;
+        accumulatedDelay += 120;
       }
     })();
 
