@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">Stylized portrait placeholder</title>
+  <desc id="desc">Abstract illustration with gradient backdrop and initials MR.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#233a78" />
+      <stop offset="50%" stop-color="#16264b" />
+      <stop offset="100%" stop-color="#0b1326" />
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="35%" r="60%">
+      <stop offset="0%" stop-color="rgba(100, 255, 218, 0.45)" />
+      <stop offset="100%" stop-color="rgba(100, 255, 218, 0)" />
+    </radialGradient>
+    <linearGradient id="shirt" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1c2750" />
+      <stop offset="100%" stop-color="#090f1f" />
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" fill="url(#bg)" />
+  <circle cx="256" cy="188" r="144" fill="url(#glow)" opacity="0.55" />
+  <circle cx="256" cy="208" r="138" fill="#1a2544" />
+  <path d="M256 298c-66 0-120 54-120 120h240c0-66-54-120-120-120z" fill="url(#shirt)" />
+  <circle cx="256" cy="208" r="108" fill="#f4f5f7" opacity="0.15" />
+  <path d="M256 118c-58 0-104 46-104 104s46 104 104 104 104-46 104-104-46-104-104-104z" fill="#dde3f7" opacity="0.35" />
+  <text x="50%" y="55%" text-anchor="middle" font-family="'Manrope', 'Segoe UI', sans-serif" font-size="140" font-weight="700" fill="#f8fafc" opacity="0.9">MR</text>
+  <circle cx="256" cy="208" r="148" fill="none" stroke="rgba(255, 255, 255, 0.25)" stroke-width="6" />
+</svg>
