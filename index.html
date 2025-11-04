@@ -263,6 +263,31 @@
       margin-bottom: 0.9rem;
     }
 
+    .timeline-identity {
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+      flex: 1 1 auto;
+    }
+
+    .timeline-logo {
+      width: 52px;
+      height: 52px;
+      border-radius: 18px;
+      border: 1px solid rgba(126, 189, 255, 0.26);
+      background: rgba(8, 20, 46, 0.65);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 18px 38px rgba(1, 10, 32, 0.48);
+    }
+
+    .timeline-logo svg {
+      width: 68%;
+      height: 68%;
+    }
+
     .timeline-item h3 {
       margin: 0;
       font-size: 1.22rem;
@@ -349,6 +374,30 @@
       align-items: flex-start;
       gap: 1.2rem;
       margin-bottom: 0.9rem;
+    }
+
+    .card-identity {
+      display: flex;
+      gap: 0.9rem;
+      align-items: flex-start;
+    }
+
+    .card-logo {
+      width: 48px;
+      height: 48px;
+      border-radius: 16px;
+      border: 1px solid rgba(126, 189, 255, 0.26);
+      background: rgba(8, 20, 46, 0.6);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 16px 32px rgba(1, 10, 32, 0.45);
+    }
+
+    .card-logo svg {
+      width: 72%;
+      height: 72%;
     }
 
     .card-meta {
@@ -490,6 +539,10 @@
         gap: 0.6rem;
       }
 
+      .timeline-identity {
+        width: 100%;
+      }
+
       .timeline-meta {
         align-items: flex-start;
         text-align: left;
@@ -509,6 +562,7 @@
       <a href="#education">Education</a>
       <a href="#experience">Work</a>
       <a href="#academia">Academia</a>
+      <a href="#projects">Projects</a>
       <a href="#awards">Awards</a>
       <a href="#presentations">Presentations</a>
     </nav>
@@ -518,7 +572,7 @@
     <section class="hero" id="top">
       <div class="hero-text">
         <h1 class="hero-name hero-line slow" data-hero-delay="0">Mihir Rao</h1>
-        <p class="hero-title hero-line" data-hero-delay="280">Theoretical Computer Scientist</p>
+        <p class="hero-title hero-line" data-hero-delay="280">Theoretical Computer Scientist.</p>
         <div class="hero-contact hero-line" data-hero-delay="520">
           <a class="contact-chip" href="mailto:mihirrao@uchicago.edu">
             <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -552,12 +606,16 @@
       <h2 class="section-heading" data-animate>About Me</h2>
       <div class="content-grid">
         <p data-animate>
-          Hey! My name is Mihir Rao, and I work in the field of Theoretical Computer Science. I'm currently pursuing an M.S. in Computer Science
-          from the University of Chicago. I completed my undergraduate education at Drexel University with a B.S. in Computer Science & a B.A. 
-          in Mathematics.
+          I’m a graduate student pursuing an M.S. in Computer Science at the University of Chicago with dual concentrations in
+          Statistical Learning and Distributed Systems. Previously, I completed dual degrees in Computer Science and Mathematics at
+          Drexel University. I love building intelligent systems that combine rigorous theory with pragmatic engineering, and I
+          thrive in roles that intersect research, data, and impactful product experiences. Outside of technical work, I invest in
+          mentoring communities and leading organizations that uplift the next generation of technologists.
         </p>
         <p data-animate>
-          Broadly, my interests are Algorithm Design, Machine Learning, Algorithmic Game Theory, Quantitative Finance, and High-Performance Computing.
+          My work spans statistical learning theory, trustworthy AI, and large-scale computation. Whether I’m orchestrating data
+          platforms in industry or spearheading research collaborations, I bring a principled approach shaped by mathematics and a
+          passion for experimentation.
         </p>
       </div>
     </section>
@@ -567,36 +625,98 @@
       <div class="timeline">
         <article class="timeline-item" data-animate>
           <div class="timeline-header">
-            <div class="timeline-details">
-              <h3>University of Chicago</h3>
-              <p class="timeline-role">M.S. in Computer Science | Specialization: Artificial Intelligence</p>
+            <div class="timeline-identity">
+              <div class="timeline-logo" aria-hidden="true">
+                <svg viewBox="0 0 64 64" role="img" aria-hidden="true" focusable="false">
+                  <path
+                    d="M32 6c-9.6 0-17.4 1.8-17.4 1.8v18.6c0 10.5 7.2 19.8 17.4 24.8 10.2-5 17.4-14.3 17.4-24.8V7.8S41.6 6 32 6Z"
+                    fill="none"
+                    stroke="#f7f9fe"
+                    stroke-width="2.6"
+                    stroke-linejoin="round"
+                  />
+                  <path d="M21 21h22" stroke="#7ebdff" stroke-width="2.6" stroke-linecap="round" />
+                  <path d="M24 29h16M24 34h16" stroke="#f7f9fe" stroke-width="2" stroke-linecap="round" />
+                  <path
+                    d="M32 13.4c3 0 5.4 2.4 5.4 5.4s-2.4 5.4-5.4 5.4-5.4-2.4-5.4-5.4 2.4-5.4 5.4-5.4Z"
+                    fill="none"
+                    stroke="#7ebdff"
+                    stroke-width="2"
+                  />
+                </svg>
+              </div>
+              <div class="timeline-details">
+                <h3>University of Chicago</h3>
+                <p class="timeline-role">M.S. Computer Science — Statistical Learning &amp; Distributed Systems</p>
+              </div>
             </div>
             <div class="timeline-meta">
               <p class="timeline-location">Chicago, IL</p>
               <span class="timeline-dates">Sept 2025 – Dec 2026</span>
             </div>
           </div>
-          <ul>
-            <li>Grade: TBD</li>
-          </ul>
+          <p class="section-note">
+            Graduate coursework exploring large-scale learning systems, responsible AI, and distributed infrastructure.
+          </p>
         </article>
         <article class="timeline-item" data-animate>
           <div class="timeline-header">
-            <div class="timeline-details">
-              <h3>Hanyang University</h3>
-              <p class="timeline-role">International Winter School Program</p>
+            <div class="timeline-identity">
+              <div class="timeline-logo" aria-hidden="true">
+                <svg viewBox="0 0 64 64" role="img" aria-hidden="true" focusable="false">
+                  <circle cx="32" cy="32" r="24" fill="none" stroke="#7ebdff" stroke-width="2.4" />
+                  <circle cx="32" cy="32" r="18" fill="none" stroke="rgba(247, 249, 254, 0.85)" stroke-width="1.6" />
+                  <text
+                    x="32"
+                    y="34"
+                    text-anchor="middle"
+                    font-size="15"
+                    font-family="'Space Grotesk', 'Inter', sans-serif"
+                    font-weight="600"
+                    fill="#f7f9fe"
+                  >HYU</text>
+                </svg>
+              </div>
+              <div class="timeline-details">
+                <h3>Hanyang University</h3>
+                <p class="timeline-role">International Winter School Program</p>
+              </div>
             </div>
             <div class="timeline-meta">
               <p class="timeline-location">Seoul, South Korea</p>
               <span class="timeline-dates">Dec 2024 – Feb 2025</span>
             </div>
           </div>
+          <ul>
+            <li>Achieved 95.7/100 in advanced computing and cultural immersion curriculum.</li>
+          </ul>
         </article>
         <article class="timeline-item" data-animate>
           <div class="timeline-header">
-            <div class="timeline-details">
-              <h3>Drexel University</h3>
-              <p class="timeline-role">B.S. in Computer Science &amp; B.A. in Mathematics</p>
+            <div class="timeline-identity">
+              <div class="timeline-logo" aria-hidden="true">
+                <svg viewBox="0 0 64 64" role="img" aria-hidden="true" focusable="false">
+                  <path
+                    d="M20 38c4-10 14-20 24-19-4-4-10-5-16-2 2-4 6-7 12-8"
+                    fill="none"
+                    stroke="#f7f9fe"
+                    stroke-width="2.4"
+                    stroke-linecap="round"
+                  />
+                  <path
+                    d="M22 42c5 4 11 5 20 2-6 6-13 7-20 2Z"
+                    fill="none"
+                    stroke="#7ebdff"
+                    stroke-width="2.4"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </div>
+              <div class="timeline-details">
+                <h3>Drexel University</h3>
+                <p class="timeline-role">B.S. Computer Science &amp; B.S. Mathematics</p>
+              </div>
             </div>
             <div class="timeline-meta">
               <p class="timeline-location">Philadelphia, PA</p>
@@ -604,52 +724,52 @@
             </div>
           </div>
           <ul>
-            <li>Grade: 3.75/4.00</li>
+            <li>Magna Cum Laude with Honors • GPA: 3.75/4.00</li>
+            <li>Concentrations in Algorithms & Data Structures and Artificial Intelligence.</li>
           </ul>
-
         </article>
       </div>
     </section>
 
     <section class="section" id="experience">
-      <h2 class="section-heading" data-animate>Industry Experience</h2>
+      <h2 class="section-heading" data-animate>Work Experience</h2>
       <div class="timeline">
         <article class="timeline-item" data-animate>
           <div class="timeline-header">
-            <div class="timeline-details">
-              <h3>Software Engineering Intern</h3>
-              <p class="timeline-role">MathWorks</p>
+            <div class="timeline-identity">
+              <div class="timeline-logo" aria-hidden="true">
+                <svg viewBox="0 0 64 64" role="img" aria-hidden="true" focusable="false">
+                  <path
+                    d="M18 20h12l6 12h10"
+                    fill="none"
+                    stroke="#7ebdff"
+                    stroke-width="2.6"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M18 44c6-6 14-6 20 0 4-4 8-5 12-3"
+                    fill="none"
+                    stroke="#f7f9fe"
+                    stroke-width="2.4"
+                    stroke-linecap="round"
+                  />
+                </svg>
+              </div>
+              <div class="timeline-details">
+                <h3>AI Data Scientist</h3>
+                <p class="timeline-role">Resolution Life US</p>
+              </div>
             </div>
             <div class="timeline-meta">
-              <p class="timeline-location">Boston, MA</p>
-              <span class="timeline-dates">Jun 2026 – Sept 2026</span>
-            </div>
-          </div>
-          <ul>
-            <li>Incoming intern in the EDG (Engineering Development Group)
-          </ul>
-          <div class="tag-set">
-            <span class="tag">PySpark</span>
-            <span class="tag">AWS</span>
-            <span class="tag">LLMs</span>
-            <span class="tag">Automation</span>
-          </div>
-        </article>
-        <article class="timeline-item" data-animate>
-          <div class="timeline-header">
-            <div class="timeline-details">
-              <h3>Data Scientist Intern</h3>
-              <p class="timeline-role">Resolution Life US</p>
-            </div>
-            <div class="timeline-meta">
-              <p class="timeline-location">Philadelphia, PA</p>
+              <p class="timeline-location">West Chester, PA</p>
               <span class="timeline-dates">Apr 2024 – Sept 2024</span>
             </div>
           </div>
           <ul>
-            <li>Developed PySpark scripts to migrate the actuarial division’s financial database to AWS, leveraging Athena for event-time partitioned tables and Step Functions to orchestrate 50+ DynamoDB jobs — resulting in $380K annual savings.</li>
-            <li>Fine-tuned Transformer models (e.g., finBERT) to predict bond prices via sentiment analysis of company-focused news headlines, boosting profit margins by 15%.</li>
-            <li>Developed a claims interest calculator in Excel VBA to compute interest based on U.S. state and policy code, saving 10+ hours per week in manual lookup time.</li>
+            <li>Engineered PySpark data pipelines to migrate the Financial Market Database onto AWS with Athena + Step Functions, saving $380K annually.</li>
+            <li>Pruned transformer models (finBERT and variants) to forecast bond prices using sentiment signals from financial headlines.</li>
+            <li>Automated a Claims Interest calculator in VBA to codify compliance with state-level regulations.</li>
           </ul>
           <div class="tag-set">
             <span class="tag">PySpark</span>
@@ -662,32 +782,34 @@
     </section>
 
     <section class="section" id="academia">
-      <h2 class="section-heading" data-animate>Teaching Experience</h2>
+      <h2 class="section-heading" data-animate>Academia Experience</h2>
       <div class="timeline">
         <article class="timeline-item" data-animate>
           <div class="timeline-header">
-            <div class="timeline-details">
-              <h3>Graduate Teaching Assistant</h3>
-              <p class="timeline-role">University of Chicago</p>
-            </div>
-            <div class="timeline-meta">
-              <p class="timeline-location">Chicago, IL</p>
-              <span class="timeline-dates">Jan 2026 - Present</span>
-            </div>
-          </div>
-          <ul>
-                <li>TBD</li>
-          </ul>
-          <div class="tag-set">
-            <span class="tag">Mentorship</span>
-            <span class="tag">Curriculum Design</span>
-          </div>
-        </article>
-        <article class="timeline-item" data-animate>
-          <div class="timeline-header">
-            <div class="timeline-details">
-              <h3>Undergraduate Teaching Assistant</h3>
-              <p class="timeline-role">Drexel University</p>
+            <div class="timeline-identity">
+              <div class="timeline-logo" aria-hidden="true">
+                <svg viewBox="0 0 64 64" role="img" aria-hidden="true" focusable="false">
+                  <path
+                    d="M20 38c4-10 14-20 24-19-4-4-10-5-16-2 2-4 6-7 12-8"
+                    fill="none"
+                    stroke="#f7f9fe"
+                    stroke-width="2.4"
+                    stroke-linecap="round"
+                  />
+                  <path
+                    d="M22 42c5 4 11 5 20 2-6 6-13 7-20 2Z"
+                    fill="none"
+                    stroke="#7ebdff"
+                    stroke-width="2.4"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </div>
+              <div class="timeline-details">
+                <h3>Graduate &amp; Undergraduate Teaching Assistant</h3>
+                <p class="timeline-role">Drexel University</p>
+              </div>
             </div>
             <div class="timeline-meta">
               <p class="timeline-location">Philadelphia, PA</p>
@@ -695,14 +817,107 @@
             </div>
           </div>
           <ul>
-                <li>CS260 - Data Structures (Summer 2022, Fall 2022, Winter 2023, Winter 2024, Spring 2024)</li>
-                <li>CS277 - Algorithms &amp; Analysis (Fall 2022, Fall 2023)</li>
-                <li>CS380 - Artificial Intelligence (Fall 2023)</li>
-                <li>CS615 - Deep Learning (Winter 2024)</li>
+            <li>Supported courses including Data Structures, Algorithms, Artificial Intelligence, and Deep Learning.</li>
+            <li>Crafted programming assignments, exam materials, and grading frameworks for rigorous C programming curricula.</li>
+            <li>Led office hours and review sessions that improved student confidence in both theory and implementation.</li>
           </ul>
           <div class="tag-set">
             <span class="tag">Mentorship</span>
             <span class="tag">Curriculum Design</span>
+            <span class="tag">AI Education</span>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="projects">
+      <h2 class="section-heading" data-animate>Selected Projects</h2>
+      <div class="card-grid stacked-grid">
+        <article class="card" data-animate>
+          <div class="card-header">
+            <div>
+              <h3>Extracting Derivatives • Bloomberg</h3>
+              <p class="timeline-role">Senior design capstone</p>
+            </div>
+            <div class="card-meta">
+              <span class="card-dates">Sept 2024 – Jun 2025</span>
+            </div>
+          </div>
+          <ul>
+            <li>Co-led an LLM-driven platform (Llama 3 + AWS) that structures derivatives data from complex corporate action documents.</li>
+            <li>Combined named-entity recognition, retrieval, and workflow automation to deliver analyst-ready insights.</li>
+          </ul>
+          <div class="tag-set">
+            <span class="tag">LLMs</span>
+            <span class="tag">NER</span>
+            <span class="tag">AWS</span>
+          </div>
+        </article>
+
+        <article class="card" data-animate>
+          <div class="card-header">
+            <div>
+              <h3>Drosophila Hemibrain Analytics</h3>
+              <p class="timeline-role">Ausborn Lab</p>
+            </div>
+            <div class="card-meta">
+              <span class="card-dates">Apr 2023 – Sept 2023</span>
+            </div>
+          </div>
+          <ul>
+            <li>Analyzed neural circuitry to isolate neurons responsible for escape behavior using Louvain clustering and ANOVA.</li>
+            <li>Built reproducible data science workflows across high-dimensional connectome datasets.</li>
+          </ul>
+          <div class="tag-set">
+            <span class="tag">Neuroscience</span>
+            <span class="tag">Clustering</span>
+            <span class="tag">ANOVA</span>
+          </div>
+        </article>
+
+        <article class="card" data-animate>
+          <div class="card-header">
+            <div class="card-identity">
+              <div class="card-logo" aria-hidden="true">
+                <svg viewBox="0 0 64 64" role="img" aria-hidden="true" focusable="false">
+                  <defs>
+                    <linearGradient id="mathworksGradient" x1="16" y1="18" x2="48" y2="46" gradientUnits="userSpaceOnUse">
+                      <stop offset="0" stop-color="#7ebdff" />
+                      <stop offset="1" stop-color="rgba(247, 249, 254, 0.95)" />
+                    </linearGradient>
+                  </defs>
+                  <path
+                    d="M18 44h28l-8-20-6 12-7.5-18-6.5 26Z"
+                    fill="url(#mathworksGradient)"
+                    stroke="#f7f9fe"
+                    stroke-width="1.8"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M18 44c7-10 14-11 22-2"
+                    fill="none"
+                    stroke="rgba(126, 189, 255, 0.8)"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                  />
+                </svg>
+              </div>
+              <div>
+                <h3>Precision Surface Computation</h3>
+                <p class="timeline-role">Independent Research</p>
+              </div>
+            </div>
+            <div class="card-meta">
+              <span class="card-dates">Jan 2022 – Jun 2022</span>
+            </div>
+          </div>
+          <ul>
+            <li>Implemented MATLAB solvers with sequence acceleration (Richardson Extrapolation) for machine-precision Gaussian surface area calculations.</li>
+          </ul>
+          <div class="tag-set">
+            <span class="tag">Numerical Methods</span>
+            <span class="tag">MATLAB</span>
+            <span class="tag">Scientific Computing</span>
           </div>
         </article>
       </div>
@@ -712,29 +927,33 @@
       <h2 class="section-heading" data-animate>Awards</h2>
       <div class="card-grid">
         <article class="card" data-animate>
-          <h3>Drexel University</h3>
+          <h3>Recognition</h3>
           <ul>
-            <li>A Award</li>
-            <li>Student Teaching Excellence Award</li>
-            <li>Jeffrey L. Popyack Teaching Assistant Award</li>
+            <li>A* Award — Drexel University (Jun 2024)</li>
+            <li>Student Teaching Excellence Award — Drexel University (Jun 2024)</li>
+            <li>Jeffrey L. Popyack Teaching Assistant Award — Drexel University (Jun 2023)</li>
           </ul>
         </article>
       </div>
     </section>
 
     <section class="section" id="presentations">
-      <h2 class="section-heading" data-animate>Presentations</h2>
+      <h2 class="section-heading" data-animate>Talks & Presentations</h2>
       <div class="card" data-animate>
         <h3>
           <a class="text-link" href="https://theory.cs.drexel.edu" target="_blank" rel="noreferrer"
-            >Drexel CS Theory Reading Group</a
+            >Drexel CS Theory Reading Group • Spring 2025</a
           >
         </h3>
-        <ul>
+        <ul class="two-column">
           <li>Graph Machine Learning</li>
           <li>Informational Asymmetry, Adverse Selection, and Reputation Systems</li>
-          <li>Analysis of Impartial Combinatorial Games</li>
+          <li>Analysis of Impartial Combinatorial Games II</li>
+          <li>Analysis of Impartial Combinatorial Games I</li>
         </ul>
+        <p class="section-note">
+          Presented original analysis and critical perspectives on complex theory topics to a cross-disciplinary academic audience.
+        </p>
       </div>
     </section>
   </main>
