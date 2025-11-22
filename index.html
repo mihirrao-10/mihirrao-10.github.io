@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Oxanium:wght@500;600;700&family=Sora:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap"
     rel="stylesheet"
   />
   <style>
@@ -42,9 +42,10 @@
       background: var(--background);
       background-image: var(--background-gradient);
       color: var(--text-primary);
-      font-family: "Inter", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+      font-family: "Sora", "Inter", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
       font-feature-settings: "tnum" 1, "liga" 1, "case" 1;
-      line-height: 1.65;
+      font-size: 15px;
+      line-height: 1.52;
       overflow-x: hidden;
       position: relative;
     }
@@ -119,12 +120,12 @@
 
     .nav-bar a {
       position: relative;
-      font-family: "Space Grotesk", "Inter", "Segoe UI", sans-serif;
-      font-weight: 500;
-      letter-spacing: 0.08em;
+      font-family: "Oxanium", "Space Grotesk", "Inter", "Segoe UI", sans-serif;
+      font-weight: 600;
+      letter-spacing: 0.1em;
       text-transform: uppercase;
       color: var(--text-secondary);
-      padding: 0.45rem 0.9rem;
+      padding: 0.4rem 0.8rem;
       border-radius: 999px;
       transition: color 200ms ease, background 200ms ease, transform 200ms ease;
       z-index: 1;
@@ -222,18 +223,18 @@
     }
 
     .hero-name {
-      font-size: clamp(3.6rem, 7.2vw, 5.2rem);
+      font-size: clamp(3.2rem, 6.6vw, 4.7rem);
       margin: 0;
       letter-spacing: -0.05em;
-      font-family: "Space Grotesk", "Inter", "Segoe UI", sans-serif;
+      font-family: "Oxanium", "Space Grotesk", "Inter", sans-serif;
       text-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
     }
 
     .hero-title {
       margin: 0;
-      font-size: clamp(1.2rem, 2.6vw, 1.9rem);
-      color: rgba(247, 250, 255, 0.76);
-      letter-spacing: 0.22em;
+      font-size: clamp(1rem, 2.2vw, 1.6rem);
+      color: rgba(247, 250, 255, 0.82);
+      letter-spacing: 0.16em;
       text-transform: uppercase;
     }
 
@@ -318,15 +319,15 @@
     }
 
     .metric-title {
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       color: var(--text-secondary);
       letter-spacing: 0.08em;
       text-transform: uppercase;
-      margin-bottom: 0.4rem;
+      margin-bottom: 0.2rem;
     }
 
     .metric-value {
-      font-size: 2rem;
+      font-size: 1.8rem;
       font-weight: 700;
       display: inline-flex;
       align-items: baseline;
@@ -335,7 +336,7 @@
     }
 
     .metric-value span {
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       color: var(--text-secondary);
       letter-spacing: 0.02em;
       font-weight: 500;
@@ -363,7 +364,7 @@
     }
 
     .section-heading {
-      font-size: clamp(2rem, 4vw, 2.7rem);
+      font-size: clamp(1.8rem, 3.4vw, 2.4rem);
       margin: 0 0 clamp(2rem, 4vw, 2.6rem);
       letter-spacing: -0.02em;
       display: inline-flex;
@@ -433,7 +434,7 @@
 
     .timeline-item h3 {
       margin: 0;
-      font-size: 1.22rem;
+      font-size: 1.08rem;
     }
 
     .timeline-role {
@@ -460,15 +461,15 @@
     .timeline-location {
       margin: 0;
       color: rgba(208, 224, 255, 0.65);
-      font-size: 0.95rem;
+      font-size: 0.88rem;
       letter-spacing: 0.08em;
       text-transform: uppercase;
     }
 
     .timeline-dates {
-      font-size: 0.98rem;
-      font-weight: 600;
-      letter-spacing: 0.06em;
+      font-size: 0.92rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
       color: var(--accent);
       white-space: nowrap;
     }
@@ -479,6 +480,14 @@
       color: var(--text-secondary);
       display: grid;
       gap: 0.6rem;
+    }
+
+    .compact-list {
+      margin: 0;
+      padding-left: 1rem;
+      color: var(--text-secondary);
+      display: grid;
+      gap: 0.35rem;
     }
 
     .card-grid {
@@ -531,7 +540,7 @@
 
     .card h3 {
       margin: 0;
-      font-size: 1.3rem;
+      font-size: 1.12rem;
     }
 
     .card-header {
@@ -611,6 +620,62 @@
       font-size: 0.92rem;
     }
 
+    .cursor-glow {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), rgba(159, 143, 255, 0.22), transparent 26%),
+        radial-gradient(circle at calc(var(--x, 50%) + 6%) calc(var(--y, 50%) + 8%), rgba(126, 189, 255, 0.16), transparent 32%);
+      opacity: 0.7;
+      filter: blur(30px);
+      transition: opacity 200ms ease;
+      z-index: 0;
+    }
+
+    .orb-field {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 0;
+    }
+
+    .orb {
+      position: absolute;
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(126, 189, 255, 0.22), transparent 50%);
+      filter: blur(12px);
+      animation: orbit 18s ease-in-out infinite;
+      mix-blend-mode: screen;
+    }
+
+    .orb--violet {
+      background: radial-gradient(circle, rgba(159, 143, 255, 0.26), transparent 56%);
+      animation-duration: 20s;
+    }
+
+    .orb--cyan {
+      background: radial-gradient(circle, rgba(126, 189, 255, 0.3), transparent 52%);
+      animation-duration: 16s;
+    }
+
+    .orb:nth-of-type(1) {
+      top: -10%;
+      left: 12%;
+    }
+
+    .orb:nth-of-type(2) {
+      top: 18%;
+      right: 6%;
+    }
+
+    .orb:nth-of-type(3) {
+      bottom: 0;
+      left: 28%;
+    }
+
     .text-link {
       display: inline-flex;
       align-items: center;
@@ -657,6 +722,21 @@
       }
       to {
         transform: translateY(-2px) rotate(0.5deg);
+      }
+    }
+
+    @keyframes orbit {
+      0% {
+        transform: translate3d(0, 0, 0) scale(1);
+        opacity: 0.9;
+      }
+      50% {
+        transform: translate3d(18px, -24px, 0) scale(1.08);
+        opacity: 0.7;
+      }
+      100% {
+        transform: translate3d(-24px, 18px, 0) scale(1);
+        opacity: 0.85;
       }
     }
 
@@ -722,6 +802,7 @@
   </style>
 </head>
 <body>
+  <div class="cursor-glow" aria-hidden="true"></div>
   <header>
     <nav class="nav-bar">
       <span class="nav-progress" aria-hidden="true"></span>
@@ -736,10 +817,15 @@
 
   <main class="page-shell">
     <section class="hero" id="top">
+      <div class="orb-field" aria-hidden="true">
+        <span class="orb"></span>
+        <span class="orb orb--violet"></span>
+        <span class="orb orb--cyan"></span>
+      </div>
       <div class="hero-text">
         <div class="hero-badge-row hero-line" data-hero-delay="40">
-          <span class="glow-pill"><span class="glow-dot" aria-hidden="true"></span>Computational rigor</span>
-          <span class="glow-pill"><span class="glow-dot" aria-hidden="true"></span>High-velocity research</span>
+          <span class="glow-pill"><span class="glow-dot" aria-hidden="true"></span>Algorithmic rigor</span>
+          <span class="glow-pill"><span class="glow-dot" aria-hidden="true"></span>Rapid research loops</span>
         </div>
         <h1 class="hero-name hero-line slow" data-hero-delay="0">Mihir Rao</h1>
         <p class="hero-title hero-line" data-hero-delay="280">Theoretical Computer Scientist</p>
@@ -774,18 +860,18 @@
       <div class="hero-metrics" aria-label="Highlights">
         <article class="metric-card" data-tilt>
           <div class="metric-title">Research Velocity</div>
-          <div class="metric-value">10+<span>papers read weekly</span></div>
-          <p class="metric-note">Synthesizing the newest work in algorithms, ML, and complex systems.</p>
+          <div class="metric-value">10+<span>papers each week</span></div>
+          <p class="metric-note">Digesting new theory and ML papers, fast.</p>
         </article>
         <article class="metric-card" data-tilt>
           <div class="metric-title">Teaching DNA</div>
           <div class="metric-value">200+<span>students guided</span></div>
-          <p class="metric-note">Turning hard theory into memorable insights across CS and math.</p>
+          <p class="metric-note">Condensing proofs into memorable story beats.</p>
         </article>
         <article class="metric-card" data-tilt>
           <div class="metric-title">Systems Focus</div>
           <div class="metric-value">HPC<span>meets AI rigor</span></div>
-          <p class="metric-note">Building for throughput without compromising on mathematical clarity.</p>
+          <p class="metric-note">Running lean systems without losing mathematical clarity.</p>
         </article>
       </div>
     </section>
@@ -794,19 +880,14 @@
       <h2 class="section-heading" data-animate>About Me</h2>
       <div class="content-grid">
         <p data-animate>
-          Hey! My name is Mihir Rao, and I am a Theoretical Computer Scientist. I'm currently pursuing an M.S. in Computer Science
-          from the University of Chicago in Chicago, IL. I completed my undergraduate education at Drexel University in Philadelphia, PA, with a B.S. in Computer Science & a B.A. 
-          in Mathematics with a focus on applications in Finance and Economics.
+          I'm a Theoretical CS grad student at UChicago, translating proofs into deployable systems. Drexel alum with math &amp; CS roots, obsessed with crisp ideas and minimal interfaces.
         </p>
-        <p data-animate>
-          Broadly, I'm interested in the following areas.
-          <ul>
-            <li> Theoretical Computer Science with a focus on Algorithms and Complexity Theory.</li>
-            <li> Artificial Intelligence with a focus on Machine Learning, Natural Language Processing, Computer Vision, and Statistical Learning Theory.</li>
-            <li> Systems with a focus on High-Performance Computing.</li>
-            <li> Interdisciplinary fields like Algorithmic Game Theory and Quantitative Finance.</li>
-          </ul>
-        </p>
+        <ul class="compact-list" data-animate>
+          <li>Algorithms &amp; complexity</li>
+          <li>ML theory with a focus on language and vision models</li>
+          <li>High-performance systems tuned for research speed</li>
+          <li>Algorithmic economics and decision markets</li>
+        </ul>
       </div>
     </section>
 
@@ -825,8 +906,8 @@
             </div>
           </div>
           <ul>
-            <li>Grade: 3.90/4.00</li>
-            <li>Concentration: Theoretical Machine Learning, Optimization & High-Performance Computing</li>
+            <li>GPA 3.90 / Theoretical ML &amp; Optimization track</li>
+            <li>Building fast math-driven systems and ML tooling</li>
           </ul>
         </article>
         <article class="timeline-item" data-animate>
@@ -841,8 +922,8 @@
             </div>
           </div>
           <ul>
-            <li>Grade: 3.75/4.00</li>
-            <li>Concentration: Algorithms & Artificial Intelligence</li>
+            <li>GPA 3.75 / Algorithms &amp; AI concentration</li>
+            <li>Capstones on efficient inference and probabilistic methods</li>
           </ul>
 
         </article>
@@ -885,9 +966,8 @@
             </div>
           </div>
           <ul>
-            <li>Developed PySpark scripts to migrate the actuarial division’s financial database to AWS, leveraging Athena for event-time partitioned tables and Step Functions to orchestrate 50+ DynamoDB jobs — resulting in $380K annual savings.</li>
-            <li>Fine-tuned Transformer models (e.g., finBERT) to predict bond prices via sentiment analysis of company-focused news headlines, boosting profit margins by 15%.</li>
-            <li>Developed a claims interest calculator in Excel VBA to compute interest based on U.S. state and policy code, saving 10+ hours per week in manual lookup time.</li>
+            <li>Ported actuarial data pipelines to AWS with PySpark + Step Functions, cutting infra costs by ~$380K/year.</li>
+            <li>Fine-tuned Transformer models (finBERT) for bond-price signals from headlines, lifting margin by 15%.</li>
           </ul>
           <div class="tag-set">
             <span class="tag">PySpark</span>
@@ -1019,6 +1099,23 @@
         window.setTimeout(() => {
           line.classList.add('visible');
         }, delay);
+      });
+    }
+
+    const cursorGlow = document.querySelector('.cursor-glow');
+
+    if (cursorGlow) {
+      const updateGlow = (event) => {
+        const x = (event.clientX / window.innerWidth) * 100;
+        const y = (event.clientY / window.innerHeight) * 100;
+        cursorGlow.style.setProperty('--x', `${x}%`);
+        cursorGlow.style.setProperty('--y', `${y}%`);
+        cursorGlow.style.opacity = prefersReducedMotion ? 0.35 : 0.85;
+      };
+
+      window.addEventListener('pointermove', updateGlow, { passive: true });
+      window.addEventListener('pointerleave', () => {
+        cursorGlow.style.opacity = 0.35;
       });
     }
 
