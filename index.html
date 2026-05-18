@@ -132,6 +132,24 @@
       margin-bottom: 0.35rem;
     }
 
+    .entry-detail {
+      margin: 0.5rem 0 0;
+      font-size: 0.95rem;
+      font-weight: 300;
+      line-height: 1.6;
+    }
+
+    .entry-detail strong {
+      font-weight: 600;
+    }
+
+    .entry-honor {
+      margin: 0.25rem 0 0;
+      font-size: 0.9rem;
+      font-weight: 500;
+      font-style: italic;
+    }
+
     @media (max-width: 600px) {
       .entry-header,
       .entry-subheader {
@@ -162,20 +180,34 @@
           <span class="entry-dates">Sept 2025 – Dec 2026</span>
         </div>
         <div class="entry-subheader">
-          <p class="entry-role">M.S. in Computer Science</p>
+          <p class="entry-role">M.S. in Computer Science · GPA 3.7/4.0</p>
           <span class="entry-location">Chicago, IL</span>
         </div>
+        <p class="entry-detail">
+          <strong>Coursework:</strong> Abstract Linear Algebra, Convex Analysis &amp; Optimization,
+          High-Dimensional Probability, Probabilistic Graphical Models, Machine Learning Theory,
+          Machine Learning, Deep Learning, Deep Generative Models, Deep Reinforcement Learning,
+          Algorithmic Game Theory, Theory of Algorithms, Parallel Programming, GPU Programming,
+          Distributed Systems, Databases.
+        </p>
       </div>
 
       <div class="entry">
         <div class="entry-header">
           <h3 class="entry-title">Drexel University</h3>
-          <span class="entry-dates">Sept 2020 – Jun 2024</span>
+          <span class="entry-dates">Sept 2020 – Jun 2025</span>
         </div>
         <div class="entry-subheader">
-          <p class="entry-role">B.S. in Computer Science &amp; B.A. in Mathematics</p>
+          <p class="entry-role">B.S. in Computer Science &amp; B.A. in Mathematics · GPA 3.8/4.0</p>
           <span class="entry-location">Philadelphia, PA</span>
         </div>
+        <p class="entry-honor">Magna Cum Laude</p>
+        <p class="entry-detail">
+          <strong>Coursework:</strong> Real Analysis, Abstract Algebra, Linear Algebra,
+          Probability &amp; Statistics, Numerical Analysis, Mathematical Optimization,
+          Data Structures, Algorithms &amp; Analysis, Theory of Computation, Artificial Intelligence,
+          Deep Learning, Computer Systems, Operating Systems, Computer Networks, Databases.
+        </p>
       </div>
     </section>
 
@@ -191,6 +223,11 @@
           <p class="entry-role">Software Engineering Intern</p>
           <span class="entry-location">Boston, MA</span>
         </div>
+        <p class="entry-detail">
+          Incoming intern on the MATLAB Data Analysis team, contributing to core data analysis
+          workflows in MATLAB and Simulink, with a focus on generative AI improvements and new
+          feature development for data preprocessing, descriptive statistics, and data exploration.
+        </p>
       </div>
 
       <div class="entry">
@@ -199,9 +236,66 @@
           <span class="entry-dates">Apr 2024 – Sept 2024</span>
         </div>
         <div class="entry-subheader">
-          <p class="entry-role">Data Scientist Intern</p>
+          <p class="entry-role">AI Data Science Intern</p>
           <span class="entry-location">Philadelphia, PA</span>
         </div>
+        <ul>
+          <li>
+            Used PySpark to implement and compare numerical interpolation methods (Linear and Cubic
+            Splines) for incomplete financial time-series data from Bloomberg and Intercontinental
+            Exchange, automating data completion and cleaning prior to model ingestion.
+          </li>
+          <li>
+            Migrated the actuarial division's financial database to AWS, designing Athena-based
+            event-time partitioned tables and orchestrating 54+ DynamoDB processing jobs via Step
+            Functions, achieving annual cost savings of $380,000.
+          </li>
+          <li>
+            Fine-tuned Transformer models (e.g., finBERT) to predict bond prices via sentiment
+            analysis of company-specific news, improving portfolio decision efficiency and returns
+            by 5–7%.
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="teaching">
+      <h2 class="section-heading">Teaching Experience</h2>
+
+      <div class="entry">
+        <div class="entry-header">
+          <h3 class="entry-title">University of Chicago</h3>
+          <span class="entry-dates">Jan 2026 – Mar 2026</span>
+        </div>
+        <div class="entry-subheader">
+          <p class="entry-role">Graduate Teaching Assistant</p>
+          <span class="entry-location">Chicago, IL</span>
+        </div>
+        <ul>
+          <li>
+            Led weekly recitations for Honors Theory of Algorithms (CMSC 27230) and Algorithms
+            (MPCS 55001), covering Divide &amp; Conquer, Greedy Methods, Dynamic Programming,
+            Maximum Flow, and NP-Completeness.
+          </li>
+          <li>Hosted weekly office hours, assisting students with problem sets in C/C++.</li>
+        </ul>
+      </div>
+
+      <div class="entry">
+        <div class="entry-header">
+          <h3 class="entry-title">Drexel University</h3>
+          <span class="entry-dates">Jun 2022 – Jun 2024</span>
+        </div>
+        <div class="entry-subheader">
+          <p class="entry-role">Undergraduate Teaching Assistant</p>
+          <span class="entry-location">Philadelphia, PA</span>
+        </div>
+        <ul>
+          <li>CS 260 — Data Structures (Summer 2022, Fall 2022, Winter 2023, Winter 2024, Spring 2024)</li>
+          <li>CS 277 — Algorithms &amp; Analysis (Fall 2022, Fall 2023)</li>
+          <li>CS 380 — Artificial Intelligence (Fall 2023)</li>
+          <li>CS 615 — Deep Learning (Winter 2024)</li>
+        </ul>
       </div>
     </section>
   </main>
