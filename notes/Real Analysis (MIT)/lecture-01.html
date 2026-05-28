@@ -364,7 +364,7 @@ read "all $x$ in $A$ satisfying the property $P(x)$." For example, $\{x \mid x \
 
     <text x="335" y="55" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" fill="#8b9199">…</text>
 
-    <text x="190" y="100" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" font-style="italic" fill="#8b9199">inductive step: each $P(m)$ implies $P(m+1)$</text>
+    <text x="190" y="100" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" font-style="italic" fill="#8b9199">inductive step: each P(m) ⇒ P(m+1)</text>
   </svg>
   <figcaption style="margin-top: 0.3rem; font-size: 0.84rem; color: #8b9199; font-style: italic; text-align: center; max-width: 540px; padding: 0 0.6rem;">The base case proves $P(1)$. The inductive step turns $P(m)$ into $P(m+1)$ for every $m$, so the implication chain reaches every natural number.</figcaption>
 </figure>
@@ -402,7 +402,7 @@ read "all $x$ in $A$ satisfying the property $P(x)$." For example, $\{x \mid x \
     <line x1="30"  y1="100" x2="30"  y2="20"  stroke="#bcc1c7" stroke-width="1"/>
     <!-- limit line at y = 100 - 80 * (2/2.5) = 100 - 64 = 36 (representing S=2, limit) -->
     <line x1="30" y1="36" x2="380" y2="36" stroke="#b05220" stroke-width="1.2" stroke-dasharray="4,3"/>
-    <text x="380" y="32" text-anchor="end" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#b05220" font-style="italic">limit $\\frac{1}{1-c} = 2$</text>
+    <text x="380" y="32" text-anchor="end" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#b05220" font-style="italic">limit 1/(1−c) = 2</text>
     <!-- bars: partial sums for c = 0.5
          S_n = 2(1 - (0.5)^(n+1)), n = 0,...,6
          heights map S in [0, 2.5] to y in [100, 0]: y = 100 - S * 32
@@ -420,13 +420,13 @@ read "all $x$ in $A$ satisfying the property $P(x)$." For example, $\{x \mid x \
     </g>
     <!-- labels -->
     <g font-family="Inter, system-ui, sans-serif" font-size="10" fill="#232a30" text-anchor="middle">
-      <text x="68"  y="115">$n=0$</text>
-      <text x="118" y="115">$n=1$</text>
-      <text x="168" y="115">$n=2$</text>
-      <text x="218" y="115">$n=3$</text>
-      <text x="268" y="115">$n=4$</text>
-      <text x="318" y="115">$n=5$</text>
-      <text x="368" y="115">$n=6$</text>
+      <text x="68"  y="115">n=0</text>
+      <text x="118" y="115">n=1</text>
+      <text x="168" y="115">n=2</text>
+      <text x="218" y="115">n=3</text>
+      <text x="268" y="115">n=4</text>
+      <text x="318" y="115">n=5</text>
+      <text x="368" y="115">n=6</text>
     </g>
     <g font-family="iA Writer Mono, JetBrains Mono, Consolas, monospace" font-size="9" fill="#232a30" text-anchor="middle">
       <text x="68"  y="64">1</text>
@@ -471,12 +471,12 @@ read "all $x$ in $A$ satisfying the property $P(x)$." For example, $\{x \mid x \
       <text x="30" y="79"  text-anchor="end">2</text>
       <text x="30" y="50"  text-anchor="end">5</text>
       <text x="30" y="21"  text-anchor="end">8</text>
-      <text x="60"  y="120" text-anchor="middle">$n=1$</text>
-      <text x="125" y="120" text-anchor="middle">$n=2$</text>
-      <text x="195" y="120" text-anchor="middle">$n=3$</text>
-      <text x="265" y="120" text-anchor="middle">$n=4$</text>
-      <text x="335" y="120" text-anchor="middle">$n=5$</text>
-      <text x="380" y="14" text-anchor="end" font-style="italic">$c = 0.5$</text>
+      <text x="60"  y="120" text-anchor="middle">n=1</text>
+      <text x="125" y="120" text-anchor="middle">n=2</text>
+      <text x="195" y="120" text-anchor="middle">n=3</text>
+      <text x="265" y="120" text-anchor="middle">n=4</text>
+      <text x="335" y="120" text-anchor="middle">n=5</text>
+      <text x="380" y="14" text-anchor="end" font-style="italic">c = 0.5</text>
     </g>
     <!-- bars: for each n, two bars side by side. y-mapping: y = 105 - value*11.5 -->
     <!-- n=1: (1.5, 1.5) - equal -->
@@ -504,9 +504,9 @@ read "all $x$ in $A$ satisfying the property $P(x)$." For example, $\{x \mid x \
     <!-- legend -->
     <g font-family="Inter, system-ui, sans-serif" font-size="10">
       <rect x="100" y="3"  width="10" height="10" fill="#4a7ba8" opacity="0.8"/>
-      <text x="114" y="12" fill="#232a30">$(1+c)^n$</text>
+      <text x="114" y="12" fill="#232a30">(1+c)ⁿ</text>
       <rect x="180" y="3"  width="10" height="10" fill="#b05220" opacity="0.7"/>
-      <text x="194" y="12" fill="#232a30">$1 + nc$</text>
+      <text x="194" y="12" fill="#232a30">1 + nc</text>
     </g>
   </svg>
   <figcaption style="margin-top: 0.3rem; font-size: 0.84rem; color: #8b9199; font-style: italic; text-align: center; max-width: 540px; padding: 0 0.6rem;">$(1 + c)^n$ versus $1 + nc$ for $c = 0.5$. The two sides agree at $n = 1$; for larger $n$ the geometric side races ahead of the linear side, exactly as Bernoulli's inequality predicts.</figcaption>
