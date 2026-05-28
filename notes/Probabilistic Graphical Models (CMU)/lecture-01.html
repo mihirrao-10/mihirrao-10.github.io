@@ -765,7 +765,26 @@ The graph also tells us a generative story for sampling: draw $d$ and $i$ from t
 <p>Perfect maps do not always exist.</p>
 
 <div class="exmp">
-  <span class="label">Example</span> [<span class="name">noisy XOR</span>]. Let $X, Y$ be independent Bernoulli$(1/2)$ variables, and define $Z = X \oplus Y$. The pairwise marginals are all uniform and independent: $X \perp Y$, $X \perp Z$, and $Y \perp Z$. But $X$, $Y$, $Z$ together are <i>not</i> mutually independent — any one of them is determined by the other two. No three-node Bayesian network can encode the three pairwise independencies without also implying mutual independence, so no DAG on these three variables is a perfect map for this distribution.
+  <span class="label">Example</span> [<span class="name">noisy XOR</span>]. Let $X, Y$ be independent Bernoulli$(1/2)$ variables and define $Z = X \oplus Y$. The joint distribution is uniform on the four configurations $(x, y, z)$ that satisfy $z = x \oplus y$:
+  <div style="overflow-x: auto; margin: 0.4rem 0 0.5rem;">
+    <table style="font-family: 'iA Writer Mono', 'JetBrains Mono', Consolas, monospace; font-size: 0.92rem; border-collapse: collapse; margin: 0 auto;">
+      <thead><tr>
+        <th style="padding: 0.2rem 0.7rem; border-bottom: 1px solid var(--rule-soft);">$X$</th>
+        <th style="padding: 0.2rem 0.7rem; border-bottom: 1px solid var(--rule-soft);">$Y$</th>
+        <th style="padding: 0.2rem 0.7rem; border-bottom: 1px solid var(--rule-soft);">$Z$</th>
+        <th style="padding: 0.2rem 0.7rem; border-bottom: 1px solid var(--rule-soft);">$p(x, y, z)$</th>
+      </tr></thead>
+      <tbody style="text-align: center;">
+        <tr><td style="padding: 0.1rem 0.7rem;">0</td><td style="padding: 0.1rem 0.7rem;">0</td><td style="padding: 0.1rem 0.7rem;">0</td><td style="padding: 0.1rem 0.7rem;">$1/4$</td></tr>
+        <tr><td style="padding: 0.1rem 0.7rem;">0</td><td style="padding: 0.1rem 0.7rem;">1</td><td style="padding: 0.1rem 0.7rem;">1</td><td style="padding: 0.1rem 0.7rem;">$1/4$</td></tr>
+        <tr><td style="padding: 0.1rem 0.7rem;">1</td><td style="padding: 0.1rem 0.7rem;">0</td><td style="padding: 0.1rem 0.7rem;">1</td><td style="padding: 0.1rem 0.7rem;">$1/4$</td></tr>
+        <tr><td style="padding: 0.1rem 0.7rem;">1</td><td style="padding: 0.1rem 0.7rem;">1</td><td style="padding: 0.1rem 0.7rem;">0</td><td style="padding: 0.1rem 0.7rem;">$1/4$</td></tr>
+      </tbody>
+    </table>
+  </div>
+  Each pair of variables is marginally independent. For $X$ and $Z$, the marginal $\mathbb{P}(Z = 0) = \mathbb{P}(X = Y) = 1/2$, and $\mathbb{P}(X = 0, Z = 0) = \mathbb{P}(X = 0, Y = 0) = 1/4 = \mathbb{P}(X = 0)\,\mathbb{P}(Z = 0)$; the other three cells of the joint table for $(X, Z)$ check out by the same argument, so $X \perp Z$. The same calculation gives $Y \perp Z$, and $X \perp Y$ is true by construction.
+  <p>Yet $X$, $Y$, $Z$ are not mutually independent — any one of them is determined by the other two, so observing two removes all uncertainty about the third.</p>
+  <p>No three-node DAG can encode exactly these three pairwise independencies. The empty graph asserts mutual independence (too strong). A chain, a common parent, or any single-edge graph encodes one or two pairwise independencies but not all three together with the dependence $Z \mid X, Y$. A V-structure encodes one marginal independence but the wrong one. The noisy XOR distribution therefore has no perfect map among Bayesian networks.</p>
 </div>
 
 <h2>1.8&nbsp;&nbsp;$I$-Equivalence</h2>

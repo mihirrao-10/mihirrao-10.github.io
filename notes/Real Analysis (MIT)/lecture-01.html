@@ -331,7 +331,43 @@ read "all $x$ in $A$ satisfying the property $P(x)$." For example, $\{x \mid x \
   <span class="label">Definition</span> [<span class="name">well-ordering property of $\mathbb{N}$</span>]. Every nonempty subset $S \subseteq \mathbb{N}$ has a least element: there exists $x \in S$ such that $x \leq y$ for all $y \in S$.
 </div>
 
-<p>From the well-ordering property we deduce the principle of mathematical induction.</p>
+<p>From the well-ordering property we deduce the principle of mathematical induction. The intuition is the standard one: if the first domino in an infinite row falls, and any domino that falls knocks over the next one, then every domino falls.</p>
+
+<figure style="margin: 1rem 0 0.8rem; display: flex; flex-direction: column; align-items: center;">
+  <svg viewBox="0 0 380 110" xmlns="http://www.w3.org/2000/svg" style="max-width: 440px; width: 100%; height: auto;">
+    <defs>
+      <marker id="indarr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M0,0 L10,5 L0,10 z" fill="#384c61"/>
+      </marker>
+    </defs>
+    <!-- Base case box (filled) -->
+    <rect x="20"  y="30" width="50" height="40" rx="4" fill="#fff0c2" stroke="#b05220" stroke-width="1.6"/>
+    <text x="45"  y="50" text-anchor="middle" dominant-baseline="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#232a30" font-weight="600">P(1)</text>
+    <text x="45"  y="85" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" font-style="italic" fill="#8b9199">base</text>
+
+    <!-- Implication arrows + boxes -->
+    <line x1="75"  y1="50" x2="98"  y2="50" stroke="#384c61" stroke-width="1.4" marker-end="url(#indarr)"/>
+    <text x="86" y="42" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#8b9199">⇒</text>
+
+    <rect x="100" y="30" width="50" height="40" rx="4" fill="#f7f7f3" stroke="#384c61" stroke-width="1.4"/>
+    <text x="125" y="50" text-anchor="middle" dominant-baseline="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#232a30" font-weight="600">P(2)</text>
+
+    <line x1="155" y1="50" x2="178" y2="50" stroke="#384c61" stroke-width="1.4" marker-end="url(#indarr)"/>
+
+    <rect x="180" y="30" width="50" height="40" rx="4" fill="#f7f7f3" stroke="#384c61" stroke-width="1.4"/>
+    <text x="205" y="50" text-anchor="middle" dominant-baseline="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#232a30" font-weight="600">P(3)</text>
+
+    <line x1="235" y1="50" x2="258" y2="50" stroke="#384c61" stroke-width="1.4" marker-end="url(#indarr)"/>
+
+    <rect x="260" y="30" width="50" height="40" rx="4" fill="#f7f7f3" stroke="#384c61" stroke-width="1.4"/>
+    <text x="285" y="50" text-anchor="middle" dominant-baseline="middle" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#232a30" font-weight="600">P(4)</text>
+
+    <text x="335" y="55" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" fill="#8b9199">…</text>
+
+    <text x="190" y="100" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" font-style="italic" fill="#8b9199">inductive step: each $P(m)$ implies $P(m+1)$</text>
+  </svg>
+  <figcaption style="margin-top: 0.3rem; font-size: 0.84rem; color: #8b9199; font-style: italic; text-align: center; max-width: 540px; padding: 0 0.6rem;">The base case proves $P(1)$. The inductive step turns $P(m)$ into $P(m+1)$ for every $m$, so the implication chain reaches every natural number.</figcaption>
+</figure>
 
 <div class="theorem">
   <span class="tlabel">Theorem (Induction).</span> Let $P(n)$ be a statement depending on $n \in \mathbb{N}$. Suppose
