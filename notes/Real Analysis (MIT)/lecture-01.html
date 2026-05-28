@@ -395,6 +395,52 @@ read "all $x$ in $A$ satisfying the property $P(x)$." For example, $\{x \mid x \
   $$1 + c + c^2 + \cdots + c^n \;=\; \frac{1 - c^{n+1}}{1 - c}.$$
 </div>
 
+<figure style="margin: 1rem 0; display: flex; flex-direction: column; align-items: center;">
+  <svg viewBox="0 0 400 130" xmlns="http://www.w3.org/2000/svg" style="max-width: 460px; width: 100%; height: auto;">
+    <!-- axis -->
+    <line x1="30"  y1="100" x2="380" y2="100" stroke="#bcc1c7" stroke-width="1"/>
+    <line x1="30"  y1="100" x2="30"  y2="20"  stroke="#bcc1c7" stroke-width="1"/>
+    <!-- limit line at y = 100 - 80 * (2/2.5) = 100 - 64 = 36 (representing S=2, limit) -->
+    <line x1="30" y1="36" x2="380" y2="36" stroke="#b05220" stroke-width="1.2" stroke-dasharray="4,3"/>
+    <text x="380" y="32" text-anchor="end" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#b05220" font-style="italic">limit $\\frac{1}{1-c} = 2$</text>
+    <!-- bars: partial sums for c = 0.5
+         S_n = 2(1 - (0.5)^(n+1)), n = 0,...,6
+         heights map S in [0, 2.5] to y in [100, 0]: y = 100 - S * 32
+         S0=1 → y=68 (h=32), S1=1.5 → y=52 (h=48), S2=1.75 → y=44 (h=56),
+         S3=1.875 → y=40 (h=60), S4=1.9375 → y=38 (h=62), S5=1.96875 → y=37 (h=63),
+         S6=1.984375 → y=36.5 (h=63.5) -->
+    <g fill="#4a7ba8" opacity="0.7">
+      <rect x="50"  y="68"   width="36" height="32"/>
+      <rect x="100" y="52"   width="36" height="48"/>
+      <rect x="150" y="44"   width="36" height="56"/>
+      <rect x="200" y="40"   width="36" height="60"/>
+      <rect x="250" y="38"   width="36" height="62"/>
+      <rect x="300" y="37"   width="36" height="63"/>
+      <rect x="350" y="36.5" width="36" height="63.5"/>
+    </g>
+    <!-- labels -->
+    <g font-family="Inter, system-ui, sans-serif" font-size="10" fill="#232a30" text-anchor="middle">
+      <text x="68"  y="115">$n=0$</text>
+      <text x="118" y="115">$n=1$</text>
+      <text x="168" y="115">$n=2$</text>
+      <text x="218" y="115">$n=3$</text>
+      <text x="268" y="115">$n=4$</text>
+      <text x="318" y="115">$n=5$</text>
+      <text x="368" y="115">$n=6$</text>
+    </g>
+    <g font-family="iA Writer Mono, JetBrains Mono, Consolas, monospace" font-size="9" fill="#232a30" text-anchor="middle">
+      <text x="68"  y="64">1</text>
+      <text x="118" y="48">1.5</text>
+      <text x="168" y="40">1.75</text>
+      <text x="218" y="36">1.875</text>
+      <text x="268" y="34">1.94</text>
+      <text x="318" y="33">1.97</text>
+      <text x="368" y="32">1.98</text>
+    </g>
+  </svg>
+  <figcaption style="margin-top: 0.3rem; font-size: 0.84rem; color: #8b9199; font-style: italic; text-align: center; max-width: 540px; padding: 0 0.6rem;">Partial sums $\,1 + c + c^2 + \cdots + c^n\,$ for $c = 1/2$. They climb to the limit $\frac{1}{1-c} = 2$, doubling the remaining gap to it each step.</figcaption>
+</figure>
+
 <div class="proof">
   <span class="plabel">Proof.</span> We induct on $n$. For the base case $n = 1$, the left-hand side is $1 + c$, and the right-hand side is
   $$\frac{1 - c^2}{1 - c} = \frac{(1 - c)(1 + c)}{1 - c} = 1 + c.$$
@@ -414,6 +460,57 @@ read "all $x$ in $A$ satisfying the property $P(x)$." For example, $\{x \mid x \
   <span class="tlabel">Theorem (Bernoulli's inequality).</span> For all $c \geq -1$ and all $n \in \mathbb{N}$,
   $$(1 + c)^n \;\geq\; 1 + nc.$$
 </div>
+
+<figure style="margin: 1rem 0; display: flex; flex-direction: column; align-items: center;">
+  <svg viewBox="0 0 400 130" xmlns="http://www.w3.org/2000/svg" style="max-width: 460px; width: 100%; height: auto;">
+    <!-- axes -->
+    <line x1="36"  y1="105" x2="380" y2="105" stroke="#bcc1c7" stroke-width="1"/>
+    <line x1="36"  y1="105" x2="36"  y2="15"  stroke="#bcc1c7" stroke-width="1"/>
+    <g font-family="Inter, system-ui, sans-serif" font-size="10" fill="#8b9199">
+      <text x="30" y="108" text-anchor="end">0</text>
+      <text x="30" y="79"  text-anchor="end">2</text>
+      <text x="30" y="50"  text-anchor="end">5</text>
+      <text x="30" y="21"  text-anchor="end">8</text>
+      <text x="60"  y="120" text-anchor="middle">$n=1$</text>
+      <text x="125" y="120" text-anchor="middle">$n=2$</text>
+      <text x="195" y="120" text-anchor="middle">$n=3$</text>
+      <text x="265" y="120" text-anchor="middle">$n=4$</text>
+      <text x="335" y="120" text-anchor="middle">$n=5$</text>
+      <text x="380" y="14" text-anchor="end" font-style="italic">$c = 0.5$</text>
+    </g>
+    <!-- bars: for each n, two bars side by side. y-mapping: y = 105 - value*11.5 -->
+    <!-- n=1: (1.5, 1.5) - equal -->
+    <!-- n=2: (2.25, 2.0) -->
+    <!-- n=3: (3.375, 2.5) -->
+    <!-- n=4: (5.0625, 3.0) -->
+    <!-- n=5: (7.59, 3.5) -->
+    <g>
+      <!-- n=1 -->
+      <rect x="44"  y="88"   width="14" height="17"   fill="#4a7ba8" opacity="0.8"/>
+      <rect x="62"  y="88"   width="14" height="17"   fill="#b05220" opacity="0.7"/>
+      <!-- n=2 -->
+      <rect x="109" y="79"   width="14" height="26"   fill="#4a7ba8" opacity="0.8"/>
+      <rect x="127" y="82"   width="14" height="23"   fill="#b05220" opacity="0.7"/>
+      <!-- n=3 -->
+      <rect x="179" y="66"   width="14" height="39"   fill="#4a7ba8" opacity="0.8"/>
+      <rect x="197" y="76.25" width="14" height="28.75" fill="#b05220" opacity="0.7"/>
+      <!-- n=4 -->
+      <rect x="249" y="47.8" width="14" height="57.2" fill="#4a7ba8" opacity="0.8"/>
+      <rect x="267" y="70.5" width="14" height="34.5" fill="#b05220" opacity="0.7"/>
+      <!-- n=5 -->
+      <rect x="319" y="17.7" width="14" height="87.3" fill="#4a7ba8" opacity="0.8"/>
+      <rect x="337" y="64.75" width="14" height="40.25" fill="#b05220" opacity="0.7"/>
+    </g>
+    <!-- legend -->
+    <g font-family="Inter, system-ui, sans-serif" font-size="10">
+      <rect x="100" y="3"  width="10" height="10" fill="#4a7ba8" opacity="0.8"/>
+      <text x="114" y="12" fill="#232a30">$(1+c)^n$</text>
+      <rect x="180" y="3"  width="10" height="10" fill="#b05220" opacity="0.7"/>
+      <text x="194" y="12" fill="#232a30">$1 + nc$</text>
+    </g>
+  </svg>
+  <figcaption style="margin-top: 0.3rem; font-size: 0.84rem; color: #8b9199; font-style: italic; text-align: center; max-width: 540px; padding: 0 0.6rem;">$(1 + c)^n$ versus $1 + nc$ for $c = 0.5$. The two sides agree at $n = 1$; for larger $n$ the geometric side races ahead of the linear side, exactly as Bernoulli's inequality predicts.</figcaption>
+</figure>
 
 <div class="proof">
   <span class="plabel">Proof.</span> We induct on $n$. The case $n = 1$ reduces to $(1 + c)^1 = 1 + 1 \cdot c$, which holds with equality. Suppose $(1 + c)^m \geq 1 + mc$. Since $c \geq -1$, the factor $1 + c$ is non-negative, so we may multiply the inequality by it:

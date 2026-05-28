@@ -579,7 +579,7 @@ If each variable takes $d$ values and has at most $k$ ancestors, each conditiona
 
 <p>Reading the joint distribution off the graph by conditioning each variable on its parents,
 $$\mathbb{P}(l, g, i, d, s) \;=\; \mathbb{P}(l \mid g)\,\mathbb{P}(g \mid i, d)\,\mathbb{P}(i)\,\mathbb{P}(d)\,\mathbb{P}(s \mid i).$$
-The graph also tells us a generative story for sampling: draw $d$ and $i$ from their priors, then $g$ given $(i, d)$, then $s$ given $i$, then $l$ given $g$. Whatever values the parents took fix the conditional distributions of the children.</p>
+The graph also tells us a generative story for sampling: draw $d$ and $i$ from their priors, then $g$ given $(i, d)$, then $s$ given $i$, then $l$ given $g$. Whatever values the parents took fix the conditional distributions of the children. The sampling order $(d, i, g, s, l)$ is a <em>topological ordering</em> of the DAG — every variable appears after all of its parents — and any topological ordering would work equally well; the joint distribution it generates is the same.</p>
 
 <h2>1.4&nbsp;&nbsp;Formal Definition</h2>
 
@@ -602,7 +602,14 @@ The graph also tells us a generative story for sampling: draw $d$ and $i$ from t
 </ul>
 
 <div class="exmp">
-  <span class="label">Example</span> [<span class="name">explaining away on the lawn</span>]. Let $Z$ indicate that the lawn is wet, $X$ that it rained, $Y$ that the sprinkler ran. Marginally rain and sprinkler are independent. But if we observe a wet lawn ($Z$ true) and learn that the sprinkler did not run, the rain becomes much more likely — the two causes are now coupled by the shared effect.
+  <span class="label">Example</span> [<span class="name">explaining away on the lawn</span>]. Let $Z$ indicate that the lawn is wet, $X$ that it rained, $Y$ that the sprinkler ran. Suppose
+  $$\mathbb{P}(X) = 0.2, \qquad \mathbb{P}(Y) = 0.1,$$
+  and that the wet-lawn CPD is deterministic: $Z$ is true if and only if at least one of rain or sprinkler is true. Then $X$ and $Y$ are marginally independent — $\mathbb{P}(X \mid Y) = 0.2 = \mathbb{P}(X)$ — but every conditioning regime that observes $Z$ produces a very different conclusion:
+  <ul style="margin-top: 0.3rem;">
+    <li>$\mathbb{P}(X \mid Z) = \dfrac{\mathbb{P}(X)}{\mathbb{P}(Z)} = \dfrac{0.20}{0.28} \approx 0.71$ — observing a wet lawn raises our belief in rain from $20\%$ to about $71\%$.</li>
+    <li>$\mathbb{P}(X \mid Z, \neg Y) = 1$ — if we also learn the sprinkler did not run, only rain could explain the wet lawn.</li>
+    <li>$\mathbb{P}(X \mid Z, Y) = 0.20 = \mathbb{P}(X)$ — but if we learn the sprinkler did run, our belief drops back to the prior. The sprinkler has <em>explained away</em> the wet lawn, and the rain becomes (conditionally) irrelevant again.</li>
+  </ul>
 </div>
 
 <div class="widget" id="lsWidget">
@@ -717,6 +724,16 @@ The graph also tells us a generative story for sampling: draw $d$ and $i$ from t
 
 <p>The converse does not generally hold: $p$ may satisfy additional independencies the graph does not assert. The graph never claims a false independence, but it can understate the true ones.</p>
 
+<div class="exmp">
+  <span class="label">Example</span> [<span class="name">walking through a $d$-separation query</span>]. Consider the small DAG $A \to B$, $A \to C$, $B \to D$, $C \to D$, $D \to E$ that the explorer below uses. Is $B$ independent of $C$ given the conditioning set $\{A\}$?
+  <p style="margin-top: 0.3rem;">Two undirected paths connect $B$ and $C$ in the skeleton. We classify each by the triple at its middle node and apply the active-trail rule:</p>
+  <ul style="margin-top: 0.3rem;">
+    <li><span style="font-family: 'iA Writer Mono', monospace;">B ← A → C</span> — a common-cause triple at $A$. Active iff $A \notin \mathbf{Z}$. Here $A \in \mathbf{Z}$, so the path is <em>blocked</em>.</li>
+    <li><span style="font-family: 'iA Writer Mono', monospace;">B → D ← C</span> — a V-structure at $D$. Active iff $D$ or any descendant of $D$ is in $\mathbf{Z}$. Here $D \notin \mathbf{Z}$ and the only descendant $E$ is also not in $\mathbf{Z}$, so the path is <em>blocked</em>.</li>
+  </ul>
+  Both paths are blocked, so $B \perp C \mid A$. The conditioning set $\{A\}$ severs the common-cause influence without activating the V-structure. Adding $D$ to $\mathbf{Z}$ would reopen the second path through explaining away — the explorer below confirms it.
+</div>
+
 <div class="widget" id="dsepWidget">
   <h3>$d$-separation Explorer</h3>
   <p class="hint">Click a node to set <span style="color:var(--x-color);font-weight:600">X</span>, then another to set <span style="color:var(--y-color);font-weight:600">Y</span>. Further clicks toggle nodes in the conditioning set <span style="color:var(--noteblue);font-weight:600">Z</span>. Try the presets to see how observing the right (or wrong) node decides independence.</p>
@@ -795,7 +812,61 @@ The graph also tells us a generative story for sampling: draw $d$ and $i$ from t
   <span class="label">Definition</span> [<span class="name">$I$-equivalence</span>]. Two DAGs $G_1$ and $G_2$ over the same variables are <em>$I$-equivalent</em> if $I(G_1) = I(G_2)$. The relation partitions all DAGs on a fixed vertex set into equivalence classes.
 </div>
 
-<p>The chain $X \to Y \to Z$ and the reverse chain $X \leftarrow Y \leftarrow Z$ both encode the single independence $X \perp Z \mid Y$, and are therefore $I$-equivalent. The two-node graphs $X \to Y$ and $X \leftarrow Y$ assert no independencies and are also $I$-equivalent. A syntactic test isolates the structure responsible.</p>
+<p>The chain $X \to Y \to Z$ and the reverse chain $X \leftarrow Y \leftarrow Z$ both encode the single independence $X \perp Z \mid Y$, and are therefore $I$-equivalent. The two-node graphs $X \to Y$ and $X \leftarrow Y$ assert no independencies and are also $I$-equivalent. The figure below makes the partition concrete: the three left graphs all encode $X \perp Z \mid Y$ and sit in one class; the V-structure on the right encodes $X \perp Z$ (marginal) and sits alone.</p>
+
+<figure style="margin: 1rem 0; display: flex; flex-direction: column; align-items: center;">
+  <svg viewBox="0 0 460 130" xmlns="http://www.w3.org/2000/svg" style="max-width: 540px; width: 100%; height: auto;">
+    <defs>
+      <marker id="iearr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M0,0 L10,5 L0,10 z" fill="#384c61"/>
+      </marker>
+    </defs>
+    <!-- Class A (3 graphs) -->
+    <text x="80" y="20" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" font-style="italic" fill="#8b9199">I-equivalent class: encode $X \perp Z \mid Y$</text>
+    <!-- Chain X → Y → Z -->
+    <g transform="translate(0, 30)">
+      <line x1="22" y1="22" x2="50" y2="22" stroke="#384c61" stroke-width="1.4" marker-end="url(#iearr)"/>
+      <line x1="74" y1="22" x2="102" y2="22" stroke="#384c61" stroke-width="1.4" marker-end="url(#iearr)"/>
+      <circle cx="15"  cy="22" r="12" fill="#f7f7f3" stroke="#384c61" stroke-width="1.4"/><text x="15"  y="23" text-anchor="middle" dominant-baseline="middle" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="600">X</text>
+      <circle cx="62"  cy="22" r="12" fill="#f7f7f3" stroke="#384c61" stroke-width="1.4"/><text x="62"  y="23" text-anchor="middle" dominant-baseline="middle" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="600">Y</text>
+      <circle cx="109" cy="22" r="12" fill="#f7f7f3" stroke="#384c61" stroke-width="1.4"/><text x="109" y="23" text-anchor="middle" dominant-baseline="middle" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="600">Z</text>
+      <text x="62" y="56" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10" font-style="italic" fill="#8b9199">chain</text>
+    </g>
+    <!-- Reverse chain X ← Y ← Z -->
+    <g transform="translate(130, 30)">
+      <line x1="50" y1="22" x2="22" y2="22" stroke="#384c61" stroke-width="1.4" marker-end="url(#iearr)"/>
+      <line x1="102" y1="22" x2="74" y2="22" stroke="#384c61" stroke-width="1.4" marker-end="url(#iearr)"/>
+      <circle cx="15"  cy="22" r="12" fill="#f7f7f3" stroke="#384c61" stroke-width="1.4"/><text x="15"  y="23" text-anchor="middle" dominant-baseline="middle" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="600">X</text>
+      <circle cx="62"  cy="22" r="12" fill="#f7f7f3" stroke="#384c61" stroke-width="1.4"/><text x="62"  y="23" text-anchor="middle" dominant-baseline="middle" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="600">Y</text>
+      <circle cx="109" cy="22" r="12" fill="#f7f7f3" stroke="#384c61" stroke-width="1.4"/><text x="109" y="23" text-anchor="middle" dominant-baseline="middle" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="600">Z</text>
+      <text x="62" y="56" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10" font-style="italic" fill="#8b9199">reverse chain</text>
+    </g>
+    <!-- Common parent X ← Y → Z -->
+    <g transform="translate(260, 30)">
+      <line x1="50" y1="22" x2="22" y2="22" stroke="#384c61" stroke-width="1.4" marker-end="url(#iearr)"/>
+      <line x1="74" y1="22" x2="102" y2="22" stroke="#384c61" stroke-width="1.4" marker-end="url(#iearr)"/>
+      <circle cx="15"  cy="22" r="12" fill="#f7f7f3" stroke="#384c61" stroke-width="1.4"/><text x="15"  y="23" text-anchor="middle" dominant-baseline="middle" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="600">X</text>
+      <circle cx="62"  cy="22" r="12" fill="#f7f7f3" stroke="#384c61" stroke-width="1.4"/><text x="62"  y="23" text-anchor="middle" dominant-baseline="middle" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="600">Y</text>
+      <circle cx="109" cy="22" r="12" fill="#f7f7f3" stroke="#384c61" stroke-width="1.4"/><text x="109" y="23" text-anchor="middle" dominant-baseline="middle" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="600">Z</text>
+      <text x="62" y="56" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10" font-style="italic" fill="#8b9199">common parent</text>
+    </g>
+    <!-- Divider -->
+    <line x1="385" y1="20" x2="385" y2="105" stroke="#c4c9cd" stroke-width="1" stroke-dasharray="3,3"/>
+    <!-- V-structure X → Y ← Z -->
+    <g transform="translate(395, 30)">
+      <line x1="22" y1="22" x2="50" y2="22" stroke="#b03434" stroke-width="1.4" marker-end="url(#iearr)"/>
+      <line x1="102" y1="22" x2="74" y2="22" stroke="#b03434" stroke-width="1.4" marker-end="url(#iearr)"/>
+      <circle cx="15"  cy="22" r="12" fill="#fbe2e2" stroke="#b03434" stroke-width="1.5"/><text x="15"  y="23" text-anchor="middle" dominant-baseline="middle" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="600">X</text>
+      <circle cx="62"  cy="22" r="12" fill="#fbe2e2" stroke="#b03434" stroke-width="1.5"/><text x="62"  y="23" text-anchor="middle" dominant-baseline="middle" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="600">Y</text>
+      <circle cx="109" cy="22" r="12" fill="#fbe2e2" stroke="#b03434" stroke-width="1.5"/><text x="109" y="23" text-anchor="middle" dominant-baseline="middle" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="600">Z</text>
+      <text x="62" y="56" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10" font-style="italic" fill="#b03434">V-structure (different class)</text>
+    </g>
+    <text x="265" y="100" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10" font-style="italic" fill="#8b9199">$X \perp Z \mid Y$</text>
+    <text x="455" y="100" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10" font-style="italic" fill="#b03434">$X \perp Z$ &nbsp; (marginal)</text>
+  </svg>
+</figure>
+
+<p>A syntactic test isolates the structure responsible.</p>
 
 <div class="defn">
   <span class="label">Definition</span> [<span class="name">skeleton</span>]. The <em>skeleton</em> of a DAG $G$ is the undirected graph obtained by dropping the arrowheads — an edge $\{X, Y\}$ for every directed edge $(X, Y)$ in $G$.
