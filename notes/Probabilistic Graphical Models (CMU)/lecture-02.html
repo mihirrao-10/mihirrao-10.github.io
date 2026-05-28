@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lecture 2 · Markov Random Fields</title>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {delimiters: [
+          {left: '$$', right: '$$', display: true},
+          {left: '$',  right: '$',  display: false},
+          {left: '\\[', right: '\\]', display: true}
+        ], throwOnError: false});"></script>
+
+<style>
+  :root {
+    --ink: #232a30;
+    --accent: #384c61;
+    --rule: #c4c9cd;
+    --rule-soft: #e4e7ea;
+    --muted: #8b9199;
+    --noteblue: #b05220;
+    --bg: #ffffff;
+    --bg-soft: #fafaf7;
+    --bg-widget: #f4f4ef;
+    --proof: #fff8da;
+    --highlight: #fff2c2;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    font-family: "Iowan Old Style", "Charter", "Source Serif Pro", "Sitka Text", Cambria, Georgia, serif;
+    color: var(--ink);
+    background: var(--bg);
+    line-height: 1.65;
+    margin: 0; padding: 0;
+    font-size: 17px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 2.4rem 1.4rem 4rem; }
+  nav.crumbs {
+    font-size: 0.85rem;
+    font-variant: small-caps;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    margin-bottom: 1.4rem;
+  }
+  nav.crumbs a { color: var(--accent); text-decoration: none; }
+  nav.crumbs a:hover { text-decoration: underline; }
+  header.title {
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 1.2rem;
+    margin-bottom: 2rem;
+  }
+  .course {
+    font-variant: small-caps;
+    letter-spacing: 0.06em;
+    color: var(--accent);
+    font-size: 0.85rem;
+    margin: 0 0 0.4rem;
+  }
+  h1 { font-weight: 600; font-size: 2rem; margin: 0 0 0.6rem; line-height: 1.2; color: var(--ink); }
+  .byline { color: #6a737b; font-size: 0.92rem; margin: 0; font-style: italic; }
+  h2 { font-size: 1.32rem; font-weight: 600; margin: 2.4rem 0 0.6rem; color: var(--ink); }
+  p { margin: 0.7rem 0; }
+  a { color: var(--accent); }
+  em { font-variant: small-caps; font-style: normal; color: var(--noteblue); letter-spacing: 0.02em; }
+  ul, ol { padding-left: 1.4rem; }
+  li { margin: 0.3rem 0; }
+  .leadin { font-weight: 600; }
+
+  .defn, .exmp {
+    border-left: 2px solid var(--accent);
+    padding: 0.1rem 0 0.1rem 1rem;
+    margin: 1.1rem 0;
+    background: var(--bg-soft);
+    border-radius: 0 4px 4px 0;
+    overflow-x: auto;
+  }
+  .exmp { border-left-color: var(--rule); }
+  .defn .label, .exmp .label {
+    font-variant: small-caps;
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: 0.04em;
+    margin-right: 0.3em;
+  }
+  .exmp .label { color: var(--ink); }
+  .defn .name, .exmp .name {
+    font-variant: small-caps;
+    color: var(--noteblue);
+    letter-spacing: 0.02em;
+  }
+
+  .theorem {
+    background: var(--proof);
+    border-radius: 4px;
+    padding: 0.8rem 1rem;
+    margin: 1.2rem 0;
+    font-style: italic;
+    overflow-x: auto;
+  }
+  .theorem .tlabel {
+    font-style: normal;
+    font-weight: 600;
+    font-variant: small-caps;
+    letter-spacing: 0.04em;
+    color: var(--ink);
+    margin-right: 0.3em;
+  }
+
+  /* ---------- STATIC GRAPH FIGURE ---------- */
+  .gfig {
+    margin: 1.4rem 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .gfig svg { max-width: 100%; height: auto; }
+  .gfig figcaption {
+    margin-top: 0.5rem;
+    font-size: 0.84rem;
+    color: var(--muted);
+    font-style: italic;
+    text-align: center;
+    max-width: 560px;
+    padding: 0 0.6rem;
+  }
+  .gfig .node-c { fill: #f7f7f3; stroke: #384c61; stroke-width: 1.4; }
+  .gfig .node-c.input { fill: #eef3f8; }
+  .gfig .factor-c { fill: #384c61; stroke: #384c61; stroke-width: 1; }
+  .gfig .lbl { font: 600 13px "Inter", system-ui, sans-serif; fill: #232a30; text-anchor: middle; dominant-baseline: middle; }
+  .gfig .lbl-i { font: italic 600 12px "Inter", system-ui, sans-serif; fill: #6a737b; text-anchor: middle; dominant-baseline: middle; }
+  .gfig .edge-d { stroke: #384c61; stroke-width: 1.4; fill: none; }
+  .gfig .edge-u { stroke: #384c61; stroke-width: 1.6; fill: none; }
+  .gfig .edge-m { stroke: #b05220; stroke-width: 1.6; stroke-dasharray: 4,3; fill: none; }
+  .gfig .panel-label {
+    font: italic 500 12px "Inter", system-ui, sans-serif;
+    fill: var(--muted); text-anchor: middle;
+  }
+
+  /* ---------- PAGINATOR ---------- */
+  nav.paginator {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 3rem;
+    padding-top: 1.2rem;
+    border-top: 1px solid var(--rule-soft);
+    font-size: 0.9rem;
+  }
+  nav.paginator a {
+    color: var(--accent);
+    text-decoration: none;
+    padding: 0.4rem 0;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.15s;
+  }
+  nav.paginator a:hover { border-bottom-color: var(--accent); }
+  nav.paginator .placeholder { color: #c0c5ca; cursor: default; }
+  nav.paginator .placeholder:hover { border-bottom-color: transparent; }
+  nav.paginator .next { text-align: right; }
+  nav.paginator .label {
+    display: block;
+    font-size: 0.75rem;
+    font-variant: small-caps;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    margin-bottom: 0.15rem;
+  }
+
+  footer {
+    margin-top: 2rem;
+    padding-top: 1.2rem;
+    border-top: 1px solid var(--rule-soft);
+    font-size: 0.83rem;
+    color: #7a8088;
+  }
+  footer a { color: var(--accent); }
+
+  @media (max-width: 540px) {
+    body { font-size: 16px; }
+    .wrap { padding: 2rem 1rem 4rem; }
+    h1 { font-size: 1.6rem; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<nav class="crumbs"><a href="../index.html">Course Notes</a> &rsaquo; <a href="index.html">Probabilistic Graphical Models</a> &rsaquo; Lecture 2</nav>
+
+<header class="title">
+  <p class="course">Probabilistic Graphical Models</p>
+  <h1>Lecture 2: Markov Random Fields</h1>
+  <p class="byline">Notes by Mihir Rao</p>
+</header>
+
+<article>
+
+<p>The Bayesian networks of the previous chapter gave a compact representation of a joint distribution for problems with a natural directionality — causes preceding effects, parents preceding children. Many problems do not have one. Pixel intensities in an image, spin states in a magnet, vote intentions among friends in a social network: in each case the variables influence one another symmetrically, and imposing a directed structure is at best awkward and at worst impossible. The undirected counterpart to a Bayesian network is the <em>Markov random field</em> (MRF), and developing it is the subject of this chapter.</p>
+
+<h2>2.1&nbsp;&nbsp;Markov Random Fields</h2>
+
+<p>To anchor the formalism, consider four people $A$, $B$, $C$, $D$ arranged so that each pair of neighbours is friends — $A$ with $B$, $B$ with $C$, $C$ with $D$, $D$ with $A$ — and suppose each holds an upcoming-election vote $X_A, X_B, X_C, X_D \in \{0, 1\}$. We expect friends to vote alike, but there is no causal direction to the influence: $A$ does not cause $B$'s vote and $B$ does not cause $A$'s.</p>
+
+<figure class="gfig">
+  <svg viewBox="0 0 280 200" xmlns="http://www.w3.org/2000/svg" style="max-width: 320px; width: 100%;">
+    <line class="edge-u" x1="80"  y1="60" x2="200" y2="60"/>
+    <line class="edge-u" x1="200" y1="60" x2="200" y2="160"/>
+    <line class="edge-u" x1="200" y1="160" x2="80" y2="160"/>
+    <line class="edge-u" x1="80"  y1="160" x2="80"  y2="60"/>
+    <circle class="node-c" cx="80"  cy="60"  r="20"/>
+    <text class="lbl" x="80"  y="61">A</text>
+    <circle class="node-c" cx="200" cy="60"  r="20"/>
+    <text class="lbl" x="200" y="61">B</text>
+    <circle class="node-c" cx="200" cy="160" r="20"/>
+    <text class="lbl" x="200" y="161">C</text>
+    <circle class="node-c" cx="80"  cy="160" r="20"/>
+    <text class="lbl" x="80"  y="161">D</text>
+  </svg>
+  <figcaption>An undirected graph for four voters $A, B, C, D$ with friendship edges on each adjacent pair.</figcaption>
+</figure>
+
+<p>We score a joint configuration by an unnormalised product of <em>factors</em>, one per edge:
+$$\tilde{p}(x_A, x_B, x_C, x_D) \;=\; \phi(x_A, x_B)\,\phi(x_B, x_C)\,\phi(x_C, x_D)\,\phi(x_D, x_A),$$
+where each $\phi$ encodes how compatible a friend-pair's votes are. For instance,
+$$\phi(x, y) \;=\; \begin{cases} 10 & x = y = 1, \\ 5 & x = y = 0, \\ 1 & x \neq y, \end{cases}$$
+biases the model toward friends agreeing, with a slight extra preference for both voting $1$ over both voting $0$. The numbers are not probabilities — they are interaction weights.</p>
+
+<div class="defn">
+  <span class="label">Definition</span> [<span class="name">Markov random field</span>]. A <em>Markov random field</em> is a probability distribution $p(x_1, \ldots, x_n)$ over variables associated with the nodes of an undirected graph $G$, of the form
+  $$p(x_1, \ldots, x_n) \;=\; \frac{1}{Z}\, \prod_{c \in \mathcal{C}} \phi_c(x_c),$$
+  where $\mathcal{C}$ denotes the set of cliques of $G$, each $\phi_c$ is a non-negative <em>factor</em> on the clique $c$, and the <em>partition function</em>
+  $$Z \;=\; \sum_{x_1, \ldots, x_n} \prod_{c \in \mathcal{C}} \phi_c(x_c)$$
+  normalises the product so that the joint sums to one.
+</div>
+
+<p>Factors are not probability distributions. They encode the strength of interaction between mutually dependent variables — large values mean "compatible", small values mean "incompatible" — but they neither integrate to one nor have any individual probabilistic meaning. The partition function $Z$ rescales the product so the joint is a valid distribution. We are free to specify factors on only some cliques; missing factors are implicitly $\phi_c \equiv 1$.</p>
+
+<h2>2.2&nbsp;&nbsp;Comparison to Bayesian Networks</h2>
+
+<p>The undirected formalism shines where the joint has no natural directionality, as in the voting example or in image models where adjacent pixels influence each other symmetrically. There are dependency structures that an undirected graph can express compactly that a directed graph cannot, and vice versa — the two formalisms are not nested.</p>
+
+<p>Three costs come with the gain:</p>
+<ul>
+  <li>The partition function $Z$ is a sum over all joint configurations; computing it is NP-hard in general.</li>
+  <li>The factors are less interpretable than CPDs. Each one is just a number, not a conditional probability an expert can elicit directly.</li>
+  <li>There is no simple generative procedure. Unlike a Bayesian network, an MRF does not give a recipe for sampling.</li>
+</ul>
+
+<p>A Bayesian network is itself a special case of an MRF — a particularly tractable one. Take the CPDs $p(x_i \mid x_{A_i})$ as the clique factors and the partition function $Z = 1$; the CPDs already normalise, so the product is already a valid joint. The conversion in the other direction has a name.</p>
+
+<div class="defn">
+  <span class="label">Definition</span> [<span class="name">moralisation</span>]. The <em>moral graph</em> of a directed acyclic graph $G$ is the undirected graph obtained by:
+  <ol>
+    <li>adding an undirected edge between every pair of parents that share a common child (the "marrying" of co-parents); and</li>
+    <li>dropping the arrowheads from every directed edge.</li>
+  </ol>
+</div>
+
+<figure class="gfig">
+  <svg viewBox="0 0 420 200" xmlns="http://www.w3.org/2000/svg" style="max-width: 480px; width: 100%;">
+    <defs>
+      <marker id="moralarr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M0,0 L10,5 L0,10 z" fill="#384c61"/>
+      </marker>
+    </defs>
+    <!-- Panel 1: original BN -->
+    <text class="panel-label" x="65" y="20">Bayesian network</text>
+    <line class="edge-d" x1="30" y1="55"  x2="56" y2="120" marker-end="url(#moralarr)"/>
+    <line class="edge-d" x1="100" y1="55" x2="74" y2="120" marker-end="url(#moralarr)"/>
+    <circle class="node-c" cx="30"  cy="45"  r="16"/><text class="lbl" x="30"  y="46">A</text>
+    <circle class="node-c" cx="100" cy="45"  r="16"/><text class="lbl" x="100" y="46">B</text>
+    <circle class="node-c" cx="65"  cy="135" r="16"/><text class="lbl" x="65"  y="136">C</text>
+
+    <!-- Panel 2: moralised version (extra dashed edge between A and B) -->
+    <text class="panel-label" x="210" y="20">moralised</text>
+    <line class="edge-d" x1="175" y1="55"  x2="201" y2="120" marker-end="url(#moralarr)"/>
+    <line class="edge-d" x1="245" y1="55"  x2="219" y2="120" marker-end="url(#moralarr)"/>
+    <line class="edge-m" x1="190" y1="45"  x2="230" y2="45"/>
+    <circle class="node-c" cx="175" cy="45"  r="16"/><text class="lbl" x="175" y="46">A</text>
+    <circle class="node-c" cx="245" cy="45"  r="16"/><text class="lbl" x="245" y="46">B</text>
+    <circle class="node-c" cx="210" cy="135" r="16"/><text class="lbl" x="210" y="136">C</text>
+
+    <!-- Panel 3: undirected MRF -->
+    <text class="panel-label" x="355" y="20">MRF</text>
+    <line class="edge-u" x1="320" y1="55"  x2="346" y2="120"/>
+    <line class="edge-u" x1="390" y1="55"  x2="364" y2="120"/>
+    <line class="edge-u" x1="335" y1="45"  x2="375" y2="45"/>
+    <circle class="node-c" cx="320" cy="45"  r="16"/><text class="lbl" x="320" y="46">A</text>
+    <circle class="node-c" cx="390" cy="45"  r="16"/><text class="lbl" x="390" y="46">B</text>
+    <circle class="node-c" cx="355" cy="135" r="16"/><text class="lbl" x="355" y="136">C</text>
+  </svg>
+  <figcaption>Moralisation of a V-structure. Co-parents $A$ and $B$ acquire an undirected edge (dashed), then all arrowheads are dropped. The three parents of any node now lie in a single clique, so the original CPD becomes a valid clique factor.</figcaption>
+</figure>
+
+<p>Once moralised, every node's parents lie in a single clique, so each CPD $p(x_i \mid x_{A_i})$ becomes a valid clique factor of the new graph. The reverse direction — building a Bayesian network for a distribution defined as an MRF — is possible but can require exponential extra structure: a small MRF may have no compact directed analogue.</p>
+
+<h2>2.3&nbsp;&nbsp;Independencies in Markov Random Fields</h2>
+
+<p>Independence in an MRF is governed by a single rule: two variables are dependent if and only if they are connected by a path of <em>unobserved</em> nodes. Conversely, if every immediate neighbour of a node $X$ is observed, then $X$ is independent of every other variable in the graph.</p>
+
+<div class="defn">
+  <span class="label">Definition</span> [<span class="name">Markov blanket</span>]. The <em>Markov blanket</em> $U$ of a variable $X$ in a probability distribution $p$ is the smallest set of nodes such that
+  $$X \;\perp\; (\mathcal{X} \setminus \{X\} \setminus U) \;\big|\; U.$$
+</div>
+
+<p>In an undirected model, the Markov blanket of a node is exactly its set of graph neighbours — a much simpler description than in the directed case, where the blanket also had to include the children's co-parents.</p>
+
+<p>More generally, any set of observed variables that disconnects the graph creates a conditional independence between the disconnected halves. This is the undirected analogue of $d$-separation: in an MRF, ordinary graph separation does the same job, with no need for special rules around colliders.</p>
+
+<p><span class="leadin">Limitations.</span> MRFs cannot express every kind of independence a BN can. The V-structure of a directed model — where two parents are marginally independent but become dependent once their shared child is observed — has no undirected representation. Any undirected graph either makes the parents dependent in every conditioning regime (by giving them an edge or a shared neighbour) or makes them independent regardless of observation. Explaining away is a directed-only phenomenon.</p>
+
+<h2>2.4&nbsp;&nbsp;Conditional Random Fields</h2>
+
+<p>A <em>conditional random field</em> (CRF) is an MRF that models a <em>conditional</em> distribution $p(y \mid x)$ instead of a joint $p(x, y)$. The variables split into observed inputs $x$ and outputs $y$, and the CRF factorises the conditional over the cliques of an undirected graph on $y$, with each factor allowed to depend on the entire input.</p>
+
+<div class="defn">
+  <span class="label">Definition</span> [<span class="name">conditional random field</span>]. A <em>conditional random field</em> models a conditional distribution
+  $$p(y \mid x) \;=\; \frac{1}{Z(x)}\, \prod_{c \in \mathcal{C}} \phi_c(x_c, y_c),$$
+  where the input-dependent partition function is
+  $$Z(x) \;=\; \sum_{y} \prod_{c \in \mathcal{C}} \phi_c(x_c, y_c).$$
+</div>
+
+<p>The partition function $Z(x)$ depends on the input — there is a different normalising constant for each setting of $x$.</p>
+
+<div class="exmp">
+  <span class="label">Example</span> [<span class="name">handwritten OCR</span>]. Given a sequence of character images $x_1, \ldots, x_n$, the task is to recover the underlying letters $y_1, \ldots, y_n$. A chain CRF assigns one factor $\phi(x_i, y_i)$ per image-to-letter compatibility and one factor $\phi(y_{i-1}, y_i)$ per adjacent letter pair (capturing letter-pair frequencies in the language). MAP inference picks the letter sequence maximising
+  $$\phi(x_1, y_1) \prod_{i=2}^{n} \phi(y_{i-1}, y_i)\, \phi(x_i, y_i).$$
+</div>
+
+<p>In practice the factors are typically written in an exponential form:
+$$\phi_c(x_c, y_c) \;=\; \exp\!\bigl(\, w_c^\top f_c(x_c, y_c) \,\bigr),$$
+where $f_c$ is a vector of arbitrary <em>features</em> of the variables in clique $c$ and $w_c$ is a learned weight vector. Features can depend on the entire input $x$ — for instance on global properties of an image — without changing the structure of the graph or the cost of inference, because they only change the values of factors, not their scopes.</p>
+
+<p><span class="leadin">Why model $p(y \mid x)$ directly.</span> By skipping any model of $p(x)$, a CRF avoids the often-wasteful cost of modelling a high-dimensional input distribution. When all we care about is predicting $y$ from $x$, this typically yields better predictive performance with less training data than a generative model of the joint $p(x, y)$.</p>
+
+<h2>2.5&nbsp;&nbsp;Factor Graphs</h2>
+
+<p>A <em>factor graph</em> is an alternative graphical representation that makes the factorisation of an MRF explicit. It is a bipartite graph: one part has a node per random variable, the other part has a node per factor, and an edge connects a factor to each of the variables in its scope.</p>
+
+<figure class="gfig">
+  <svg viewBox="0 0 320 180" xmlns="http://www.w3.org/2000/svg" style="max-width: 360px; width: 100%;">
+    <!-- variable circles on top row -->
+    <line class="edge-u" x1="60" y1="60" x2="60" y2="115"/>
+    <line class="edge-u" x1="60" y1="60" x2="160" y2="115"/>
+    <line class="edge-u" x1="160" y1="60" x2="160" y2="115"/>
+    <line class="edge-u" x1="160" y1="60" x2="260" y2="115"/>
+    <line class="edge-u" x1="260" y1="60" x2="260" y2="115"/>
+    <circle class="node-c" cx="60"  cy="45" r="18"/><text class="lbl" x="60"  y="46">x₁</text>
+    <circle class="node-c" cx="160" cy="45" r="18"/><text class="lbl" x="160" y="46">x₂</text>
+    <circle class="node-c" cx="260" cy="45" r="18"/><text class="lbl" x="260" y="46">x₃</text>
+    <!-- factor squares on bottom row -->
+    <rect class="factor-c" x="50"  y="115" width="20" height="20"/>
+    <rect class="factor-c" x="150" y="115" width="20" height="20"/>
+    <rect class="factor-c" x="250" y="115" width="20" height="20"/>
+    <text class="lbl-i" x="60"  y="155">φ₁</text>
+    <text class="lbl-i" x="160" y="155">φ₂</text>
+    <text class="lbl-i" x="260" y="155">φ₃</text>
+  </svg>
+  <figcaption>A factor graph for an MRF with factors $\phi_1(x_1, x_2)$, $\phi_2(x_2, x_3)$, and $\phi_3(x_3)$ (illustrative). Circles are variables, squares are factors, edges connect each factor to the variables in its scope.</figcaption>
+</figure>
+
+<p>Two different factorisations can lead to the same undirected graph but to different factor graphs. The factor-graph representation removes that ambiguity and is the natural data structure for the message-passing algorithms we will meet in later chapters.</p>
+
+<h2>2.6&nbsp;&nbsp;Summary</h2>
+
+<ul>
+  <li>A <em>Markov random field</em> represents a joint distribution as a normalised product of nonnegative factors over the cliques of an undirected graph: $p(x) = \tfrac{1}{Z}\prod_c \phi_c(x_c)$.</li>
+  <li>The partition function $Z$ is a sum over all joint configurations and is intractable in general.</li>
+  <li>Bayesian networks are a special case of MRFs (with $Z = 1$ and CPDs as factors). The reverse direction — <em>moralisation</em> — adds an undirected edge between every pair of co-parents and drops the arrowheads.</li>
+  <li>Independence in an MRF is governed by graph separation. The Markov blanket of a node is exactly its neighbours, and V-structures (explaining away) have no undirected analogue.</li>
+  <li>A <em>conditional random field</em> models $p(y \mid x)$ as an MRF whose factors may depend on the entire input $x$. Features in the exponential form $\phi = \exp(w^\top f)$ make them easy to parameterise.</li>
+  <li>A <em>factor graph</em> is a bipartite representation that makes the factorisation explicit and is the basis for message-passing inference.</li>
+</ul>
+
+</article>
+
+<nav class="paginator">
+  <a href="lecture-01.html"><span class="label">Previous</span>← Bayesian Networks</a>
+  <a class="next placeholder"><span class="label">Next</span>Variable Elimination (forthcoming) →</a>
+</nav>
+
+<footer>
+  Diagrams powered by inline SVG; math by <a href="https://katex.org/">KaTeX</a>.
+</footer>
+
+</div>
+</body>
+</html>
