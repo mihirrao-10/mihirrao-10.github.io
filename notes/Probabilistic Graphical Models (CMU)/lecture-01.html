@@ -499,7 +499,7 @@
 
 <article>
 
-<p>A probabilistic graphical model is a way of writing down a joint distribution using a graph that records which variables interact with which. This first chapter develops the <em>directed</em> flavour — a <em>Bayesian network</em>. We start by asking why we need a compact representation at all, build the factorisation a Bayesian network gives us, work through the canonical student-grades example, state the formal definition, and then turn to the question of which conditional independencies a graph entails — through the three local structures, $d$-separation, $I$-maps, and the equivalence classes they generate.</p>
+<p>This chapter is about how to choose a probability distribution to model a real-world phenomenon. The naive joint distribution over $n$ binary variables scales as $2^n$ and is unusable past a handful of features. A <em>Bayesian network</em> is a compact way to parametrise a joint distribution using a directed acyclic graph. The rest of the chapter develops the chain-rule factorisation, the formal definition, the three local structures, $d$-separation, $I$-maps, and the equivalence classes they generate.</p>
 
 <h2>1.1&nbsp;&nbsp;The Need for Compact Representations</h2>
 
@@ -589,7 +589,7 @@ The graph also tells us a generative story for sampling: draw $d$ and $i$ from t
   A distribution $P$ is said to <em>factorise over</em> $G$ if it admits this product form.
 </div>
 
-<p>Two facts are worth flagging. First, the product on the right is always a valid probability distribution — it is non-negative and sums to one — so a Bayesian network is guaranteed to define a coherent joint distribution. Second, the acyclicity requirement is not a stylistic choice: if the graph contained a directed cycle, the product would not be guaranteed to define a distribution at all.</p>
+<p>Two consequences. The product on the right is always a valid probability distribution — non-negative and summing to one — so a Bayesian network is guaranteed to define a coherent joint. And the acyclicity requirement is not optional: a directed cycle would break the guarantee.</p>
 
 <h2>1.5&nbsp;&nbsp;Three Local Structures</h2>
 
@@ -715,7 +715,7 @@ The graph also tells us a generative story for sampling: draw $d$ and $i$ from t
   <span class="tlabel">Theorem.</span> If a distribution $p$ factorises over $G$, then every $d$-separation independence in $G$ holds in $p$: $I(G) \subseteq I(p)$. In this case $G$ is said to be an <em>$I$-map</em> for $p$.
 </div>
 
-<p>The converse direction is more delicate: $p$ may satisfy <em>additional</em> independencies that the graph does not assert. The graph never claims a false independence, but it may understate the true ones.</p>
+<p>The converse does not generally hold: $p$ may satisfy additional independencies the graph does not assert. The graph never claims a false independence, but it can understate the true ones.</p>
 
 <div class="widget" id="dsepWidget">
   <h3>$d$-separation Explorer</h3>
@@ -786,19 +786,17 @@ The graph also tells us a generative story for sampling: draw $d$ and $i$ from t
   <span class="tlabel">Theorem.</span> If $G_1$ and $G_2$ have the same skeleton <em>and</em> the same set of v-structures, then $I(G_1) = I(G_2)$.
 </div>
 
-<p>Reversing an edge that is not part of a v-structure leaves the encoded independencies unchanged. Reversing an edge inside a v-structure does not — it breaks the v-structure and creates a different one (or destroys it entirely), changing the set of independencies.</p>
-
-<p>For causal inference from observational data alone, the consequence is striking: the best one can recover from a distribution is the $I$-equivalence class of the generating graph, not the graph itself. Edges not involved in v-structures have unidentifiable orientation.</p>
+<p>Reversing an edge that is not part of a v-structure leaves the encoded independencies unchanged; reversing an edge that participates in a v-structure breaks $I$-equivalence.</p>
 
 <h2>1.9&nbsp;&nbsp;Summary</h2>
 
 <ul>
-  <li>A naive joint distribution over $n$ binary variables has $2^n$ entries — too many to store, estimate, or interpret. <em>Bayesian networks</em> trade this exponential cost for a product of small local conditionals, with each variable conditioned only on its parents in a DAG.</li>
+  <li>A naive joint over $n$ binary variables has $2^n$ entries. A <em>Bayesian network</em> trades this for a product of small local conditionals, one per node given its parents in a DAG.</li>
   <li>A Bayesian network always defines a valid joint distribution; cyclic graphs do not.</li>
-  <li>Three local structures generate every conditional independence claim a DAG can make. The V-structure is the odd one out: observing the collider <em>creates</em> rather than destroys dependence (explaining away).</li>
-  <li>$d$-separation extends the three local rules to arbitrary paths. Every $d$-separation independence holds in any distribution that factorises over the graph, so the graph is an $I$-map.</li>
-  <li>Perfect maps do not always exist; noisy XOR is the standard counterexample.</li>
-  <li>Two graphs are <em>$I$-equivalent</em> if they have the same skeleton and the same set of v-structures. Observational data alone cannot distinguish within an $I$-equivalence class.</li>
+  <li>Three local structures — common parent, cascade, V-structure — generate every conditional independence claim a DAG can make. The V-structure is the odd one out (explaining away).</li>
+  <li>$d$-separation extends the three local rules to arbitrary paths. If $p$ factorises over $G$, then $I(G) \subseteq I(p)$ — the graph is an $I$-map for $p$.</li>
+  <li><em>Perfect maps</em> do not always exist; the noisy-XOR distribution is the standard counterexample.</li>
+  <li>Two graphs are <em>$I$-equivalent</em> iff they have the same skeleton and the same v-structures.</li>
 </ul>
 
 </article>
