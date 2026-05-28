@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lecture 1 · Introduction to Graphical Models</title>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {delimiters: [
+          {left: '$$', right: '$$', display: true},
+          {left: '$',  right: '$',  display: false},
+          {left: '\\[', right: '\\]', display: true}
+        ], throwOnError: false});"></script>
+<script src="https://cdn.jsdelivr.net/npm/cytoscape@3.30.2/dist/cytoscape.min.js"></script>
+
+<style>
+  :root {
+    --ink: #232a30;
+    --accent: #384c61;
+    --rule: #c4c9cd;
+    --rule-soft: #e4e7ea;
+    --noteblue: #b05220;
+    --bg: #ffffff;
+    --bg-soft: #fafaf7;
+    --bg-widget: #f4f4ef;
+    --proof: #fff8da;
+    --selected: #e2b048;
+    --parent: #4a7ba8;
+    --child: #c97042;
+    --coparent: #5e8a52;
+    --target: #b03434;
+    --highlight: #fff2c2;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    font-family: "Iowan Old Style", "Charter", "Source Serif Pro", "Sitka Text", Cambria, Georgia, serif;
+    color: var(--ink);
+    background: var(--bg);
+    line-height: 1.65;
+    margin: 0;
+    padding: 0;
+    font-size: 17px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 3rem 1.4rem 6rem;
+  }
+  header.title {
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 1.2rem;
+    margin-bottom: 2rem;
+  }
+  .course {
+    font-variant: small-caps;
+    letter-spacing: 0.06em;
+    color: var(--accent);
+    font-size: 0.85rem;
+    margin: 0 0 0.4rem;
+  }
+  h1 {
+    font-weight: 600;
+    font-size: 2rem;
+    margin: 0 0 0.6rem;
+    line-height: 1.2;
+    color: var(--ink);
+  }
+  .byline {
+    color: #6a737b;
+    font-size: 0.92rem;
+    margin: 0;
+    font-style: italic;
+  }
+  h2 {
+    font-size: 1.32rem;
+    font-weight: 600;
+    margin: 2.4rem 0 0.6rem;
+    color: var(--ink);
+  }
+  p { margin: 0.7rem 0; }
+  a { color: var(--accent); }
+  em { font-variant: small-caps; font-style: normal; color: var(--noteblue); letter-spacing: 0.02em; }
+  ul { padding-left: 1.4rem; }
+  li { margin: 0.3rem 0; }
+  .leadin { font-weight: 600; }
+
+  .defn, .exmp {
+    border-left: 2px solid var(--accent);
+    padding: 0.1rem 0 0.1rem 1rem;
+    margin: 1.1rem 0;
+    background: var(--bg-soft);
+    border-radius: 0 4px 4px 0;
+  }
+  .exmp { border-left-color: var(--rule); }
+  .defn .label, .exmp .label {
+    font-variant: small-caps;
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: 0.04em;
+    margin-right: 0.3em;
+  }
+  .exmp .label { color: var(--ink); }
+  .defn .name, .exmp .name {
+    font-variant: small-caps;
+    color: var(--noteblue);
+    letter-spacing: 0.02em;
+  }
+
+  .theorem {
+    background: var(--proof);
+    border-radius: 4px;
+    padding: 0.8rem 1rem;
+    margin: 1.2rem 0;
+    font-style: italic;
+  }
+  .theorem .tlabel {
+    font-style: normal;
+    font-weight: 600;
+    font-variant: small-caps;
+    letter-spacing: 0.04em;
+    color: var(--ink);
+    margin-right: 0.3em;
+  }
+
+  /* ---------- WIDGET CHROME ---------- */
+  .widget {
+    background: var(--bg-widget);
+    border: 1px solid var(--rule-soft);
+    border-radius: 6px;
+    margin: 1.6rem 0;
+    padding: 1rem 1.1rem;
+    font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-size: 0.92rem;
+    line-height: 1.5;
+  }
+  .widget h3 {
+    margin: 0 0 0.4rem;
+    font-size: 0.78rem;
+    font-variant: small-caps;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    color: var(--accent);
+  }
+  .widget .hint {
+    color: #6a737b;
+    font-size: 0.85rem;
+    margin: 0 0 0.7rem;
+  }
+
+  /* ---------- DAG WIDGET ---------- */
+  .toggle-row {
+    display: flex;
+    gap: 0.4rem;
+    margin-bottom: 0.8rem;
+  }
+  .toggle-btn {
+    flex: 1;
+    border: 1px solid var(--rule);
+    background: white;
+    padding: 0.5rem 0.6rem;
+    font: inherit;
+    font-size: 0.88rem;
+    border-radius: 4px;
+    cursor: pointer;
+    color: var(--ink);
+    transition: all 0.15s;
+  }
+  .toggle-btn:hover { background: var(--bg-soft); }
+  .toggle-btn.active {
+    background: var(--accent);
+    color: white;
+    border-color: var(--accent);
+  }
+
+  #cy {
+    width: 100%;
+    height: 360px;
+    background: white;
+    border: 1px solid var(--rule-soft);
+    border-radius: 4px;
+  }
+
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7rem;
+    margin-top: 0.5rem;
+    font-size: 0.82rem;
+    color: #555;
+  }
+  .legend span { display: flex; align-items: center; gap: 0.3rem; }
+  .legend .dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    display: inline-block;
+  }
+
+  .info-panel {
+    margin-top: 0.7rem;
+    padding: 0.7rem 0.9rem;
+    background: white;
+    border: 1px solid var(--rule-soft);
+    border-radius: 4px;
+    font-size: 0.88rem;
+    min-height: 3.2rem;
+  }
+  .info-panel .pname {
+    font-weight: 600;
+    color: var(--accent);
+  }
+  .info-panel .empty { color: #999; font-style: italic; }
+  .chip {
+    display: inline-block;
+    padding: 0.05rem 0.4rem;
+    margin: 0 0.15rem;
+    border-radius: 3px;
+    background: var(--bg-soft);
+    border: 1px solid var(--rule-soft);
+    font-family: "iA Writer Mono", "JetBrains Mono", Consolas, monospace;
+    font-size: 0.85em;
+  }
+
+  .factor-box {
+    margin-top: 0.7rem;
+    padding: 0.85rem 0.95rem;
+    background: white;
+    border: 1px solid var(--rule-soft);
+    border-radius: 4px;
+    font-size: 1.02em;
+    overflow-x: auto;
+  }
+  .factor-box .term {
+    padding: 0.1em 0.18em;
+    border-radius: 3px;
+    transition: background 0.18s;
+    cursor: default;
+  }
+  .factor-box .term.hot {
+    background: var(--highlight);
+    box-shadow: inset 0 -2px 0 var(--selected);
+  }
+  .factor-box .factor-line { line-height: 1.9; }
+
+  /* ---------- PARAM SLIDER WIDGET ---------- */
+  .slider-row {
+    display: flex; align-items: center; gap: 0.8rem;
+    margin: 0.6rem 0;
+  }
+  .slider-row label { min-width: 1.5em; }
+  .slider-row input[type=range] { flex: 1; }
+  .slider-row .nval {
+    font-family: monospace; font-size: 1rem;
+    min-width: 2em; text-align: right;
+  }
+
+  .cost-row {
+    display: grid;
+    grid-template-columns: 14em 1fr auto;
+    gap: 0.3rem 0.8rem;
+    align-items: center;
+    margin: 0.3rem 0;
+    font-size: 0.9rem;
+  }
+  .cost-row .label { color: var(--ink); }
+  .cost-row .bar {
+    height: 10px;
+    background: var(--bg-soft);
+    border-radius: 2px;
+    overflow: hidden;
+    position: relative;
+  }
+  .cost-row .fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.25s;
+  }
+  .cost-row .fill.unstr  { background: var(--target); }
+  .cost-row .fill.tree   { background: var(--parent); }
+  .cost-row .fill.sparse { background: var(--coparent); }
+  .cost-row .val {
+    font-family: monospace;
+    text-align: right;
+    min-width: 5.5em;
+  }
+
+  nav.crumbs {
+    font-size: 0.85rem;
+    font-variant: small-caps;
+    letter-spacing: 0.06em;
+    color: #9aa1a8;
+    margin-bottom: 1.4rem;
+  }
+  nav.crumbs a { color: var(--accent); text-decoration: none; }
+  nav.crumbs a:hover { text-decoration: underline; }
+
+  nav.paginator {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 3rem;
+    padding-top: 1.2rem;
+    border-top: 1px solid var(--rule-soft);
+    font-size: 0.9rem;
+  }
+  nav.paginator a {
+    color: var(--accent);
+    text-decoration: none;
+    padding: 0.4rem 0;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.15s;
+  }
+  nav.paginator a:hover { border-bottom-color: var(--accent); }
+  nav.paginator .next { text-align: right; }
+  nav.paginator .label {
+    display: block;
+    font-size: 0.75rem;
+    font-variant: small-caps;
+    letter-spacing: 0.08em;
+    color: #9aa1a8;
+    margin-bottom: 0.15rem;
+  }
+
+  footer {
+    margin-top: 2rem;
+    padding-top: 1.2rem;
+    border-top: 1px solid var(--rule-soft);
+    font-size: 0.83rem;
+    color: #7a8088;
+  }
+  footer a { color: var(--accent); }
+
+  @media (max-width: 540px) {
+    body { font-size: 16px; }
+    .wrap { padding: 2rem 1rem 4rem; }
+    h1 { font-size: 1.6rem; }
+    #cy { height: 320px; }
+    .cost-row { grid-template-columns: 1fr; gap: 0.1rem 0.5rem; }
+    .cost-row .bar { margin: 0.2rem 0; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<nav class="crumbs"><a href="../index.html">Course Notes</a> &rsaquo; <a href="index.html">Probabilistic Graphical Models</a> &rsaquo; Lecture 1</nav>
+
+<header class="title">
+  <p class="course">Probabilistic Graphical Models</p>
+  <h1>Lecture 1: Introduction to Graphical Models</h1>
+  <p class="byline">Notes by Mihir Rao</p>
+</header>
+
+<article>
+
+<p>A <em>probabilistic graphical model</em> (PGM) is a marriage of probability and graph theory: a graph $G = (V, E)$ whose vertices index random variables and whose edges encode probabilistic relationships among them. The graph is not decoration. It is the data structure that makes representation compact, learning sample&#8209;efficient, and inference algorithmically feasible for joint distributions over many variables. Michael Jordan put it cleanly: <i>probability theory is the glue</i> that combines the parts, <i>graph theory is the interface</i> by which humans specify highly&#8209;interacting sets of variables, and the resulting structure lends itself to general&#8209;purpose algorithms. Most classical multivariate models — in statistics, systems engineering, information theory, pattern recognition, statistical mechanics — turn out to be special cases of this single formalism.</p>
+
+<p>The field is older than its name. Sewall Wright's path analysis dates to the 1920s; the modern theory was developed independently in the late 1980s by Spiegelhalter and Lauritzen in statistics and Pearl in computer science. The slogan that has survived is
+$$\textsc{GM} \;=\; \text{Multivariate Statistics} \,+\, \text{Structure}.$$</p>
+
+<h2>1.1&nbsp;&nbsp;The Three Fundamental Questions</h2>
+
+<p>Every probabilistic modelling exercise turns on three intertwined questions.</p>
+<ul>
+  <li><em>Representation.</em> How do we capture uncertainty in possible worlds, and how do we encode domain knowledge, assumptions, and constraints?</li>
+  <li><em>Inference.</em> Given a model and (possibly partial) data, how do we answer queries such as $\mathbb{P}(X_i \mid \mathcal{D})$?</li>
+  <li><em>Learning.</em> Among a family $\mathfrak{M}$ of candidate models, which is right for the data?
+  $$\mathcal{M}^\star \;=\; \arg\max_{\mathcal{M} \in \mathfrak{M}}\, F(\mathcal{D};\, \mathcal{M}).$$</li>
+</ul>
+<p>Each becomes hard the moment the number of variables grows beyond a handful, and each is what graphical structure is designed to tame.</p>
+
+<h2>1.2&nbsp;&nbsp;Why the Joint Distribution Is the Wrong Starting Point</h2>
+
+<p>To see why structure is needed, consider the most general specification of a joint distribution over $n$ binary random variables $X_1, \ldots, X_n$,
+$$\mathbb{P}(X_1, X_2, \ldots, X_n).$$
+Three things go wrong all at once.</p>
+<ul>
+  <li><i>Representation.</i> Specifying the joint requires a table of $2^n$ entries; storage is exponential in $n$.</li>
+  <li><i>Learning.</i> Estimating $2^n$ probabilities by maximum likelihood requires a sample size that scales exponentially with $n$ — and we have only finite data.</li>
+  <li><i>Inference.</i> Computing the conditional $p(H \mid A)$ of unobserved variables $H$ given evidence $A$ means marginalising the joint over the remaining unobserved configurations, exponential in their count.</li>
+</ul>
+<p>Equally telling: even if we could write the table down we would gain no scientific insight from it. Domain experts do not think in $2^n$ flat probability values; they think in mechanisms.</p>
+
+<div class="widget" id="paramWidget">
+  <h3>The Cost of Storing a Joint Distribution</h3>
+  <p class="hint">Move the slider to change the number of binary variables $n$, and watch the unstructured joint blow up against two structured alternatives.</p>
+
+  <div class="slider-row">
+    <label for="nSlider">$n$&nbsp;=</label>
+    <input id="nSlider" type="range" min="3" max="20" value="8">
+    <span class="nval" id="nVal">8</span>
+  </div>
+
+  <div class="cost-row">
+    <span class="label">Unstructured joint: $2^n$</span>
+    <span class="bar"><span class="fill unstr" id="barUnstr" style="width:0%"></span></span>
+    <span class="val" id="vUnstr">—</span>
+  </div>
+  <div class="cost-row">
+    <span class="label">Tree (1 parent each): $2n-1$</span>
+    <span class="bar"><span class="fill tree" id="barTree" style="width:0%"></span></span>
+    <span class="val" id="vTree">—</span>
+  </div>
+  <div class="cost-row">
+    <span class="label">Sparse DAG (≤ 2 parents)</span>
+    <span class="bar"><span class="fill sparse" id="barSparse" style="width:0%"></span></span>
+    <span class="val" id="vSparse">—</span>
+  </div>
+</div>
+
+<p><span class="leadin">What graphical structure buys.</span> The cure is <em>conditional independence</em>. If the variables satisfy enough conditional independencies, the joint factors into a product of much smaller, locally interpretable terms, and all three questions — representation, inference, learning — shrink accordingly. The graph is the bookkeeping device that records which independencies we assume.</p>
+
+<h2>1.3&nbsp;&nbsp;A Running Example: Cellular Signal Transduction</h2>
+
+<p>The canonical motivating picture is a simplified cellular signalling pathway with eight molecular species, organised by cellular compartment: receptors A, B sit in the membrane; kinases C, D, E in the cytosol; transcription factor F downstream of the kinases; genes G, H regulated by F. Biology dictates the direction of influence: receptors trigger kinases, kinases activate the transcription factor, and the transcription factor regulates downstream genes.</p>
+
+<p>The widget below is the running example, made manipulable. Hover or click any node to see its <em>Markov blanket</em> light up — and watch the live factorisation equation underneath highlight the matching terms. Use the toggle at the top to flip between the directed (Bayesian network) and undirected (Markov random field) views of the same eight variables.</p>
+
+<div class="widget" id="dagWidget">
+  <h3>The Signalling Network · BN ↔ MRF</h3>
+
+  <div class="toggle-row">
+    <button class="toggle-btn active" data-mode="bn" id="btnBN">Bayesian Network (directed)</button>
+    <button class="toggle-btn" data-mode="mrf" id="btnMRF">Markov Random Field (undirected)</button>
+  </div>
+
+  <div id="cy"></div>
+
+  <div class="legend">
+    <span><span class="dot" style="background: var(--selected)"></span>selected</span>
+    <span id="legParent"><span class="dot" style="background: var(--parent)"></span>parent</span>
+    <span id="legChild"><span class="dot" style="background: var(--child)"></span>child</span>
+    <span id="legCoparent"><span class="dot" style="background: var(--coparent)"></span>co-parent</span>
+    <span id="legNbr" style="display:none"><span class="dot" style="background: var(--parent)"></span>neighbour</span>
+  </div>
+
+  <div class="info-panel" id="info">
+    <span class="empty">Click any node in the graph to inspect its Markov blanket.</span>
+  </div>
+
+  <div class="factor-box" id="factor"></div>
+</div>
+
+<h2>1.4&nbsp;&nbsp;Bayesian Learning, with Structure as a Prior</h2>
+
+<p>Once the graph has supplied a tractable parameterisation, learning proceeds by Bayes' rule. Letting $\theta$ denote model parameters, $\mathbf{A}$ the observed data, and $\chi$ a hyperparameter,
+$$\underbrace{p(\theta \mid \mathbf{A},\, \chi)}_{\text{posterior}} \;\propto\; \underbrace{p(\mathbf{A} \mid \theta)}_{\text{likelihood}}\, \underbrace{p(\theta;\, \chi)}_{\text{prior}},$$
+and the Bayes estimate of a query of $\theta$ is the posterior expectation
+$$\theta_{\text{Bayes}} \;=\; \int \theta\, p(\theta \mid \mathbf{A},\, \chi)\, d\theta.$$
+The graphical structure is what makes both pieces tractable: the likelihood factors along the graph, and the marginalisation decomposes into operations on small local potentials. In the Bayesian slogan, <i>knowledge meets data</i>, and the graph is the interface across which the meeting happens.</p>
+
+<h2>1.5&nbsp;&nbsp;Two Families: Bayesian Networks and Markov Random Fields</h2>
+
+<p>There are two basic flavours of graphical model, distinguished by whether the edges are directed.</p>
+
+<div class="defn">
+  <span class="label">Definition</span> [<span class="name">Bayesian network</span>]. A <em>Bayesian network</em> (BN), or <em>directed graphical model</em>, is a directed acyclic graph $G = (V, E)$ together with a collection of local conditional probability distributions (CPDs) $\mathbb{P}(X_v \mid X_{\mathrm{pa}(v)})$, one per node $v$. The joint distribution is the product
+  $$\mathbb{P}(X_1, \ldots, X_n) \;=\; \prod_{v \in V} \mathbb{P}\!\left(X_v \,\middle|\, X_{\mathrm{pa}(v)}\right).$$
+  Directed edges are typically read as <i>causality</i>, or, more cautiously, as <i>generative dependence</i>.
+</div>
+
+<p>A node in a BN is conditionally independent of every other node given its <em>Markov blanket</em> — the union of its parents, its children, and the other parents of its children (its children's co&#8209;parents). The CPDs and the DAG together determine the joint, and the graph supports a generative procedure: draw the root variables from their priors, then each child from its CPD given its parents.</p>
+
+<div class="defn">
+  <span class="label">Definition</span> [<span class="name">Markov random field</span>]. A <em>Markov random field</em> (MRF), or <em>undirected graphical model</em>, is an undirected graph $G = (V, E)$ together with nonnegative <em>potential functions</em> $\psi_C$ on the cliques $C$ of $G$. The joint distribution is the normalised product
+  $$\mathbb{P}(X_1, \ldots, X_n) \;=\; \frac{1}{Z}\prod_{C \in \mathcal{C}(G)} \psi_C\!\left(X_C\right),\qquad Z = \sum_x \prod_C \psi_C(x_C).$$
+  Edges encode <i>correlations</i>: a node is conditionally independent of the rest of the graph given its immediate neighbours.
+</div>
+
+<p>The two families serve different intuitions. Bayesian networks are natural where there is plausible causal or generative structure — genetics, diagnosis, signal cascades. Markov random fields are natural where the only honest relation is undirected adjacency — pixels in an image, atoms in a crystal, words in a document. A standard caveat: MRFs encode correlations but provide no explicit sampling procedure, since the normaliser $Z$ couples the entire graph.</p>
+
+<div class="exmp">
+  <span class="label">Example</span> [<span class="name">two factorisations of the signalling network</span>]. Reading the signalling DAG as a Bayesian network gives a product of CPDs (toggle "Bayesian Network" above). Turning every directed edge undirected and adding moralisation edges between co&#8209;parents gives the Markov random field with energy form
+  $$\mathbb{P}(X_1, \ldots, X_8) = \tfrac{1}{Z}\,\exp\bigl\{E(X_1) + E(X_2) + E(X_3,X_1) + E(X_4,X_2) + E(X_5,X_2) + E(X_6,X_3,X_4) + E(X_7,X_6) + E(X_8,X_5,X_6)\bigr\}.$$
+  The same graph topology yields two different parameterisations.
+</div>
+
+<h2>1.6&nbsp;&nbsp;Separation and the Equivalence Theorem</h2>
+
+<p>The whole point of drawing a graph is that the graph should imply the right independencies: any independence one can read off the graph by a separation criterion should hold in any distribution the graph represents, and conversely, any distribution that factors along the graph should obey those independencies.</p>
+
+<div class="theorem">
+  <span class="tlabel">Theorem (Equivalence, informal).</span> Fix a graph $G$, and write $I(G)$ for the set of conditional independencies entailed by $G$ via its separation criterion. Let $\mathcal{D}_1$ be the family of all distributions that satisfy $I(G)$, and let $\mathcal{D}_2$ be the family of all distributions that factor according to $G$. Then $\mathcal{D}_1 \equiv \mathcal{D}_2$.
+</div>
+
+<p>The precise separation criterion differs for directed and undirected graphs — $d$&#8209;separation in the directed case, ordinary graph separation in the undirected case — and we will state both carefully in the next two lectures. What matters now is the <i>role</i> of the theorem: it makes the graph into a <i>language</i>. Drawing a graph is the same as committing to a parameterised family of distributions, and writing down a factorised distribution is the same as committing to the graph one is implicitly using. Either direction supplies all of the other.</p>
+
+<h2>1.7&nbsp;&nbsp;Graphical Models Are Your Old Friends</h2>
+
+<p>A surprising amount of classical machine learning and statistics is graphical&#8209;model territory in disguise.</p>
+<ul>
+  <li><em>Density estimation</em> — a single node $X$ with an optional parameter parent carrying $(\mu, \sigma)$.</li>
+  <li><em>Regression</em> — a two&#8209;node graph $X \to Y$, linear or otherwise.</li>
+  <li><em>Classification</em> — a two&#8209;node graph $Q \to X$ (generative) or $Q \leftarrow X$ (discriminative).</li>
+  <li><em>Clustering</em> — a latent label generating observations, $Q \to X$ with $Q$ unobserved.</li>
+</ul>
+<p>A wider zoo — hidden Markov models, Kalman filters and other linear dynamical systems, factor analysis, ICA, mixtures of factor analysers, factorial HMMs, switching state&#8209;space models, Boltzmann machines — forms a connected genealogy in which graphical structure is the family resemblance. Beyond classical learning, fancier graphical models reach into reinforcement learning (partially observable MDPs as a temporal DAG over states, actions, observations, and rewards), machine translation (latent topic models that align word streams across languages), genetic pedigrees (allele networks across generations), and solid&#8209;state physics (Ising and Potts models on a lattice). The value proposition is the same across the board: <i>a language for communication, a language for computation, and a language for development</i>.</p>
+
+<h2>1.8&nbsp;&nbsp;A Few Myths</h2>
+
+<ul>
+  <li><i>GMs require a localist semantics for nodes.</i> <em>True</em> — and this is what makes the graph informative.</li>
+  <li><i>GMs require a causal semantics for edges.</i> <em>False.</em> Directed edges may be causal but need not be; undirected edges are just correlations.</li>
+  <li><i>GMs are necessarily Bayesian.</i> <em>False.</em> The framework is equally hospitable to maximum&#8209;likelihood estimation.</li>
+  <li><i>GMs are intractable.</i> <em>Mostly false.</em> Exact inference is intractable in general, but tractable subclasses (trees, low&#8209;treewidth graphs) cover a great deal, and approximate algorithms (variational methods, Monte Carlo) cover much of the rest.</li>
+</ul>
+
+</article>
+
+<nav class="paginator">
+  <a href="index.html"><span class="label">Course</span>← All lectures</a>
+  <a class="next" href="lecture-02.html"><span class="label">Next</span>Lecture 2: Directed GMs →</a>
+</nav>
+
+<footer>
+  Source: <a href="https://www.cs.cmu.edu/~epxing/Class/10708-14/lecture.html">Eric Xing's lectures</a>.
+  Diagrams powered by <a href="https://js.cytoscape.org/">Cytoscape.js</a>; math by <a href="https://katex.org/">KaTeX</a>.
+</footer>
+
+</div>
+
+<script>
+/* ---------------- DAG DATA ---------------- */
+const NODES = [
+  { id: 'X1', label: 'Receptor A', sub: '1', pos: { x:   0, y:   0 } },
+  { id: 'X2', label: 'Receptor B', sub: '2', pos: { x: 360, y:   0 } },
+  { id: 'X3', label: 'Kinase C',   sub: '3', pos: { x:   0, y: 110 } },
+  { id: 'X4', label: 'Kinase D',   sub: '4', pos: { x: 180, y: 110 } },
+  { id: 'X5', label: 'Kinase E',   sub: '5', pos: { x: 360, y: 110 } },
+  { id: 'X6', label: 'TF F',       sub: '6', pos: { x: 130, y: 220 } },
+  { id: 'X7', label: 'Gene G',     sub: '7', pos: { x:  20, y: 320 } },
+  { id: 'X8', label: 'Gene H',     sub: '8', pos: { x: 240, y: 320 } },
+];
+const EDGES = [
+  ['X1','X3'], ['X2','X4'], ['X2','X5'],
+  ['X3','X6'], ['X4','X6'],
+  ['X6','X7'], ['X6','X8'], ['X5','X8'],
+];
+
+// BN factorisation terms: { tex, vars (set of node ids) }
+const BN_TERMS = [
+  { tex: 'P(X_1)',          vars: new Set(['X1']) },
+  { tex: 'P(X_2)',          vars: new Set(['X2']) },
+  { tex: 'P(X_3 \\mid X_1)', vars: new Set(['X3','X1']) },
+  { tex: 'P(X_4 \\mid X_2)', vars: new Set(['X4','X2']) },
+  { tex: 'P(X_5 \\mid X_2)', vars: new Set(['X5','X2']) },
+  { tex: 'P(X_6 \\mid X_3, X_4)', vars: new Set(['X6','X3','X4']) },
+  { tex: 'P(X_7 \\mid X_6)', vars: new Set(['X7','X6']) },
+  { tex: 'P(X_8 \\mid X_5, X_6)', vars: new Set(['X8','X5','X6']) },
+];
+
+// MRF (energy form) terms — mirroring the lecture
+const MRF_TERMS = [
+  { tex: 'E(X_1)',       vars: new Set(['X1']) },
+  { tex: 'E(X_2)',       vars: new Set(['X2']) },
+  { tex: 'E(X_3, X_1)',  vars: new Set(['X3','X1']) },
+  { tex: 'E(X_4, X_2)',  vars: new Set(['X4','X2']) },
+  { tex: 'E(X_5, X_2)',  vars: new Set(['X5','X2']) },
+  { tex: 'E(X_6, X_3, X_4)', vars: new Set(['X6','X3','X4']) },
+  { tex: 'E(X_7, X_6)',  vars: new Set(['X7','X6']) },
+  { tex: 'E(X_8, X_5, X_6)', vars: new Set(['X8','X5','X6']) },
+];
+
+/* ---------------- GRAPH UTILITIES ---------------- */
+function parentsOf(id)  { return EDGES.filter(e => e[1] === id).map(e => e[0]); }
+function childrenOf(id) { return EDGES.filter(e => e[0] === id).map(e => e[1]); }
+function coparentsOf(id) {
+  const cps = new Set();
+  for (const c of childrenOf(id)) {
+    for (const p of parentsOf(c)) if (p !== id) cps.add(p);
+  }
+  return [...cps];
+}
+// Moralised neighbours (undirected): parents ∪ children ∪ co-parents.
+function neighboursOf(id) {
+  const s = new Set([...parentsOf(id), ...childrenOf(id), ...coparentsOf(id)]);
+  return [...s];
+}
+
+/* ---------------- CYTOSCAPE ---------------- */
+const cyEls = [
+  ...NODES.map(n => ({
+    data: { id: n.id, label: `${n.label}\n(X${'₁₂₃₄₅₆₇₈'[+n.sub-1]})` },
+    position: n.pos,
+  })),
+];
+
+let mode = 'bn';
+let selectedId = null;
+
+const cy = cytoscape({
+  container: document.getElementById('cy'),
+  elements: [
+    ...cyEls,
+    ...EDGES.map(([s, t], i) => ({
+      data: { id: `e${i}`, source: s, target: t, kind: 'orig' }
+    })),
+  ],
+  layout: { name: 'preset' },
+  style: [
+    { selector: 'node', style: {
+        'shape': 'round-rectangle',
+        'background-color': '#f4f4ef',
+        'border-color': '#384c61',
+        'border-width': 1,
+        'label': 'data(label)',
+        'text-wrap': 'wrap',
+        'text-valign': 'center',
+        'text-halign': 'center',
+        'font-family': 'Inter, system-ui, sans-serif',
+        'font-size': 11,
+        'color': '#232a30',
+        'width': 95, 'height': 42,
+        'padding': '4px',
+        'transition-property': 'background-color, border-color, border-width',
+        'transition-duration': 180,
+    }},
+    { selector: 'node:active', style: { 'overlay-opacity': 0.05 }},
+    { selector: 'edge', style: {
+        'width': 1.2,
+        'line-color': '#384c61',
+        'target-arrow-color': '#384c61',
+        'target-arrow-shape': 'triangle',
+        'arrow-scale': 0.9,
+        'curve-style': 'straight',
+        'transition-property': 'line-color, width, target-arrow-color',
+        'transition-duration': 180,
+    }},
+    { selector: 'edge[kind = "moral"]', style: {
+        'line-style': 'dashed',
+        'line-color': '#9aa1a8',
+        'target-arrow-color': '#9aa1a8',
+    }},
+    { selector: 'edge.undirected', style: {
+        'target-arrow-shape': 'none',
+    }},
+    { selector: 'node.selected',  style: { 'background-color': '#fff2c2', 'border-color': '#e2b048', 'border-width': 3 }},
+    { selector: 'node.parent',    style: { 'background-color': '#dceaf6', 'border-color': '#4a7ba8', 'border-width': 2 }},
+    { selector: 'node.child',     style: { 'background-color': '#fbe2d4', 'border-color': '#c97042', 'border-width': 2 }},
+    { selector: 'node.coparent',  style: { 'background-color': '#e1edd9', 'border-color': '#5e8a52', 'border-width': 2 }},
+    { selector: 'node.neighbour', style: { 'background-color': '#dceaf6', 'border-color': '#4a7ba8', 'border-width': 2 }},
+    { selector: 'edge.hi', style: { 'line-color': '#b03434', 'target-arrow-color': '#b03434', 'width': 2.4 }},
+  ],
+  userZoomingEnabled: false,
+  userPanningEnabled: false,
+  boxSelectionEnabled: false,
+  autoungrabify: true,
+});
+cy.fit(undefined, 24);
+
+cy.on('tap', 'node', evt => { selectNode(evt.target.id()); });
+
+/* ---------------- MODE TOGGLE ---------------- */
+const btnBN  = document.getElementById('btnBN');
+const btnMRF = document.getElementById('btnMRF');
+btnBN.addEventListener('click', () => setMode('bn'));
+btnMRF.addEventListener('click', () => setMode('mrf'));
+
+function setMode(m) {
+  if (m === mode) return;
+  mode = m;
+  btnBN.classList.toggle('active', m === 'bn');
+  btnMRF.classList.toggle('active', m === 'mrf');
+  document.getElementById('legParent').style.display   = m === 'bn'  ? 'flex' : 'none';
+  document.getElementById('legChild').style.display    = m === 'bn'  ? 'flex' : 'none';
+  document.getElementById('legCoparent').style.display = m === 'bn'  ? 'flex' : 'none';
+  document.getElementById('legNbr').style.display      = m === 'mrf' ? 'flex' : 'none';
+
+  // Rewire edges: drop arrows + add moralisation edges in MRF mode.
+  cy.edges().removeClass('undirected hi');
+  cy.edges('[kind = "moral"]').remove();
+  if (m === 'mrf') {
+    cy.edges().addClass('undirected');
+    // Add moralisation edges: every pair of co-parents that share a child.
+    const added = new Set();
+    for (const n of NODES) {
+      const ps = parentsOf(n.id);
+      for (let i = 0; i < ps.length; i++)
+        for (let j = i + 1; j < ps.length; j++) {
+          const key = [ps[i], ps[j]].sort().join('-');
+          if (!added.has(key)) {
+            added.add(key);
+            cy.add({ data: { id: 'm-' + key, source: ps[i], target: ps[j], kind: 'moral' }});
+          }
+        }
+    }
+  }
+  renderFactor();
+  updateHighlights();
+}
+
+/* ---------------- SELECTION & HIGHLIGHTS ---------------- */
+function selectNode(id) {
+  selectedId = (selectedId === id) ? null : id;
+  updateHighlights();
+  renderInfo();
+  renderFactor();
+}
+
+function updateHighlights() {
+  cy.nodes().removeClass('selected parent child coparent neighbour');
+  cy.edges().removeClass('hi');
+  if (!selectedId) return;
+  const sel = cy.getElementById(selectedId);
+  sel.addClass('selected');
+
+  if (mode === 'bn') {
+    const ps = parentsOf(selectedId);
+    const cs = childrenOf(selectedId);
+    const cps = coparentsOf(selectedId);
+    ps.forEach(p => cy.getElementById(p).addClass('parent'));
+    cs.forEach(c => cy.getElementById(c).addClass('child'));
+    cps.forEach(cp => {
+      if (cp !== selectedId && !ps.includes(cp) && !cs.includes(cp))
+        cy.getElementById(cp).addClass('coparent');
+    });
+    cy.edges().forEach(e => {
+      const s = e.data('source'), t = e.data('target');
+      if (s === selectedId || t === selectedId) e.addClass('hi');
+    });
+  } else {
+    neighboursOf(selectedId).forEach(n => cy.getElementById(n).addClass('neighbour'));
+    cy.edges().forEach(e => {
+      const s = e.data('source'), t = e.data('target');
+      if (s === selectedId || t === selectedId) e.addClass('hi');
+    });
+  }
+}
+
+function renderInfo() {
+  const info = document.getElementById('info');
+  if (!selectedId) {
+    info.innerHTML = `<span class="empty">Click any node in the graph to inspect its Markov blanket.</span>`;
+    return;
+  }
+  const node = NODES.find(n => n.id === selectedId);
+  const chips = ids => ids.length
+    ? ids.map(i => `<span class="chip">${idToTex(i)}</span>`).join('')
+    : `<span class="empty">∅</span>`;
+  if (mode === 'bn') {
+    const ps  = parentsOf(selectedId);
+    const cs  = childrenOf(selectedId);
+    const cps = coparentsOf(selectedId).filter(c => !ps.includes(c) && !cs.includes(c) && c !== selectedId);
+    const mb  = [...new Set([...ps, ...cs, ...cps])];
+    info.innerHTML = `
+      <div><span class="pname">${node.label}</span> &nbsp; (${idToTex(selectedId, true)})</div>
+      <div style="margin-top:0.3rem">Parents: ${chips(ps)} &middot; Children: ${chips(cs)} &middot; Co-parents: ${chips(cps)}</div>
+      <div>Markov blanket: ${chips(mb)}</div>`;
+  } else {
+    const nbs = neighboursOf(selectedId);
+    info.innerHTML = `
+      <div><span class="pname">${node.label}</span> &nbsp; (${idToTex(selectedId, true)})</div>
+      <div style="margin-top:0.3rem">Neighbours in the moralised graph: ${chips(nbs)}</div>
+      <div>Conditionally independent of all other nodes given these neighbours.</div>`;
+  }
+}
+
+function idToTex(id, render = false) {
+  const sub = id.slice(1);
+  const s = `X<sub>${sub}</sub>`;
+  return s;
+}
+
+/* ---------------- FACTORISATION RENDER ---------------- */
+function renderFactor() {
+  const box = document.getElementById('factor');
+  const terms = (mode === 'bn') ? BN_TERMS : MRF_TERMS;
+
+  const lhs = (mode === 'bn')
+    ? `P(X_1, \\ldots, X_8) \\;=\\; `
+    : `P(X_1, \\ldots, X_8) \\;=\\; \\tfrac{1}{Z}\\,\\exp\\Bigl\\{`;
+  const rhsClose = (mode === 'bn') ? '' : '\\Bigr\\}';
+
+  // Use KaTeX to render the LHS once, then each term as a separate KaTeX-rendered span.
+  let html = `<div class="factor-line">`;
+  html += `<span class="kt">${katexInline(lhs)}</span>`;
+  terms.forEach((t, i) => {
+    const sep = (i > 0)
+      ? (mode === 'bn' ? katexInline('\\,\\cdot\\,') : katexInline('\\;+\\;'))
+      : '';
+    html += `<span class="term" data-idx="${i}">${sep}${katexInline(t.tex)}</span>`;
+  });
+  if (rhsClose) html += `<span>${katexInline(rhsClose)}</span>`;
+  html += `</div>`;
+  box.innerHTML = html;
+  highlightTerms();
+}
+function katexInline(tex) {
+  try { return katex.renderToString(tex, { throwOnError: false }); }
+  catch (e) { return tex; }
+}
+
+function highlightTerms() {
+  const terms = (mode === 'bn') ? BN_TERMS : MRF_TERMS;
+  document.querySelectorAll('#factor .term').forEach(el => {
+    const i = +el.dataset.idx;
+    el.classList.toggle('hot', selectedId !== null && terms[i].vars.has(selectedId));
+  });
+}
+
+/* ---------------- PARAMETER SLIDER ---------------- */
+const slider = document.getElementById('nSlider');
+const nVal   = document.getElementById('nVal');
+const fmt = x => x.toLocaleString('en-US');
+
+function updateCosts() {
+  const n = +slider.value;
+  nVal.textContent = n;
+  const unstr  = 2 ** n;
+  const tree   = 2 * n - 1;
+  const sparse = 4 * (n - 1) + 1;          // root: 1; each non-root: 2^(<=2) ≈ 4
+  const maxv   = unstr;
+  const lg = v => Math.log10(v + 1);
+  const norm = v => Math.max(2, Math.round(100 * lg(v) / lg(maxv))) + '%';
+  document.getElementById('vUnstr').textContent  = fmt(unstr);
+  document.getElementById('vTree').textContent   = fmt(tree);
+  document.getElementById('vSparse').textContent = fmt(sparse);
+  document.getElementById('barUnstr').style.width  = norm(unstr);
+  document.getElementById('barTree').style.width   = norm(tree);
+  document.getElementById('barSparse').style.width = norm(sparse);
+}
+slider.addEventListener('input', updateCosts);
+
+/* ---------------- INIT ---------------- */
+// KaTeX is loaded with `defer`, so wait for the window load event before
+// rendering anything that depends on it.
+window.addEventListener('load', () => {
+  updateCosts();
+  renderFactor();
+});
+</script>
+</body>
+</html>

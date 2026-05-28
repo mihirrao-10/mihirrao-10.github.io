@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Probabilistic Graphical Models · Course Notes</title>
+<style>
+  :root {
+    --ink: #232a30;
+    --accent: #384c61;
+    --rule: #c4c9cd;
+    --rule-soft: #e4e7ea;
+    --noteblue: #b05220;
+    --bg: #ffffff;
+    --bg-soft: #fafaf7;
+    --muted: #9aa1a8;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: "Iowan Old Style", "Charter", "Source Serif Pro", "Sitka Text", Cambria, Georgia, serif;
+    color: var(--ink);
+    background: var(--bg);
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+    font-size: 17px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 2.4rem 1.4rem 6rem;
+  }
+  nav.crumbs {
+    font-size: 0.85rem;
+    font-variant: small-caps;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    margin-bottom: 2rem;
+  }
+  nav.crumbs a { color: var(--accent); text-decoration: none; }
+  nav.crumbs a:hover { text-decoration: underline; }
+  header.title {
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 1.4rem;
+    margin-bottom: 2rem;
+  }
+  .kicker {
+    font-variant: small-caps;
+    letter-spacing: 0.08em;
+    color: var(--accent);
+    font-size: 0.85rem;
+    margin: 0 0 0.4rem;
+  }
+  h1 {
+    font-weight: 600;
+    font-size: 2rem;
+    margin: 0 0 0.5rem;
+    line-height: 1.15;
+  }
+  .byline {
+    color: #6a737b;
+    font-style: italic;
+    margin: 0;
+    font-size: 0.95rem;
+  }
+  .blurb {
+    margin: 1.4rem 0 0;
+    color: var(--ink);
+    font-size: 0.96rem;
+    line-height: 1.65;
+  }
+  h2.sec {
+    font-size: 0.85rem;
+    font-variant: small-caps;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+    font-weight: 600;
+    margin: 2.2rem 0 1rem;
+    border-bottom: 1px solid var(--rule-soft);
+    padding-bottom: 0.3rem;
+  }
+  .lectures {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .lec-row {
+    display: grid;
+    grid-template-columns: 2.6em 1fr;
+    gap: 0 1rem;
+    padding: 0.6rem 0;
+    border-bottom: 1px solid var(--rule-soft);
+    align-items: baseline;
+  }
+  .lec-row:last-child { border-bottom: none; }
+  .lec-num {
+    color: var(--muted);
+    font-variant: tabular-nums;
+    font-size: 0.88rem;
+    text-align: right;
+  }
+  .lec-title {
+    font-size: 1rem;
+    color: var(--ink);
+  }
+  .lec-title a {
+    color: var(--ink);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.15s;
+  }
+  .lec-title a:hover { border-color: var(--accent); color: var(--accent); }
+  .lec-title.todo {
+    color: var(--muted);
+    font-style: italic;
+  }
+  .badge {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-variant: small-caps;
+    letter-spacing: 0.06em;
+    padding: 0.05rem 0.4rem;
+    border-radius: 3px;
+    background: var(--bg-soft);
+    border: 1px solid var(--rule-soft);
+    color: var(--noteblue);
+    margin-left: 0.4rem;
+    vertical-align: middle;
+  }
+  footer {
+    margin-top: 4rem;
+    padding-top: 1.2rem;
+    border-top: 1px solid var(--rule-soft);
+    font-size: 0.85rem;
+    color: #7a8088;
+  }
+  footer a { color: var(--accent); }
+  @media (max-width: 540px) {
+    body { font-size: 16px; }
+    .wrap { padding: 2rem 1rem 4rem; }
+    h1 { font-size: 1.6rem; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<nav class="crumbs"><a href="../index.html">Course Notes</a> &rsaquo; Probabilistic Graphical Models</nav>
+
+<header class="title">
+  <h1>Probabilistic Graphical Models</h1>
+  <p class="byline">Notes by Mihir Rao</p>
+  <p class="blurb">A graduate course on the language of probabilistic graphical models — directed and undirected representations, exact and approximate inference, learning under full and partial observation, and applications from hidden Markov models to topic models and nonparametric Bayes. Each lecture below is a standalone web page with embedded interactive diagrams.</p>
+</header>
+
+<h2 class="sec">Lectures</h2>
+
+<ol class="lectures">
+
+  <li class="lec-row">
+    <span class="lec-num">1</span>
+    <span class="lec-title"><a href="lecture-01.html">Introduction to Graphical Models</a> <span class="badge">notes</span></span>
+  </li>
+
+  <li class="lec-row">
+    <span class="lec-num">2</span>
+    <span class="lec-title"><a href="lecture-02.html">Directed Graphical Models: Bayesian Networks</a> <span class="badge">notes</span></span>
+  </li>
+
+  <li class="lec-row">
+    <span class="lec-num">3</span>
+    <span class="lec-title todo">Undirected Graphical Models: Markov Random Fields</span>
+  </li>
+
+  <li class="lec-row">
+    <span class="lec-num">4</span>
+    <span class="lec-title todo">Variable Elimination</span>
+  </li>
+
+  <li class="lec-row">
+    <span class="lec-num">5</span>
+    <span class="lec-title todo">Sum-Product Message Passing</span>
+  </li>
+
+  <li class="lec-row">
+    <span class="lec-num">6</span>
+    <span class="lec-title todo">Generalized Linear Models, MLE, Sufficient Statistics</span>
+  </li>
+
+  <li class="lec-row">
+    <span class="lec-num">7</span>
+    <span class="lec-title todo">Learning in Fully Observed Bayesian Networks</span>
+  </li>
+
+  <li class="lec-row">
+    <span class="lec-num">8</span>
+    <span class="lec-title todo">Learning in Fully Observed Markov Networks</span>
+  </li>
+
+  <li class="lec-row">
+    <span class="lec-num">9</span>
+    <span class="lec-title todo">The Expectation-Maximization Algorithm</span>
+  </li>
+
+  <li class="lec-row">
+    <span class="lec-num">10</span>
+    <span class="lec-title todo">Modeling Networks, Ising Models, Gaussian Graphical Models</span>
+  </li>
+
+  <li class="lec-row">
+    <span class="lec-num">11</span>
+    <span class="lec-title todo">Factor Analysis, State Space Models</span>
+  </li>
+
+  <li class="lec-row">
+    <span class="lec-num">12</span>
+    <span class="lec-title todo">Conditional Random Fields, Case Study: Image Segmentation</span>
+  </li>
+
+  <li class="lec-row">
+    <span class="lec-num">13</span>
+    <span class="lec-title todo">Variational Inference: Loopy Belief Propagation</span>
+  </li>
+
+  <li class="lec-row">
+    <span class="lec-num">14</span>
+    <span class="lec-title todo">Variational Inference: Mean Field Approximation</span>
+  </li>
+
+  <li class="lec-row">
+    <span class="lec-num">15</span>
+    <span class="lec-title todo">Variational Inference: Theory, Case Study: Learning Topic Models</span>
+  </li>
+
+  <li class="lec-row">
+    <span class="lec-num">16</span>
+    <span class="lec-title todo">Approximate Inference: Monte Carlo Methods</span>
+  </li>
+
+  <li class="lec-row">
+    <span class="lec-num">17</span>
+    <span class="lec-title todo">Approximate Inference: MCMC, Case Study: Topic Models</span>
+  </li>
+
+  <li class="lec-row">
+    <span class="lec-num">18</span>
+    <span class="lec-title todo">Advanced Topics in MCMC</span>
+  </li>
+
+  <li class="lec-row">
+    <span class="lec-num">19</span>
+    <span class="lec-title todo">Dirichlet Processes</span>
+  </li>
+
+  <li class="lec-row">
+    <span class="lec-num">20</span>
+    <span class="lec-title todo">Hierarchical Dirichlet Processes, Case Study: Genetic Inference</span>
+  </li>
+
+  <li class="lec-row">
+    <span class="lec-num">21</span>
+    <span class="lec-title todo">The Indian Buffet Process</span>
+  </li>
+
+</ol>
+
+<footer>
+  Source: <a href="https://www.cs.cmu.edu/~epxing/Class/10708-14/lecture.html">Eric Xing's lectures</a>.
+</footer>
+
+</div>
+</body>
+</html>

@@ -150,6 +150,17 @@
       font-style: italic;
     }
 
+    .entry-title a {
+      color: inherit;
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.15s;
+    }
+
+    .entry-title a:hover {
+      border-bottom-color: #000000;
+    }
+
     @media (max-width: 600px) {
       .entry-header,
       .entry-subheader {
@@ -184,11 +195,10 @@
           <span class="entry-location">Chicago, IL</span>
         </div>
         <p class="entry-detail">
-          <strong>Coursework:</strong> Abstract Linear Algebra, Convex Analysis &amp; Optimization,
-          High-Dimensional Probability, Probabilistic Graphical Models, Machine Learning Theory,
-          Machine Learning, Deep Learning, Deep Generative Models, Deep Reinforcement Learning,
-          Algorithmic Game Theory, Theory of Algorithms, Parallel Programming, GPU Programming,
-          Distributed Systems, Databases.
+          <strong>Coursework:</strong> Python Programming, Databases, Mathematical Toolkit,
+          Introduction to Computer Graphics, Algorithmic Game Theory, Foundations of Computational Data Analysis,
+          Probabilistic Graphical Models, Convex Optimization, Parallel Programming,
+          Introduction to Machine Learning, Fundamentals of Deep Learning, Statistical and Computational Learning Theory
         </p>
       </div>
 
@@ -203,10 +213,9 @@
         </div>
         <p class="entry-honor">Magna Cum Laude</p>
         <p class="entry-detail">
-          <strong>Coursework:</strong> Real Analysis, Abstract Algebra, Linear Algebra,
-          Probability &amp; Statistics, Numerical Analysis, Mathematical Optimization,
-          Data Structures, Algorithms &amp; Analysis, Theory of Computation, Artificial Intelligence,
-          Deep Learning, Computer Systems, Operating Systems, Computer Networks, Databases.
+          <strong>Coursework:</strong> Algorithsm & Data Structures I & II, Theory of Computation,
+          Artificial Intelligence, Machine Learning, Robust Machine Learning, Deep Learning, Reinforcement Learning,
+          Differential Equations, Numerical Analysis I, Abstract Algebra I, Mathematical Finance
         </p>
       </div>
     </section>
@@ -296,6 +305,21 @@
           <li>CS 380 — Artificial Intelligence (Fall 2023)</li>
           <li>CS 615 — Deep Learning (Winter 2024)</li>
         </ul>
+      </div>
+    </section>
+
+    <section id="notes">
+      <h2 class="section-heading">Notes</h2>
+
+      <div class="entry">
+        <div class="entry-header">
+          <h3 class="entry-title"><a href="notes/index.html">Course Notes</a></h3>
+        </div>
+        <p class="entry-detail">
+          Lecture notes from courses I've worked through, written for clarity
+          with embedded interactive diagrams. Currently writing up
+          Probabilistic Graphical Models.
+        </p>
       </div>
     </section>
   </main>
