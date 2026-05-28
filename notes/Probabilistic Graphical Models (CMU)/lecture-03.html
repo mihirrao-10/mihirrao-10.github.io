@@ -270,40 +270,36 @@ $$p(x_n) \;=\; \sum_{x_{n-1}} p(x_n \mid x_{n-1}) \sum_{x_{n-2}} p(x_{n-1} \mid 
 The innermost sum $\sum_{x_1} p(x_2 \mid x_1)\,p(x_1)$ is a function of $x_2$ alone — call it $\tau_2(x_2)$ — and computing it costs $\mathcal{O}(k^2)$: for each of $k$ values of $x_2$, we sum over $k$ values of $x_1$. With $\tau_2$ in hand, the next sum becomes $\tau_3(x_3) = \sum_{x_2} p(x_3 \mid x_2)\,\tau_2(x_2)$, again $\mathcal{O}(k^2)$, and so on.</p>
 
 <figure class="gfig">
-  <svg viewBox="0 0 440 130" xmlns="http://www.w3.org/2000/svg" style="max-width: 500px; width: 100%;">
+  <svg viewBox="0 0 470 95" xmlns="http://www.w3.org/2000/svg" style="max-width: 520px; width: 100%;">
     <defs>
-      <marker id="ve-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <marker id="ve-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
         <path d="M0,0 L10,5 L0,10 z" fill="#384c61"/>
       </marker>
     </defs>
-    <!-- chain -->
-    <line class="edge-d" x1="50"  y1="50" x2="105" y2="50" marker-end="url(#ve-arr)"/>
-    <line class="edge-d" x1="135" y1="50" x2="190" y2="50" marker-end="url(#ve-arr)"/>
-    <line class="edge-d" x1="220" y1="50" x2="275" y2="50" marker-end="url(#ve-arr)"/>
-    <line class="edge-d" x1="305" y1="50" x2="360" y2="50" marker-end="url(#ve-arr)" stroke-dasharray="3,3"/>
-    <line class="edge-d" x1="375" y1="50" x2="395" y2="50" marker-end="url(#ve-arr)"/>
-    <circle class="node-c" cx="40"  cy="50" r="16"/><text class="lbl" x="40"  y="51">x₁</text>
-    <circle class="node-c" cx="120" cy="50" r="16"/><text class="lbl" x="120" y="51">x₂</text>
-    <circle class="node-c" cx="205" cy="50" r="16"/><text class="lbl" x="205" y="51">x₃</text>
-    <circle class="node-c" cx="290" cy="50" r="16"/><text class="lbl" x="290" y="51">x₄</text>
-    <circle class="node-c" cx="405" cy="50" r="16"/><text class="lbl" x="405" y="51">xₙ</text>
-    <!-- intermediate factors -->
+    <!-- chain arrows: between consecutive nodes; last one dashed for the omitted middle -->
+    <line class="edge-d" x1="40"  y1="25" x2="90"  y2="25" marker-end="url(#ve-arr)"/>
+    <line class="edge-d" x1="120" y1="25" x2="170" y2="25" marker-end="url(#ve-arr)"/>
+    <line class="edge-d" x1="200" y1="25" x2="250" y2="25" marker-end="url(#ve-arr)"/>
+    <line class="edge-d" x1="280" y1="25" x2="405" y2="25" marker-end="url(#ve-arr)" stroke-dasharray="5,4"/>
+    <!-- nodes -->
+    <circle class="node-c" cx="25"  cy="25" r="14"/><text class="lbl" x="25"  y="26">x₁</text>
+    <circle class="node-c" cx="105" cy="25" r="14"/><text class="lbl" x="105" y="26">x₂</text>
+    <circle class="node-c" cx="185" cy="25" r="14"/><text class="lbl" x="185" y="26">x₃</text>
+    <circle class="node-c" cx="265" cy="25" r="14"/><text class="lbl" x="265" y="26">x₄</text>
+    <circle class="node-c" cx="425" cy="25" r="14"/><text class="lbl" x="425" y="26">xₙ</text>
+    <!-- annotations: τ_{i+1}(x_{i+1}) centered under each gap, O(k²) below that -->
     <g font-family="Inter, system-ui, sans-serif" font-size="11" font-style="italic" fill="#b05220">
-      <text x="80"  y="90" text-anchor="middle">τ₂(x₂)</text>
-      <text x="165" y="90" text-anchor="middle">τ₃(x₃)</text>
-      <text x="250" y="90" text-anchor="middle">τ₄(x₄)</text>
+      <text x="65"  y="63" text-anchor="middle">τ₂(x₂)</text>
+      <text x="145" y="63" text-anchor="middle">τ₃(x₃)</text>
+      <text x="225" y="63" text-anchor="middle">τ₄(x₄)</text>
     </g>
     <g font-family="Inter, system-ui, sans-serif" font-size="10" fill="#8b9199">
-      <text x="80"  y="105" text-anchor="middle">O(k²)</text>
-      <text x="165" y="105" text-anchor="middle">O(k²)</text>
-      <text x="250" y="105" text-anchor="middle">O(k²)</text>
+      <text x="65"  y="80" text-anchor="middle">O(k²)</text>
+      <text x="145" y="80" text-anchor="middle">O(k²)</text>
+      <text x="225" y="80" text-anchor="middle">O(k²)</text>
     </g>
-    <!-- summation brackets indicated by arcs -->
-    <path d="M 30 70 Q 80 110 130 70" stroke="#b05220" stroke-width="1.4" fill="none" stroke-dasharray="3,2"/>
-    <path d="M 115 70 Q 165 110 215 70" stroke="#b05220" stroke-width="1.4" fill="none" stroke-dasharray="3,2"/>
-    <path d="M 200 70 Q 250 110 300 70" stroke="#b05220" stroke-width="1.4" fill="none" stroke-dasharray="3,2"/>
   </svg>
-  <figcaption>Variable elimination on a chain: each summation eliminates the leftmost variable and produces an intermediate factor over a single neighbour, at cost $\mathcal{O}(k^2)$ per step. The whole pass costs $\mathcal{O}(n k^2)$ rather than $\mathcal{O}(n k^n)$.</figcaption>
+  <figcaption>Variable elimination on a chain. Each step sums out the leftmost remaining variable and stores the result as an intermediate factor $\tau_{i+1}(x_{i+1})$ on its right neighbour. Each step costs $\mathcal{O}(k^2)$, so the whole pass costs $\mathcal{O}(n k^2)$ rather than $\mathcal{O}(n k^n)$.</figcaption>
 </figure>
 
 <p>Each elimination step is $\mathcal{O}(k^2)$, and we perform $n - 1$ of them, so the total cost is $\mathcal{O}(n k^2)$ — linear in the chain length. The same answer, exponentially faster. The trick that bought this is pure dynamic programming: identify subproblems whose answers can be reused, store them, and propagate.</p>

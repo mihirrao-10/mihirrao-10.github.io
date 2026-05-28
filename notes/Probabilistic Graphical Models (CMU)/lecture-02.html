@@ -401,23 +401,25 @@ The model concentrates almost all of its probability mass on the two unanimous o
 <div class="exmp">
   <span class="label">Example</span> [<span class="name">handwritten OCR</span>]. Given a sequence of character images $x_1, \ldots, x_n$, the task is to recover the underlying letters $y_1, \ldots, y_n$. A chain CRF assigns one factor $\phi(x_i, y_i)$ per image-to-letter compatibility and one factor $\phi(y_{i-1}, y_i)$ per adjacent letter pair, capturing how often each letter pair occurs in the language (so the model prefers "th" over "tx", and so on).
   <figure class="gfig" style="margin: 0.6rem 0 0.4rem;">
-    <svg viewBox="0 0 360 130" xmlns="http://www.w3.org/2000/svg" style="max-width: 420px; width: 100%;">
-      <!-- horizontal edges between y_i (label chain) -->
-      <line class="edge-u" x1="60"  y1="40" x2="140" y2="40"/>
-      <line class="edge-u" x1="180" y1="40" x2="260" y2="40"/>
-      <line class="edge-u" x1="300" y1="40" x2="330" y2="40" stroke-dasharray="3,3"/>
-      <!-- vertical edges to x_i (emissions) -->
-      <line class="edge-u" x1="40"  y1="60" x2="40"  y2="90"/>
-      <line class="edge-u" x1="160" y1="60" x2="160" y2="90"/>
-      <line class="edge-u" x1="280" y1="60" x2="280" y2="90"/>
+    <svg viewBox="0 0 340 130" xmlns="http://www.w3.org/2000/svg" style="max-width: 400px; width: 100%;">
+      <!-- horizontal edges along the y-chain: y₁ — y₂, then dashes around ⋯, then dashes into yₙ -->
+      <line class="edge-u" x1="58"  y1="35" x2="112" y2="35"/>
+      <line class="edge-u" x1="148" y1="35" x2="200" y2="35" stroke-dasharray="4,3"/>
+      <line class="edge-u" x1="230" y1="35" x2="282" y2="35" stroke-dasharray="4,3"/>
+      <!-- mid-chain ellipsis text -->
+      <text x="215" y="40" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" fill="#6a737b">⋯</text>
+      <!-- vertical emission edges y_i — x_i -->
+      <line class="edge-u" x1="40"  y1="53" x2="40"  y2="82"/>
+      <line class="edge-u" x1="130" y1="53" x2="130" y2="82"/>
+      <line class="edge-u" x1="300" y1="53" x2="300" y2="82"/>
       <!-- y_i (output letters, top row) -->
-      <circle class="node-c" cx="40"  cy="40" r="18"/><text class="lbl" x="40"  y="41">y₁</text>
-      <circle class="node-c" cx="160" cy="40" r="18"/><text class="lbl" x="160" y="41">y₂</text>
-      <circle class="node-c" cx="280" cy="40" r="18"/><text class="lbl" x="280" y="41">yₙ</text>
+      <circle class="node-c" cx="40"  cy="35" r="18"/><text class="lbl" x="40"  y="36">y₁</text>
+      <circle class="node-c" cx="130" cy="35" r="18"/><text class="lbl" x="130" y="36">y₂</text>
+      <circle class="node-c" cx="300" cy="35" r="18"/><text class="lbl" x="300" y="36">yₙ</text>
       <!-- x_i (input images, bottom row, shaded as observed) -->
-      <circle class="node-c input" cx="40"  cy="110" r="18"/><text class="lbl" x="40"  y="111">x₁</text>
-      <circle class="node-c input" cx="160" cy="110" r="18"/><text class="lbl" x="160" y="111">x₂</text>
-      <circle class="node-c input" cx="280" cy="110" r="18"/><text class="lbl" x="280" y="111">xₙ</text>
+      <circle class="node-c input" cx="40"  cy="100" r="18"/><text class="lbl" x="40"  y="101">x₁</text>
+      <circle class="node-c input" cx="130" cy="100" r="18"/><text class="lbl" x="130" y="101">x₂</text>
+      <circle class="node-c input" cx="300" cy="100" r="18"/><text class="lbl" x="300" y="101">xₙ</text>
     </svg>
     <figcaption>A chain CRF for OCR. Output letters $y_i$ form a Markov chain; each input image $x_i$ (shaded) conditions only its own letter $y_i$.</figcaption>
   </figure>
@@ -436,65 +438,86 @@ where $f_c$ is a vector of arbitrary <em>features</em> of the variables in cliqu
 <p>A <em>factor graph</em> is an alternative graphical representation that makes the factorisation of an MRF explicit. It is a bipartite graph: one part has a node per random variable, the other part has a node per factor, and an edge connects a factor to each of the variables in its scope.</p>
 
 <figure class="gfig">
-  <svg viewBox="0 0 320 180" xmlns="http://www.w3.org/2000/svg" style="max-width: 360px; width: 100%;">
+  <svg viewBox="0 0 320 160" xmlns="http://www.w3.org/2000/svg" style="max-width: 360px; width: 100%;">
     <!-- variable circles on top row -->
-    <line class="edge-u" x1="60" y1="60" x2="60" y2="115"/>
-    <line class="edge-u" x1="60" y1="60" x2="160" y2="115"/>
-    <line class="edge-u" x1="160" y1="60" x2="160" y2="115"/>
-    <line class="edge-u" x1="160" y1="60" x2="260" y2="115"/>
-    <line class="edge-u" x1="260" y1="60" x2="260" y2="115"/>
-    <circle class="node-c" cx="60"  cy="45" r="18"/><text class="lbl" x="60"  y="46">x₁</text>
-    <circle class="node-c" cx="160" cy="45" r="18"/><text class="lbl" x="160" y="46">x₂</text>
-    <circle class="node-c" cx="260" cy="45" r="18"/><text class="lbl" x="260" y="46">x₃</text>
-    <!-- factor squares on bottom row -->
-    <rect class="factor-c" x="50"  y="115" width="20" height="20"/>
-    <rect class="factor-c" x="150" y="115" width="20" height="20"/>
-    <rect class="factor-c" x="250" y="115" width="20" height="20"/>
-    <text class="lbl-i" x="60"  y="155">φ₁</text>
-    <text class="lbl-i" x="160" y="155">φ₂</text>
-    <text class="lbl-i" x="260" y="155">φ₃</text>
+    <circle class="node-c" cx="60"  cy="40" r="18"/><text class="lbl" x="60"  y="41">x₁</text>
+    <circle class="node-c" cx="160" cy="40" r="18"/><text class="lbl" x="160" y="41">x₂</text>
+    <circle class="node-c" cx="260" cy="40" r="18"/><text class="lbl" x="260" y="41">x₃</text>
+    <!-- edges from each factor to its variables (drawn before squares so squares sit on top) -->
+    <!-- φ₁(x₁,x₂): factor between x₁ and x₂ -->
+    <line class="edge-u" x1="110" y1="103" x2="60"  y2="58"/>
+    <line class="edge-u" x1="110" y1="103" x2="160" y2="58"/>
+    <!-- φ₂(x₂,x₃): factor between x₂ and x₃ -->
+    <line class="edge-u" x1="210" y1="103" x2="160" y2="58"/>
+    <line class="edge-u" x1="210" y1="103" x2="260" y2="58"/>
+    <!-- φ₃(x₃): factor under x₃ -->
+    <line class="edge-u" x1="260" y1="103" x2="260" y2="58"/>
+    <!-- factor squares (14×14 centred on the points above) -->
+    <rect class="factor-c" x="103" y="103" width="14" height="14"/>
+    <rect class="factor-c" x="203" y="103" width="14" height="14"/>
+    <rect class="factor-c" x="253" y="103" width="14" height="14"/>
+    <!-- factor labels below squares -->
+    <text class="lbl-i" x="110" y="138" text-anchor="middle">φ₁</text>
+    <text class="lbl-i" x="210" y="138" text-anchor="middle">φ₂</text>
+    <text class="lbl-i" x="260" y="138" text-anchor="middle">φ₃</text>
   </svg>
-  <figcaption>A factor graph for an MRF with factors $\phi_1(x_1, x_2)$, $\phi_2(x_2, x_3)$, and $\phi_3(x_3)$ (illustrative). Circles are variables, squares are factors, edges connect each factor to the variables in its scope.</figcaption>
+  <figcaption>A factor graph for an MRF with factors $\phi_1(x_1, x_2)$, $\phi_2(x_2, x_3)$, $\phi_3(x_3)$. Circles are variables, squares are factors; each factor's edges go up to the variables in its scope.</figcaption>
 </figure>
 
 <p>Two different factorisations can lead to the same undirected graph but to different factor graphs. Take a triangle on three variables $\{X_1, X_2, X_3\}$ as an example. As an MRF the graph is just the three pairwise edges, and the joint can be written in two very different ways:</p>
 
 <figure class="gfig">
-  <svg viewBox="0 0 380 140" xmlns="http://www.w3.org/2000/svg" style="max-width: 440px; width: 100%;">
-    <!-- Panel 1: one factor over the triangle -->
-    <text x="80" y="18" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" font-style="italic" fill="#8b9199">single factor</text>
-    <line class="edge-u" x1="80" y1="50" x2="50" y2="105"/>
-    <line class="edge-u" x1="80" y1="50" x2="110" y2="105"/>
-    <line class="edge-u" x1="50" y1="105" x2="110" y2="105"/>
-    <line class="edge-u" x1="80" y1="50" x2="80" y2="74"/>
-    <line class="edge-u" x1="50" y1="105" x2="80" y2="80"/>
-    <line class="edge-u" x1="110" y1="105" x2="80" y2="80"/>
-    <circle class="node-c" cx="80" cy="40" r="14"/><text class="lbl" x="80" y="41">x₁</text>
-    <circle class="node-c" cx="42" cy="115" r="14"/><text class="lbl" x="42" y="116">x₂</text>
-    <circle class="node-c" cx="118" cy="115" r="14"/><text class="lbl" x="118" y="116">x₃</text>
-    <rect class="factor-c" x="73" y="73" width="14" height="14"/>
-    <text class="lbl-i" x="125" y="80">φ(x₁, x₂, x₃)</text>
+  <svg viewBox="0 0 380 160" xmlns="http://www.w3.org/2000/svg" style="max-width: 440px; width: 100%;">
+    <!-- ============ PANEL 1: single ternary factor over the triangle ============ -->
+    <text x="85" y="20" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" font-style="italic" fill="#6a737b">single factor</text>
 
-    <!-- divider -->
-    <line x1="200" y1="20" x2="200" y2="125" stroke="#c4c9cd" stroke-width="1" stroke-dasharray="3,3"/>
+    <!-- factor → variable edges (drawn first, squares sit on top) -->
+    <line class="edge-u" x1="85" y1="78" x2="85" y2="48"/>
+    <line class="edge-u" x1="85" y1="92" x2="55" y2="100"/>
+    <line class="edge-u" x1="85" y1="92" x2="115" y2="100"/>
 
-    <!-- Panel 2: three pairwise factors -->
-    <text x="290" y="18" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" font-style="italic" fill="#8b9199">three pairwise factors</text>
-    <!-- variables -->
-    <circle class="node-c" cx="290" cy="40" r="14"/><text class="lbl" x="290" y="41">x₁</text>
-    <circle class="node-c" cx="252" cy="115" r="14"/><text class="lbl" x="252" y="116">x₂</text>
-    <circle class="node-c" cx="328" cy="115" r="14"/><text class="lbl" x="328" y="116">x₃</text>
-    <!-- factor squares between each pair -->
-    <rect class="factor-c" x="263" y="72" width="11" height="11"/>
-    <rect class="factor-c" x="306" y="72" width="11" height="11"/>
-    <rect class="factor-c" x="284" y="105" width="11" height="11"/>
-    <!-- edges from factors to variables -->
-    <line class="edge-u" x1="269" y1="78" x2="284" y2="50"/>
-    <line class="edge-u" x1="269" y1="78" x2="258" y2="103"/>
-    <line class="edge-u" x1="311" y1="78" x2="296" y2="50"/>
-    <line class="edge-u" x1="311" y1="78" x2="322" y2="103"/>
-    <line class="edge-u" x1="289" y1="111" x2="262" y2="115"/>
-    <line class="edge-u" x1="295" y1="111" x2="316" y2="115"/>
+    <!-- variables (triangle) -->
+    <circle class="node-c" cx="85"  cy="34" r="13"/><text class="lbl" x="85"  y="35">x₁</text>
+    <circle class="node-c" cx="50"  cy="110" r="13"/><text class="lbl" x="50"  y="111">x₂</text>
+    <circle class="node-c" cx="120" cy="110" r="13"/><text class="lbl" x="120" y="111">x₃</text>
+
+    <!-- factor square in centroid -->
+    <rect class="factor-c" x="78" y="78" width="14" height="14"/>
+
+    <!-- factor label -->
+    <text class="lbl-i" x="85" y="145" text-anchor="middle">φ(x₁, x₂, x₃)</text>
+
+    <!-- ============ divider ============ -->
+    <line x1="200" y1="25" x2="200" y2="145" stroke="#c4c9cd" stroke-width="1" stroke-dasharray="3,3"/>
+
+    <!-- ============ PANEL 2: three pairwise factors ============ -->
+    <text x="290" y="20" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" font-style="italic" fill="#6a737b">three pairwise factors</text>
+
+    <!-- factor → variable edges -->
+    <!-- φ₁₂ at (267, 72): connects x₁ (top) and x₂ (bottom-left) -->
+    <line class="edge-u" x1="267" y1="72" x2="282" y2="46"/>
+    <line class="edge-u" x1="267" y1="78" x2="255" y2="100"/>
+    <!-- φ₁₃ at (313, 72): connects x₁ (top) and x₃ (bottom-right) -->
+    <line class="edge-u" x1="313" y1="72" x2="298" y2="46"/>
+    <line class="edge-u" x1="313" y1="78" x2="325" y2="100"/>
+    <!-- φ₂₃ at (290, 110): connects x₂ (left) and x₃ (right) -->
+    <line class="edge-u" x1="283" y1="110" x2="268" y2="110"/>
+    <line class="edge-u" x1="297" y1="110" x2="312" y2="110"/>
+
+    <!-- variables (triangle, shifted right) -->
+    <circle class="node-c" cx="290" cy="34" r="13"/><text class="lbl" x="290" y="35">x₁</text>
+    <circle class="node-c" cx="255" cy="110" r="13"/><text class="lbl" x="255" y="111">x₂</text>
+    <circle class="node-c" cx="325" cy="110" r="13"/><text class="lbl" x="325" y="111">x₃</text>
+
+    <!-- three factor squares -->
+    <rect class="factor-c" x="261" y="65" width="12" height="14"/>
+    <rect class="factor-c" x="307" y="65" width="12" height="14"/>
+    <rect class="factor-c" x="284" y="104" width="12" height="12"/>
+
+    <!-- factor labels -->
+    <text class="lbl-i" x="261" y="60" text-anchor="end">φ₁₂</text>
+    <text class="lbl-i" x="319" y="60" text-anchor="start">φ₁₃</text>
+    <text class="lbl-i" x="290" y="135" text-anchor="middle">φ₂₃</text>
   </svg>
   <figcaption>The same triangle MRF can be parameterised with a single ternary factor $\phi(x_1, x_2, x_3)$ over all three variables, or with three pairwise factors $\phi_{12}, \phi_{13}, \phi_{23}$. The undirected graphs are identical; the factor graphs make the difference explicit.</figcaption>
 </figure>
