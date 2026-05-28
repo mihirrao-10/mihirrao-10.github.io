@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chapter 3 · Variable Elimination</title>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {delimiters: [
+          {left: '$$', right: '$$', display: true},
+          {left: '$',  right: '$',  display: false},
+          {left: '\\[', right: '\\]', display: true}
+        ], throwOnError: false});"></script>
+
+<style>
+  :root {
+    --ink: #232a30;
+    --accent: #384c61;
+    --rule: #c4c9cd;
+    --rule-soft: #e4e7ea;
+    --muted: #8b9199;
+    --noteblue: #b05220;
+    --bg: #ffffff;
+    --bg-soft: #fafaf7;
+    --bg-widget: #f4f4ef;
+    --proof: #fff8da;
+    --highlight: #fff2c2;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    font-family: "Iowan Old Style", "Charter", "Source Serif Pro", "Sitka Text", Cambria, Georgia, serif;
+    color: var(--ink); background: var(--bg);
+    line-height: 1.65; margin: 0; padding: 0;
+    font-size: 17px; -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 2.4rem 1.4rem 4rem; }
+  nav.crumbs {
+    font-size: 0.85rem; font-variant: small-caps;
+    letter-spacing: 0.06em; color: var(--muted); margin-bottom: 1.4rem;
+  }
+  nav.crumbs a { color: var(--accent); text-decoration: none; }
+  nav.crumbs a:hover { text-decoration: underline; }
+  header.title {
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 1.2rem; margin-bottom: 2rem;
+  }
+  .course {
+    font-variant: small-caps; letter-spacing: 0.06em;
+    color: var(--accent); font-size: 0.85rem; margin: 0 0 0.4rem;
+  }
+  h1 { font-weight: 600; font-size: 2rem; margin: 0 0 0.6rem; line-height: 1.2; color: var(--ink); }
+  .byline { color: #6a737b; font-size: 0.92rem; margin: 0; font-style: italic; }
+  h2 { font-size: 1.32rem; font-weight: 600; margin: 2.4rem 0 0.6rem; color: var(--ink); }
+  p { margin: 0.7rem 0; }
+  a { color: var(--accent); }
+  em { font-variant: small-caps; font-style: normal; color: var(--noteblue); letter-spacing: 0.02em; }
+  ul, ol { padding-left: 1.4rem; }
+  li { margin: 0.3rem 0; }
+  .leadin { font-weight: 600; }
+  code {
+    font-family: "iA Writer Mono", "JetBrains Mono", Consolas, monospace;
+    font-size: 0.92em;
+    background: #f7f7f3; padding: 0.05em 0.3em; border-radius: 3px;
+  }
+
+  .defn, .exmp {
+    border-left: 2px solid var(--accent);
+    padding: 0.1rem 0 0.1rem 1rem;
+    margin: 1.1rem 0;
+    background: var(--bg-soft);
+    border-radius: 0 4px 4px 0;
+    overflow-x: auto;
+  }
+  .exmp { border-left-color: var(--rule); }
+  .defn .label, .exmp .label {
+    font-variant: small-caps; font-weight: 600; color: var(--accent);
+    letter-spacing: 0.04em; margin-right: 0.3em;
+  }
+  .exmp .label { color: var(--ink); }
+  .defn .name, .exmp .name { font-variant: small-caps; color: var(--noteblue); letter-spacing: 0.02em; }
+
+  .theorem {
+    background: var(--proof); border-radius: 4px;
+    padding: 0.8rem 1rem; margin: 1.2rem 0;
+    font-style: italic; overflow-x: auto;
+  }
+  .theorem .tlabel {
+    font-style: normal; font-weight: 600; font-variant: small-caps;
+    letter-spacing: 0.04em; color: var(--ink); margin-right: 0.3em;
+  }
+
+  /* algorithm box */
+  .algo {
+    background: #fafaf7;
+    border: 1px solid var(--rule-soft);
+    border-radius: 4px;
+    padding: 0.7rem 0.95rem;
+    margin: 1rem 0;
+    font-family: "iA Writer Mono", "JetBrains Mono", Consolas, monospace;
+    font-size: 0.88em;
+    line-height: 1.55;
+    overflow-x: auto;
+  }
+  .algo .head {
+    font-family: "Inter", system-ui, sans-serif;
+    font-size: 0.74rem;
+    font-variant: small-caps;
+    letter-spacing: 0.08em;
+    color: var(--accent);
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+  }
+  .algo .kw { color: var(--noteblue); font-weight: 600; }
+  .algo .cm { color: var(--muted); font-style: italic; }
+
+  /* static figure scaffold */
+  .gfig {
+    margin: 1.4rem 0;
+    display: flex; flex-direction: column; align-items: center;
+  }
+  .gfig svg { max-width: 100%; height: auto; }
+  .gfig figcaption {
+    margin-top: 0.5rem;
+    font-size: 0.84rem;
+    color: var(--muted);
+    font-style: italic;
+    text-align: center;
+    max-width: 560px;
+    padding: 0 0.6rem;
+  }
+  .gfig .node-c { fill: #f7f7f3; stroke: #384c61; stroke-width: 1.4; }
+  .gfig .lbl { font: 600 13px "Inter", system-ui, sans-serif; fill: #232a30; text-anchor: middle; dominant-baseline: middle; }
+  .gfig .edge-d { stroke: #384c61; stroke-width: 1.4; fill: none; }
+
+  /* factor tables */
+  .factab-row {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr auto 1fr;
+    gap: 0.6rem;
+    align-items: center;
+    margin: 1rem 0;
+  }
+  .factab {
+    background: white;
+    border: 1px solid var(--rule-soft);
+    border-radius: 4px;
+    padding: 0.45rem 0.55rem;
+    font-family: "iA Writer Mono", "JetBrains Mono", Consolas, monospace;
+    font-size: 0.85rem;
+  }
+  .factab .cap {
+    text-align: center;
+    color: var(--muted);
+    font-style: italic;
+    font-size: 0.78rem;
+    margin-bottom: 0.25rem;
+    font-family: "Inter", system-ui, sans-serif;
+  }
+  .factab table { border-collapse: collapse; margin: 0 auto; }
+  .factab th, .factab td {
+    padding: 0.12rem 0.4rem;
+    text-align: center;
+    border-bottom: 1px solid var(--rule-soft);
+  }
+  .factab th { font-weight: 600; color: var(--accent); font-family: "Inter", system-ui, sans-serif; }
+  .factab tr:last-child td { border-bottom: none; }
+  .factab-op {
+    text-align: center;
+    font-family: "Inter", system-ui, sans-serif;
+    font-size: 1.2rem;
+    color: var(--accent);
+  }
+  @media (max-width: 600px) {
+    .factab-row { grid-template-columns: 1fr; }
+    .factab-op { transform: rotate(90deg); }
+  }
+
+  /* paginator */
+  nav.paginator {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 3rem;
+    padding-top: 1.2rem;
+    border-top: 1px solid var(--rule-soft);
+    font-size: 0.9rem;
+  }
+  nav.paginator a {
+    color: var(--accent);
+    text-decoration: none;
+    padding: 0.4rem 0;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.15s;
+  }
+  nav.paginator a:hover { border-bottom-color: var(--accent); }
+  nav.paginator .placeholder { color: #c0c5ca; cursor: default; }
+  nav.paginator .placeholder:hover { border-bottom-color: transparent; }
+  nav.paginator .next { text-align: right; }
+  nav.paginator .label {
+    display: block;
+    font-size: 0.75rem;
+    font-variant: small-caps;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    margin-bottom: 0.15rem;
+  }
+
+  footer {
+    margin-top: 2rem;
+    padding-top: 1.2rem;
+    border-top: 1px solid var(--rule-soft);
+    font-size: 0.83rem;
+    color: #7a8088;
+  }
+  footer a { color: var(--accent); }
+
+  @media (max-width: 540px) {
+    body { font-size: 16px; }
+    .wrap { padding: 2rem 1rem 4rem; }
+    h1 { font-size: 1.6rem; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<nav class="crumbs"><a href="../index.html">Course Notes</a> &rsaquo; <a href="index.html">Probabilistic Graphical Models</a> &rsaquo; Chapter 3</nav>
+
+<header class="title">
+  <p class="course">Probabilistic Graphical Models</p>
+  <h1>Chapter 3: Variable Elimination</h1>
+  <p class="byline">Notes by Mihir Rao</p>
+</header>
+
+<article>
+
+<p>The previous two chapters were about <em>representation</em>: how to compactly describe a joint distribution using a graph. This chapter is about <em>inference</em>: how to answer probabilistic questions from that representation. Given a Bayesian network or Markov random field, we will repeatedly want to compute things like $\mathbb{P}(X_i = x)$, $\mathbb{P}(X_i \mid \text{evidence})$, or $\arg\max_x \mathbb{P}(x)$. In general these problems are NP-hard — but exploiting the graph structure with a dynamic-programming algorithm called <em>variable elimination</em> makes them tractable for many models of interest.</p>
+
+<h2>3.1&nbsp;&nbsp;The Two Inference Problems</h2>
+
+<p>Two kinds of question come up constantly.</p>
+
+<div class="defn">
+  <span class="label">Definition</span> [<span class="name">marginal inference</span>]. Given a joint distribution $p(x_1, \ldots, x_n)$ and a subset $Y \subseteq \{X_1, \ldots, X_n\}$ of query variables, compute the marginal
+  $$p(y) \;=\; \sum_{x_1, \ldots, x_n \setminus y} p(x_1, \ldots, x_n).$$
+</div>
+
+<div class="defn">
+  <span class="label">Definition</span> [<span class="name">MAP inference</span>]. Given $p$, find the most likely joint assignment:
+  $$x^\star \;=\; \arg\max_{x_1, \ldots, x_n}\, p(x_1, \ldots, x_n).$$
+</div>
+
+<p>Both problems are NP-hard in general — there are joint distributions for which no algorithm can be polynomial in $n$ unless P = NP. But the practical situation is much friendlier: when the graphical structure is sparse enough, both problems can be solved in time polynomial in the size of the model. Variable elimination is the basic exact-inference algorithm that exploits the graph structure to do so.</p>
+
+<h2>3.2&nbsp;&nbsp;A Motivating Example: Inference on a Chain</h2>
+
+<p>The clearest illustration is the chain Bayesian network
+$$p(x_1, \ldots, x_n) \;=\; p(x_1) \prod_{i=2}^{n} p(x_i \mid x_{i-1}),$$
+where each variable takes values in a domain of size $k$. Suppose we want the marginal $p(x_n)$.</p>
+
+<p><span class="leadin">The naive way.</span> By definition,
+$$p(x_n) \;=\; \sum_{x_1} \sum_{x_2} \cdots \sum_{x_{n-1}} p(x_1) \prod_{i=2}^{n} p(x_i \mid x_{i-1}).$$
+There are $k^{n-1}$ assignments to sum over, and each term costs $O(n)$ multiplications, giving total time $\mathcal{O}(n k^n)$. For $n = 30$ binary variables this is already astronomical.</p>
+
+<p><span class="leadin">The dynamic-programming way.</span> Notice that each conditional $p(x_i \mid x_{i-1})$ depends only on the two adjacent variables. We can <em>push the summations inward</em> to the smallest scope they affect:
+$$p(x_n) \;=\; \sum_{x_{n-1}} p(x_n \mid x_{n-1}) \sum_{x_{n-2}} p(x_{n-1} \mid x_{n-2}) \cdots \sum_{x_1} p(x_2 \mid x_1)\,p(x_1).$$
+The innermost sum $\sum_{x_1} p(x_2 \mid x_1)\,p(x_1)$ is a function of $x_2$ alone — call it $\tau_2(x_2)$ — and computing it costs $\mathcal{O}(k^2)$: for each of $k$ values of $x_2$, we sum over $k$ values of $x_1$. With $\tau_2$ in hand, the next sum becomes $\tau_3(x_3) = \sum_{x_2} p(x_3 \mid x_2)\,\tau_2(x_2)$, again $\mathcal{O}(k^2)$, and so on.</p>
+
+<figure class="gfig">
+  <svg viewBox="0 0 440 130" xmlns="http://www.w3.org/2000/svg" style="max-width: 500px; width: 100%;">
+    <defs>
+      <marker id="ve-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M0,0 L10,5 L0,10 z" fill="#384c61"/>
+      </marker>
+    </defs>
+    <!-- chain -->
+    <line class="edge-d" x1="50"  y1="50" x2="105" y2="50" marker-end="url(#ve-arr)"/>
+    <line class="edge-d" x1="135" y1="50" x2="190" y2="50" marker-end="url(#ve-arr)"/>
+    <line class="edge-d" x1="220" y1="50" x2="275" y2="50" marker-end="url(#ve-arr)"/>
+    <line class="edge-d" x1="305" y1="50" x2="360" y2="50" marker-end="url(#ve-arr)" stroke-dasharray="3,3"/>
+    <line class="edge-d" x1="375" y1="50" x2="395" y2="50" marker-end="url(#ve-arr)"/>
+    <circle class="node-c" cx="40"  cy="50" r="16"/><text class="lbl" x="40"  y="51">x₁</text>
+    <circle class="node-c" cx="120" cy="50" r="16"/><text class="lbl" x="120" y="51">x₂</text>
+    <circle class="node-c" cx="205" cy="50" r="16"/><text class="lbl" x="205" y="51">x₃</text>
+    <circle class="node-c" cx="290" cy="50" r="16"/><text class="lbl" x="290" y="51">x₄</text>
+    <circle class="node-c" cx="405" cy="50" r="16"/><text class="lbl" x="405" y="51">xₙ</text>
+    <!-- intermediate factors -->
+    <g font-family="Inter, system-ui, sans-serif" font-size="11" font-style="italic" fill="#b05220">
+      <text x="80"  y="90" text-anchor="middle">τ₂(x₂)</text>
+      <text x="165" y="90" text-anchor="middle">τ₃(x₃)</text>
+      <text x="250" y="90" text-anchor="middle">τ₄(x₄)</text>
+    </g>
+    <g font-family="Inter, system-ui, sans-serif" font-size="10" fill="#8b9199">
+      <text x="80"  y="105" text-anchor="middle">$O(k^2)$</text>
+      <text x="165" y="105" text-anchor="middle">$O(k^2)$</text>
+      <text x="250" y="105" text-anchor="middle">$O(k^2)$</text>
+    </g>
+    <!-- summation brackets indicated by arcs -->
+    <path d="M 30 70 Q 80 110 130 70" stroke="#b05220" stroke-width="1.4" fill="none" stroke-dasharray="3,2"/>
+    <path d="M 115 70 Q 165 110 215 70" stroke="#b05220" stroke-width="1.4" fill="none" stroke-dasharray="3,2"/>
+    <path d="M 200 70 Q 250 110 300 70" stroke="#b05220" stroke-width="1.4" fill="none" stroke-dasharray="3,2"/>
+  </svg>
+  <figcaption>Variable elimination on a chain: each summation eliminates the leftmost variable and produces an intermediate factor over a single neighbour, at cost $\mathcal{O}(k^2)$ per step. The whole pass costs $\mathcal{O}(n k^2)$ rather than $\mathcal{O}(n k^n)$.</figcaption>
+</figure>
+
+<p>Each elimination step is $\mathcal{O}(k^2)$, and we perform $n - 1$ of them, so the total cost is $\mathcal{O}(n k^2)$ — linear in the chain length. The same answer, exponentially faster. The trick that bought this is pure dynamic programming: identify subproblems whose answers can be reused, store them, and propagate.</p>
+
+<h2>3.3&nbsp;&nbsp;Factor Operations</h2>
+
+<p>To generalise from chains to arbitrary graphs, we need to fix vocabulary. A graphical model factorises as a product of <em>factors</em>:
+$$p(x_1, \ldots, x_n) \;=\; \frac{1}{Z}\, \prod_{c \in C} \phi_c(x_c).$$
+For a Bayesian network, the factors are CPDs and $Z = 1$; for an MRF, they are clique potentials and $Z$ is the partition function. The variable-elimination algorithm manipulates factors using two basic operations: <em>product</em> and <em>marginalisation</em>.</p>
+
+<div class="defn">
+  <span class="label">Definition</span> [<span class="name">factor product</span>]. Given two factors $\phi_1(X^{(1)})$ and $\phi_2(X^{(2)})$, their <em>product</em> is a factor whose scope is $X^{(1)} \cup X^{(2)}$, defined for each joint assignment $x$ by
+  $$\phi_3(x_{1 \cup 2}) \;=\; \phi_1(x_{(1)}) \cdot \phi_2(x_{(2)}).$$
+</div>
+
+<p>If $\phi_1$ has scope $\{A, B\}$ and $\phi_2$ has scope $\{B, C\}$, then $\phi_1 \cdot \phi_2$ has scope $\{A, B, C\}$, and for each $(a, b, c)$ we take the product of the two factor entries that match those values. The cost of building the product is proportional to the size of the result table — $\mathcal{O}(k^3)$ in this case.</p>
+
+<div class="defn">
+  <span class="label">Definition</span> [<span class="name">factor marginalisation</span>]. Given a factor $\phi(X, Y)$ with scope partitioned into two subsets $X$ and $Y$, <em>marginalising out</em> $Y$ produces a factor on $X$:
+  $$\tau(x) \;=\; \sum_{y} \phi(x, y).$$
+</div>
+
+<p>Marginalisation does not generally produce a probability distribution — $\tau$ is just a non-negative function over $X$. If the original $\phi$ was already a properly normalised joint, then $\tau$ is the corresponding marginal; in the middle of an elimination pass, $\tau$ is just an intermediate quantity that will be multiplied with other factors before any final normalisation.</p>
+
+<div class="exmp">
+  <span class="label">Example</span> [<span class="name">a small factor product and marginalisation</span>]. Let $\phi_1(A, B)$ and $\phi_2(B, C)$ be the binary factors
+  <div class="factab-row">
+    <div class="factab">
+      <div class="cap">$\phi_1(A, B)$</div>
+      <table><tr><th>A</th><th>B</th><th>$\phi_1$</th></tr>
+        <tr><td>0</td><td>0</td><td>0.8</td></tr>
+        <tr><td>0</td><td>1</td><td>0.2</td></tr>
+        <tr><td>1</td><td>0</td><td>0.4</td></tr>
+        <tr><td>1</td><td>1</td><td>0.6</td></tr>
+      </table>
+    </div>
+    <div class="factab-op">×</div>
+    <div class="factab">
+      <div class="cap">$\phi_2(B, C)$</div>
+      <table><tr><th>B</th><th>C</th><th>$\phi_2$</th></tr>
+        <tr><td>0</td><td>0</td><td>0.5</td></tr>
+        <tr><td>0</td><td>1</td><td>0.5</td></tr>
+        <tr><td>1</td><td>0</td><td>0.1</td></tr>
+        <tr><td>1</td><td>1</td><td>0.9</td></tr>
+      </table>
+    </div>
+    <div class="factab-op">=</div>
+    <div class="factab">
+      <div class="cap">$\phi_1 \cdot \phi_2$ &nbsp; (scope $A, B, C$)</div>
+      <table><tr><th>A</th><th>B</th><th>C</th><th>val</th></tr>
+        <tr><td>0</td><td>0</td><td>0</td><td>0.40</td></tr>
+        <tr><td>0</td><td>0</td><td>1</td><td>0.40</td></tr>
+        <tr><td>0</td><td>1</td><td>0</td><td>0.02</td></tr>
+        <tr><td>0</td><td>1</td><td>1</td><td>0.18</td></tr>
+        <tr><td>1</td><td>0</td><td>0</td><td>0.20</td></tr>
+        <tr><td>1</td><td>0</td><td>1</td><td>0.20</td></tr>
+        <tr><td>1</td><td>1</td><td>0</td><td>0.06</td></tr>
+        <tr><td>1</td><td>1</td><td>1</td><td>0.54</td></tr>
+      </table>
+    </div>
+  </div>
+  Marginalising the product over $B$ gives the factor over $\{A, C\}$:
+  $$\tau(A=0, C=0) = 0.40 + 0.02 = 0.42, \quad \tau(A=0, C=1) = 0.40 + 0.18 = 0.58,$$
+  $$\tau(A=1, C=0) = 0.20 + 0.06 = 0.26, \quad \tau(A=1, C=1) = 0.20 + 0.54 = 0.74.$$
+</div>
+
+<h2>3.4&nbsp;&nbsp;The Variable Elimination Algorithm</h2>
+
+<p>With those operations in place, the algorithm is short.</p>
+
+<div class="algo">
+  <div class="head">Algorithm — Variable Elimination</div>
+  <span class="cm"># input: factor set $\Phi = \{\phi_c\}$, elimination ordering $O$ over variables to remove, query $Y$</span><br>
+  <span class="cm"># output: a factor proportional to $p(Y)$</span><br>
+  <span class="kw">for</span> each $X_i$ in $O$:<br>
+  &nbsp;&nbsp;1. Collect $\Phi_i \subseteq \Phi$ &mdash; the factors whose scope contains $X_i$.<br>
+  &nbsp;&nbsp;2. Multiply them: $\sigma_i \leftarrow \prod_{\phi \in \Phi_i} \phi$.<br>
+  &nbsp;&nbsp;3. Marginalise: $\tau_i(x) \leftarrow \sum_{X_i} \sigma_i(x, X_i)$.<br>
+  &nbsp;&nbsp;4. Replace: $\Phi \leftarrow (\Phi \setminus \Phi_i) \cup \{\tau_i\}$.<br>
+  <span class="kw">return</span> $\prod_{\phi \in \Phi} \phi$
+</div>
+
+<p>Each iteration sums one variable out and replaces the factors that mentioned it with a single intermediate factor over their residual scopes. The final product, after every elimination has happened, is proportional to the marginal $p(Y)$; one final normalisation divides by its total mass if a probability is desired.</p>
+
+<h2>3.5&nbsp;&nbsp;A Worked Example: The Student Grades Model</h2>
+
+<p>Take the student-grades Bayesian network from chapter 1, with variables difficulty $d$, intelligence $i$, grade $g$, SAT score $s$, and letter quality $l$, and joint
+$$p(l, g, i, d, s) \;=\; p(l \mid g)\, p(g \mid i, d)\, p(i)\, p(d)\, p(s \mid i).$$
+Suppose we want the marginal $p(l)$ using the elimination ordering $d, i, s, g$.</p>
+
+<p><span class="leadin">Eliminate $d$.</span> The factors mentioning $d$ are $p(g \mid i, d)$ and $p(d)$. Multiply and sum:
+$$\tau_1(g, i) \;=\; \sum_d p(g \mid i, d)\, p(d).$$
+The factor $p(d)$ disappears from the factor set, $p(g \mid i, d)$ is replaced by $\tau_1(g, i)$, and the remaining set is $\{p(l \mid g),\, \tau_1(g, i),\, p(i),\, p(s \mid i)\}$.</p>
+
+<p><span class="leadin">Eliminate $i$.</span> The factors mentioning $i$ are $\tau_1(g, i)$, $p(i)$, and $p(s \mid i)$. Multiply and sum:
+$$\tau_2(g, s) \;=\; \sum_i \tau_1(g, i)\, p(i)\, p(s \mid i).$$
+The set becomes $\{p(l \mid g),\, \tau_2(g, s)\}$.</p>
+
+<p><span class="leadin">Eliminate $s$.</span> Only $\tau_2(g, s)$ mentions $s$:
+$$\tau_3(g) \;=\; \sum_s \tau_2(g, s).$$
+The set becomes $\{p(l \mid g),\, \tau_3(g)\}$.</p>
+
+<p><span class="leadin">Eliminate $g$.</span> Both remaining factors mention $g$:
+$$p(l) \;=\; \sum_g p(l \mid g)\, \tau_3(g).$$
+The result is the desired marginal $p(l)$.</p>
+
+<p>Each intermediate factor has scope at most two variables, so every step's cost is $\mathcal{O}(k^3)$ (multiplying two binary factors gives a ternary factor, which we then sum out a variable from). Over four eliminations the total cost is also $\mathcal{O}(k^3)$ — far cheaper than the naive $\mathcal{O}(k^5)$ marginalisation of a five-variable joint.</p>
+
+<h2>3.6&nbsp;&nbsp;Incorporating Evidence</h2>
+
+<p>Marginal queries are usually conditional: we want $p(Y \mid E = e)$ for some observed evidence $E = e$ rather than the raw marginal $p(Y)$. By Bayes' rule
+$$p(Y \mid E = e) \;=\; \frac{p(Y, E = e)}{p(E = e)},$$
+both numerator and denominator are themselves marginal queries, each solvable by variable elimination.</p>
+
+<p>The standard trick is to <em>reduce factors with evidence</em> at the start: replace every factor $\phi(X)$ whose scope contains an evidence variable with the slice obtained by fixing that variable to its observed value. The reduced factor has lower-dimensional scope and the same numerical entries. Then run variable elimination on the residual factor set with the evidence variables removed from the elimination ordering. The output is a factor over $Y$ proportional to the joint $p(Y, E = e)$; renormalising gives the conditional $p(Y \mid E = e)$.</p>
+
+<h2>3.7&nbsp;&nbsp;Complexity</h2>
+
+<p>The cost of a single elimination step is dominated by the size of the intermediate factor it produces, which is exponential in that factor's scope. Let $M$ be the largest scope size of any intermediate factor created during the elimination pass. Then the total running time is
+$$\mathcal{O}\bigl( n \cdot k^{M+1} \bigr),$$
+where $n$ is the number of variables and $k$ is the maximum domain size of any variable. The exponent is determined by $M$, not by $n$ — so the algorithm is polynomial in $n$ for any fixed $M$, but the constant $M$ depends crucially on the elimination ordering.</p>
+
+<div class="exmp">
+  <span class="label">Example</span> [<span class="name">ordering matters</span>]. In the student-grades example above, eliminating in the order $d, i, s, g$ kept every intermediate factor's scope at most two, so $M = 2$. Had we eliminated $g$ first, the factors mentioning it — $p(l \mid g)$ and $p(g \mid i, d)$ — would have multiplied to a factor with scope $\{l, i, d\}$, immediately pushing $M$ to 3. On larger graphs the wrong ordering can blow up the intermediate scopes to size $n$, recovering the original exponential cost.
+</div>
+
+<h2>3.8&nbsp;&nbsp;Choosing an Elimination Ordering</h2>
+
+<p>Finding the ordering that minimises $M$ is NP-hard in general — itself an instance of a known graph problem (computing the <em>treewidth</em> of the graph). In practice we rely on greedy heuristics that pick the next variable to eliminate based on a local criterion:</p>
+
+<ul>
+  <li><em>Min-neighbours</em> — pick the variable currently sharing a factor with the fewest other variables.</li>
+  <li><em>Min-weight</em> — pick the variable that, when eliminated, would produce the smallest intermediate factor measured by the product of its variables' domain sizes.</li>
+  <li><em>Min-fill</em> — pick the variable whose elimination would add the fewest new "fill" edges between its neighbours.</li>
+</ul>
+
+<p>None of these is guaranteed to find an optimal ordering, but all are cheap to compute and tend to perform well on real models. The underlying graph-theoretic notion they target is the <em>treewidth</em>: for tree-structured Bayesian networks the treewidth is $1$, and variable elimination runs in time linear in $n$. As the graph becomes denser, the treewidth grows, and exact inference becomes correspondingly more expensive — eventually intractable, at which point approximate inference (the subject of later chapters) becomes the practical option.</p>
+
+<h2>3.9&nbsp;&nbsp;Summary</h2>
+
+<ul>
+  <li>Inference in graphical models splits into two basic problems: <em>marginal</em> queries $p(Y)$ and <em>MAP</em> queries $\arg\max_x p(x)$. Both are NP-hard in general but tractable when the graph is sparse enough.</li>
+  <li>Variable elimination is the basic exact-inference algorithm. It pushes summations inward along the factorisation, building intermediate <em>factors</em> via the two operations of <em>factor product</em> and <em>factor marginalisation</em>.</li>
+  <li>On a chain of $n$ variables with domain size $k$, the algorithm runs in $\mathcal{O}(n k^2)$, an exponential speedup over the naive $\mathcal{O}(n k^n)$ marginalisation.</li>
+  <li>Evidence is incorporated by reducing factors to their slices at observed values, then running variable elimination on the residual factor set.</li>
+  <li>The total cost is $\mathcal{O}(n k^{M+1})$ where $M$ is the largest intermediate scope, which depends on the elimination ordering. Choosing the optimal ordering is NP-hard; the standard heuristics are min-neighbours, min-weight, and min-fill.</li>
+  <li>The underlying graph parameter is <em>treewidth</em>: trees have treewidth $1$ and inference is linear; dense graphs have high treewidth and force us toward approximate methods.</li>
+</ul>
+
+</article>
+
+<nav class="paginator">
+  <a href="lecture-02.html"><span class="label">Previous</span>← Markov Random Fields</a>
+  <a class="next placeholder"><span class="label">Next</span>Belief Propagation (forthcoming) →</a>
+</nav>
+
+<footer>
+  Diagrams powered by inline SVG; math by <a href="https://katex.org/">KaTeX</a>.
+</footer>
+
+</div>
+</body>
+</html>
