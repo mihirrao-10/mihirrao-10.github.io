@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lecture 1 · Why Parallelism? Why Efficiency?</title>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {delimiters: [
+          {left: '$$', right: '$$', display: true},
+          {left: '$',  right: '$',  display: false},
+          {left: '\\[', right: '\\]', display: true}
+        ], throwOnError: false});"></script>
+
+<style>
+  :root {
+    --ink: #232a30;
+    --accent: #384c61;
+    --rule: #c4c9cd;
+    --rule-soft: #e4e7ea;
+    --muted: #8b9199;
+    --noteblue: #b05220;
+    --bg: #ffffff;
+    --bg-soft: #fafaf7;
+    --bg-widget: #f4f4ef;
+    --proof: #fff8da;
+    --code-bg: #f7f7f3;
+    --hot: #b03434;
+    --warm: #c97042;
+    --cool: #4a7ba8;
+    --cold: #5e8a52;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    font-family: "Iowan Old Style", "Charter", "Source Serif Pro", "Sitka Text", Cambria, Georgia, serif;
+    color: var(--ink);
+    background: var(--bg);
+    line-height: 1.65;
+    margin: 0; padding: 0;
+    font-size: 17px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 2.4rem 1.4rem 4rem; }
+  nav.crumbs {
+    font-size: 0.85rem;
+    font-variant: small-caps;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    margin-bottom: 1.4rem;
+  }
+  nav.crumbs a { color: var(--accent); text-decoration: none; }
+  nav.crumbs a:hover { text-decoration: underline; }
+  header.title {
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 1.2rem;
+    margin-bottom: 2rem;
+  }
+  .course {
+    font-variant: small-caps;
+    letter-spacing: 0.06em;
+    color: var(--accent);
+    font-size: 0.85rem;
+    margin: 0 0 0.4rem;
+  }
+  h1 { font-weight: 600; font-size: 2rem; margin: 0 0 0.6rem; line-height: 1.2; color: var(--ink); }
+  .byline { color: #6a737b; font-size: 0.92rem; margin: 0; font-style: italic; }
+  h2 { font-size: 1.32rem; font-weight: 600; margin: 2.4rem 0 0.6rem; color: var(--ink); }
+  h3.sub { font-size: 1.06rem; font-weight: 600; font-style: italic; margin: 1.4rem 0 0.4rem; color: var(--ink); }
+  p { margin: 0.7rem 0; }
+  a { color: var(--accent); }
+  em { font-variant: small-caps; font-style: normal; color: var(--noteblue); letter-spacing: 0.02em; }
+  ul, ol { padding-left: 1.4rem; }
+  li { margin: 0.3rem 0; }
+  .leadin { font-weight: 600; }
+  code {
+    font-family: "iA Writer Mono", "JetBrains Mono", Consolas, monospace;
+    font-size: 0.92em;
+    background: var(--code-bg);
+    padding: 0.05em 0.3em;
+    border-radius: 3px;
+  }
+  pre {
+    background: var(--code-bg);
+    border: 1px solid var(--rule-soft);
+    border-radius: 4px;
+    padding: 0.7rem 0.95rem;
+    overflow-x: auto;
+    font-family: "iA Writer Mono", "JetBrains Mono", Consolas, monospace;
+    font-size: 0.88em;
+    line-height: 1.5;
+    margin: 0.9rem 0;
+  }
+  pre code { background: none; padding: 0; }
+
+  .defn, .exmp {
+    border-left: 2px solid var(--accent);
+    padding: 0.1rem 0 0.1rem 1rem;
+    margin: 1.1rem 0;
+    background: var(--bg-soft);
+    border-radius: 0 4px 4px 0;
+    overflow-x: auto;
+  }
+  .exmp { border-left-color: var(--rule); }
+  .defn .label, .exmp .label {
+    font-variant: small-caps;
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: 0.04em;
+    margin-right: 0.3em;
+  }
+  .exmp .label { color: var(--ink); }
+  .defn .name, .exmp .name {
+    font-variant: small-caps;
+    color: var(--noteblue);
+    letter-spacing: 0.02em;
+  }
+
+  .note {
+    background: var(--proof);
+    border-radius: 4px;
+    padding: 0.65rem 0.9rem;
+    margin: 1.1rem 0;
+    font-style: italic;
+    font-size: 0.96rem;
+  }
+  .note .nlabel {
+    font-style: normal;
+    font-weight: 600;
+    font-variant: small-caps;
+    letter-spacing: 0.04em;
+    color: var(--ink);
+    margin-right: 0.3em;
+  }
+
+  /* ---------- ILP FIGURE ---------- */
+  .ilp-fig {
+    margin: 1.2rem 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .ilp-fig svg { max-width: 100%; height: auto; }
+  .ilp-fig figcaption {
+    margin-top: 0.45rem;
+    font-size: 0.84rem;
+    color: var(--muted);
+    font-style: italic;
+    text-align: center;
+    max-width: 520px;
+  }
+  .ilp-fig .node-rect { fill: #f7f7f3; stroke: #232a30; stroke-width: 1.2; }
+  .ilp-fig .node-label { font: 500 12px "Inter", system-ui, sans-serif; fill: #232a30; text-anchor: middle; dominant-baseline: middle; }
+  .ilp-fig .edge { stroke: #232a30; stroke-width: 1.2; fill: none; }
+
+  /* ---------- WIDGET: MEMORY HIERARCHY ---------- */
+  .widget {
+    background: var(--bg-widget);
+    border: 1px solid var(--rule-soft);
+    border-radius: 6px;
+    margin: 1.6rem 0;
+    padding: 1rem 1.1rem 0.9rem;
+    font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-size: 0.92rem;
+  }
+  .widget h3 {
+    margin: 0 0 0.4rem;
+    font-size: 0.78rem;
+    font-variant: small-caps;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    color: var(--accent);
+  }
+  .widget .hint { color: #6a737b; font-size: 0.85rem; margin: 0 0 0.9rem; }
+
+  .mem-tiers { display: flex; flex-direction: column; gap: 0.4rem; }
+  .mem-tier {
+    display: grid;
+    grid-template-columns: 5.5em 1fr 4em;
+    gap: 0 0.8rem;
+    align-items: center;
+    background: white;
+    border: 1px solid var(--rule-soft);
+    border-radius: 4px;
+    padding: 0.55rem 0.75rem;
+  }
+  .mem-tier .name {
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .mem-tier .bar-wrap {
+    background: var(--bg-soft);
+    border-radius: 3px;
+    height: 18px;
+    overflow: hidden;
+    position: relative;
+  }
+  .mem-tier .bar {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.3s;
+  }
+  .mem-tier .bar.t1 { background: var(--cold); }
+  .mem-tier .bar.t2 { background: var(--cool); }
+  .mem-tier .bar.t3 { background: var(--warm); }
+  .mem-tier .bar.t4 { background: var(--hot); }
+  .mem-tier .lat {
+    text-align: right;
+    font-family: "iA Writer Mono", "JetBrains Mono", Consolas, monospace;
+    font-size: 0.86rem;
+    color: var(--ink);
+  }
+  .mem-meta {
+    margin-top: 0.6rem;
+    font-size: 0.8rem;
+    color: var(--muted);
+    text-align: center;
+    font-style: italic;
+  }
+  .mem-tier .size {
+    font-size: 0.72rem;
+    color: var(--muted);
+    margin-top: 0.1rem;
+  }
+  @media (max-width: 540px) {
+    .mem-tier { grid-template-columns: 4em 1fr 4em; gap: 0 0.5rem; }
+  }
+
+  /* ---------- PAGINATOR ---------- */
+  nav.paginator {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 3rem;
+    padding-top: 1.2rem;
+    border-top: 1px solid var(--rule-soft);
+    font-size: 0.9rem;
+  }
+  nav.paginator a {
+    color: var(--accent);
+    text-decoration: none;
+    padding: 0.4rem 0;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.15s;
+  }
+  nav.paginator a:hover { border-bottom-color: var(--accent); }
+  nav.paginator .placeholder { color: #c0c5ca; cursor: default; }
+  nav.paginator .next { text-align: right; }
+  nav.paginator .label {
+    display: block;
+    font-size: 0.75rem;
+    font-variant: small-caps;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    margin-bottom: 0.15rem;
+  }
+
+  footer {
+    margin-top: 2rem;
+    padding-top: 1.2rem;
+    border-top: 1px solid var(--rule-soft);
+    font-size: 0.83rem;
+    color: #7a8088;
+  }
+  footer a { color: var(--accent); }
+
+  @media (max-width: 540px) {
+    body { font-size: 16px; }
+    .wrap { padding: 2rem 1rem 4rem; }
+    h1 { font-size: 1.6rem; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<nav class="crumbs"><a href="../index.html">Course Notes</a> &rsaquo; <a href="index.html">Parallel Computing</a> &rsaquo; Lecture 1</nav>
+
+<header class="title">
+  <p class="course">Parallel Computing</p>
+  <h1>Lecture 1: Why Parallelism? Why Efficiency?</h1>
+  <p class="byline">Notes by Mihir Rao</p>
+</header>
+
+<article>
+
+<p>The course has two interleaved aims: writing programs that run efficiently on modern parallel hardware, and understanding the hardware well enough to know why some programs scale and others do not. This first lecture is mostly motivation. We give a working definition of a parallel computer, introduce speedup, and explain why every modern processor — from a phone SoC to a data-center GPU — is parallel.</p>
+
+<h2>1.1&nbsp;&nbsp;What Is a Parallel Computer?</h2>
+
+<div class="defn">
+  <span class="label">Definition</span> [<span class="name">parallel computer</span>]. A <em>parallel computer</em> is a collection of processing elements that cooperate to solve problems quickly.
+</div>
+
+<p>Two words in this definition do real work. <i>Cooperate</i> implies <em>communication</em> and <em>synchronisation</em> between processing elements: they share data and coordinate progress. <i>Quickly</i> is the reason we bother in the first place — we are using more than one processor because we want the answer sooner, or because a single processor cannot keep up with the problem at all.</p>
+
+<div class="note">
+  <span class="nlabel">Two intertwined goals.</span> Throughout the course we care simultaneously about <em>performance</em> (getting the answer fast) and <em>efficiency</em> (using the hardware's resources well). They are related but not the same: a program can run faster on a parallel machine and still be terrible at using its execution units.
+</div>
+
+<h3 class="sub">Speedup</h3>
+
+<p>The first quantitative tool is speedup.</p>
+
+<div class="defn">
+  <span class="label">Definition</span> [<span class="name">speedup</span>]. For a fixed problem, the <em>speedup</em> of a parallel implementation using $P$ processors is
+  $$S(P) \;=\; \frac{T_1}{T_P},$$
+  where $T_1$ is the execution time on one processor and $T_P$ is the execution time on $P$ processors.
+</div>
+
+<p>Ideally $S(P) = P$ (<em>linear speedup</em>). In practice $S(P) < P$, often by a wide margin, for reasons we will study repeatedly:</p>
+<ul>
+  <li><em>Communication.</em> Processors must exchange data. Moving data eventually dominates computation, especially as $P$ grows.</li>
+  <li><em>Load imbalance.</em> If some processors finish early and sit idle while others continue, the parallel time is set by the slowest, not the average.</li>
+  <li><em>Synchronisation and dependencies.</em> Some operations must wait for others to finish. The longest chain of dependent work bounds the achievable speedup regardless of $P$.</li>
+</ul>
+
+<div class="exmp">
+  <span class="label">Example</span> [<span class="name">three classroom demos</span>]. In a small partial-sum demo with a handful of "processors" (students), communication cost was the binding constraint: putting students closer together or letting them shout improved speedup. With four "processors" the binding constraint shifted to load imbalance — some students ran out of work and went idle while others were still summing. With many "processors" communication once again dominated, and adding more people made the program <em>slower</em>, not faster.
+</div>
+
+<h2>1.2&nbsp;&nbsp;Three Course Themes</h2>
+
+<p>The class is organised around three themes, each a perspective on the same artefact.</p>
+
+<h3 class="sub">Theme 1 — Designing parallel programs that scale</h3>
+
+<p><em>Parallel thinking</em> consists of three concrete tasks:</p>
+<ol>
+  <li><em>Decomposing</em> the work into pieces that can safely be performed in parallel.</li>
+  <li><em>Assigning</em> those pieces to processors.</li>
+  <li><em>Managing</em> communication and synchronisation so that they do not negate the speedup we hoped to win.</li>
+</ol>
+<p>We will study abstractions and mechanisms — ISPC, pthreads, OpenMP, CUDA, MPI — that let us express these decisions cleanly in code.</p>
+
+<h3 class="sub">Theme 2 — How parallel hardware actually works</h3>
+
+<p>A parallel program lives on top of an implementation: caches, memory hierarchies, vector units, multiple cores, multiple sockets, GPUs, accelerators. Performance characteristics of those implementations and the tradeoffs behind them (performance vs.&nbsp;convenience vs.&nbsp;cost in silicon area, power, and chip complexity) are an explicit subject of the course, not a hidden detail.</p>
+
+<div class="note">
+  <span class="nlabel">Why hardware.</span> Recall the demos: changing how processors communicated changed the speedup. Caring about performance forces us to care about the hardware.
+</div>
+
+<h3 class="sub">Theme 3 — Thinking about efficiency</h3>
+
+<p><em>Fast is not the same as efficient.</em> A program that runs $2\times$ faster on a ten-processor machine has captured only $20\%$ of the available parallelism; the other eight processors are wasted. From the programmer's side, efficiency means making use of the machine's capabilities; from the hardware designer's side, it means choosing capabilities that pay off in performance per unit silicon area or per watt.</p>
+
+<h2>1.3&nbsp;&nbsp;Why Parallelism Now?</h2>
+
+<p>For decades, single-threaded CPU performance roughly doubled every $18$ months. The rational software response was to wait: code that was too slow this year would be fast enough next year. Two engines drove that improvement:</p>
+<ol>
+  <li>exploiting <em>instruction-level parallelism</em> (ILP) via superscalar, out-of-order execution; and</li>
+  <li>increasing the CPU clock frequency.</li>
+</ol>
+<p>Roughly fifteen years ago, both engines stalled. Understanding why is the reason this course exists.</p>
+
+<h3 class="sub">Programs as instruction streams</h3>
+
+<p>From a processor's perspective, a program is a list of instructions. The small C program</p>
+
+<pre><code>int main(int argc, char** argv) {
+    int x = 1;
+    for (int i = 0; i &lt; 10; i++) {
+        x = x + x;
+    }
+    printf("%d\n", x);
+    return 0;
+}</code></pre>
+
+<p>compiles into a sequence of machine instructions of the form</p>
+
+<pre><code>movl  $1, -20(%rbp)
+movl  $0, -24(%rbp)
+cmpl  $10, -24(%rbp)
+jge   end
+movl  -20(%rbp), %eax
+addl  -20(%rbp), %eax
+...</code></pre>
+
+<p>A processor executes these one at a time: <em>fetch and decode</em> the next instruction, <em>read</em> its inputs from registers, <em>execute</em> the operation in an arithmetic logic unit (ALU), <em>write back</em> the result. On the simplest in-order processor each instruction takes one clock cycle, and the program runs in (number of instructions) $\times$ (cycle time) seconds.</p>
+
+<h3 class="sub">Instruction-level parallelism</h3>
+
+<p>Consider the trivial computation
+$$a \;=\; x^2 + y^2 + z^2,$$
+which compiles to (with $R_0 = x$, $R_1 = y$, $R_2 = z$):</p>
+
+<pre><code>1   mul R0, R0, R0
+2   mul R1, R1, R1
+3   mul R2, R2, R2
+4   add R0, R0, R1
+5   add R3, R0, R2</code></pre>
+
+<p>A naïve in-order processor takes five cycles. But instructions $1$, $2$, $3$ are mutually independent — disjoint inputs, disjoint outputs — so a processor with two ALUs can issue any two of them in the same cycle, and one with three can issue all three at once. Instruction $4$ depends on $1$ and $2$, and instruction $5$ depends on $4$. The dependency graph has critical-path length $3$, and three cycles is the best we can do regardless of how many ALUs we have.</p>
+
+<figure class="ilp-fig">
+  <svg viewBox="0 0 380 200" xmlns="http://www.w3.org/2000/svg" style="max-width: 440px; width: 100%;">
+    <defs>
+      <marker id="ilparr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M0,0 L10,5 L0,10 z" fill="#232a30"/>
+      </marker>
+    </defs>
+    <line class="edge" x1="65"  y1="50" x2="165" y2="110" marker-end="url(#ilparr)"/>
+    <line class="edge" x1="190" y1="50" x2="190" y2="110" marker-end="url(#ilparr)"/>
+    <line class="edge" x1="190" y1="138" x2="190" y2="170" marker-end="url(#ilparr)"/>
+    <line class="edge" x1="315" y1="50" x2="215" y2="170" marker-end="url(#ilparr)"/>
+    <g><rect class="node-rect" x="20"  y="30" width="90" height="32" rx="4"/><text class="node-label" x="65"  y="48">mul R₀</text></g>
+    <g><rect class="node-rect" x="145" y="30" width="90" height="32" rx="4"/><text class="node-label" x="190" y="48">mul R₁</text></g>
+    <g><rect class="node-rect" x="270" y="30" width="90" height="32" rx="4"/><text class="node-label" x="315" y="48">mul R₂</text></g>
+    <g><rect class="node-rect" x="135" y="108" width="110" height="32" rx="4"/><text class="node-label" x="190" y="126">add R₀, R₁</text></g>
+    <g><rect class="node-rect" x="150" y="170" width="120" height="32" rx="4"/><text class="node-label" x="210" y="188">add R₃, R₂</text></g>
+  </svg>
+  <figcaption>Dependency graph for $a = x^2 + y^2 + z^2$. The critical path has length three — the minimum number of cycles achievable regardless of issue width.</figcaption>
+</figure>
+
+<div class="defn">
+  <span class="label">Definition</span> [<span class="name">instruction-level parallelism</span>]. The <em>instruction-level parallelism</em> (ILP) of a program at a given step is the number of instructions that can be issued simultaneously without violating dependencies. A <em>superscalar</em> processor finds independent instructions in the dynamic instruction stream and issues several of them per cycle on multiple execution units.
+</div>
+
+<p>Empirically (Johnson, 1991), most of the ILP in real programs is captured by a processor that can issue about four instructions per clock; building wider machines yields rapidly diminishing returns. By the late 2000s designers had effectively saturated ILP: shipping a wider issue width no longer translated into proportionate speedup on real workloads.</p>
+
+<h3 class="sub">The power wall</h3>
+
+<p>The other engine, clock-frequency scaling, hit a separate wall. Dynamic power dissipation in CMOS logic scales as
+$$P_{\mathrm{dyn}} \;\propto\; C \cdot V^2 \cdot f,$$
+where $C$ is the switched capacitive load, $V$ is the core voltage, and $f$ is the clock frequency. The maximum stable $f$ depends on $V$, so pushing the clock requires raising voltage, and power grows roughly as $f^3$ in the relevant regime. Static (leakage) power adds a baseline that does not vanish when transistors are idle.</p>
+
+<p>The practical consequence is a thermal design budget. Apple's M1 laptop chip sits around $13$ W; an Intel Core i9 desktop CPU around $95$ W; an NVIDIA RTX 4090 GPU around $450$ W; a top-end supercomputer node measured in megawatts. Within any of these envelopes, you cannot simply crank the clock to recover speedups that ILP no longer delivers.</p>
+
+<div class="note">
+  <span class="nlabel">The two-wall summary.</span> Single-thread performance growth slowed because (1) ILP scaling tapped out and (2) frequency scaling was capped by power. Architects responded by spending the available transistors on <em>more</em> execution units running in parallel rather than on a single faster core. The free lunch ended.
+</div>
+
+<h2>1.4&nbsp;&nbsp;The Parallel Hardware Landscape</h2>
+
+<p>Once the design budget is spent on parallelism rather than on faster scalar cores, the hardware landscape diversifies along several axes.</p>
+
+<h3 class="sub">Multi-core CPUs</h3>
+
+<p>A multi-core CPU is essentially several scalar cores on the same die, each with its own fetch/decode and execution units, sharing a memory hierarchy. Intel's 10th-generation Core i9 has 10 cores; AMD's Ryzen Threadripper 3990X has 64 cores arranged as eight chiplets of eight cores each. Programs that decompose work across cores can in principle achieve nearly $P$-fold speedups, subject to the same communication / load-balance / dependency constraints we saw in the demos.</p>
+
+<h3 class="sub">SIMD and hyper-threading</h3>
+
+<p>Inside a single core, two more layers of parallelism are exposed. <em>SIMD</em> (Single Instruction, Multiple Data, e.g.&nbsp;Intel AVX) instructions operate on a vector of elements per cycle. <em>Hyper-threading</em> runs two instruction streams in the same physical core, letting the core hide latency by switching between them. Combining all three layers on a quad-core CPU can yield roughly $32$–$40\times$ speedup over a single-threaded baseline compiled with <code>-O3</code> — far more than the four-fold gain from cores alone.</p>
+
+<h3 class="sub">GPUs and accelerators</h3>
+
+<p>A modern GPU is a different point in the design space: thousands of small, simple execution units rather than a few wide, complex ones. The NVIDIA RTX 4090 contains roughly 76 billion transistors and 18,432 FP32 multipliers organised as 144 streaming multiprocessors. Data-center supercomputers (Frontier at Oak Ridge: 9,472 AMD CPUs and 37,888 Radeon GPUs, 21&nbsp;MW total power) are large-scale aggregations of these parts.</p>
+
+<h3 class="sub">Specialisation</h3>
+
+<p>Efficiency, not just parallelism, is the second motivating force. The same power wall that makes parallelism necessary makes <em>specialisation</em> attractive: it is more energy-efficient to perform a fixed task on hardware designed exactly for it than to emulate that task on a general-purpose core. A modern phone SoC contains a CPU, a GPU, and a pile of fixed-function accelerators (image signal processor, video codec, neural-network engine). Data-center accelerators (Google TPU, GraphCore IPU, Cerebras Wafer-Scale Engine) push the same logic up to a different scale.</p>
+
+<div class="note">
+  <span class="nlabel">Where this course goes.</span> Achieving efficient processing almost always reduces to accessing data efficiently. Memory hierarchy and locality will be a recurring subject: even on a heavily parallel machine, the cost of moving data between caches, DRAM, and other processors is what determines whether a program scales.
+</div>
+
+<h2>1.5&nbsp;&nbsp;Memory and the Cost of Data Movement</h2>
+
+<p>Achieving efficient processing almost always reduces to accessing data efficiently. Before we can study how parallel programs scale, we need a working mental model of memory and the cost of touching it.</p>
+
+<h3 class="sub">The address space abstraction</h3>
+
+<div class="defn">
+  <span class="label">Definition</span> [<span class="name">address space</span>]. A computer's memory is organised as an array of bytes. Each byte is identified by an integer <em>address</em> — its position in this array. A program's <em>address space</em> is the set of addresses it can read and write. We assume memory is byte-addressable, so the smallest unit accessible at a given address is one byte.
+</div>
+
+<p>A processor interacts with this array through two new instructions. A <em>load</em> reads a value from memory into a register; a <em>store</em> writes the contents of a register back to memory. Symbolically,</p>
+
+<pre><code>ld R0 &lt;- mem[R2]    ; load 4 bytes at the address held in R2 into R0
+st mem[R2] &lt;- R0    ; store R0 to the address held in R2</code></pre>
+
+<p>Everything a program "computes" is, from the processor's perspective, a sequence of such loads, stores, and arithmetic operations on registers.</p>
+
+<h3 class="sub">Latency and stalls</h3>
+
+<div class="defn">
+  <span class="label">Definition</span> [<span class="name">memory access latency</span>]. The <em>latency</em> of a memory access is the amount of time, measured in clock cycles or nanoseconds, between when the processor requests data and when that data is delivered.
+</div>
+
+<p>A processor <em>stalls</em> when it cannot make progress because the next instruction depends on a previous instruction that has not yet completed. Memory accesses are a major source of stalls because their latency is large compared to the time to execute an arithmetic instruction. For the sequence</p>
+
+<pre><code>ld  r0 mem[r2]
+ld  r1 mem[r3]
+add r0, r0, r1</code></pre>
+
+<p>the <code>add</code> cannot issue until both loads have returned, and a load to main memory typically costs hundreds of cycles. The processor sits idle the whole time.</p>
+
+<div class="note">
+  <span class="nlabel">Why this matters for parallel code.</span> A program that is otherwise embarrassingly parallel will fail to scale if its threads spend most of their cycles waiting for memory. Every technique we study later — multi-threading, prefetching, locality optimisation, message passing — exists to attack some flavour of this problem.
+</div>
+
+<h3 class="sub">Caches</h3>
+
+<p>The standard hardware response to high memory latency is the <em>cache</em>.</p>
+
+<div class="defn">
+  <span class="label">Definition</span> [<span class="name">cache</span>]. A <em>cache</em> is on-chip storage that holds a copy of a subset of memory. If the address the processor needs is in the cache, the data can be delivered in a few cycles rather than the hundreds required to access DRAM. A cache is purely a performance feature: it does not change what a program computes, only how quickly it computes it.
+</div>
+
+<p>Caches transfer data at the granularity of fixed-size <em>cache lines</em> (typically 64 bytes on x86), not individual bytes. The unit of bookkeeping is the line, and pulling one byte into the cache pulls its entire enclosing line. This single design choice has a large payoff because real programs exhibit two forms of <em>locality</em> that the line granularity exploits.</p>
+
+<div class="defn">
+  <span class="label">Definition</span> [<span class="name">temporal and spatial locality</span>]. A reference stream has <em>temporal locality</em> if recently accessed addresses are likely to be accessed again soon, and <em>spatial locality</em> if addresses near a recently accessed address are likely to be accessed soon.
+</div>
+
+<p>Spatial locality makes line-granularity transfer cheap on a per-byte basis: the cost of fetching one byte already paid for the next 63. Temporal locality makes the cache profitable to maintain at all: re-reads of a hot location stay on-chip.</p>
+
+<div class="exmp">
+  <span class="label">Example</span> [<span class="name">sequential scan of an array</span>]. Suppose the cache holds two lines of 4 bytes each with an LRU replacement policy, and a program reads addresses $0\text{x}0, 0\text{x}1, 0\text{x}2, \ldots, 0\text{x}F$ in order. Address $0\text{x}0$ is a <em>cold miss</em> and pulls the line $[0\text{x}0, 0\text{x}3]$ into the cache; the next three accesses are hits (spatial locality). At $0\text{x}4$ another cold miss pulls $[0\text{x}4, 0\text{x}7]$, and so on. Each 4-byte line costs one miss and three hits, so the hit rate on the 16-byte scan is $\tfrac{12}{16} = 75\%$.
+</div>
+
+<div class="exmp">
+  <span class="label">Example</span> [<span class="name">capacity miss</span>]. With the same 2-line cache, suppose the program reads the entire 16-byte array and then re-reads address $0\text{x}0$. The four scan misses have evicted the original line: $0\text{x}0$'s line was kicked out when $0\text{x}8$'s line was loaded. The re-read of $0\text{x}0$ is therefore a <em>capacity miss</em> — the data was once in the cache but did not fit alongside the rest of the working set. Cold misses are unavoidable for the first touch; capacity misses are programmer-addressable through better blocking.
+</div>
+
+<h3 class="sub">The memory hierarchy</h3>
+
+<p>Caches are not a single tier. A modern CPU exposes a hierarchy of caches of increasing size and increasing latency, backed by DRAM.</p>
+
+<div class="widget" id="memWidget">
+  <h3>Memory Hierarchy · Cycle Latencies</h3>
+  <p class="hint">Representative numbers for an Intel Kaby Lake CPU at $4$ GHz. The exact figures vary by chip; the orders of magnitude do not. A single load may resolve in $4$ cycles or $250$ cycles depending on where the data sits at the moment of the access — a roughly $60\times$ difference invisible to the source code.</p>
+
+  <div class="mem-tiers" id="memTiers"></div>
+  <p class="mem-meta" id="memMeta">Bar width is logarithmic in latency.</p>
+</div>
+
+<h2>1.6&nbsp;&nbsp;Summary</h2>
+
+<p>Single-thread-of-control performance is improving very slowly. To run programs significantly faster, those programs must use multiple processing elements or specialised hardware — which means the programmer needs to reason about parallel execution rather than rely on the next generation of silicon. Writing parallel programs is non-trivial: it requires decomposing the work, balancing the load, and managing communication and synchronisation, and doing all of that well requires knowing what the machine looks like and, in particular, how data moves through it. The payoff is large: modern hardware has more processing capability than naïve sequential code reveals, and the rest of the course is about how to actually use it.</p>
+
+</article>
+
+<nav class="paginator">
+  <a href="index.html"><span class="label">Course</span>← All lectures</a>
+  <span class="placeholder next">More lectures (forthcoming) →</span>
+</nav>
+
+<footer>
+  Based on the Stanford CS149 / CMU 15-418 lecture series. Math by <a href="https://katex.org/">KaTeX</a>.
+</footer>
+
+</div>
+
+<script>
+/* =====================================================================
+   MEMORY HIERARCHY WIDGET  (§1.5)
+   ===================================================================== */
+(function () {
+  const TIERS = [
+    { name: 'L1',   size: '~32 KB',  cycles: 4,   cls: 't1' },
+    { name: 'L2',   size: '~256 KB', cycles: 12,  cls: 't2' },
+    { name: 'L3',   size: '~20 MB',  cycles: 38,  cls: 't3' },
+    { name: 'DRAM', size: 'tens of GB', cycles: 250, cls: 't4' },
+  ];
+  const maxLog = Math.log10(TIERS[TIERS.length - 1].cycles + 1);
+
+  const container = document.getElementById('memTiers');
+  container.innerHTML = TIERS.map(t => {
+    const pct = Math.max(4, Math.round(100 * Math.log10(t.cycles + 1) / maxLog));
+    return `
+      <div class="mem-tier">
+        <div>
+          <div class="name">${t.name}</div>
+          <div class="size">${t.size}</div>
+        </div>
+        <div class="bar-wrap"><div class="bar ${t.cls}" style="width:${pct}%"></div></div>
+        <div class="lat">${t.cycles}&nbsp;cyc</div>
+      </div>
+    `;
+  }).join('');
+})();
+</script>
+</body>
+</html>

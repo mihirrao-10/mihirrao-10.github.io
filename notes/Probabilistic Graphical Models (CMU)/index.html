@@ -45,13 +45,6 @@
     padding-bottom: 1.4rem;
     margin-bottom: 2rem;
   }
-  .kicker {
-    font-variant: small-caps;
-    letter-spacing: 0.08em;
-    color: var(--accent);
-    font-size: 0.85rem;
-    margin: 0 0 0.4rem;
-  }
   h1 {
     font-weight: 600;
     font-size: 2rem;
@@ -100,10 +93,7 @@
     font-size: 0.88rem;
     text-align: right;
   }
-  .lec-title {
-    font-size: 1rem;
-    color: var(--ink);
-  }
+  .lec-title { font-size: 1rem; color: var(--ink); }
   .lec-title a {
     color: var(--ink);
     text-decoration: none;
@@ -111,10 +101,7 @@
     transition: border-color 0.15s;
   }
   .lec-title a:hover { border-color: var(--accent); color: var(--accent); }
-  .lec-title.todo {
-    color: var(--muted);
-    font-style: italic;
-  }
+  .lec-title.todo { color: var(--muted); font-style: italic; }
   .badge {
     display: inline-block;
     font-size: 0.7rem;
@@ -151,122 +138,68 @@
 <header class="title">
   <h1>Probabilistic Graphical Models</h1>
   <p class="byline">Notes by Mihir Rao</p>
-  <p class="blurb">A graduate course on the language of probabilistic graphical models — directed and undirected representations, exact and approximate inference, learning under full and partial observation, and applications from hidden Markov models to topic models and nonparametric Bayes. Each lecture below is a standalone web page with embedded interactive diagrams.</p>
+  <p class="blurb">A working through of probabilistic graphical models — directed and undirected representations, inference, learning, and applications. Each chapter is a standalone web page with embedded interactive diagrams.</p>
 </header>
 
-<h2 class="sec">Lectures</h2>
+<h2 class="sec">Chapters</h2>
 
 <ol class="lectures">
-
   <li class="lec-row">
     <span class="lec-num">1</span>
-    <span class="lec-title"><a href="lecture-01.html">Introduction to Graphical Models</a> <span class="badge">notes</span></span>
+    <span class="lec-title"><a href="lecture-01.html">Bayesian Networks</a> <span class="badge">notes</span></span>
   </li>
-
   <li class="lec-row">
     <span class="lec-num">2</span>
-    <span class="lec-title"><a href="lecture-02.html">Directed Graphical Models: Bayesian Networks</a> <span class="badge">notes</span></span>
+    <span class="lec-title todo">Markov Random Fields</span>
   </li>
-
   <li class="lec-row">
     <span class="lec-num">3</span>
-    <span class="lec-title todo">Undirected Graphical Models: Markov Random Fields</span>
-  </li>
-
-  <li class="lec-row">
-    <span class="lec-num">4</span>
     <span class="lec-title todo">Variable Elimination</span>
   </li>
-
+  <li class="lec-row">
+    <span class="lec-num">4</span>
+    <span class="lec-title todo">Belief Propagation</span>
+  </li>
   <li class="lec-row">
     <span class="lec-num">5</span>
-    <span class="lec-title todo">Sum-Product Message Passing</span>
+    <span class="lec-title todo">MAP Inference</span>
   </li>
-
   <li class="lec-row">
     <span class="lec-num">6</span>
-    <span class="lec-title todo">Generalized Linear Models, MLE, Sufficient Statistics</span>
+    <span class="lec-title todo">Sampling Methods</span>
   </li>
-
   <li class="lec-row">
     <span class="lec-num">7</span>
-    <span class="lec-title todo">Learning in Fully Observed Bayesian Networks</span>
+    <span class="lec-title todo">Variational Inference</span>
   </li>
-
   <li class="lec-row">
     <span class="lec-num">8</span>
-    <span class="lec-title todo">Learning in Fully Observed Markov Networks</span>
+    <span class="lec-title todo">Learning in Directed Models</span>
   </li>
-
   <li class="lec-row">
     <span class="lec-num">9</span>
-    <span class="lec-title todo">The Expectation-Maximization Algorithm</span>
+    <span class="lec-title todo">Learning in Undirected Models</span>
   </li>
-
   <li class="lec-row">
     <span class="lec-num">10</span>
-    <span class="lec-title todo">Modeling Networks, Ising Models, Gaussian Graphical Models</span>
+    <span class="lec-title todo">Learning Latent Variable Models</span>
   </li>
-
   <li class="lec-row">
     <span class="lec-num">11</span>
-    <span class="lec-title todo">Factor Analysis, State Space Models</span>
+    <span class="lec-title todo">Bayesian Learning</span>
   </li>
-
   <li class="lec-row">
     <span class="lec-num">12</span>
-    <span class="lec-title todo">Conditional Random Fields, Case Study: Image Segmentation</span>
+    <span class="lec-title todo">Structure Learning</span>
   </li>
-
   <li class="lec-row">
     <span class="lec-num">13</span>
-    <span class="lec-title todo">Variational Inference: Loopy Belief Propagation</span>
+    <span class="lec-title todo">The Variational Autoencoder</span>
   </li>
-
-  <li class="lec-row">
-    <span class="lec-num">14</span>
-    <span class="lec-title todo">Variational Inference: Mean Field Approximation</span>
-  </li>
-
-  <li class="lec-row">
-    <span class="lec-num">15</span>
-    <span class="lec-title todo">Variational Inference: Theory, Case Study: Learning Topic Models</span>
-  </li>
-
-  <li class="lec-row">
-    <span class="lec-num">16</span>
-    <span class="lec-title todo">Approximate Inference: Monte Carlo Methods</span>
-  </li>
-
-  <li class="lec-row">
-    <span class="lec-num">17</span>
-    <span class="lec-title todo">Approximate Inference: MCMC, Case Study: Topic Models</span>
-  </li>
-
-  <li class="lec-row">
-    <span class="lec-num">18</span>
-    <span class="lec-title todo">Advanced Topics in MCMC</span>
-  </li>
-
-  <li class="lec-row">
-    <span class="lec-num">19</span>
-    <span class="lec-title todo">Dirichlet Processes</span>
-  </li>
-
-  <li class="lec-row">
-    <span class="lec-num">20</span>
-    <span class="lec-title todo">Hierarchical Dirichlet Processes, Case Study: Genetic Inference</span>
-  </li>
-
-  <li class="lec-row">
-    <span class="lec-num">21</span>
-    <span class="lec-title todo">The Indian Buffet Process</span>
-  </li>
-
 </ol>
 
 <footer>
-  Source: <a href="https://www.cs.cmu.edu/~epxing/Class/10708-14/lecture.html">Eric Xing's lectures</a>.
+  Source: <a href="https://ermongroup.github.io/cs228-notes/">Stanford CS228 Probabilistic Graphical Models notes</a>.
 </footer>
 
 </div>
