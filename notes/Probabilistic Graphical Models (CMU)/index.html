@@ -73,12 +73,12 @@
     border-bottom: 1px solid var(--rule-soft);
     padding-bottom: 0.3rem;
   }
-  .lectures {
+  .chapters {
     list-style: none;
     padding: 0;
     margin: 0;
   }
-  .lec-row {
+  .chap-row {
     display: grid;
     grid-template-columns: 2.6em 1fr;
     gap: 0 1rem;
@@ -86,22 +86,22 @@
     border-bottom: 1px solid var(--rule-soft);
     align-items: baseline;
   }
-  .lec-row:last-child { border-bottom: none; }
-  .lec-num {
+  .chap-row:last-child { border-bottom: none; }
+  .chap-num {
     color: var(--muted);
     font-variant: tabular-nums;
     font-size: 0.88rem;
     text-align: right;
   }
-  .lec-title { font-size: 1rem; color: var(--ink); }
-  .lec-title a {
+  .chap-title { font-size: 1rem; color: var(--ink); }
+  .chap-title a {
     color: var(--ink);
     text-decoration: none;
     border-bottom: 1px solid transparent;
     transition: border-color 0.15s;
   }
-  .lec-title a:hover { border-color: var(--accent); color: var(--accent); }
-  .lec-title.todo { color: var(--muted); font-style: italic; }
+  .chap-title a:hover { border-color: var(--accent); color: var(--accent); }
+  .chap-title.todo { color: var(--muted); font-style: italic; }
   .badge {
     display: inline-block;
     font-size: 0.7rem;
@@ -143,58 +143,58 @@
 
 <h2 class="sec">Chapters</h2>
 
-<ol class="lectures">
-  <li class="lec-row">
-    <span class="lec-num">1</span>
-    <span class="lec-title"><a href="lecture-01.html">Bayesian Networks</a> <span class="badge">notes</span></span>
+<ol class="chapters">
+  <li class="chap-row">
+    <span class="chap-num">1</span>
+    <span class="chap-title"><a href="lecture-01.html">Bayesian Networks</a> <span class="badge">notes</span></span>
   </li>
-  <li class="lec-row">
-    <span class="lec-num">2</span>
-    <span class="lec-title"><a href="lecture-02.html">Markov Random Fields</a> <span class="badge">notes</span></span>
+  <li class="chap-row">
+    <span class="chap-num">2</span>
+    <span class="chap-title"><a href="lecture-02.html">Markov Random Fields</a> <span class="badge">notes</span></span>
   </li>
-  <li class="lec-row">
-    <span class="lec-num">3</span>
-    <span class="lec-title todo">Variable Elimination</span>
+  <li class="chap-row">
+    <span class="chap-num">3</span>
+    <span class="chap-title todo">Variable Elimination</span>
   </li>
-  <li class="lec-row">
-    <span class="lec-num">4</span>
-    <span class="lec-title todo">Belief Propagation</span>
+  <li class="chap-row">
+    <span class="chap-num">4</span>
+    <span class="chap-title todo">Belief Propagation</span>
   </li>
-  <li class="lec-row">
-    <span class="lec-num">5</span>
-    <span class="lec-title todo">MAP Inference</span>
+  <li class="chap-row">
+    <span class="chap-num">5</span>
+    <span class="chap-title todo">MAP Inference</span>
   </li>
-  <li class="lec-row">
-    <span class="lec-num">6</span>
-    <span class="lec-title todo">Sampling Methods</span>
+  <li class="chap-row">
+    <span class="chap-num">6</span>
+    <span class="chap-title todo">Sampling Methods</span>
   </li>
-  <li class="lec-row">
-    <span class="lec-num">7</span>
-    <span class="lec-title todo">Variational Inference</span>
+  <li class="chap-row">
+    <span class="chap-num">7</span>
+    <span class="chap-title todo">Variational Inference</span>
   </li>
-  <li class="lec-row">
-    <span class="lec-num">8</span>
-    <span class="lec-title todo">Learning in Directed Models</span>
+  <li class="chap-row">
+    <span class="chap-num">8</span>
+    <span class="chap-title todo">Learning in Directed Models</span>
   </li>
-  <li class="lec-row">
-    <span class="lec-num">9</span>
-    <span class="lec-title todo">Learning in Undirected Models</span>
+  <li class="chap-row">
+    <span class="chap-num">9</span>
+    <span class="chap-title todo">Learning in Undirected Models</span>
   </li>
-  <li class="lec-row">
-    <span class="lec-num">10</span>
-    <span class="lec-title todo">Learning Latent Variable Models</span>
+  <li class="chap-row">
+    <span class="chap-num">10</span>
+    <span class="chap-title todo">Learning Latent Variable Models</span>
   </li>
-  <li class="lec-row">
-    <span class="lec-num">11</span>
-    <span class="lec-title todo">Bayesian Learning</span>
+  <li class="chap-row">
+    <span class="chap-num">11</span>
+    <span class="chap-title todo">Bayesian Learning</span>
   </li>
-  <li class="lec-row">
-    <span class="lec-num">12</span>
-    <span class="lec-title todo">Structure Learning</span>
+  <li class="chap-row">
+    <span class="chap-num">12</span>
+    <span class="chap-title todo">Structure Learning</span>
   </li>
-  <li class="lec-row">
-    <span class="lec-num">13</span>
-    <span class="lec-title todo">The Variational Autoencoder</span>
+  <li class="chap-row">
+    <span class="chap-num">13</span>
+    <span class="chap-title todo">The Variational Autoencoder</span>
   </li>
 </ol>
 
