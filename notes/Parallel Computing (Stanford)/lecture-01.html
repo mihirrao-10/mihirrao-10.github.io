@@ -343,7 +343,7 @@
     </g>
     <!-- ideal linear speedup S = P -->
     <line x1="44" y1="180" x2="380" y2="20" stroke="#b03434" stroke-width="1.8" stroke-dasharray="5,3"/>
-    <text x="370" y="40" text-anchor="end" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#b03434" font-style="italic">linear (ideal)</text>
+    <text x="370" y="40" text-anchor="end" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#b03434" font-style="italic" paint-order="stroke" stroke="white" stroke-width="3" stroke-linejoin="round">linear (ideal)</text>
     <!-- Amdahl: serial fraction s = 0.1, S(P) = 1 / (s + (1-s)/P), maps P=1..16 to S=1..6.4 -->
     <!-- compute points: (P, S), then map S linearly: y = 180 - (S-1) * 160/15 = 180 - (S-1)*10.67 -->
     <path d="M 44 180
@@ -361,7 +361,7 @@
              L 352 72
              L 380 70"
           fill="none" stroke="#4a7ba8" stroke-width="2"/>
-    <text x="370" y="86" text-anchor="end" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#4a7ba8" font-style="italic">10% serial work</text>
+    <text x="370" y="86" text-anchor="end" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#4a7ba8" font-style="italic" paint-order="stroke" stroke="white" stroke-width="3" stroke-linejoin="round">10% serial work</text>
     <!-- Steeper realistic curve: high comm cost. S(P) ≈ P/(1+0.4(P-1)) -->
     <path d="M 44 180
              L 60 167
@@ -378,7 +378,7 @@
              L 352 127
              L 380 126"
           fill="none" stroke="#5e8a52" stroke-width="2"/>
-    <text x="370" y="116" text-anchor="end" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#5e8a52" font-style="italic">comm-bound</text>
+    <text x="370" y="116" text-anchor="end" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#5e8a52" font-style="italic" paint-order="stroke" stroke="white" stroke-width="3" stroke-linejoin="round">comm-bound</text>
   </svg>
   <figcaption style="margin-top: 0.3rem; font-size: 0.84rem; color: #8b9199; font-style: italic; text-align: center; max-width: 540px; padding: 0 0.6rem;">Linear (ideal) speedup against two more realistic regimes: a workload with $10\%$ serial work (Amdahl's law caps speedup at $1/s = 10$), and a communication-bound regime that flattens out almost immediately.</figcaption>
 </figure>
@@ -476,7 +476,7 @@ which compiles to (with $R_0 = x$, $R_1 = y$, $R_2 = z$):</p>
     <line class="edge" x1="65"  y1="50" x2="165" y2="110" marker-end="url(#ilparr)"/>
     <line class="edge" x1="190" y1="50" x2="190" y2="110" marker-end="url(#ilparr)"/>
     <line class="edge" x1="190" y1="138" x2="190" y2="170" marker-end="url(#ilparr)"/>
-    <line class="edge" x1="315" y1="50" x2="215" y2="170" marker-end="url(#ilparr)"/>
+    <line class="edge" x1="315" y1="50" x2="260" y2="170" marker-end="url(#ilparr)"/>
     <g><rect class="node-rect" x="20"  y="30" width="90" height="32" rx="4"/><text class="node-label" x="65"  y="48">mul R₀</text></g>
     <g><rect class="node-rect" x="145" y="30" width="90" height="32" rx="4"/><text class="node-label" x="190" y="48">mul R₁</text></g>
     <g><rect class="node-rect" x="270" y="30" width="90" height="32" rx="4"/><text class="node-label" x="315" y="48">mul R₂</text></g>

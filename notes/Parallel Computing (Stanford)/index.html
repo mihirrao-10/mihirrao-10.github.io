@@ -16,6 +16,8 @@
   h1 { font-weight: 600; font-size: 2rem; margin: 0 0 0.5rem; line-height: 1.15; }
   .byline { color: #6a737b; font-style: italic; margin: 0; font-size: 0.95rem; }
   .blurb { margin: 1.4rem 0 0; color: var(--ink); font-size: 0.96rem; line-height: 1.65; }
+  .meta { margin: 0.9rem 0 0; color: var(--ink); font-size: 0.96rem; line-height: 1.65; }
+  .meta-label { font-variant: small-caps; font-weight: 600; letter-spacing: 0.06em; color: var(--accent); margin-right: 0.35em; }
   h2.sec { font-size: 0.85rem; font-variant: small-caps; letter-spacing: 0.1em; color: var(--accent); font-weight: 600; margin: 2.2rem 0 1rem; border-bottom: 1px solid var(--rule-soft); padding-bottom: 0.3rem; }
   .chapters { list-style: none; padding: 0; margin: 0; }
   .chap-row { display: grid; grid-template-columns: 2.6em 1fr; gap: 0 1rem; padding: 0.6rem 0; border-bottom: 1px solid var(--rule-soft); align-items: baseline; }
@@ -39,7 +41,8 @@
 <header class="title">
   <h1>Parallel Computing</h1>
   <p class="byline">Notes by Mihir Rao</p>
-  <p class="blurb">Parallel computing is about writing programs that run fast on modern hardware — multi-core CPUs, vector units, GPUs, distributed clusters — and understanding the machine well enough to know why some programs scale and others do not. My notes work through the course material with interactive diagrams for the hardware tradeoffs and performance models that are central to the course. Based on the <a href="https://gfxcourses.stanford.edu/cs149/">Stanford CS149</a> course.</p>
+  <p class="meta"><span class="meta-label">Description.</span> Parallel computing is about writing programs that run fast on modern hardware &mdash; multi-core CPUs, vector units, GPUs, distributed clusters &mdash; and understanding the machine well enough to know why some programs scale and others do not. My notes work through the course material with interactive diagrams for the hardware tradeoffs and performance models that are central to the course.</p>
+  <p class="meta"><span class="meta-label">Based on.</span> <a href="https://gfxcourses.stanford.edu/cs149/">CS149 @ Stanford University</a></p>
 </header>
 
 <h2 class="sec">Chapters</h2>

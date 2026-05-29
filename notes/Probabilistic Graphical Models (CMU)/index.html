@@ -63,6 +63,19 @@
     font-size: 0.96rem;
     line-height: 1.65;
   }
+  .meta {
+    margin: 0.9rem 0 0;
+    color: var(--ink);
+    font-size: 0.96rem;
+    line-height: 1.65;
+  }
+  .meta-label {
+    font-variant: small-caps;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    color: var(--accent);
+    margin-right: 0.35em;
+  }
   h2.sec {
     font-size: 0.85rem;
     font-variant: small-caps;
@@ -138,7 +151,8 @@
 <header class="title">
   <h1>Probabilistic Graphical Models</h1>
   <p class="byline">Notes by Mihir Rao</p>
-  <p class="blurb">Probabilistic graphical models give a compact way to represent joint distributions using a graph — Bayesian networks for directed dependencies, Markov random fields for undirected ones — and the algorithms that turn those representations into efficient inference and learning. My notes work through the material chapter by chapter, with interactive diagrams for the ideas that read more easily as pictures than as prose. Based on Eric Xing's <a href="https://www.cs.cmu.edu/~epxing/Class/10708-20/lectures.html">CMU 10-708 Probabilistic Graphical Models</a> (Spring 2020).</p>
+  <p class="meta"><span class="meta-label">Description.</span> Probabilistic graphical models give a compact way to represent joint distributions using a graph &mdash; Bayesian networks for directed dependencies, Markov random fields for undirected ones &mdash; and the algorithms that turn those representations into efficient inference and learning. My notes work through the material chapter by chapter, with interactive diagrams for the ideas that read more easily as pictures than as prose.</p>
+  <p class="meta"><span class="meta-label">Based on.</span> <a href="https://www.cs.cmu.edu/~epxing/Class/10708-20/lectures.html">10-708 @ Carnegie Mellon University</a></p>
 </header>
 
 <h2 class="sec">Chapters</h2>
@@ -146,27 +160,27 @@
 <ol class="chapters">
   <li class="chap-row">
     <span class="chap-num">1</span>
-    <span class="chap-title"><a href="lecture-01.html">Introduction to Graphical Models</a> <span class="badge">notes</span></span>
+    <span class="chap-title"><a href="lecture-01.html">Introduction to GM</a> <span class="badge">notes</span></span>
   </li>
   <li class="chap-row">
     <span class="chap-num">2</span>
-    <span class="chap-title todo">Undirected Graphical Models &mdash; Markov Property</span>
+    <span class="chap-title todo">Representation of undirected GM</span>
   </li>
   <li class="chap-row">
     <span class="chap-num">3</span>
-    <span class="chap-title todo">Directed Graphical Models &mdash; Markov Property</span>
+    <span class="chap-title todo">Directed GMs: Bayesian Networks</span>
   </li>
   <li class="chap-row">
     <span class="chap-num">4</span>
-    <span class="chap-title todo">Exact Inference &mdash; Variable Elimination, Belief Propagation</span>
+    <span class="chap-title todo">Exact Inference</span>
   </li>
   <li class="chap-row">
     <span class="chap-num">5</span>
-    <span class="chap-title todo">Parameter Estimation &mdash; MLE, MAP, Bayesian, Exponential Family</span>
+    <span class="chap-title todo">Parameter Estimation</span>
   </li>
   <li class="chap-row">
     <span class="chap-num">6</span>
-    <span class="chap-title todo">Case Studies &mdash; HMM and CRF</span>
+    <span class="chap-title todo">Case Studies: HMM and CRF</span>
   </li>
 </ol>
 
