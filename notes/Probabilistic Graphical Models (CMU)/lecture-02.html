@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chapter 2 · Representation of Undirected Graphical Models</title>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {delimiters: [
+          {left: '$$', right: '$$', display: true},
+          {left: '$',  right: '$',  display: false},
+          {left: '\\[', right: '\\]', display: true}
+        ], throwOnError: false});"></script>
+
+<style>
+  :root {
+    --ink: #232a30;
+    --accent: #384c61;
+    --accent-soft: #6c8aa6;
+    --rule: #c4c9cd;
+    --rule-soft: #e4e7ea;
+    --muted: #8b9199;
+    --noteblue: #b05220;
+    --bg: #ffffff;
+    --bg-soft: #fafaf7;
+    --bg-widget: #f4f4ef;
+    --proof: #fff8da;
+    --selected: #e2b048;
+    --ok: #4a7a45;
+    --bad: #b03434;
+    --hot:   #b03434;
+    --warm:  #c97042;
+    --cool:  #4a7ba8;
+    --cold:  #5e8a52;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    font-family: "Iowan Old Style", "Charter", "Source Serif Pro", "Sitka Text", Cambria, Georgia, serif;
+    color: var(--ink);
+    background: var(--bg);
+    line-height: 1.65;
+    margin: 0;
+    padding: 0;
+    font-size: 17px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 2.4rem 1.4rem 4rem; }
+  nav.crumbs {
+    font-size: 0.85rem;
+    font-variant: small-caps;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    margin-bottom: 1.4rem;
+  }
+  nav.crumbs a { color: var(--accent); text-decoration: none; }
+  nav.crumbs a:hover { text-decoration: underline; }
+  header.title {
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 1.2rem;
+    margin-bottom: 2rem;
+  }
+  .course {
+    font-variant: small-caps;
+    letter-spacing: 0.06em;
+    color: var(--accent);
+    font-size: 0.85rem;
+    margin: 0 0 0.4rem;
+  }
+  h1 {
+    font-weight: 600;
+    font-size: 2rem;
+    margin: 0 0 0.6rem;
+    line-height: 1.2;
+    color: var(--ink);
+  }
+  .byline { color: #6a737b; font-size: 0.92rem; margin: 0; font-style: italic; }
+  h2 {
+    font-size: 1.32rem;
+    font-weight: 600;
+    margin: 2.4rem 0 0.6rem;
+    color: var(--ink);
+  }
+  p { margin: 0.7rem 0; }
+  a { color: var(--accent); }
+  em { font-variant: small-caps; font-style: normal; color: var(--noteblue); letter-spacing: 0.02em; }
+  ul, ol { padding-left: 1.4rem; }
+  li { margin: 0.3rem 0; }
+  .leadin { font-weight: 600; }
+
+  .defn, .exmp {
+    border-left: 2px solid var(--accent);
+    padding: 0.1rem 0 0.1rem 1rem;
+    margin: 1.1rem 0;
+    background: var(--bg-soft);
+    border-radius: 0 4px 4px 0;
+    overflow-x: auto;
+  }
+  .exmp { border-left-color: var(--rule); }
+  .defn .label, .exmp .label {
+    font-variant: small-caps;
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: 0.04em;
+    margin-right: 0.3em;
+  }
+  .exmp .label { color: var(--ink); }
+  .defn .name, .exmp .name {
+    font-variant: small-caps;
+    color: var(--noteblue);
+    letter-spacing: 0.02em;
+  }
+  .theorem {
+    background: var(--proof);
+    border-radius: 4px;
+    padding: 0.8rem 1rem;
+    margin: 1.2rem 0;
+    font-style: italic;
+    overflow-x: auto;
+  }
+  .theorem .tlabel {
+    font-style: normal;
+    font-weight: 600;
+    font-variant: small-caps;
+    letter-spacing: 0.04em;
+    color: var(--ink);
+    margin-right: 0.3em;
+  }
+
+  /* ---------- FIGURES ---------- */
+  figure.fig {
+    margin: 1.6rem 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  figure.fig svg { max-width: 100%; height: auto; display: block; }
+  figure.fig figcaption {
+    margin-top: 0.6rem;
+    font-size: 0.84rem;
+    color: var(--muted);
+    font-style: italic;
+    text-align: center;
+    max-width: 600px;
+    padding: 0 0.6rem;
+  }
+
+  /* node + edge defaults for SVG figures */
+  .gm-node-circle {
+    fill: #f7f7f3;
+    stroke: var(--accent);
+    stroke-width: 1.4;
+  }
+  .gm-node-circle.cool   { fill: #e6efe1; stroke: var(--cold); }
+  .gm-node-circle.warm   { fill: #f6ead8; stroke: var(--warm); }
+  .gm-node-circle.hot    { fill: #f4d9d9; stroke: var(--hot);  }
+  .gm-node-circle.cold   { fill: #dfe6ef; stroke: var(--cool); }
+  .gm-node-circle.faded  { fill: #fafaf7; stroke: var(--rule); }
+  .gm-node-grid          { fill: #f7f7f3; stroke: var(--accent); stroke-width: 1.1; }
+  .gm-node-grid.hot      { fill: #d97373; stroke: #8a2424; }
+  .gm-node-grid.cool     { fill: #4a7ba8; stroke: #294b6e; }
+  .gm-label {
+    font-family: "Inter", system-ui, sans-serif;
+    fill: var(--ink);
+    font-size: 13px;
+    text-anchor: middle;
+    dominant-baseline: middle;
+    font-weight: 600;
+  }
+  .gm-label.small   { font-size: 11px; }
+  .gm-label.cluster {
+    font-size: 14px;
+    font-variant: small-caps;
+    letter-spacing: 0.06em;
+    fill: var(--accent);
+  }
+  .gm-label.layer {
+    font-family: "Inter", system-ui, sans-serif;
+    font-size: 12px;
+    font-style: italic;
+    fill: var(--noteblue);
+    text-anchor: middle;
+    dominant-baseline: middle;
+  }
+  .gm-edge        { stroke: var(--accent);      stroke-width: 1.3; fill: none; }
+  .gm-edge-thin   { stroke: var(--accent-soft); stroke-width: 1.0; fill: none; }
+  .gm-edge-faint  { stroke: var(--rule);        stroke-width: 1.0; fill: none; }
+  .gm-cluster     { fill: rgba(56, 76, 97, 0.05); stroke: var(--accent-soft); stroke-width: 1; stroke-dasharray: 4 3; }
+
+  /* ---------- PAGINATOR ---------- */
+  .paginate {
+    display: flex;
+    justify-content: space-between;
+    align-items: stretch;
+    gap: 1rem;
+    margin-top: 3rem;
+    padding-top: 1.2rem;
+    border-top: 1px solid var(--rule-soft);
+    font-size: 0.88rem;
+  }
+  .paginate a {
+    display: block;
+    text-decoration: none;
+    color: var(--ink);
+    padding: 0.5rem 0.8rem;
+    border: 1px solid var(--rule-soft);
+    border-radius: 4px;
+    background: var(--bg-soft);
+    transition: border-color 0.15s, background 0.15s;
+    flex: 0 1 45%;
+  }
+  .paginate a:hover { border-color: var(--accent); background: white; }
+  .paginate .dir {
+    font-variant: small-caps;
+    letter-spacing: 0.06em;
+    font-size: 0.72rem;
+    color: var(--muted);
+    margin-bottom: 0.15rem;
+  }
+  .paginate .next { text-align: right; margin-left: auto; }
+  .paginate .disabled {
+    flex: 0 1 45%;
+    padding: 0.5rem 0.8rem;
+    color: var(--muted);
+    font-style: italic;
+    border: 1px dashed var(--rule-soft);
+    border-radius: 4px;
+    background: transparent;
+  }
+
+  footer {
+    margin-top: 3rem;
+    padding-top: 1.2rem;
+    border-top: 1px solid var(--rule-soft);
+    font-size: 0.85rem;
+    color: #7a8088;
+  }
+  footer a { color: var(--accent); }
+
+  @media (max-width: 540px) {
+    body { font-size: 16px; }
+    .wrap { padding: 2rem 1rem 4rem; }
+    h1 { font-size: 1.6rem; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<nav class="crumbs"><a href="../index.html">Course Notes</a> &rsaquo; <a href="index.html">Probabilistic Graphical Models</a> &rsaquo; Chapter 2</nav>
+
+<header class="title">
+  <p class="course">Probabilistic Graphical Models</p>
+  <h1>Chapter 2: Representation of Undirected Graphical Models</h1>
+  <p class="byline">Notes by Mihir Rao</p>
+</header>
+
+<article>
+
+<p>Chapter 1 ended at the right-hand branch of the tree of association measures: a <em>conditional independence graph</em>, with the property that the absence of an edge between $X_i$ and $X_j$ means $X_i \perp\!\!\!\perp X_j \mid \text{rest}$. Two questions are now open. First, how do we read off <em>all</em> the conditional independences that a graph entails, not just the per-edge ones? Second, what is the family of joint distributions a graph of this kind can represent? Answering both is the subject of this chapter. The resulting object is the <em>undirected graphical model</em> (UGM), also called a Markov random field or Markov network.</p>
+
+<h2>2.1&nbsp;&nbsp;What Is an Undirected Graphical Model?</h2>
+
+<p>A UGM uses an undirected graph $H$ to encode pairwise, non-causal coupling between variables. We can write down a model and score any particular joint configuration of the nodes, but unlike a Bayesian network there is no factorised generative recipe for sampling. The graph constrains node configurations through compatibility functions, and global properties of the distribution emerge from these local interactions.</p>
+
+<figure class="fig">
+  <svg viewBox="0 0 360 240" width="360" height="240" role="img" aria-label="An example undirected graphical model with five nodes.">
+    <!-- edges first, hidden inside circles -->
+    <line class="gm-edge" x1="90"  y1="60"  x2="270" y2="60"/>
+    <line class="gm-edge" x1="90"  y1="60"  x2="90"  y2="180"/>
+    <line class="gm-edge" x1="90"  y1="60"  x2="180" y2="120"/>
+    <line class="gm-edge" x1="90"  y1="180" x2="180" y2="120"/>
+    <line class="gm-edge" x1="270" y1="60"  x2="270" y2="180"/>
+    <!-- nodes -->
+    <circle class="gm-node-circle" cx="90"  cy="60"  r="22"/>
+    <circle class="gm-node-circle" cx="270" cy="60"  r="22"/>
+    <circle class="gm-node-circle" cx="180" cy="120" r="22"/>
+    <circle class="gm-node-circle" cx="90"  cy="180" r="22"/>
+    <circle class="gm-node-circle" cx="270" cy="180" r="22"/>
+    <!-- labels -->
+    <text class="gm-label" x="90"  y="60">X₁</text>
+    <text class="gm-label" x="270" y="60">X₄</text>
+    <text class="gm-label" x="180" y="120">X₃</text>
+    <text class="gm-label" x="90"  y="180">X₂</text>
+    <text class="gm-label" x="270" y="180">X₅</text>
+  </svg>
+  <figcaption>A small undirected graphical model. The triangle $\{X_1, X_2, X_3\}$ is a clique; the edge $X_4\!-\!X_5$ couples a separate pair; $X_4$ is tied to the triangle only through $X_1$. Together these constraints describe a joint distribution $P(\mathbf{X}; \theta_G)$ over the five variables.</figcaption>
+</figure>
+
+<p>UGMs are the natural language for situations where the relationships are inherently symmetric. <em>Image and lattice models</em> arrange pixels or atoms on a grid and let geometric neighbours interact. <em>Social networks</em>, <em>protein interaction networks</em>, and the board states of <em>games</em> like Go are all cases where two entities either co-vary or they do not, with no directional &mdash; let alone causal &mdash; story attached to the edge. Hidden topics in <em>information retrieval</em> and many models in statistical physics fall into the same class. In each case the graph carries the pattern of interactions, and the model attaches a numerical compatibility to each pattern.</p>
+
+<h2>2.2&nbsp;&nbsp;Quantitative Specification: Cliques and Potentials</h2>
+
+<p>The basic structural unit of a UGM is the clique.</p>
+
+<div class="defn">
+  <span class="label">Definition.</span> <span class="name">Clique</span>
+  For a graph $G = (V, E)$, a <em>complete subgraph</em> (or <em>clique</em>) is a subgraph $G' = (V' \subseteq V,\; E' \subseteq E)$ in which the nodes of $V'$ are fully interconnected. A clique is <em>maximal</em> if it cannot be extended &mdash; no superset $V'' \supsetneq V'$ is itself a clique. A <em>sub-clique</em> is any clique, not necessarily maximal.
+</div>
+
+<figure class="fig">
+  <svg viewBox="0 0 360 260" width="360" height="260" role="img" aria-label="Diamond graph on A, B, C, D with diagonal B-D.">
+    <!-- edges first -->
+    <line class="gm-edge" x1="180" y1="50"  x2="280" y2="130"/>
+    <line class="gm-edge" x1="180" y1="50"  x2="80"  y2="130"/>
+    <line class="gm-edge" x1="280" y1="130" x2="180" y2="210"/>
+    <line class="gm-edge" x1="180" y1="210" x2="80"  y2="130"/>
+    <line class="gm-edge" x1="80"  y1="130" x2="280" y2="130"/>
+    <!-- nodes -->
+    <circle class="gm-node-circle" cx="180" cy="50"  r="22"/>
+    <circle class="gm-node-circle" cx="280" cy="130" r="22"/>
+    <circle class="gm-node-circle" cx="180" cy="210" r="22"/>
+    <circle class="gm-node-circle" cx="80"  cy="130" r="22"/>
+    <!-- labels -->
+    <text class="gm-label" x="180" y="50">A</text>
+    <text class="gm-label" x="280" y="130">B</text>
+    <text class="gm-label" x="180" y="210">C</text>
+    <text class="gm-label" x="80"  y="130">D</text>
+  </svg>
+  <figcaption>The diamond graph has two maximal cliques, $\{A, B, D\}$ and $\{B, C, D\}$, glued along the edge $B\!-\!D$. The sub-cliques are every edge and singleton inside one of those triangles.</figcaption>
+</figure>
+
+<p>Cliques are the right unit because every dependency on a fully connected set of nodes is possible by definition, so attaching parameters to a clique cannot fail to capture an interaction. With that vocabulary in hand we can define the model itself.</p>
+
+<div class="defn">
+  <span class="label">Definition.</span> <span class="name">Undirected graphical model</span>
+  An <em>undirected graphical model</em> represents a distribution $P(X_1, \ldots, X_n)$ defined by an undirected graph $H$ together with a set of positive <em>potential functions</em> $\psi_c$, one per clique $c$ of $H$, such that
+  $$P(x_1, \ldots, x_n) \;=\; \frac{1}{Z} \prod_{c \in \mathcal{C}} \psi_c(\mathbf{x}_c).$$
+  The normaliser
+  $$Z \;=\; \sum_{x_1, \ldots, x_n} \prod_{c \in \mathcal{C}} \psi_c(\mathbf{x}_c)$$
+  is the <em>partition function</em>. Equivalent names for this object: <em>Markov random field</em>, <em>Markov network</em>, <em>Gibbs distribution</em>.
+</div>
+
+<p>A potential $\psi_c$ is a contingency function over its arguments &mdash; a "pre-probabilistic" score on joint configurations. It is not itself a probability and need not normalise to anything in particular. The partition function $Z$ is what turns the product into a proper distribution, and almost every algorithmic difficulty in the rest of the course will trace back to it: computing $Z$ involves a sum over all configurations of $\mathbf{X}$ and is intractable in general.</p>
+
+<h2>2.3&nbsp;&nbsp;Why Potentials Are Not Marginals or Conditionals</h2>
+
+<p>It is tempting to read $\psi_c$ as a marginal or a conditional, but neither interpretation survives even the simplest example.</p>
+
+<figure class="fig">
+  <svg viewBox="0 0 360 120" width="360" height="120" role="img" aria-label="Three-node chain X-Y-Z.">
+    <line class="gm-edge" x1="90"  y1="60" x2="180" y2="60"/>
+    <line class="gm-edge" x1="180" y1="60" x2="270" y2="60"/>
+    <circle class="gm-node-circle" cx="90"  cy="60" r="22"/>
+    <circle class="gm-node-circle" cx="180" cy="60" r="22"/>
+    <circle class="gm-node-circle" cx="270" cy="60" r="22"/>
+    <text class="gm-label" x="90"  y="60">X</text>
+    <text class="gm-label" x="180" y="60">Y</text>
+    <text class="gm-label" x="270" y="60">Z</text>
+  </svg>
+  <figcaption>A three-node chain. The graph asserts $X \perp\!\!\!\perp Z \mid Y$; the joint must factor through $Y$.</figcaption>
+</figure>
+
+<p>The graph implies $X \perp\!\!\!\perp Z \mid Y$, so the joint admits three equivalent factorisations:</p>
+
+<p>$$p(x, y, z) \;=\; p(y)\,p(x \mid y)\,p(z \mid y) \;=\; p(x, y)\,p(z \mid y) \;=\; p(x \mid y)\,p(y, z).$$</p>
+
+<p>The same joint can be written as a product of a marginal and two conditionals, or of one marginal and one conditional &mdash; but <em>not</em> as a product of pure marginals, and <em>not</em> as a product of pure conditionals. Either constraint would over-determine the joint. The conclusion is that potentials are best read as general <em>compatibility</em>, <em>goodness</em>, or <em>happiness</em> functions over their arguments, not as probability distributions in disguise.</p>
+
+<h2>2.4&nbsp;&nbsp;Choices of Parameterisation</h2>
+
+<p>The definition leaves room for a choice: which cliques does $\mathcal{C}$ contain? Three natural picks give increasingly expressive parameterisations.</p>
+
+<p><em>Max-clique form.</em> For the diamond above, take $\mathcal{C} = \{\{A,B,D\}, \{B,C,D\}\}$ and write</p>
+
+<p>$$P'(x_1, x_2, x_3, x_4) \;=\; \frac{1}{Z}\,\psi_c(\mathbf{x}_{124})\,\psi_c(\mathbf{x}_{234}).$$</p>
+
+<p>For discrete variables this replaces a four-dimensional table with two three-dimensional tables.</p>
+
+<p><em>Sub-clique (pairwise) form.</em> Take $\mathcal{C}$ to be all edges of the graph:</p>
+
+<p>$$P''(x_1, x_2, x_3, x_4) \;=\; \frac{1}{Z}\,\psi_{12}\psi_{14}\psi_{23}\psi_{24}\psi_{34},$$</p>
+
+<p>each factor a two-dimensional table over a single edge. This is the <em>pairwise MRF</em>, the workhorse special case that turns up again and again.</p>
+
+<p><em>Canonical form.</em> Use <em>every</em> clique &mdash; singletons, edges, triangles, and so on:</p>
+
+<p>$$P(x_1, x_2, x_3, x_4) \;=\; \frac{1}{Z}\,\psi_c(\mathbf{x}_{124})\,\psi_c(\mathbf{x}_{234})\,\prod_{ij\in E}\!\psi_{ij}(\mathbf{x}_{ij})\,\prod_{i}\!\psi_i(x_i).$$</p>
+
+<p>The canonical form subsumes the other two as special cases and is the most general parameterisation a UGM admits.</p>
+
+<h2>2.5&nbsp;&nbsp;Independence Properties</h2>
+
+<p>So far we have spoken about parameterisation. The other side of the coin is what the graph implies about independences, regardless of how the potentials are filled in. The link between graphs and independences is the notion of an <em>I-map</em>.</p>
+
+<div class="defn">
+  <span class="label">Definition.</span> <span class="name">I(P) and I-map</span>
+  Let $P$ be a distribution over $\mathbf{X}$. The set $I(P)$ is the collection of independence assertions $(X \perp\!\!\!\perp Y \mid Z)$ that hold in $P$ for every setting of its parameters. A graph $K$ (with its own associated set $I(K)$) is an <em>I-map</em> for an independence set $I$ if $I(K) \subseteq I$. We say $K$ is an I-map for $P$ when $I(K) \subseteq I(P)$.
+</div>
+
+<p>For $K$ to be an I-map of $P$, every independence the graph asserts must really hold in $P$; the converse is not required &mdash; $P$ may have additional independences that the graph fails to display. A small example brings this out: for two variables with $P(X, Y) = P(X)P(Y)$, the <em>fully connected</em> graph is an I-map, because it asserts no independences at all, and the empty set is a subset of everything. The fully connected graph is wasteful but not <em>wrong</em>.</p>
+
+<h2>2.6&nbsp;&nbsp;Global, Local, and Pairwise Markov Properties</h2>
+
+<p>Three increasingly local notions of conditional independence can be read off the graph. Each defines a candidate $I(H)$, and they are all equivalent for positive distributions.</p>
+
+<p><em>Global Markov property.</em> Set $B$ separates sets $A$ and $C$ if every path from a node in $A$ to a node in $C$ passes through $B$. A distribution satisfies the global Markov property when separation in the graph implies conditional independence in the distribution.</p>
+
+<figure class="fig">
+  <svg viewBox="0 0 540 240" width="540" height="240" role="img" aria-label="Two clusters A and C separated by a small set B.">
+    <!-- cluster ellipses -->
+    <ellipse class="gm-cluster" cx="110" cy="130" rx="90" ry="80"/>
+    <ellipse class="gm-cluster" cx="270" cy="130" rx="34" ry="64"/>
+    <ellipse class="gm-cluster" cx="430" cy="130" rx="90" ry="80"/>
+    <!-- internal edges A -->
+    <line class="gm-edge-thin" x1="60"  y1="90"  x2="120" y2="70"/>
+    <line class="gm-edge-thin" x1="60"  y1="90"  x2="80"  y2="160"/>
+    <line class="gm-edge-thin" x1="120" y1="70"  x2="160" y2="130"/>
+    <line class="gm-edge-thin" x1="160" y1="130" x2="120" y2="190"/>
+    <line class="gm-edge-thin" x1="80"  y1="160" x2="120" y2="190"/>
+    <!-- B internal -->
+    <line class="gm-edge-thin" x1="270" y1="95" x2="270" y2="165"/>
+    <!-- A to B -->
+    <line class="gm-edge-thin" x1="160" y1="130" x2="270" y2="95"/>
+    <line class="gm-edge-thin" x1="120" y1="190" x2="270" y2="165"/>
+    <!-- B to C -->
+    <line class="gm-edge-thin" x1="270" y1="95"  x2="380" y2="90"/>
+    <line class="gm-edge-thin" x1="270" y1="165" x2="400" y2="190"/>
+    <!-- internal edges C -->
+    <line class="gm-edge-thin" x1="380" y1="90"  x2="440" y2="70"/>
+    <line class="gm-edge-thin" x1="380" y1="90"  x2="420" y2="160"/>
+    <line class="gm-edge-thin" x1="440" y1="70"  x2="480" y2="130"/>
+    <line class="gm-edge-thin" x1="480" y1="130" x2="400" y2="190"/>
+    <line class="gm-edge-thin" x1="420" y1="160" x2="400" y2="190"/>
+    <!-- A nodes -->
+    <circle class="gm-node-circle faded" cx="60"  cy="90"  r="9"/>
+    <circle class="gm-node-circle faded" cx="120" cy="70"  r="9"/>
+    <circle class="gm-node-circle faded" cx="160" cy="130" r="9"/>
+    <circle class="gm-node-circle faded" cx="80"  cy="160" r="9"/>
+    <circle class="gm-node-circle faded" cx="120" cy="190" r="9"/>
+    <!-- B nodes (separator, filled darker) -->
+    <circle class="gm-node-circle warm"  cx="270" cy="95"  r="10"/>
+    <circle class="gm-node-circle warm"  cx="270" cy="165" r="10"/>
+    <!-- C nodes -->
+    <circle class="gm-node-circle faded" cx="380" cy="90"  r="9"/>
+    <circle class="gm-node-circle faded" cx="440" cy="70"  r="9"/>
+    <circle class="gm-node-circle faded" cx="480" cy="130" r="9"/>
+    <circle class="gm-node-circle faded" cx="400" cy="190" r="9"/>
+    <circle class="gm-node-circle faded" cx="420" cy="160" r="9"/>
+    <!-- cluster labels -->
+    <text class="gm-label cluster" x="110" y="228">A</text>
+    <text class="gm-label cluster" x="270" y="218">B</text>
+    <text class="gm-label cluster" x="430" y="228">C</text>
+  </svg>
+  <figcaption>Sets $A$ and $C$ are separated by $B$: every path from $A$ to $C$ crosses $B$. The global Markov property is the statement $\mathrm{sep}_H(A;\,C \mid B) \;\Longrightarrow\; A \perp\!\!\!\perp C \mid B$.</figcaption>
+</figure>
+
+<div class="defn">
+  <span class="label">Definition.</span> <span class="name">Global Markov property</span>
+  A distribution $P$ satisfies the global Markov property of $H$ if for any disjoint $A, B, C$ such that $B$ separates $A$ and $C$ in $H$, the independence $A \perp\!\!\!\perp_P C \mid B$ holds. The induced independence set is
+  $$I(H) \;=\; \bigl\{\,A \perp\!\!\!\perp C \mid B \;:\; \mathrm{sep}_H(A; C \mid B)\,\bigr\}.$$
+</div>
+
+<p><em>Local Markov property.</em> Move from sets of nodes to a single node. The <em>Markov blanket</em> of $X_i$ in an undirected graph is simply the set of nodes that share an edge with $X_i$ &mdash; its graph neighbours.</p>
+
+<figure class="fig">
+  <svg viewBox="0 0 280 240" width="280" height="240" role="img" aria-label="Five by five grid with the Markov blanket of the centre node highlighted.">
+    <g>
+      <!-- horizontal edges -->
+      <g class="gm-edge-thin" fill="none" stroke="currentColor">
+        <line x1="40"  y1="20"  x2="240" y2="20"/>
+        <line x1="40"  y1="70"  x2="240" y2="70"/>
+        <line x1="40"  y1="120" x2="240" y2="120"/>
+        <line x1="40"  y1="170" x2="240" y2="170"/>
+        <line x1="40"  y1="220" x2="240" y2="220"/>
+      </g>
+      <!-- vertical edges -->
+      <g class="gm-edge-thin" fill="none" stroke="currentColor">
+        <line x1="40"  y1="20" x2="40"  y2="220"/>
+        <line x1="90"  y1="20" x2="90"  y2="220"/>
+        <line x1="140" y1="20" x2="140" y2="220"/>
+        <line x1="190" y1="20" x2="190" y2="220"/>
+        <line x1="240" y1="20" x2="240" y2="220"/>
+      </g>
+    </g>
+    <!-- nodes: most plain, four red neighbours, centre blue -->
+    <g>
+      <!-- row 1 -->
+      <circle class="gm-node-grid" cx="40"  cy="20" r="8"/>
+      <circle class="gm-node-grid" cx="90"  cy="20" r="8"/>
+      <circle class="gm-node-grid" cx="140" cy="20" r="8"/>
+      <circle class="gm-node-grid" cx="190" cy="20" r="8"/>
+      <circle class="gm-node-grid" cx="240" cy="20" r="8"/>
+      <!-- row 2 -->
+      <circle class="gm-node-grid" cx="40"  cy="70" r="8"/>
+      <circle class="gm-node-grid" cx="90"  cy="70" r="8"/>
+      <circle class="gm-node-grid hot" cx="140" cy="70" r="9"/>
+      <circle class="gm-node-grid" cx="190" cy="70" r="8"/>
+      <circle class="gm-node-grid" cx="240" cy="70" r="8"/>
+      <!-- row 3 -->
+      <circle class="gm-node-grid" cx="40"  cy="120" r="8"/>
+      <circle class="gm-node-grid hot" cx="90"  cy="120" r="9"/>
+      <circle class="gm-node-grid cool" cx="140" cy="120" r="10"/>
+      <circle class="gm-node-grid hot" cx="190" cy="120" r="9"/>
+      <circle class="gm-node-grid" cx="240" cy="120" r="8"/>
+      <!-- row 4 -->
+      <circle class="gm-node-grid" cx="40"  cy="170" r="8"/>
+      <circle class="gm-node-grid" cx="90"  cy="170" r="8"/>
+      <circle class="gm-node-grid hot" cx="140" cy="170" r="9"/>
+      <circle class="gm-node-grid" cx="190" cy="170" r="8"/>
+      <circle class="gm-node-grid" cx="240" cy="170" r="8"/>
+      <!-- row 5 -->
+      <circle class="gm-node-grid" cx="40"  cy="220" r="8"/>
+      <circle class="gm-node-grid" cx="90"  cy="220" r="8"/>
+      <circle class="gm-node-grid" cx="140" cy="220" r="8"/>
+      <circle class="gm-node-grid" cx="190" cy="220" r="8"/>
+      <circle class="gm-node-grid" cx="240" cy="220" r="8"/>
+    </g>
+  </svg>
+  <figcaption>The local Markov property on a grid: the blue node is independent of every other node given its red neighbours. The Markov blanket of a node in an undirected graph is exactly its set of graph neighbours.</figcaption>
+</figure>
+
+<div class="defn">
+  <span class="label">Definition.</span> <span class="name">Local Markov property</span>
+  The local Markov independences associated with $H$ are
+  $$I_\ell(H) \;=\; \bigl\{\, X_i \perp\!\!\!\perp \mathbf{V} \setminus \bigl(\{X_i\} \cup \mathrm{MB}_{X_i}\bigr) \,\bigm|\, \mathrm{MB}_{X_i} \,\bigr\}, \qquad \forall\, i,$$
+  where $\mathrm{MB}_{X_i}$ is the set of neighbours of $X_i$ in $H$. In words: each node is independent of the rest of the graph given its immediate neighbours.
+</div>
+
+<p><em>Pairwise Markov property.</em> The finest-grained version focuses on a single pair of non-adjacent nodes.</p>
+
+<figure class="fig">
+  <svg viewBox="0 0 400 140" width="400" height="140" role="img" aria-label="A five-node chain.">
+    <line class="gm-edge" x1="60"  y1="70" x2="340" y2="70"/>
+    <circle class="gm-node-circle cold"  cx="60"  cy="70" r="22"/>
+    <circle class="gm-node-circle hot"   cx="130" cy="70" r="22"/>
+    <circle class="gm-node-circle hot"   cx="200" cy="70" r="22"/>
+    <circle class="gm-node-circle hot"   cx="270" cy="70" r="22"/>
+    <circle class="gm-node-circle cold"  cx="340" cy="70" r="22"/>
+    <text class="gm-label" x="60"  y="70">1</text>
+    <text class="gm-label" x="130" y="70">2</text>
+    <text class="gm-label" x="200" y="70">3</text>
+    <text class="gm-label" x="270" y="70">4</text>
+    <text class="gm-label" x="340" y="70">5</text>
+  </svg>
+  <figcaption>The pairwise Markov property on a chain: nodes 1 and 5 are non-adjacent, so $X_1 \perp\!\!\!\perp X_5 \mid \{X_2, X_3, X_4\}$.</figcaption>
+</figure>
+
+<div class="defn">
+  <span class="label">Definition.</span> <span class="name">Pairwise Markov property</span>
+  $$I_p(H) \;=\; \bigl\{\, X \perp\!\!\!\perp Y \mid \mathbf{V} \setminus \{X, Y\} \;:\; \{X, Y\} \notin E \,\bigr\}.$$
+</div>
+
+<p>The three properties agree for positive distributions: each can be derived from the others, so any one of them serves as the "Markov property" of $H$.</p>
+
+<h2>2.7&nbsp;&nbsp;Soundness, Completeness, and the Hammersley&ndash;Clifford Theorem</h2>
+
+<p>Two questions tie the parameterisation of §2.2&ndash;§2.4 together with the Markov properties of §2.6.</p>
+
+<div class="theorem">
+  <span class="tlabel">Theorem (soundness).</span> If $P$ is a Gibbs distribution over $H$, then $H$ is an I-map of $P$.
+</div>
+
+<p>Every independence the graph asserts really does hold in any distribution that factors over the graph &mdash; the parameterisation is faithful to the structure.</p>
+
+<div class="theorem">
+  <span class="tlabel">Theorem (completeness).</span> If $\neg\,\mathrm{sep}_H(X;\,Z \mid Y)$, then $X \perp\!\!\!\perp_P Z \mid Y$ fails in <em>some</em> $P$ that factors over $H$.
+</div>
+
+<p>If the graph does <em>not</em> separate two sets, then at least one Gibbs distribution over the graph really does have them dependent. The graph does not lie about either direction. The converse of soundness &mdash; that <em>every</em> distribution with the right independences is Gibbs &mdash; is the central result of the chapter.</p>
+
+<div class="theorem">
+  <span class="tlabel">Theorem (Hammersley&ndash;Clifford).</span> Let $P$ be a positive distribution over $\mathbf{V}$, and let $H$ be an undirected graph over $\mathbf{V}$. If $H$ is an I-map for $P$, then $P$ is a Gibbs distribution over $H$.
+</div>
+
+<p>For positive distributions, "respects the Markov properties of $H$" and "factors over the cliques of $H$" are the same statement. The qualitative specification (independences) and the quantitative specification (clique potentials) describe exactly the same family of distributions.</p>
+
+<h2>2.8&nbsp;&nbsp;Perfect Maps</h2>
+
+<p>An I-map can hide independences in $P$ that it never asserts. A stronger relationship would be that the graph captures the independences of $P$ exactly.</p>
+
+<div class="defn">
+  <span class="label">Definition.</span> <span class="name">Perfect map</span>
+  A Markov network $H$ is a <em>perfect map</em> for $P$ if for all $X, Y, Z$,
+  $$\mathrm{sep}_H(X;\,Z \mid Y) \;\Longleftrightarrow\; P \models (X \perp\!\!\!\perp Z \mid Y).$$
+</div>
+
+<p>Perfect maps are the ideal, but they are not always available: there exist distributions for which no UGM is a perfect map. The proof is deferred to the next chapter on directed graphical models, where the analogous obstruction also appears.</p>
+
+<h2>2.9&nbsp;&nbsp;Exponential Form and Free Energy</h2>
+
+<p>Constraining clique potentials to be positive is awkward in practice &mdash; interactions can be attractive or repulsive, and the sign is easier to talk about than a positive ratio. The standard fix is to write each potential as the exponential of a real-valued <em>energy</em>:</p>
+
+<p>$$\psi_c(\mathbf{x}_c) \;=\; \exp\bigl\{-\phi_c(\mathbf{x}_c)\bigr\}.$$</p>
+
+<p>Substituting into the Gibbs distribution gives the joint a clean additive structure in the exponent:</p>
+
+<p>$$p(\mathbf{x}) \;=\; \frac{1}{Z}\exp\!\Bigl\{-\sum_{c \in \mathcal{C}} \phi_c(\mathbf{x}_c)\Bigr\} \;=\; \frac{1}{Z}\exp\bigl\{-H(\mathbf{x})\bigr\}, \qquad H(\mathbf{x}) \;=\; \sum_{c \in \mathcal{C}} \phi_c(\mathbf{x}_c).$$</p>
+
+<p>The exponent $H(\mathbf{x})$ is the <em>free energy</em>. In physics this is the <em>Boltzmann distribution</em>; in statistics, a <em>log-linear model</em>. We will move freely between the two views in what follows.</p>
+
+<h2>2.10&nbsp;&nbsp;Important Special Cases</h2>
+
+<p>A handful of UGMs recur often enough to deserve names.</p>
+
+<h3 style="font-size: 1.06rem; font-weight: 600; font-style: italic; margin: 1.4rem 0 0.4rem; color: var(--ink);">Boltzmann machines</h3>
+
+<figure class="fig">
+  <svg viewBox="0 0 320 260" width="320" height="260" role="img" aria-label="Fully connected four-node Boltzmann machine.">
+    <line class="gm-edge" x1="160" y1="50"  x2="260" y2="130"/>
+    <line class="gm-edge" x1="160" y1="50"  x2="60"  y2="130"/>
+    <line class="gm-edge" x1="160" y1="50"  x2="160" y2="210"/>
+    <line class="gm-edge" x1="260" y1="130" x2="160" y2="210"/>
+    <line class="gm-edge" x1="60"  y1="130" x2="160" y2="210"/>
+    <line class="gm-edge" x1="60"  y1="130" x2="260" y2="130"/>
+    <circle class="gm-node-circle" cx="160" cy="50"  r="22"/>
+    <circle class="gm-node-circle" cx="260" cy="130" r="22"/>
+    <circle class="gm-node-circle" cx="160" cy="210" r="22"/>
+    <circle class="gm-node-circle" cx="60"  cy="130" r="22"/>
+    <text class="gm-label" x="160" y="50">1</text>
+    <text class="gm-label" x="260" y="130">2</text>
+    <text class="gm-label" x="160" y="210">3</text>
+    <text class="gm-label" x="60"  y="130">4</text>
+  </svg>
+  <figcaption>A Boltzmann machine: a fully connected graph with pairwise potentials on binary nodes ($x_i \in \{0, 1\}$ or $\{-1, +1\}$). Every pair of variables interacts directly.</figcaption>
+</figure>
+
+<p>A <em>Boltzmann machine</em> is a fully connected UGM with pairwise (edge) potentials on binary-valued nodes. Its energy is quadratic, and the joint reads</p>
+
+<p>$$P(x_1, \ldots, x_n) \;=\; \frac{1}{Z}\exp\!\Bigl\{\sum_{ij} \theta_{ij}\,x_i x_j + \sum_i \alpha_i\,x_i + C\Bigr\}.$$</p>
+
+<p>Equivalently $H(\mathbf{x}) = (\mathbf{x} - \boldsymbol{\mu})^\top \Theta (\mathbf{x} - \boldsymbol{\mu})$ &mdash; a quadratic form in the centred variables.</p>
+
+<h3 style="font-size: 1.06rem; font-weight: 600; font-style: italic; margin: 1.4rem 0 0.4rem; color: var(--ink);">Ising and Potts models</h3>
+
+<p>The <em>Ising model</em> is what you get when the same quadratic energy is imposed on a sparse grid graph &mdash; nodes are pixels or atoms on a lattice, and $\theta_{ij}$ is non-zero only for geometric neighbours $i, j$:</p>
+
+<p>$$p(X) \;=\; \frac{1}{Z}\exp\!\Bigl\{\sum_{i, j \in N_i} \theta_{ij}\,X_i X_j + \sum_i \theta_{i0}\,X_i\Bigr\}.$$</p>
+
+<p>The potential function encourages nearby variables to take similar values: it is the simplest model of pattern continuity in images and of magnetic alignment in physics. The <em>Potts model</em> generalises Ising to multi-state nodes instead of binary ones.</p>
+
+<h3 style="font-size: 1.06rem; font-weight: 600; font-style: italic; margin: 1.4rem 0 0.4rem; color: var(--ink);">Restricted Boltzmann machines</h3>
+
+<figure class="fig">
+  <svg viewBox="0 0 420 240" width="420" height="240" role="img" aria-label="Restricted Boltzmann machine: bipartite graph with hidden and visible layers.">
+    <!-- edges: every hidden to every visible -->
+    <g class="gm-edge-thin" fill="none">
+      <line x1="130" y1="60" x2="80"  y2="180"/>
+      <line x1="130" y1="60" x2="150" y2="180"/>
+      <line x1="130" y1="60" x2="220" y2="180"/>
+      <line x1="130" y1="60" x2="290" y2="180"/>
+      <line x1="130" y1="60" x2="360" y2="180"/>
+      <line x1="210" y1="60" x2="80"  y2="180"/>
+      <line x1="210" y1="60" x2="150" y2="180"/>
+      <line x1="210" y1="60" x2="220" y2="180"/>
+      <line x1="210" y1="60" x2="290" y2="180"/>
+      <line x1="210" y1="60" x2="360" y2="180"/>
+      <line x1="290" y1="60" x2="80"  y2="180"/>
+      <line x1="290" y1="60" x2="150" y2="180"/>
+      <line x1="290" y1="60" x2="220" y2="180"/>
+      <line x1="290" y1="60" x2="290" y2="180"/>
+      <line x1="290" y1="60" x2="360" y2="180"/>
+    </g>
+    <!-- hidden -->
+    <circle class="gm-node-circle cool" cx="130" cy="60" r="16"/>
+    <circle class="gm-node-circle cool" cx="210" cy="60" r="16"/>
+    <circle class="gm-node-circle cool" cx="290" cy="60" r="16"/>
+    <!-- visible -->
+    <circle class="gm-node-circle warm" cx="80"  cy="180" r="16"/>
+    <circle class="gm-node-circle warm" cx="150" cy="180" r="16"/>
+    <circle class="gm-node-circle warm" cx="220" cy="180" r="16"/>
+    <circle class="gm-node-circle warm" cx="290" cy="180" r="16"/>
+    <circle class="gm-node-circle warm" cx="360" cy="180" r="16"/>
+    <!-- layer labels -->
+    <text class="gm-label layer" x="210" y="28">hidden units (h)</text>
+    <text class="gm-label layer" x="220" y="215">visible units (x)</text>
+  </svg>
+  <figcaption>A restricted Boltzmann machine: a bipartite UGM with hidden and visible layers and no within-layer edges. Hidden units are conditionally independent given the visible layer, and vice versa.</figcaption>
+</figure>
+
+<p>A <em>restricted Boltzmann machine</em> (RBM) is a bipartite UGM: nodes split into a <em>hidden</em> layer $\mathbf{h}$ and a <em>visible</em> layer $\mathbf{x}$, with edges only between the two layers. The joint can be written</p>
+
+<p>$$p(\mathbf{x}, \mathbf{h} \mid \theta) \;=\; \exp\!\Bigl\{\sum_i \theta_i \phi_i(x_i) + \sum_j \theta_j \phi_j(h_j) + \sum_{i,j} \theta_{i,j}\,\phi_{i,j}(x_i, h_j) - A(\theta)\Bigr\}.$$</p>
+
+<p>Two facts make RBMs algorithmically convenient. Hidden units are marginally <em>dependent</em>, but conditionally <em>independent</em> given the visible layer:</p>
+
+<p>$$P(\mathbf{h} \mid \mathbf{x}) \;=\; \prod_j P(h_j \mid \mathbf{x}),$$</p>
+
+<p>and symmetrically for $\mathbf{x} \mid \mathbf{h}$. This bipartite conditional structure gives an efficient block Gibbs sampler &mdash; alternate between sampling all hidden units given the current visible state and vice versa &mdash; which is the engine of <em>contrastive divergence</em>, the standard learning algorithm for RBMs. The model originates with Smolensky's "Harmonium" (1986) and was popularised by Hinton's binary RBM with contrastive divergence (2002).</p>
+
+<h2>2.11&nbsp;&nbsp;Conditional Random Fields</h2>
+
+<p>Everything so far has built a joint distribution $P(\mathbf{X})$. A <em>discriminative</em> variant instead models the conditional of a label sequence given an observation sequence.</p>
+
+<figure class="fig">
+  <svg viewBox="0 0 420 240" width="420" height="240" role="img" aria-label="Linear-chain conditional random field.">
+    <!-- Y chain edges -->
+    <line class="gm-edge" x1="50"  y1="60" x2="130" y2="60"/>
+    <line class="gm-edge" x1="130" y1="60" x2="210" y2="60"/>
+    <line class="gm-edge" x1="210" y1="60" x2="290" y2="60"/>
+    <line class="gm-edge" x1="290" y1="60" x2="370" y2="60"/>
+    <!-- Y to X observations -->
+    <g class="gm-edge-thin" fill="none">
+      <line x1="50"  y1="60" x2="210" y2="170"/>
+      <line x1="130" y1="60" x2="210" y2="170"/>
+      <line x1="210" y1="60" x2="210" y2="170"/>
+      <line x1="290" y1="60" x2="210" y2="170"/>
+      <line x1="370" y1="60" x2="210" y2="170"/>
+    </g>
+    <!-- Y nodes -->
+    <circle class="gm-node-circle cold" cx="50"  cy="60" r="20"/>
+    <circle class="gm-node-circle cold" cx="130" cy="60" r="20"/>
+    <circle class="gm-node-circle cold" cx="210" cy="60" r="20"/>
+    <circle class="gm-node-circle cold" cx="290" cy="60" r="20"/>
+    <circle class="gm-node-circle cold" cx="370" cy="60" r="20"/>
+    <text class="gm-label" x="50"  y="60">Y₁</text>
+    <text class="gm-label" x="130" y="60">Y₂</text>
+    <text class="gm-label" x="210" y="60">Y₃</text>
+    <text class="gm-label" x="290" y="60">Y₄</text>
+    <text class="gm-label" x="370" y="60">Y₅</text>
+    <!-- X observation cluster -->
+    <ellipse class="gm-cluster" cx="210" cy="170" rx="120" ry="30"/>
+    <text class="gm-label" x="210" y="170">x₁ … xₙ</text>
+  </svg>
+  <figcaption>A linear-chain conditional random field. The label nodes $Y_t$ form an undirected chain; each $Y_t$ conditions on the entire observation $\mathbf{x}$. Because the model defines $P(\mathbf{y}\mid\mathbf{x})$, the observations need not be modelled or assumed independent.</figcaption>
+</figure>
+
+<div class="defn">
+  <span class="label">Definition.</span> <span class="name">Conditional random field</span>
+  Given observation $\mathbf{x}$ and label sequence $\mathbf{y}$, a <em>conditional random field</em> is a UGM on $\mathbf{y}$ with potentials that may depend on $\mathbf{x}$:
+  $$p_\theta(\mathbf{y} \mid \mathbf{x}) \;=\; \frac{1}{Z(\mathbf{x})}\exp\!\Bigl\{\sum_c \theta_c\,f_c(\mathbf{x}, \mathbf{y}_c)\Bigr\}.$$
+  The partition function $Z(\mathbf{x})$ now depends on the observation.
+</div>
+
+<p>Three properties follow. First, modelling $P(\mathbf{y} \mid \mathbf{x})$ rather than $P(\mathbf{y}, \mathbf{x})$ means one never has to assume the input features are independent: arbitrary, overlapping features of $\mathbf{x}$ may appear in the potentials. Second, the transition between labels at adjacent positions can be conditioned on both past and future observations, not just past ones &mdash; useful when labelling a sequence where future context disambiguates a token. Third, the strong independence assumptions of generative sequence models (e.g.&nbsp;HMMs) are dropped. CRFs are the standard model for structured prediction tasks where the input is rich and the output is a small structured object.</p>
+
+<h2>2.12&nbsp;&nbsp;Summary</h2>
+
+<p>Undirected graphical models capture "relatedness", "coupling", or "co-occurrence" between variables. Local and global independence properties are read off the graph via separation, and the quantitative specification attaches a positive potential to each clique. The Hammersley&ndash;Clifford theorem ties the two specifications together: for positive distributions, factorisation over cliques and the Markov independences are the same constraint. The same template defines either joint distributions or conditional ones, and a handful of special cases &mdash; the Ising model on a lattice, the restricted Boltzmann machine, the conditional random field &mdash; account for many practical UGMs. The flat side of the coin is the partition function $Z$: computing it requires a sum over all configurations, so both inference and likelihood-based learning are intractable in general. Making them tractable, exactly or approximately, is what occupies most of the rest of the course.</p>
+
+</article>
+
+<div class="paginate">
+  <a href="lecture-01.html">
+    <div class="dir">&larr; Previous</div>
+    <div>Chapter 1: Introduction to Graphical Models</div>
+  </a>
+  <a class="next" href="index.html">
+    <div class="dir">Up &rarr;</div>
+    <div>Course index</div>
+  </a>
+</div>
+
+<footer>
+  Source: <a href="https://www.cs.cmu.edu/~epxing/Class/10708-20/lectures.html">CMU 10-708 Probabilistic Graphical Models</a>, Lecture 2 (Eric Xing, Spring 2020).
+</footer>
+
+</div>
+</body>
+</html>
