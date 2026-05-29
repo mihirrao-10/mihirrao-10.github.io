@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chapter 5 · Parameter Estimation</title>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {delimiters: [
+          {left: '$$', right: '$$', display: true},
+          {left: '$',  right: '$',  display: false},
+          {left: '\\[', right: '\\]', display: true}
+        ], throwOnError: false});"></script>
+
+<style>
+  :root {
+    --ink: #232a30;
+    --accent: #384c61;
+    --accent-soft: #6c8aa6;
+    --rule: #c4c9cd;
+    --rule-soft: #e4e7ea;
+    --muted: #8b9199;
+    --noteblue: #b05220;
+    --bg: #ffffff;
+    --bg-soft: #fafaf7;
+    --bg-widget: #f4f4ef;
+    --proof: #fff8da;
+    --selected: #e2b048;
+    --ok: #4a7a45;
+    --bad: #b03434;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    font-family: "Iowan Old Style", "Charter", "Source Serif Pro", "Sitka Text", Cambria, Georgia, serif;
+    color: var(--ink);
+    background: var(--bg);
+    line-height: 1.65;
+    margin: 0;
+    padding: 0;
+    font-size: 17px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 2.4rem 1.4rem 4rem; }
+  nav.crumbs {
+    font-size: 0.85rem;
+    font-variant: small-caps;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    margin-bottom: 1.4rem;
+  }
+  nav.crumbs a { color: var(--accent); text-decoration: none; }
+  nav.crumbs a:hover { text-decoration: underline; }
+  header.title {
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 1.2rem;
+    margin-bottom: 2rem;
+  }
+  .course {
+    font-variant: small-caps;
+    letter-spacing: 0.06em;
+    color: var(--accent);
+    font-size: 0.85rem;
+    margin: 0 0 0.4rem;
+  }
+  h1 {
+    font-weight: 600;
+    font-size: 2rem;
+    margin: 0 0 0.6rem;
+    line-height: 1.2;
+    color: var(--ink);
+  }
+  .byline { color: #6a737b; font-size: 0.92rem; margin: 0; font-style: italic; }
+  h2 {
+    font-size: 1.32rem;
+    font-weight: 600;
+    margin: 2.4rem 0 0.6rem;
+    color: var(--ink);
+  }
+  p { margin: 0.7rem 0; }
+  a { color: var(--accent); }
+  em { font-variant: small-caps; font-style: normal; color: var(--noteblue); letter-spacing: 0.02em; }
+  ul, ol { padding-left: 1.4rem; }
+  li { margin: 0.3rem 0; }
+
+  .defn, .exmp {
+    border-left: 2px solid var(--accent);
+    padding: 0.1rem 0 0.1rem 1rem;
+    margin: 1.1rem 0;
+    background: var(--bg-soft);
+    border-radius: 0 4px 4px 0;
+    overflow-x: auto;
+  }
+  .exmp { border-left-color: var(--rule); }
+  .defn .label, .exmp .label {
+    font-variant: small-caps;
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: 0.04em;
+    margin-right: 0.3em;
+  }
+  .exmp .label { color: var(--ink); }
+  .defn .name, .exmp .name {
+    font-variant: small-caps;
+    color: var(--noteblue);
+    letter-spacing: 0.02em;
+  }
+  .theorem {
+    background: var(--proof);
+    border-radius: 4px;
+    padding: 0.8rem 1rem;
+    margin: 1.2rem 0;
+    font-style: italic;
+    overflow-x: auto;
+  }
+  .theorem .tlabel {
+    font-style: normal;
+    font-weight: 600;
+    font-variant: small-caps;
+    letter-spacing: 0.04em;
+    color: var(--ink);
+    margin-right: 0.3em;
+  }
+
+  /* ---------- FIGURES ---------- */
+  figure.fig {
+    margin: 1.6rem 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  figure.fig svg { max-width: 100%; height: auto; display: block; }
+  figure.fig figcaption {
+    margin-top: 0.6rem;
+    font-size: 0.84rem;
+    color: var(--muted);
+    font-style: italic;
+    text-align: center;
+    max-width: 600px;
+    padding: 0 0.6rem;
+  }
+
+  .gm-node-circle        { fill: #f7f7f3; stroke: var(--accent); stroke-width: 1.4; }
+  .gm-node-circle.obs    { fill: #f6ecdf; stroke: var(--noteblue); stroke-width: 1.4; }
+  .gm-node-circle.data   { fill: #e6efe1; stroke: var(--ok);     stroke-width: 1.4; }
+  .gm-label {
+    font-family: "Inter", system-ui, sans-serif;
+    fill: var(--ink);
+    font-size: 13px;
+    text-anchor: middle;
+    dominant-baseline: middle;
+    font-weight: 600;
+  }
+  .gm-edge   { stroke: var(--accent); stroke-width: 1.3; fill: none; }
+  .gm-arrow  { fill: var(--accent); }
+
+  .gm-plate {
+    fill: rgba(56, 76, 97, 0.05);
+    stroke: var(--accent-soft);
+    stroke-width: 1;
+    stroke-dasharray: 4 3;
+  }
+  .gm-platelabel {
+    font-family: "Inter", system-ui, sans-serif;
+    font-size: 11px;
+    font-style: italic;
+    fill: var(--muted);
+    text-anchor: end;
+    dominant-baseline: middle;
+  }
+
+  /* two-panel */
+  .twopanel {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.7rem;
+    width: 100%;
+    max-width: 640px;
+  }
+  .twopanel .panel {
+    background: var(--bg-soft);
+    border: 1px solid var(--rule-soft);
+    border-radius: 4px;
+    padding: 0.6rem 0.6rem 0.5rem;
+    text-align: center;
+  }
+  .twopanel .panel h4 {
+    margin: 0 0 0.4rem;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--ink);
+    font-variant: small-caps;
+    letter-spacing: 0.04em;
+  }
+  .twopanel .panel .panel-note {
+    margin: 0.4rem 0 0;
+    font-size: 0.75rem;
+    color: var(--muted);
+    font-style: italic;
+  }
+  @media (max-width: 540px) {
+    .twopanel { grid-template-columns: 1fr; }
+  }
+
+  /* algorithm block */
+  .algo {
+    background: var(--bg-widget);
+    border: 1px solid var(--rule-soft);
+    border-radius: 4px;
+    padding: 0.8rem 1rem;
+    margin: 1.2rem 0;
+    font-family: "Inter", system-ui, sans-serif;
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+  .algo .alabel {
+    font-variant: small-caps;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: var(--accent);
+    display: block;
+    margin-bottom: 0.4rem;
+  }
+  .algo ol { margin: 0.4rem 0 0; padding-left: 1.6rem; }
+  .algo ol li { margin: 0.2rem 0; }
+
+  /* free-energy contour */
+  .em-axis   { stroke: var(--muted); stroke-width: 1; fill: none; }
+  .em-contour{ stroke: var(--accent-soft); stroke-width: 1; fill: none; opacity: 0.6; }
+  .em-path   { stroke: var(--noteblue); stroke-width: 1.6; fill: none; }
+  .em-axislabel {
+    font-family: "Inter", system-ui, sans-serif;
+    font-size: 12px;
+    font-style: italic;
+    fill: var(--muted);
+  }
+  .em-stepslabel {
+    font-family: "Inter", system-ui, sans-serif;
+    font-size: 11px;
+    fill: var(--noteblue);
+    font-style: italic;
+  }
+  .em-opt { fill: var(--ok); stroke: none; }
+
+  /* ---------- PAGINATOR ---------- */
+  .paginate {
+    display: flex;
+    justify-content: space-between;
+    align-items: stretch;
+    gap: 1rem;
+    margin-top: 3rem;
+    padding-top: 1.2rem;
+    border-top: 1px solid var(--rule-soft);
+    font-size: 0.88rem;
+  }
+  .paginate a {
+    display: block;
+    text-decoration: none;
+    color: var(--ink);
+    padding: 0.5rem 0.8rem;
+    border: 1px solid var(--rule-soft);
+    border-radius: 4px;
+    background: var(--bg-soft);
+    transition: border-color 0.15s, background 0.15s;
+    flex: 0 1 45%;
+  }
+  .paginate a:hover { border-color: var(--accent); background: white; }
+  .paginate .dir {
+    font-variant: small-caps;
+    letter-spacing: 0.06em;
+    font-size: 0.72rem;
+    color: var(--muted);
+    margin-bottom: 0.15rem;
+  }
+  .paginate .next { text-align: right; margin-left: auto; }
+  .paginate .disabled {
+    flex: 0 1 45%;
+    padding: 0.5rem 0.8rem;
+    color: var(--muted);
+    font-style: italic;
+    border: 1px dashed var(--rule-soft);
+    border-radius: 4px;
+    background: transparent;
+  }
+
+  footer {
+    margin-top: 3rem;
+    padding-top: 1.2rem;
+    border-top: 1px solid var(--rule-soft);
+    font-size: 0.85rem;
+    color: #7a8088;
+  }
+  footer a { color: var(--accent); }
+
+  @media (max-width: 540px) {
+    body { font-size: 16px; }
+    .wrap { padding: 2rem 1rem 4rem; }
+    h1 { font-size: 1.6rem; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<nav class="crumbs"><a href="../index.html">Course Notes</a> &rsaquo; <a href="index.html">Probabilistic Graphical Models</a> &rsaquo; Chapter 5</nav>
+
+<header class="title">
+  <p class="course">Probabilistic Graphical Models</p>
+  <h1>Chapter 5: Parameter Estimation</h1>
+  <p class="byline">Notes by Mihir Rao</p>
+</header>
+
+<article>
+
+<p>Chapters 1&ndash;3 built the representational machinery; Chapter 4 took up inference. This chapter is the third leg of the tripod: <em>learning</em> &mdash; fitting parameters to data. The setup is a graphical model with a known structure and an $iid$ dataset $D = \{\mathbf{x}_1, \ldots, \mathbf{x}_N\}$; the goal is the parameter vector $\theta$ that best explains $D$. Two regimes are very different. When every node is observed, the log-likelihood of a Bayesian network <em>decomposes</em> into a sum of local terms, and learning reduces to a series of small density-estimation problems. When some nodes are latent, the decomposition breaks down and we need the EM algorithm.</p>
+
+<h2>5.1&nbsp;&nbsp;The Learning Problem</h2>
+
+<p>Throughout the chapter we assume the graph $G$ is fixed (from expert design or from an earlier structure-learning step), and the task is to estimate the parameters $\theta$. The principle that organises the chapter is <em>maximum likelihood</em>. For a fully observed BN with $iid$ data,</p>
+
+<p>$$\ell(\theta; D) \;=\; \log p(D \mid \theta) \;=\; \log \prod_n \prod_i p(x_{n,i} \mid \mathbf{x}_{n,\pi_i}, \theta_i) \;=\; \sum_i \sum_n \log p(x_{n,i} \mid \mathbf{x}_{n,\pi_i}, \theta_i).$$</p>
+
+<p>This is the key fact. The log-likelihood is a sum over nodes, each term involving only the local CPD parameters $\theta_i$. If we further assume <em>parameter independence</em> (no parameter is shared across nodes), the CPDs may be estimated independently of one another.</p>
+
+<p>The natural starting point is a model with a single node.</p>
+
+<h2>5.2&nbsp;&nbsp;Density Estimation as a Single-Node Graphical Model</h2>
+
+<p>Density estimation &mdash; fitting a distribution to $N$ samples of a single variable &mdash; is the simplest graphical model: one node, $N$ copies. Plate notation makes the structure explicit.</p>
+
+<figure class="fig">
+  <svg viewBox="0 0 260 160" width="260" height="160" role="img" aria-label="Plate notation for a single node observed N times.">
+    <rect class="gm-plate" x="40" y="30" width="180" height="100" rx="4"/>
+    <circle class="gm-node-circle obs" cx="130" cy="80" r="20"/>
+    <text class="gm-label" x="130" y="80">xᵢ</text>
+    <text class="gm-platelabel" x="210" y="120">i = 1 … N</text>
+  </svg>
+  <figcaption>Density estimation as a single-node graphical model. The plate replicates the random variable $X_i$ across the $N$ data points, all drawn $iid$ from $p(\cdot \mid \theta)$.</figcaption>
+</figure>
+
+<p>For the vast majority of parametric models the form chosen for $p(x \mid \theta)$ is a member of the <em>exponential family</em>, a class large enough to cover most of statistics and convenient enough that MLE has a closed-form structure.</p>
+
+<div class="defn">
+  <span class="label">Definition.</span> <span class="name">Exponential family</span>
+  A distribution with density
+  $$p(x \mid \eta) \;=\; h(x)\,\exp\!\bigl\{\eta^\top T(x) - A(\eta)\bigr\} \;=\; \frac{1}{Z(\eta)}\,h(x)\,\exp\!\bigl\{\eta^\top T(x)\bigr\}$$
+  is in the <em>exponential family</em>. Here $\eta$ is the <em>natural</em> (canonical) parameter, $T(x)$ is the <em>sufficient statistic</em>, $A(\eta) = \log Z(\eta)$ is the <em>log normaliser</em>, and $h(x)$ is the base measure. Bernoulli, multinomial, Gaussian, Poisson, gamma, and beta all fit this template.
+</div>
+
+<p>Three properties of the exponential family carry the rest of the section.</p>
+
+<p><em>Moment generation.</em> Differentiating $A(\eta)$ with respect to $\eta$ pulls a $T(x)$ inside the integral:</p>
+
+<p>$$\frac{\partial A(\eta)}{\partial \eta} \;=\; \int T(x)\,\frac{h(x)\,e^{\eta^\top T(x)}}{Z(\eta)}\,\mathrm{d}x \;=\; \mathbb{E}\bigl[T(X)\bigr] \;=\; \mu.$$</p>
+
+<p>The first derivative of the log normaliser is the mean of the sufficient statistic. A second differentiation gives $\partial^2 A / \partial \eta^2 = \mathrm{Var}\bigl(T(X)\bigr) > 0$, so $A$ is convex.</p>
+
+<p><em>Moment vs. canonical parameters.</em> Because $A$ is strictly convex, the map $\eta \mapsto \mu(\eta) = \partial A / \partial \eta$ is invertible: a distribution in the exponential family can be parameterised equivalently by either $\eta$ or $\mu$. We will move between the two as convenient. Write $\eta = \psi(\mu)$ for the inverse.</p>
+
+<p><em>Sufficiency.</em> The data enters the likelihood only through $T(x)$. By the Neyman factorisation theorem, $T$ is a sufficient statistic in the classical sense: nothing in $X$ beyond $T(X)$ contains information about $\eta$, so we can compress $N$ data points to a single sufficient-statistic vector and lose nothing.</p>
+
+<h2>5.3&nbsp;&nbsp;MLE for the Exponential Family is Moment Matching</h2>
+
+<p>The $iid$ log-likelihood under the canonical form is</p>
+
+<p>$$\ell(\eta; D) \;=\; \sum_n \log h(x_n) \;+\; \eta^\top \sum_n T(x_n) \;-\; N\,A(\eta).$$</p>
+
+<p>Setting the derivative with respect to $\eta$ to zero gives</p>
+
+<p>$$\sum_n T(x_n) \;-\; N\,\frac{\partial A(\eta)}{\partial \eta} \;=\; 0 \quad\Longrightarrow\quad \hat{\mu}_{\mathrm{MLE}} \;=\; \frac{1}{N}\sum_{n} T(x_n).$$</p>
+
+<p>The MLE in the moment parameterisation is the sample average of sufficient statistics &mdash; <em>moment matching</em>. The canonical parameter follows by inverting: $\hat{\eta}_{\mathrm{MLE}} = \psi(\hat{\mu}_{\mathrm{MLE}})$. For Bernoulli the rule reduces to $\hat{p} = \bar{x}$; for Gaussian to $\hat{\mu} = \bar{x}$ and $\hat{\Sigma} = \overline{(x - \bar{x})(x - \bar{x})^\top}$; for multinomial to $\hat{\pi}_k = n_k / N$. The single calculation above subsumes all of them.</p>
+
+<h2>5.4&nbsp;&nbsp;Generalised Linear Models</h2>
+
+<p>The two-node graphical model $X \to Y$ &mdash; a feature vector $X$ predicting a response $Y$ &mdash; is the next building block. The framework that unifies linear regression, logistic regression, Poisson regression, and softmax classification is the <em>generalised linear model</em> (GLIM).</p>
+
+<figure class="fig">
+  <svg viewBox="0 0 220 240" width="220" height="240" role="img" aria-label="Plate notation for a GLIM: x_n influences y_n for N data points.">
+    <defs>
+      <marker id="arr-glim" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+        <path d="M0,0 L10,5 L0,10 z" class="gm-arrow"/>
+      </marker>
+    </defs>
+    <rect class="gm-plate" x="30" y="30" width="160" height="180" rx="4"/>
+    <path class="gm-edge" d="M110,88 L110,152" marker-end="url(#arr-glim)"/>
+    <circle class="gm-node-circle"     cx="110" cy="70"  r="18"/>
+    <circle class="gm-node-circle obs" cx="110" cy="170" r="18"/>
+    <text class="gm-label" x="110" y="70">xₙ</text>
+    <text class="gm-label" x="110" y="170">yₙ</text>
+    <text class="gm-platelabel" x="180" y="200">n = 1 … N</text>
+  </svg>
+  <figcaption>The GLIM as a two-node graphical model. Each pair $(x_n, y_n)$ is independent of the others given the parameters; the conditional $p(y_n \mid x_n)$ is an exponential-family distribution whose mean is a function of $\theta^\top x_n$.</figcaption>
+</figure>
+
+<p>A GLIM has three components. The <em>linear predictor</em> $\xi = \theta^\top x$ summarises the input. The <em>response function</em> $f$ maps $\xi$ to the conditional mean: $\mu = f(\xi)$. The conditional distribution $p(y \mid x)$ is an exponential family with mean $\mu$. The choice of which exponential family is constrained by the data: continuous $y$ suggests Gaussian (linear regression); a class label suggests Bernoulli (logistic regression) or multinomial (softmax). When $f$ is taken to be the inverse of the canonical map $\psi$, so that $\theta^\top x$ <em>is</em> the canonical parameter $\eta$, the GLIM is said to use a <em>canonical response function</em>: $\mu = \eta$ (Gaussian), $\mu = 1/(1 + e^{-\eta})$ (Bernoulli), $\mu_i = e^{\eta_i}/\sum_j e^{\eta_j}$ (multinomial), $\mu = e^\eta$ (Poisson).</p>
+
+<p>For a canonical GLIM the gradient of the log-likelihood takes a clean form:</p>
+
+<p>$$\frac{\partial \ell}{\partial \theta} \;=\; \sum_n (y_n - \mu_n)\,x_n \;=\; X^\top (\mathbf{y} - \boldsymbol{\mu}).$$</p>
+
+<p>Setting it to zero gives the "residuals orthogonal to features" condition. Newton&ndash;Raphson with Hessian $H = -X^\top W X$ (where $W$ is the diagonal matrix of $\mathrm{d}\mu_n/\mathrm{d}\eta_n$) gives the <em>iteratively reweighted least squares</em> (IRLS) update,</p>
+
+<p>$$\theta^{t+1} \;=\; (X^\top W^t X)^{-1} X^\top W^t z^t, \qquad z^t \;=\; X\theta^t + (W^t)^{-1}(\mathbf{y} - \boldsymbol{\mu}^t),$$</p>
+
+<p>so each Newton step is a weighted least-squares fit to an adjusted response. For Gaussian likelihood with identity link, $W = I$ and IRLS collapses to the normal equation $\theta = (X^\top X)^{-1} X^\top \mathbf{y}$. For Bernoulli with logistic link, $W = \mathrm{diag}\bigl(\mu_n(1-\mu_n)\bigr)$ and we recover the standard IRLS for logistic regression.</p>
+
+<h2>5.5&nbsp;&nbsp;The Likelihood Decomposes Across a Bayesian Network</h2>
+
+<p>The single-node and two-node pieces compose. Consider a BN on variables $X_1, \ldots, X_d$ with parameter vector $\theta = (\theta_1, \ldots, \theta_d)$ in which each $\theta_i$ parameterises only the CPD $p(X_i \mid \mathbf{X}_{\pi_i})$. The log-likelihood is</p>
+
+<p>$$\ell(\theta; D) \;=\; \sum_n \sum_i \log p(x_{n,i} \mid \mathbf{x}_{n,\pi_i}, \theta_i) \;=\; \sum_i \underbrace{\sum_n \log p(x_{n,i} \mid \mathbf{x}_{n,\pi_i}, \theta_i)}_{\ell_i(\theta_i;\, D_i)}.$$</p>
+
+<figure class="fig">
+  <svg viewBox="0 0 240 280" width="240" height="280" role="img" aria-label="Four-node diamond BN with X1 at top, X2 and X3 in middle, X4 at bottom.">
+    <defs>
+      <marker id="arr-bn4d" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+        <path d="M0,0 L10,5 L0,10 z" class="gm-arrow"/>
+      </marker>
+    </defs>
+    <path class="gm-edge" d="M108,46 L62,114"  marker-end="url(#arr-bn4d)"/>
+    <path class="gm-edge" d="M132,46 L178,114" marker-end="url(#arr-bn4d)"/>
+    <path class="gm-edge" d="M62,146 L108,214" marker-end="url(#arr-bn4d)"/>
+    <path class="gm-edge" d="M178,146 L132,214" marker-end="url(#arr-bn4d)"/>
+    <circle class="gm-node-circle" cx="120" cy="30"  r="20"/>
+    <circle class="gm-node-circle" cx="50"  cy="130" r="20"/>
+    <circle class="gm-node-circle" cx="190" cy="130" r="20"/>
+    <circle class="gm-node-circle" cx="120" cy="230" r="20"/>
+    <text class="gm-label" x="120" y="30">X₁</text>
+    <text class="gm-label" x="50"  y="130">X₂</text>
+    <text class="gm-label" x="190" y="130">X₃</text>
+    <text class="gm-label" x="120" y="230">X₄</text>
+  </svg>
+  <figcaption>A four-node BN. Under parameter independence, MLE on this graph is exactly four separate fits: one for $p(X_1)$, two for the conditionals $p(X_2 \mid X_1)$ and $p(X_3 \mid X_1)$, and one for $p(X_4 \mid X_2, X_3)$. The graph factorises the data <em>and</em> the inference for the parameters.</figcaption>
+</figure>
+
+<p>Each $\ell_i$ is a function of $\theta_i$ alone, and the data it sees is only the columns $(X_i, X_{\pi_i})$ of the dataset. Learning a BN therefore reduces to a series of small density-estimation problems &mdash; one per node, with the node and its parents as the relevant variables. Apply the single-node (§5.3) or two-node (§5.4) machinery to each.</p>
+
+<h2>5.6&nbsp;&nbsp;Tabular CPDs: MLE is Counting</h2>
+
+<p>For discrete variables with tabular CPDs we make the per-cell parameters explicit:</p>
+
+<p>$$\theta_{ijk} \;\stackrel{\mathrm{def}}{=}\; p(X_i = j \mid \mathbf{X}_{\pi_i} = k).$$</p>
+
+<p>The sufficient statistics are the family-configuration counts $n_{ijk} = \#\{n : x_{n,i} = j,\,\mathbf{x}_{n, \pi_i} = k\}$, and the log-likelihood is $\sum_{i, j, k} n_{ijk}\,\log \theta_{ijk}$. Maximising subject to $\sum_j \theta_{ijk} = 1$ with a Lagrange multiplier gives</p>
+
+<p>$$\hat{\theta}_{ijk}^{\,\mathrm{MLE}} \;=\; \frac{n_{ijk}}{\sum_{j'} n_{ij'k}}.$$</p>
+
+<p>MLE is just the empirical conditional frequency &mdash; the row of the CPT for $\mathbf{X}_{\pi_i} = k$ is the count vector of $X_i$, normalised. No iterations, no optimisation, just counting.</p>
+
+<h2>5.7&nbsp;&nbsp;Latent Variables Couple Everything</h2>
+
+<p>The story so far depends on the dataset being completely observed. When some variables are latent, the elegant decomposition breaks down. Latent variables show up everywhere &mdash; mixture-component indicators, hidden states in speech recognition, ancestral DNA sequences, missing measurements &mdash; and the next half of the chapter is about how to learn parameters when they appear.</p>
+
+<figure class="fig">
+  <div class="twopanel">
+    <div class="panel">
+      <h4>Fully observed</h4>
+      <svg viewBox="0 0 200 200" width="200" height="200" role="img" aria-label="Z observed and parents three observed children X1 X2 X3.">
+        <defs>
+          <marker id="arr-fo" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" class="gm-arrow"/>
+          </marker>
+        </defs>
+        <path class="gm-edge" d="M92,66 L58,134"   marker-end="url(#arr-fo)"/>
+        <path class="gm-edge" d="M100,68 L100,132" marker-end="url(#arr-fo)"/>
+        <path class="gm-edge" d="M108,66 L142,134" marker-end="url(#arr-fo)"/>
+        <circle class="gm-node-circle obs" cx="100" cy="50"  r="18"/>
+        <circle class="gm-node-circle obs" cx="50"  cy="150" r="18"/>
+        <circle class="gm-node-circle obs" cx="100" cy="150" r="18"/>
+        <circle class="gm-node-circle obs" cx="150" cy="150" r="18"/>
+        <text class="gm-label" x="100" y="50">Z</text>
+        <text class="gm-label" x="50"  y="150">X₁</text>
+        <text class="gm-label" x="100" y="150">X₂</text>
+        <text class="gm-label" x="150" y="150">X₃</text>
+      </svg>
+      <p class="panel-note">$\ell_c(\theta; D) = \log p(z \mid \theta_z) + \log p(\mathbf{x} \mid z, \theta_x)$ decomposes.</p>
+    </div>
+    <div class="panel">
+      <h4>$Z$ latent</h4>
+      <svg viewBox="0 0 200 200" width="200" height="200" role="img" aria-label="Z latent (unshaded) and three observed children X1 X2 X3.">
+        <defs>
+          <marker id="arr-lat" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" class="gm-arrow"/>
+          </marker>
+        </defs>
+        <path class="gm-edge" d="M92,66 L58,134"   marker-end="url(#arr-lat)"/>
+        <path class="gm-edge" d="M100,68 L100,132" marker-end="url(#arr-lat)"/>
+        <path class="gm-edge" d="M108,66 L142,134" marker-end="url(#arr-lat)"/>
+        <circle class="gm-node-circle"     cx="100" cy="50"  r="18"/>
+        <circle class="gm-node-circle obs" cx="50"  cy="150" r="18"/>
+        <circle class="gm-node-circle obs" cx="100" cy="150" r="18"/>
+        <circle class="gm-node-circle obs" cx="150" cy="150" r="18"/>
+        <text class="gm-label" x="100" y="50">Z</text>
+        <text class="gm-label" x="50"  y="150">X₁</text>
+        <text class="gm-label" x="100" y="150">X₂</text>
+        <text class="gm-label" x="150" y="150">X₃</text>
+      </svg>
+      <p class="panel-note">$\ell(\theta; \mathbf{x}) = \log \sum_z p(z \mid \theta_z)\,p(\mathbf{x} \mid z, \theta_x)$ does not.</p>
+    </div>
+  </div>
+  <figcaption>The same BN, learned under two regimes. Shaded nodes are observed. On the left, every variable is in the dataset; the complete log-likelihood factors as a sum and each CPD can be fit separately. On the right, $Z$ is latent; the log-likelihood is a log of a sum, and the parameters of $p(z)$ and $p(\mathbf{x} \mid z)$ no longer decouple.</figcaption>
+</figure>
+
+<p>The two log-likelihoods carry the difference:</p>
+
+<div class="defn">
+  <span class="label">Definition.</span> <span class="name">Complete vs. incomplete log-likelihood</span>
+  Let $X$ denote the observed variables and $Z$ the latent ones. The <em>complete</em> log-likelihood is
+  $$\ell_c(\theta; X, Z) \;=\; \log p(X, Z \mid \theta);$$
+  if $Z$ were observed, $\ell_c$ would decompose as in §5.5 and MLE would proceed locally. The <em>incomplete</em> log-likelihood is the marginal,
+  $$\ell(\theta; X) \;=\; \log p(X \mid \theta) \;=\; \log \sum_Z p(X, Z \mid \theta),$$
+  and the log of the sum couples the parameters together.
+</div>
+
+<h2>5.8&nbsp;&nbsp;Gaussian Mixture Models</h2>
+
+<p>The canonical example is a Gaussian mixture model. $K$ Gaussian components $\mathcal{N}(\mu_k, \Sigma_k)$ are mixed in proportions $\pi_k$:</p>
+
+<p>$$p(x \mid \mu, \Sigma) \;=\; \sum_k \pi_k\,\mathcal{N}(x \mid \mu_k, \Sigma_k).$$</p>
+
+<p>The latent-variable construction makes the structure clean. Introduce a class indicator $Z_n$ &mdash; a one-hot vector with $Z_n^k = 1$ if data point $n$ comes from component $k$. Then $p(z_n \mid \pi) = \prod_k \pi_k^{z_n^k}$ and $p(x_n \mid z_n^k = 1, \mu, \Sigma) = \mathcal{N}(x_n \mid \mu_k, \Sigma_k)$. Marginalising $z_n$ gives the mixture density back.</p>
+
+<p>If $z_n$ were observed for every $n$, the data would decompose: every $n$ goes into the bucket given by its $z_n$, and we would just fit $K$ separate Gaussians and a multinomial $\pi$. With $z_n$ unobserved, the log-likelihood</p>
+
+<p>$$\ell(\theta; D) \;=\; \sum_n \log \sum_k \pi_k\,\mathcal{N}(x_n \mid \mu_k, \Sigma_k)$$</p>
+
+<p>is a log of a sum &mdash; the $\pi_k, \mu_k, \Sigma_k$ are all entangled and direct MLE has no closed form.</p>
+
+<h2>5.9&nbsp;&nbsp;Jensen's Inequality and the Lower Bound</h2>
+
+<p>The way around the log-of-sum is to introduce an arbitrary distribution $q(z \mid x)$ over the latents and rewrite</p>
+
+<p>$$\ell(\theta; X) \;=\; \log \sum_z p(X, z \mid \theta) \;=\; \log \sum_z q(z \mid X)\,\frac{p(X, z \mid \theta)}{q(z \mid X)}.$$</p>
+
+<p>Apply Jensen's inequality (concavity of the log):</p>
+
+<p>$$\ell(\theta; X) \;\geq\; \sum_z q(z \mid X)\,\log \frac{p(X, z \mid \theta)}{q(z \mid X)} \;=\; \bigl\langle \ell_c(\theta; X, Z) \bigr\rangle_q \,+\, H_q,$$</p>
+
+<p>where the angled brackets denote expectation under $q$ and $H_q = -\sum_z q(z \mid X) \log q(z \mid X)$ is its entropy. The right-hand side is a <em>lower bound</em> on the log-likelihood, valid for any choice of $q$, and it is linear in $\ell_c$ &mdash; so it inherits the decomposability the original objective lost.</p>
+
+<div class="defn">
+  <span class="label">Definition.</span> <span class="name">Free energy</span>
+  $$F(q, \theta) \;\stackrel{\mathrm{def}}{=}\; \sum_z q(z \mid X)\,\log \frac{p(X, z \mid \theta)}{q(z \mid X)} \;\leq\; \ell(\theta; X).$$
+</div>
+
+<p>$F$ is a function of two arguments. The EM algorithm maximises $F$ by coordinate ascent.</p>
+
+<h2>5.10&nbsp;&nbsp;EM as Coordinate Ascent on the Free Energy</h2>
+
+<div class="algo">
+  <span class="alabel">Expectation&ndash;Maximisation</span>
+  <ol>
+    <li>Initialise $\theta^0$.</li>
+    <li><em>E-step.</em> Hold $\theta^t$ fixed; maximise $F$ over $q$: $\quad q^{t+1} \;=\; \arg\max_q F(q, \theta^t)$.</li>
+    <li><em>M-step.</em> Hold $q^{t+1}$ fixed; maximise $F$ over $\theta$: $\quad \theta^{t+1} \;=\; \arg\max_\theta F(q^{t+1}, \theta)$.</li>
+    <li>Repeat until convergence.</li>
+  </ol>
+</div>
+
+<figure class="fig">
+  <svg viewBox="0 0 380 260" width="380" height="260" role="img" aria-label="Free-energy contour with EM zigzag path.">
+    <!-- axes -->
+    <line class="em-axis" x1="40" y1="220" x2="360" y2="220"/>
+    <line class="em-axis" x1="40" y1="220" x2="40"  y2="30"/>
+    <text class="em-axislabel" x="358" y="240">θ</text>
+    <text class="em-axislabel" x="22"  y="32">q</text>
+    <!-- contours around optimum at (220, 100) -->
+    <ellipse class="em-contour" cx="220" cy="100" rx="25"  ry="15"/>
+    <ellipse class="em-contour" cx="220" cy="100" rx="55"  ry="35"/>
+    <ellipse class="em-contour" cx="220" cy="100" rx="90"  ry="60"/>
+    <ellipse class="em-contour" cx="220" cy="100" rx="130" ry="85"/>
+    <ellipse class="em-contour" cx="220" cy="100" rx="170" ry="110"/>
+    <!-- optimum -->
+    <circle class="em-opt" cx="220" cy="100" r="3.5"/>
+    <text class="em-stepslabel" x="252" y="100">F maximum</text>
+    <!-- EM zigzag path -->
+    <polyline class="em-path" points="60,200 60,170 110,170 110,145 160,145 160,125 200,125 200,110 215,110"/>
+    <!-- step labels: E for first vertical segment, M for first horizontal segment -->
+    <text class="em-stepslabel" x="46" y="186">E</text>
+    <text class="em-stepslabel" x="85" y="162">M</text>
+    <!-- mark the start -->
+    <circle cx="60" cy="200" r="3" fill="var(--noteblue)"/>
+    <text class="em-stepslabel" x="48" y="214">start</text>
+  </svg>
+  <figcaption>EM as coordinate ascent on the free energy $F(q, \theta)$. The contours are level sets of $F$; the path alternates E-steps (vertical, optimising $q$ at fixed $\theta$) and M-steps (horizontal, optimising $\theta$ at fixed $q$), climbing monotonically toward a stationary point.</figcaption>
+</figure>
+
+<h2>5.11&nbsp;&nbsp;The E-Step: Posterior over the Latents</h2>
+
+<div class="theorem">
+  <span class="tlabel">Claim.</span> $q^{t+1} = \arg\max_q F(q, \theta^t) = p(z \mid X, \theta^t)$.
+</div>
+
+<p>The optimal $q$ at fixed $\theta^t$ is the posterior over the latents given the data and the current parameters. A direct calculation,</p>
+
+<p>$$F\bigl(p(z \mid X, \theta^t),\,\theta^t\bigr) \;=\; \sum_z p(z \mid X, \theta^t)\,\log \frac{p(X, z \mid \theta^t)}{p(z \mid X, \theta^t)} \;=\; \log p(X \mid \theta^t) \;=\; \ell(\theta^t; X),$$</p>
+
+<p>shows the bound is tight at this choice: $F = \ell$ when $q$ is the posterior. Equivalently, the gap $\ell - F = \mathrm{KL}\bigl(q \,\|\, p(z \mid X, \theta)\bigr)$, and KL is minimised at zero by taking $q$ to be the posterior. So the E-step is an inference problem &mdash; the very problem Chapter 4 was about.</p>
+
+<h2>5.12&nbsp;&nbsp;The M-Step: Weighted MLE</h2>
+
+<p>Write the free energy as</p>
+
+<p>$$F(q, \theta) \;=\; \bigl\langle \ell_c(\theta; X, Z) \bigr\rangle_q \,+\, H_q,$$</p>
+
+<p>where the entropy $H_q$ does not depend on $\theta$. So the M-step reduces to</p>
+
+<p>$$\theta^{t+1} \;=\; \arg\max_\theta\,\bigl\langle \ell_c(\theta; X, Z) \bigr\rangle_{q^{t+1}}.$$</p>
+
+<p>Under the optimal $q^{t+1} = p(z \mid X, \theta^t)$ this is exactly a standard MLE on the complete log-likelihood, with the only difference that sufficient statistics involving $z$ are replaced by their expectations under $q^{t+1}$. Where MLE on fully observed data would have counted occurrences, MLE under EM counts <em>responsibilities</em>.</p>
+
+<h2>5.13&nbsp;&nbsp;EM for Gaussian Mixtures</h2>
+
+<p>Specialising to a GMM with $K$ components makes the two steps explicit.</p>
+
+<p><em>E-step.</em> The posterior over $z_n$ given $x_n$ and current parameters is a softmax over component log-densities. Define the responsibilities</p>
+
+<p>$$\tau_n^{k\,(t)} \;\stackrel{\mathrm{def}}{=}\; p(z_n^k = 1 \mid x_n,\,\mu^t,\,\Sigma^t) \;=\; \frac{\pi_k^t\,\mathcal{N}(x_n \mid \mu_k^t, \Sigma_k^t)}{\sum_i \pi_i^t\,\mathcal{N}(x_n \mid \mu_i^t, \Sigma_i^t)}.$$</p>
+
+<p>Each $\tau_n^{k\,(t)} \in [0, 1]$ measures how much component $k$ "owns" data point $n$ at iteration $t$.</p>
+
+<p><em>M-step.</em> Maximise the expected complete log-likelihood. The result is the same as the standard MLE for a Gaussian mixture treated as fully observed, with hard $z$-indicators replaced by soft responsibilities:</p>
+
+<p>$$\pi_k^{t+1} \;=\; \frac{1}{N}\sum_n \tau_n^{k\,(t)}, \qquad \mu_k^{t+1} \;=\; \frac{\sum_n \tau_n^{k\,(t)}\,x_n}{\sum_n \tau_n^{k\,(t)}}, \qquad \Sigma_k^{t+1} \;=\; \frac{\sum_n \tau_n^{k\,(t)}\,(x_n - \mu_k^{t+1})(x_n - \mu_k^{t+1})^\top}{\sum_n \tau_n^{k\,(t)}}.$$</p>
+
+<p>The means are weighted averages of the data; the covariances are weighted scatter matrices; the mixing weights are the average responsibilities. Each M-step update is what you would do with the corresponding fully observed data &mdash; EM has converted the latent-variable estimation problem into a sequence of weighted versions of the easy problem.</p>
+
+<h2>5.14&nbsp;&nbsp;K-Means as Hard EM</h2>
+
+<p>K-means is the special case of GMM EM with <em>hard</em> responsibilities &mdash; each data point belongs entirely to its nearest cluster. The "E-step" assigns</p>
+
+<p>$$z_n^{(t)} \;=\; \arg\min_k\,(x_n - \mu_k^t)^\top \Sigma_k^{-1\,(t)} (x_n - \mu_k^t),$$</p>
+
+<p>and the M-step updates the centroids by the unweighted mean over each cluster's members,</p>
+
+<p>$$\mu_k^{t+1} \;=\; \frac{\sum_n \delta(z_n^{(t)}, k)\,x_n}{\sum_n \delta(z_n^{(t)}, k)}.$$</p>
+
+<p>It is the limit of EM as the component covariances go to zero: as the Gaussians become arbitrarily sharp the soft responsibilities $\tau_n^k$ collapse to 0/1 indicators. EM is the "soft" version of K-means and K-means is the "hard" version of EM; both are coordinate-ascent on a free-energy surrogate for the data log-likelihood.</p>
+
+<h2>5.15&nbsp;&nbsp;Summary</h2>
+
+<p>For a fully observed Bayesian network, the log-likelihood decomposes as a sum of one term per node, and learning reduces to a series of small density-estimation problems. Single-node estimation is the exponential-family case, and MLE there is moment-matching: the canonical parameter is the value at which the model's expected sufficient statistic equals the empirical one. Two-node estimation $X \to Y$ is the generalised-linear-model case, and MLE there is iteratively reweighted least squares. For tabular CPDs, the whole thing collapses to counting.</p>
+
+<p>When some variables are latent, the log-likelihood becomes a log of a sum and the decomposition breaks. The EM algorithm introduces a distribution $q$ over the latents and constructs a lower bound &mdash; the free energy &mdash; that <em>does</em> decompose. EM is coordinate ascent on the free energy: the E-step sets $q$ to the posterior over the latents (an inference problem), and the M-step is a weighted MLE on the complete-data model. Gaussian mixtures are the canonical example, and K-means is the hard-assignment limit of GMM EM. EM gives a local optimum, not a global one, but its template &mdash; "lower-bound the marginal log-likelihood and alternately optimise" &mdash; is the workhorse of latent-variable learning everywhere in the rest of the course.</p>
+
+</article>
+
+<div class="paginate">
+  <a href="lecture-04.html">
+    <div class="dir">&larr; Previous</div>
+    <div>Chapter 4: Exact Inference</div>
+  </a>
+  <a class="next" href="index.html">
+    <div class="dir">Up &rarr;</div>
+    <div>Course index</div>
+  </a>
+</div>
+
+<footer>
+  Source: <a href="https://www.cs.cmu.edu/~epxing/Class/10708-20/lectures.html">CMU 10-708 Probabilistic Graphical Models</a>, Lecture 5 (Eric Xing, Spring 2020).
+</footer>
+
+</div>
+</body>
+</html>
