@@ -27,7 +27,7 @@ test("the job schema rejects unsupported evidence levels", async () => {
   );
 });
 
-test("the job schema requires a supported degree eligibility group", async () => {
+test("the job schema only permits the combined undergraduate and master's scope", async () => {
   const { validateJob } = await loadValidators();
   assert.throws(() =>
     assertValid(
@@ -38,6 +38,16 @@ test("the job schema requires a supported degree eligibility group", async () =>
   );
   assert.throws(() =>
     assertValid(validateJob, sampleJob({ degreeLevels: [] }), "fixture"),
+  );
+  assert.throws(() =>
+    assertValid(validateJob, sampleJob({ degreeLevels: ["PhD"] }), "fixture"),
+  );
+  assert.throws(() =>
+    assertValid(
+      validateJob,
+      sampleJob({ degreeLevels: ["Undergraduate / Master's", "PhD"] }),
+      "fixture",
+    ),
   );
 });
 

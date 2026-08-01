@@ -9,7 +9,6 @@ export function sampleJob(overrides = {}) {
     sourcePlatform: "Official company careers",
     locations: ["New York, NY"],
     country: "United States",
-    region: "Northeast",
     workplaceType: "Hybrid",
     compensation: "$120,000–$140,000 USD",
     datePosted: "2026-07-20",

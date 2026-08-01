@@ -29,6 +29,12 @@ function validateJobSemantics(job, name) {
   if (job.country !== "United States") {
     throw new Error(`${name} must be a United States role`);
   }
+  if (
+    job.degreeLevels.length !== 1 ||
+    job.degreeLevels[0] !== "Undergraduate / Master's"
+  ) {
+    throw new Error(`${name} must be eligible for undergraduate or master's candidates`);
+  }
   if (job.locations.some((location) => !US_CITY_STATE.test(location))) {
     throw new Error(`${name} locations must use City, ST format`);
   }

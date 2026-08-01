@@ -6,6 +6,8 @@
   --subtle: #f5f5f3;
   --border: #d9d9d5;
   --border-strong: #000000;
+  --applied: #176b3a;
+  --not-applied: #a51d1d;
   --content-width: 1180px;
 }
 
@@ -232,6 +234,22 @@ main {
   gap: 0.55rem;
 }
 
+.local-backup {
+  flex: 0 0 auto;
+  font-size: 0.78rem;
+}
+
+.local-backup summary {
+  width: fit-content;
+  margin-left: auto;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.local-backup[open] summary {
+  margin-bottom: 0.65rem;
+}
+
 .text-button,
 .reset-button {
   min-height: 2.4rem;
@@ -287,14 +305,7 @@ main {
 
 .primary-controls {
   display: grid;
-  grid-template-columns: minmax(0, 2fr) minmax(180px, 0.7fr);
-  gap: 1rem;
-  margin-bottom: 1rem;
-}
-
-.filter-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: minmax(230px, 1.7fr) repeat(3, minmax(140px, 0.8fr)) minmax(150px, 0.75fr);
   gap: 1rem;
 }
 
@@ -487,10 +498,29 @@ input[type="search"]::placeholder {
   font-weight: 600;
 }
 
-.tracking-select {
+.application-toggle {
+  width: 100%;
   margin-bottom: 0.65rem;
   min-height: 2.35rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid transparent;
+  border-radius: 0;
+  color: #ffffff;
   font-size: 0.76rem;
+  font-weight: 700;
+}
+
+.application-toggle.is-applied {
+  background: var(--applied);
+}
+
+.application-toggle.is-not-applied {
+  background: var(--not-applied);
+}
+
+.application-toggle:hover {
+  border-color: var(--foreground);
+  box-shadow: inset 0 0 0 1px #ffffff;
 }
 
 .notes-control {
@@ -608,7 +638,7 @@ footer a {
 }
 
 @media (max-width: 920px) {
-  .filter-grid {
+  .primary-controls {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
@@ -640,8 +670,7 @@ footer a {
 
   .board-summary,
   .evidence-definitions,
-  .primary-controls,
-  .filter-grid {
+  .primary-controls {
     grid-template-columns: 1fr;
   }
 
@@ -661,6 +690,10 @@ footer a {
     justify-content: flex-start;
   }
 
+  .local-backup summary {
+    margin-left: 0;
+  }
+
   .view-switcher {
     align-self: flex-start;
   }
@@ -670,6 +703,7 @@ footer a {
     gap: 1rem;
   }
 
+  .application-toggle,
   .apply-link {
     width: auto;
     min-width: 9rem;
@@ -686,7 +720,7 @@ footer a {
   .skip-link,
   .local-panel,
   .controls,
-  .tracking-select,
+  .application-toggle,
   .notes-control,
   .toast {
     display: none !important;

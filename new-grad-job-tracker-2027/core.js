@@ -1,15 +1,20 @@
 export const TRACKING_STORAGE_KEY = "new-grad-job-tracker-2027:tracking";
-export const TRACKING_VERSION = 1;
+export const TRACKING_VERSION = 2;
 
-export const PERSONAL_STATUSES = [
-  "Interested",
-  "Saved",
+const LEGACY_APPLIED_STATUSES = new Set([
   "Applied",
   "Interviewing",
   "Rejected",
   "Offer",
+]);
+const LEGACY_NOT_APPLIED_STATUSES = new Set([
+  "",
+  "Untracked",
+  "Interested",
+  "Saved",
   "Hidden",
-];
+]);
+const SUPPORTED_TRACKING_VERSIONS = new Set([1, TRACKING_VERSION]);
 
 export const CATEGORY_ORDER = [
   "Software Engineering",
@@ -22,17 +27,10 @@ export const CATEGORY_ORDER = [
   "Other Technical",
 ];
 
-export const DEGREE_LEVELS = ["Undergraduate / Master's", "PhD"];
-
 export const DEFAULT_FILTERS = Object.freeze({
   keyword: "",
   category: "",
   company: "",
-  location: "",
-  workplace: "",
-  evidence: "",
-  degree: "",
-  graduation: "",
   personalStatus: "",
   sort: "newest",
 });
@@ -49,12 +47,17 @@ function normalizeTrackingEntry(value, { strict = false } = {}) {
     return null;
   }
 
-  const status = value.status ?? "";
+  const rawStatus = value.status ?? "";
   const notes = value.notes ?? "";
   const updatedAt = value.updatedAt ?? null;
+  let status;
 
-  if (status && !PERSONAL_STATUSES.includes(status)) {
-    if (strict) throw new Error(`Unknown personal status: ${status}`);
+  if (LEGACY_APPLIED_STATUSES.has(rawStatus)) {
+    status = "Applied";
+  } else if (LEGACY_NOT_APPLIED_STATUSES.has(rawStatus)) {
+    status = "";
+  } else {
+    if (strict) throw new Error(`Unknown personal status: ${rawStatus}`);
     return null;
   }
   if (typeof notes !== "string") {
@@ -76,7 +79,7 @@ export function normalizeTracking(value, { strict = false } = {}) {
     return emptyTracking();
   }
 
-  if (strict && value.version !== TRACKING_VERSION) {
+  if (strict && !SUPPORTED_TRACKING_VERSIONS.has(value.version)) {
     throw new Error(`Unsupported tracking backup version: ${String(value.version)}`);
   }
 
@@ -145,7 +148,9 @@ export function updateTracking(tracking, jobId, patch, now = new Date()) {
 }
 
 export function getPersonalStatus(tracking, jobId) {
-  return normalizeTracking(tracking).jobs[jobId]?.status || "Untracked";
+  return normalizeTracking(tracking).jobs[jobId]?.status === "Applied"
+    ? "Applied"
+    : "Not applied";
 }
 
 function containsKeyword(job, keyword) {
@@ -154,10 +159,7 @@ function containsKeyword(job, keyword) {
     job.company,
     job.title,
     job.category,
-    job.region,
     job.country,
-    job.workplaceType,
-    ...(job.degreeLevels ?? []),
     ...(job.locations ?? []),
     ...(job.tags ?? []),
   ]
@@ -169,28 +171,6 @@ function containsKeyword(job, keyword) {
     .trim()
     .split(/\s+/)
     .every((term) => haystack.includes(term));
-}
-
-function matchesGraduationWindow(job, filter) {
-  if (!filter) return true;
-  const months = Array.isArray(job.graduationMonths) ? job.graduationMonths : [];
-  const description = String(job.graduationWindow ?? "").toLocaleLowerCase();
-
-  if (filter === "2026-12") {
-    return months.includes("2026-12") || description.includes("december 2026");
-  }
-
-  const monthNumbers = months
-    .filter((month) => month.startsWith("2027-"))
-    .map((month) => Number(month.slice(5, 7)));
-
-  if (filter === "2027-spring") {
-    return monthNumbers.some((month) => month >= 1 && month <= 5) || description.includes("spring 2027");
-  }
-  if (filter === "2027-summer") {
-    return monthNumbers.some((month) => month >= 6 && month <= 9) || description.includes("summer 2027");
-  }
-  return true;
 }
 
 function timestamp(value) {
@@ -210,7 +190,11 @@ export function sortJobs(jobs, sort = "newest") {
       if (aDate === null && bDate !== null) return 1;
       if (aDate !== null && bDate === null) return -1;
       if (aDate !== bDate) return (aDate ?? 0) - (bDate ?? 0);
-      return collator.compare(a.company, b.company);
+      return (
+        (timestamp(b.datePosted) ?? timestamp(b.firstSeen) ?? 0) -
+          (timestamp(a.datePosted) ?? timestamp(a.firstSeen) ?? 0) ||
+        collator.compare(a.company, b.company)
+      );
     }
 
     if (sort === "verified") {
@@ -228,18 +212,15 @@ export function sortJobs(jobs, sort = "newest") {
 export function filterJobs(jobs, filters = DEFAULT_FILTERS, tracking = emptyTracking()) {
   const normalizedTracking = normalizeTracking(tracking);
   const filtered = jobs.filter((job) => {
-    const personalStatus = normalizedTracking.jobs[job.id]?.status || "Untracked";
+    const personalStatus =
+      normalizedTracking.jobs[job.id]?.status === "Applied"
+        ? "Applied"
+        : "Not applied";
 
-    if (!filters.personalStatus && personalStatus === "Hidden") return false;
     if (filters.personalStatus && personalStatus !== filters.personalStatus) return false;
     if (!containsKeyword(job, filters.keyword ?? "")) return false;
     if (filters.category && job.category !== filters.category) return false;
     if (filters.company && job.company !== filters.company) return false;
-    if (filters.location && !(job.locations ?? []).includes(filters.location)) return false;
-    if (filters.workplace && job.workplaceType !== filters.workplace) return false;
-    if (filters.evidence && job.visaEvidence?.level !== filters.evidence) return false;
-    if (filters.degree && !(job.degreeLevels ?? []).includes(filters.degree)) return false;
-    if (!matchesGraduationWindow(job, filters.graduation)) return false;
     return true;
   });
 
@@ -250,7 +231,7 @@ export function exportTrackingPayload(tracking, now = new Date()) {
   return {
     ...normalizeTracking(tracking),
     exportedAt: now.toISOString(),
-    notice: "This backup contains browser-local application tracking data and notes.",
+    notice: "This backup contains browser-local applied statuses and private notes.",
   };
 }
 
@@ -267,7 +248,7 @@ export function trackingToCsv(jobs, tracking) {
     "Title",
     "Location",
     "Official application URL",
-    "Personal status",
+    "Application status",
     "Notes",
     "Tracking updated at",
   ];
@@ -281,7 +262,7 @@ export function trackingToCsv(jobs, tracking) {
         job.title,
         (job.locations ?? []).join("; "),
         job.applicationUrl,
-        entry.status || "Untracked",
+        entry.status || "Not applied",
         entry.notes,
         entry.updatedAt,
       ];

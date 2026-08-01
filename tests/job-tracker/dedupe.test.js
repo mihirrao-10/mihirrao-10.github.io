@@ -39,7 +39,7 @@ test("deduplication catches canonical URL and identity collisions", () => {
         "The official posting explicitly says eligible candidates receive sponsorship support.",
       url: "https://jobs.example.com/jobs/123#immigration",
     },
-    degreeLevels: ["PhD"],
+    degreeLevels: ["Undergraduate / Master's"],
   });
   const sameIdentity = sampleJob({
     id: "manual-example-duplicate-identity",
@@ -49,8 +49,5 @@ test("deduplication catches canonical URL and identity collisions", () => {
   assert.equal(result.jobs.length, 1);
   assert.equal(result.duplicateGroups.length, 2);
   assert.equal(result.jobs[0].visaEvidence.level, "Strong");
-  assert.deepEqual(result.jobs[0].degreeLevels, [
-    "Undergraduate / Master's",
-    "PhD",
-  ]);
+  assert.deepEqual(result.jobs[0].degreeLevels, ["Undergraduate / Master's"]);
 });

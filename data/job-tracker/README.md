@@ -16,12 +16,12 @@ updater. Do not hand-edit generated JSON.
 | `category` | One of the eight normalized technical categories |
 | `applicationUrl` | Official employer or official ATS application destination |
 | `sourceUrl`, `sourcePlatform` | Official detail source and its platform |
-| `locations`, `country`, `region` | U.S. `City, ST` locations, fixed U.S. country, and internal grouping |
+| `locations`, `country` | U.S. `City, ST` locations and fixed U.S. country |
 | `workplaceType` | `Remote`, `Hybrid`, `On-site`, or `Unspecified` |
 | `compensation` | Posting-supplied display text, otherwise `null` |
 | `datePosted`, `deadline` | Verified ISO dates, otherwise `null` |
 | `startPeriod`, `graduationWindow`, `graduationMonths` | 2027-cycle timing eligibility |
-| `degreeLevels` | One or both UI eligibility groups: `Undergraduate / Master's`, `PhD` |
+| `degreeLevels` | Internal scope marker, fixed to `Undergraduate / Master's` |
 | `experienceRequirements` | Concise entry-level requirement summary |
 | `visaEvidence` | Level, conservative explanation, and evidence URL |
 | `firstSeen`, `lastVerified` | Discovery and most recent successful verification dates |
@@ -53,18 +53,18 @@ Use an official public Greenhouse, Lever, or Ashby board only.
 2. Add explicit external job IDs to `selection.externalIds`. Broad include
    patterns are supported, but an allowlist is preferred for this high-accuracy
    board.
-3. Supply verified defaults and per-job overrides for geography, graduation
-   window, degree eligibility, category, compensation, and evidence. Every
-   location must use `City, ST`, and only U.S. openings belong on this board. A
-   `Strong` evidence statement must be attached per job rather than assumed for
-   an entire board.
+3. Supply verified defaults and per-job overrides for location, graduation
+   window, undergraduate/master's eligibility, category, compensation, and
+   evidence. Every location must use `City, ST`, and only U.S. openings belong
+   on this board. A `Strong` evidence statement must be attached per job rather
+   than assumed for an entire board.
 4. Run `npm run update:jobs`, inspect every selected role, then run
    `npm run check`.
 
-Collectors automatically reject internship/co-op and senior/leadership titles,
-explicit citizenship or clearance requirements, explicit no-sponsorship text,
-and clearly stated requirements above two years. Those checks are guardrails,
-not a substitute for reading each selected posting.
+Collectors automatically reject internship/co-op, PhD/doctoral-only, and
+senior/leadership titles, explicit citizenship or clearance requirements,
+explicit no-sponsorship text, and clearly stated requirements above two years.
+Those checks are guardrails, not a substitute for reading each selected posting.
 
 To support another public ATS, add an isolated adapter under
 `tools/job-tracker/collectors/`, map it to the normalized candidate interface,
@@ -89,17 +89,15 @@ Use `manual/jobs.json` for official sites without a stable public listing API.
 
 ## Degree eligibility
 
-The public filter intentionally has two groups:
+This board serves undergraduate and master's candidates without separating the
+two groups in the UI. Every record carries the single internal scope value
+`Undergraduate / Master's`. A role may also accept PhD candidates, but it belongs
+here only when the official requirements independently permit a bachelor's or
+master's candidate. PhD-only and doctoral-only roles are out of scope and must
+not be retained or archived.
 
-- **Undergraduate / Master's** for postings that accept bachelor's or master's
-  candidates, or impose no advanced-degree-only restriction.
-- **PhD** for postings that accept PhD candidates.
-
-A posting that accepts all three degree levels carries both values and appears
-under either filter. A degree-specific posting carries only its supported value.
-Record what the official requirements establish; do not infer PhD eligibility
-from a research-oriented title or exclude PhD candidates from a general role
-without a stated restriction.
+Record only what the official requirements establish. Do not infer bachelor's
+or master's eligibility from a generic graduate or research-oriented title.
 
 To correct a record, edit the source object rather than generated JSON. Do not
 advance `lastVerified` merely because metadata changed; it represents an actual
@@ -137,6 +135,10 @@ and verification. A passed deadline closes immediately. A definite missing
 response on two successful checks archives the job. Timeouts, rate limits,
 invalid responses, and whole-source failures preserve the prior job and
 verification date.
+
+Use an exact deadline only when the official posting publishes one. Many ATS
+records omit this field; leave it `null` and let the UI advise applicants to
+apply early rather than inferring a date from the recruiting cycle.
 
 ## Running the updater
 

@@ -22,7 +22,6 @@ function source(overrides = {}) {
     },
     defaults: {
       country: "United States",
-      region: "Northeast",
       graduationWindow: "December 2026 through August 2027",
       graduationMonths: ["2026-12", "2027-05", "2027-08"],
       degreeLevels: ["Undergraduate / Master's"],
@@ -80,6 +79,20 @@ test("global exclusions override an ATS allowlist", () => {
       title: "Software Engineering Intern",
     }),
     false,
+  );
+  assert.equal(
+    candidateIsSelected(source(), {
+      ...candidate,
+      title: "Quantitative Researcher, PhD Graduate",
+    }),
+    false,
+  );
+  assert.equal(
+    candidateIsSelected(source(), {
+      ...candidate,
+      title: "Machine Learning Engineer, MS/PhD New Graduate",
+    }),
+    true,
   );
 });
 

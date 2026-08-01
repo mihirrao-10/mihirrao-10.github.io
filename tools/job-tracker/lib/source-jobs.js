@@ -15,6 +15,9 @@ const PLATFORM_LABELS = Object.freeze({
 
 const EXCLUDED_TITLE =
   /\b(intern(?:ship)?|co-?op|senior|staff|principal|lead|manager|director|head|vice president)\b/i;
+const PHD_ONLY_TITLE = /\b(?:ph\.?d|doctoral)\b/i;
+const MIXED_DEGREE_TITLE =
+  /\b(?:bachelor'?s?|bs|master'?s?|ms)\b.{0,12}\b(?:ph\.?d|doctoral)\b/i;
 const EXCLUDED_DESCRIPTION =
   /\b(?:must (?:be|hold)|requires?) (?:a )?(?:U\.?S\.? citizen|United States citizen)|\b(?:U\.?S\.?|United States) citizenship (?:is )?required|\b(?:active )?(?:security )?clearance (?:is )?(?:required|mandatory)|\bmust (?:be able to )?obtain (?:a )?(?:security )?clearance|\b(?:visa |employment |immigration )?sponsorship (?:is )?not (?:available|provided|offered)|\b(?:will|does) not (?:sponsor|provide|offer)(?: immigration| visa)? sponsorship/i;
 const TOO_MUCH_EXPERIENCE =
@@ -80,6 +83,7 @@ export function candidateIsSelected(source, candidate) {
       candidate.employmentType ?? "",
     ) ||
     EXCLUDED_TITLE.test(title) ||
+    (PHD_ONLY_TITLE.test(title) && !MIXED_DEGREE_TITLE.test(title)) ||
     EXCLUDED_DESCRIPTION.test(description) ||
     TOO_MUCH_EXPERIENCE.test(description) ||
     matchesAny(source.selection.exclude, searchable)
@@ -157,12 +161,6 @@ export function normalizeSourceCandidate(source, candidate, today) {
     country: required(
       override.country ?? defaults.country,
       "country",
-      source,
-      candidate,
-    ),
-    region: required(
-      override.region ?? defaults.region,
-      "region",
       source,
       candidate,
     ),

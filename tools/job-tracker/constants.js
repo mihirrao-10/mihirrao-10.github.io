@@ -49,7 +49,6 @@ export const EVIDENCE_LEVELS = Object.freeze([
 
 export const DEGREE_LEVELS = Object.freeze([
   "Undergraduate / Master's",
-  "PhD",
 ]);
 
 export const USER_AGENT =

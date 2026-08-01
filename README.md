@@ -8,9 +8,10 @@ The site includes the public **New Graduate Job Tracker (2027)** at
 [`/new-grad-job-tracker-2027/`](https://mihirrao-10.github.io/new-grad-job-tracker-2027/).
 It is a static, generated job board for technically relevant, U.S.-based 2027
 graduate roles with documented evidence that international candidates may be
-considered. Visitors can filter exact `City, ST` locations and either
-`Undergraduate / Master's` or `PhD` eligibility; a role can belong to both
-degree groups when its official requirements allow both.
+considered. The board is limited to roles open to undergraduate or master's
+candidates. Visitors can search and filter by category, company, and their
+browser-local applied state; exact `City, ST` locations remain visible on every
+listing.
 
 ## Repository layout
 
@@ -27,9 +28,10 @@ dist/                                   ignored production-build output
 ```
 
 The tracker intentionally has no database, authentication layer, analytics
-dependency, or paid API. A visitor's application statuses and private notes are
+dependency, or paid API. A visitor's binary applied state and private notes are
 kept only in that browser's `localStorage`; the page can export JSON/CSV and
-restore a JSON backup.
+restore a JSON backup. Existing multi-status browser data is migrated
+conservatively to applied or not applied.
 
 ## Local development
 
@@ -154,10 +156,8 @@ homepage project link and the tracker; no separate hosting project is required.
   review; an HTTP success only confirms that the official page responds.
 - ATS fields are inconsistent, so compensation, workplace type, dates, and
   deadlines remain blank rather than being inferred.
-- Degree eligibility reflects the listed requirements, not an assumption about
-  which degree a role would prefer. The two UI groups intentionally combine
-  undergraduate and master's candidates while keeping PhD-specific recruiting
-  independently filterable.
+- Degree eligibility is an internal scope guard: every record must accept
+  undergraduate or master's candidates, and PhD-only roles are rejected.
 - Public ATS formats, career URLs, immigration policies, and legal eligibility
   can change without notice.
 - Source allowlists intentionally favor accuracy over breadth and must be

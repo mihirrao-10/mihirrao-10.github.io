@@ -4,11 +4,15 @@ import test from "node:test";
 import {
   DEFAULT_FILTERS,
   TRACKING_STORAGE_KEY,
+  TRACKING_VERSION,
   filterJobs,
+  getPersonalStatus,
   loadTracking,
   mergeTracking,
   parseTrackingImport,
   saveTracking,
+  sortJobs,
+  trackingToCsv,
   updateTracking,
 } from "../../new-grad-job-tracker-2027/core.js";
 
@@ -18,7 +22,6 @@ const jobs = [
     company: "Alpha",
     title: "Graduate Software Engineer",
     category: "Software Engineering",
-    region: "United States — Midwest",
     country: "United States",
     locations: ["Chicago, IL"],
     degreeLevels: ["Undergraduate / Master's"],
@@ -30,6 +33,7 @@ const jobs = [
     firstSeen: "2026-07-21",
     lastVerified: "2026-07-31",
     deadline: null,
+    applicationUrl: "https://jobs.example.com/alpha",
     tags: ["Python"],
   },
   {
@@ -37,10 +41,9 @@ const jobs = [
     company: "Beta",
     title: "Quantitative Researcher",
     category: "Quantitative Research",
-    region: "United States — Northeast",
     country: "United States",
     locations: ["New York, NY"],
-    degreeLevels: ["Undergraduate / Master's", "PhD"],
+    degreeLevels: ["Undergraduate / Master's"],
     workplaceType: "On-site",
     visaEvidence: { level: "Historical" },
     graduationMonths: ["2027-08"],
@@ -49,6 +52,7 @@ const jobs = [
     firstSeen: "2026-07-25",
     lastVerified: "2026-07-30",
     deadline: "2026-09-01",
+    applicationUrl: "https://jobs.example.com/beta",
     tags: ["C++"],
   },
 ];
@@ -70,54 +74,80 @@ function memoryStorage(initialValue = null) {
   };
 }
 
-test("filters jobs by search, normalized facets, and graduation window", () => {
+test("filters jobs by search, category, company, and binary application status", () => {
+  const tracking = updateTracking(
+    { version: TRACKING_VERSION, jobs: {} },
+    "role-alpha",
+    { status: "Applied" },
+    new Date("2026-07-31T12:00:00Z"),
+  );
+
   assert.deepEqual(
-    filterJobs(jobs, filters({ keyword: "alpha python chicago" })).map((job) => job.id),
+    filterJobs(jobs, filters({ keyword: "alpha python chicago" }), tracking).map((job) => job.id),
     ["role-alpha"],
   );
   assert.deepEqual(
-    filterJobs(jobs, filters({ category: "Quantitative Research", location: "New York, NY" })).map(
+    filterJobs(jobs, filters({ category: "Quantitative Research", company: "Beta" }), tracking).map(
       (job) => job.id,
     ),
     ["role-beta"],
   );
   assert.deepEqual(
-    filterJobs(jobs, filters({ evidence: "Strong", workplace: "Hybrid" })).map((job) => job.id),
+    filterJobs(jobs, filters({ personalStatus: "Applied" }), tracking).map((job) => job.id),
     ["role-alpha"],
   );
   assert.deepEqual(
-    filterJobs(jobs, filters({ graduation: "2027-summer" })).map((job) => job.id),
+    filterJobs(jobs, filters({ personalStatus: "Not applied" }), tracking).map((job) => job.id),
     ["role-beta"],
   );
+});
+
+test("deadline sort puts published dates first and keeps undated roles useful", () => {
+  assert.deepEqual(sortJobs(jobs, "deadline").map((job) => job.id), [
+    "role-beta",
+    "role-alpha",
+  ]);
   assert.deepEqual(
-    filterJobs(jobs, filters({ degree: "PhD" })).map((job) => job.id),
-    ["role-beta"],
-  );
-  assert.deepEqual(
-    filterJobs(jobs, filters({ degree: "Undergraduate / Master's" })).map((job) => job.id),
+    sortJobs(jobs.map((job) => ({ ...job, deadline: null })), "deadline").map(
+      (job) => job.id,
+    ),
     ["role-beta", "role-alpha"],
   );
 });
 
-test("hidden roles stay hidden by default and remain recoverable by status filter", () => {
-  const tracking = updateTracking(
-    { version: 1, jobs: {} },
-    "role-alpha",
-    { status: "Hidden", notes: "Not a fit" },
-    new Date("2026-07-31T12:00:00Z"),
+test("legacy browser statuses migrate to binary applied state without losing notes", () => {
+  const storage = memoryStorage(
+    JSON.stringify({
+      version: 1,
+      jobs: {
+        "role-alpha": {
+          status: "Interviewing",
+          notes: "Second round",
+          updatedAt: "2026-07-31T13:00:00.000Z",
+        },
+        "role-beta": {
+          status: "Saved",
+          notes: "Review later",
+          updatedAt: "2026-07-31T14:00:00.000Z",
+        },
+      },
+    }),
   );
 
-  assert.deepEqual(filterJobs(jobs, filters(), tracking).map((job) => job.id), ["role-beta"]);
-  assert.deepEqual(
-    filterJobs(jobs, filters({ personalStatus: "Hidden" }), tracking).map((job) => job.id),
-    ["role-alpha"],
-  );
+  const migrated = loadTracking(storage);
+  assert.equal(migrated.version, TRACKING_VERSION);
+  assert.equal(migrated.jobs["role-alpha"].status, "Applied");
+  assert.equal(migrated.jobs["role-alpha"].notes, "Second round");
+  assert.equal(migrated.jobs["role-beta"].status, "");
+  assert.equal(migrated.jobs["role-beta"].notes, "Review later");
+  assert.equal(getPersonalStatus(migrated, "role-alpha"), "Applied");
+  assert.equal(getPersonalStatus(migrated, "role-beta"), "Not applied");
 });
 
-test("local tracking survives save, load, updates, and restore merges", () => {
+test("binary local tracking survives save, load, updates, and version-one restore merges", () => {
   const storage = memoryStorage();
   const first = updateTracking(
-    { version: 1, jobs: {} },
+    { version: TRACKING_VERSION, jobs: {} },
     "role-alpha",
     { status: "Applied", notes: "Submitted July 31" },
     new Date("2026-07-31T13:00:00Z"),
@@ -131,8 +161,8 @@ test("local tracking survives save, load, updates, and restore merges", () => {
       version: 1,
       jobs: {
         "role-beta": {
-          status: "Saved",
-          notes: "Review later",
+          status: "Offer",
+          notes: "Legacy backup",
           updatedAt: "2026-07-31T14:00:00.000Z",
         },
       },
@@ -142,7 +172,7 @@ test("local tracking survives save, load, updates, and restore merges", () => {
 
   assert.equal(merged.jobs["role-alpha"].status, "Applied");
   assert.equal(merged.jobs["role-alpha"].notes, "Submitted July 31");
-  assert.equal(merged.jobs["role-beta"].status, "Saved");
+  assert.equal(merged.jobs["role-beta"].status, "Applied");
 });
 
 test("invalid imported personal statuses are rejected", () => {
@@ -150,7 +180,7 @@ test("invalid imported personal statuses are rejected", () => {
     () =>
       parseTrackingImport(
         JSON.stringify({
-          version: 1,
+          version: TRACKING_VERSION,
           jobs: {
             "role-alpha": { status: "Uploaded", notes: "", updatedAt: null },
           },
@@ -160,7 +190,21 @@ test("invalid imported personal statuses are rejected", () => {
   );
 });
 
+test("CSV exports the binary application status", () => {
+  const tracking = {
+    version: TRACKING_VERSION,
+    jobs: {
+      "role-alpha": { status: "Applied", notes: "", updatedAt: null },
+      "role-beta": { status: "", notes: "Review later", updatedAt: null },
+    },
+  };
+  const csv = trackingToCsv(jobs, tracking);
+  assert.match(csv, /"Application status"/);
+  assert.match(csv, /"Applied"/);
+  assert.match(csv, /"Not applied"/);
+});
+
 test("corrupt browser storage fails closed without losing page functionality", () => {
   const storage = memoryStorage("not json");
-  assert.deepEqual(loadTracking(storage), { version: 1, jobs: {} });
+  assert.deepEqual(loadTracking(storage), { version: TRACKING_VERSION, jobs: {} });
 });

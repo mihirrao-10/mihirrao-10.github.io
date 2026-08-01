@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
-  "lastSuccessfulUpdate": "2026-08-01T10:51:11.825Z",
-  "activeCount": 86,
+  "lastSuccessfulUpdate": "2026-08-01T16:18:23.327Z",
+  "activeCount": 47,
   "archivedCount": 0,
   "staleAfterDays": 7,
   "closingSoonDays": 7,
@@ -53,7 +53,7 @@
       "sourceId": "old-mission-greenhouse",
       "platform": "Greenhouse",
       "status": "success",
-      "jobsFound": 3
+      "jobsFound": 2
     },
     {
       "sourceId": "tower-greenhouse",
@@ -107,36 +107,29 @@
       "sourceId": "manual-bytedance",
       "platform": "Manual",
       "status": "success",
-      "jobsFound": 21,
-      "message": "21 verified, 0 confirmed missing, 0 temporarily unavailable"
+      "jobsFound": 5,
+      "message": "5 verified, 0 confirmed missing, 0 temporarily unavailable"
     },
     {
       "sourceId": "manual-hrt",
       "platform": "Manual",
       "status": "success",
-      "jobsFound": 3,
-      "message": "3 verified, 0 confirmed missing, 0 temporarily unavailable"
+      "jobsFound": 2,
+      "message": "2 verified, 0 confirmed missing, 0 temporarily unavailable"
     },
     {
       "sourceId": "manual-imc",
       "platform": "Manual",
       "status": "success",
-      "jobsFound": 6,
-      "message": "6 verified, 0 confirmed missing, 0 temporarily unavailable"
+      "jobsFound": 4,
+      "message": "4 verified, 0 confirmed missing, 0 temporarily unavailable"
     },
     {
       "sourceId": "manual-optiver",
       "platform": "Manual",
       "status": "success",
-      "jobsFound": 6,
-      "message": "6 verified, 0 confirmed missing, 0 temporarily unavailable"
-    },
-    {
-      "sourceId": "manual-tiktok",
-      "platform": "Manual",
-      "status": "success",
-      "jobsFound": 17,
-      "message": "17 verified, 0 confirmed missing, 0 temporarily unavailable"
+      "jobsFound": 4,
+      "message": "4 verified, 0 confirmed missing, 0 temporarily unavailable"
     }
   ]
 }

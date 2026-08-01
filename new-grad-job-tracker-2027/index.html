@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta
     name="description"
-    content="Verified U.S. 2027 new-graduate software, machine learning, data, quantitative, and systems roles with evidence relevant to international candidates."
+    content="Verified U.S. 2027 new-graduate software, machine learning, data, quantitative, and systems roles for undergraduate and master's candidates."
   />
   <title>New Graduate Job Tracker (2027) — Mihir Rao</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -25,8 +25,8 @@
     <h1>New Graduate Job Tracker <span>(2027)</span></h1>
     <p class="lede">
       A carefully verified board of U.S.-based, full-time, early-career software, machine learning,
-      data, quantitative, systems, and related computer science roles that may consider international
-      candidates.
+      data, quantitative, systems, and related computer science roles for undergraduate and master's
+      candidates, with international-hiring evidence for every listing.
     </p>
 
     <dl class="board-summary" aria-label="Board status">
@@ -39,8 +39,8 @@
         <dd id="last-updated">Loading…</dd>
       </div>
       <div>
-        <dt>Verification</dt>
-        <dd>Official applications</dd>
+        <dt>Candidate scope</dt>
+        <dd>Undergraduate + master's</dd>
       </div>
     </dl>
   </header>
@@ -51,9 +51,8 @@
       <p>
         International-hiring evidence is a research signal, not a promise that a specific job will
         sponsor any applicant. Eligibility, immigration support, and openings can change at any
-        time. Read the current official posting and confirm your situation with the employer. When
-        a current new-graduate posting does not state an exact 2027 timing window, the board leaves
-        that field unlisted instead of inventing one.
+        time. Read the current official posting and confirm your situation with the employer. Exact
+        deadlines appear only when the employer publishes one; otherwise, apply early.
       </p>
       <details>
         <summary>How evidence is classified</summary>
@@ -78,16 +77,19 @@
       <div>
         <h2 id="local-heading">Your application tracking stays in this browser</h2>
         <p>
-          Statuses and notes are stored with <code>localStorage</code>. They are not uploaded or
-          committed to this public website.
+          Applied status and private notes are stored with <code>localStorage</code>. They are not
+          uploaded or committed to this public website.
         </p>
       </div>
-      <div class="local-actions" aria-label="Local tracking backup controls">
-        <button class="text-button" id="export-json" type="button">Export JSON</button>
-        <button class="text-button" id="export-csv" type="button">Export CSV</button>
-        <input id="import-json" type="file" accept="application/json,.json" />
-        <label class="text-button file-button" for="import-json">Import JSON</label>
-      </div>
+      <details class="local-backup">
+        <summary>Backup or restore</summary>
+        <div class="local-actions" aria-label="Local tracking backup controls">
+          <button class="text-button" id="export-json" type="button">Export JSON</button>
+          <button class="text-button" id="export-csv" type="button">Export CSV</button>
+          <input id="import-json" type="file" accept="application/json,.json" />
+          <label class="text-button file-button" for="import-json">Import JSON</label>
+        </div>
+      </details>
     </section>
 
     <section class="controls" aria-labelledby="filters-heading">
@@ -109,18 +111,6 @@
             autocomplete="off"
           />
         </label>
-        <label for="sort-jobs">
-          <span>Sort by</span>
-          <select id="sort-jobs">
-            <option value="newest">Newest</option>
-            <option value="deadline">Deadline</option>
-            <option value="company">Company</option>
-            <option value="verified">Last verified</option>
-          </select>
-        </label>
-      </div>
-
-      <div class="filter-grid">
         <label for="category-filter">
           <span>Category</span>
           <select id="category-filter"><option value="">All categories</option></select>
@@ -129,52 +119,21 @@
           <span>Company</span>
           <select id="company-filter"><option value="">All companies</option></select>
         </label>
-        <label for="location-filter">
-          <span>City, state</span>
-          <select id="location-filter"><option value="">All U.S. locations</option></select>
-        </label>
-        <label for="workplace-filter">
-          <span>Workplace</span>
-          <select id="workplace-filter"><option value="">Any workplace</option></select>
-        </label>
-        <label for="evidence-filter">
-          <span>International evidence</span>
-          <select id="evidence-filter">
-            <option value="">All evidence levels</option>
-            <option value="Strong">Strong</option>
-            <option value="Supported">Supported</option>
-            <option value="Historical">Historical</option>
-          </select>
-        </label>
-        <label for="degree-filter">
-          <span>Degree level</span>
-          <select id="degree-filter">
-            <option value="">Any degree level</option>
-            <option value="Undergraduate / Master's">Undergraduate / Master's</option>
-            <option value="PhD">PhD</option>
-          </select>
-        </label>
-        <label for="graduation-filter">
-          <span>Graduation window</span>
-          <select id="graduation-filter">
-            <option value="">Any eligible window</option>
-            <option value="2026-12">December 2026</option>
-            <option value="2027-spring">Spring 2027</option>
-            <option value="2027-summer">Summer 2027</option>
-          </select>
-        </label>
         <label for="personal-filter">
-          <span>My status</span>
+          <span>Application status</span>
           <select id="personal-filter">
-            <option value="">Any status</option>
-            <option value="Untracked">Untracked</option>
-            <option value="Interested">Interested</option>
-            <option value="Saved">Saved</option>
+            <option value="">All roles</option>
+            <option value="Not applied">Not applied</option>
             <option value="Applied">Applied</option>
-            <option value="Interviewing">Interviewing</option>
-            <option value="Rejected">Rejected</option>
-            <option value="Offer">Offer</option>
-            <option value="Hidden">Hidden</option>
+          </select>
+        </label>
+        <label for="sort-jobs">
+          <span>Sort by</span>
+          <select id="sort-jobs">
+            <option value="newest">Newest</option>
+            <option value="deadline">Deadline</option>
+            <option value="company">Company</option>
+            <option value="verified">Last verified</option>
           </select>
         </label>
       </div>
@@ -194,7 +153,7 @@
 
       <div class="job-list-heading" aria-hidden="true">
         <span>Role</span>
-        <span>Location &amp; timing</span>
+        <span>Timing</span>
         <span>International evidence</span>
         <span>Track &amp; apply</span>
       </div>

@@ -31,7 +31,6 @@
       },
       "defaults": {
         "country": "United States",
-        "region": "United States — West",
         "workplaceType": "On-site",
         "startPeriod": "Summer 2027",
         "graduationWindow": "Degree completed before a Summer 2027 start",
@@ -88,8 +87,7 @@
           "Product engineering"
         ],
         "degreeLevels": [
-          "Undergraduate / Master's",
-          "PhD"
+          "Undergraduate / Master's"
         ]
       },
       "overrides": {
@@ -99,7 +97,6 @@
           "locations": [
             "New York, NY"
           ],
-          "region": "United States — Northeast",
           "graduationWindow": "December 2026 or Spring 2027",
           "visaEvidence": {
             "level": "Supported",
@@ -117,7 +114,6 @@
           "locations": [
             "Chicago, IL"
           ],
-          "region": "United States — Midwest",
           "graduationWindow": "December 2026 or Spring 2027",
           "visaEvidence": {
             "level": "Supported",
@@ -135,7 +131,6 @@
           "locations": [
             "New York, NY"
           ],
-          "region": "United States — Northeast",
           "graduationWindow": "Fall 2026 or Spring 2027",
           "visaEvidence": {
             "level": "Supported",
@@ -171,7 +166,6 @@
           "Chicago, IL"
         ],
         "country": "United States",
-        "region": "United States — Midwest",
         "workplaceType": "Unspecified",
         "compensation": "$145,000 minimum base",
         "startPeriod": "August 2027",
@@ -186,8 +180,7 @@
           "Early career"
         ],
         "degreeLevels": [
-          "Undergraduate / Master's",
-          "PhD"
+          "Undergraduate / Master's"
         ]
       },
       "overrides": {
@@ -272,7 +265,6 @@
       },
       "defaults": {
         "country": "United States",
-        "region": "United States — Midwest",
         "workplaceType": "Unspecified",
         "startPeriod": "2027",
         "experienceRequirements": "New graduate",
@@ -281,8 +273,7 @@
           "Trading"
         ],
         "degreeLevels": [
-          "Undergraduate / Master's",
-          "PhD"
+          "Undergraduate / Master's"
         ]
       },
       "overrides": {
@@ -309,7 +300,6 @@
             "Chicago, IL",
             "New York, NY"
           ],
-          "region": "United States — Multiple regions",
           "compensation": "$250,000–$300,000 base",
           "graduationWindow": "December 2026 through August 2027",
           "graduationMonths": [
@@ -372,7 +362,6 @@
           "New York, NY"
         ],
         "country": "United States",
-        "region": "United States — Northeast",
         "workplaceType": "Unspecified",
         "startPeriod": "2027",
         "experienceRequirements": "Campus full-time role",
@@ -381,8 +370,7 @@
           "Trading"
         ],
         "degreeLevels": [
-          "Undergraduate / Master's",
-          "PhD"
+          "Undergraduate / Master's"
         ]
       },
       "overrides": {
@@ -456,7 +444,6 @@
           "Chicago, IL"
         ],
         "country": "United States",
-        "region": "United States — Midwest",
         "workplaceType": "Unspecified",
         "startPeriod": "2027",
         "graduationWindow": "Graduating in 2027 by August 2027",
@@ -465,8 +452,7 @@
           "2027-08"
         ],
         "degreeLevels": [
-          "Undergraduate / Master's",
-          "PhD"
+          "Undergraduate / Master's"
         ],
         "experienceRequirements": "Campus graduate role; relevant internship experience expected",
         "tags": [
@@ -522,14 +508,12 @@
           "New York, NY"
         ],
         "country": "United States",
-        "region": "United States — Multiple regions",
         "workplaceType": "On-site",
         "startPeriod": "2027",
         "graduationWindow": "Current 2027 U.S. campus recruiting cycle; exact graduation months not listed",
         "graduationMonths": [],
         "degreeLevels": [
-          "Undergraduate / Master's",
-          "PhD"
+          "Undergraduate / Master's"
         ],
         "experienceRequirements": "Campus full-time role; no professional experience minimum stated",
         "tags": [
@@ -584,10 +568,9 @@
         "url": "https://www.myvisajobs.com/employer/old-mission-capital/"
       },
       "selection": {
-        "externalIds": [
-          "7796031003",
-          "7796044003",
-          "7814534003"
+      "externalIds": [
+        "7796031003",
+        "7796044003"
         ],
         "includeTitle": [],
         "includeDescription": [],
@@ -599,13 +582,11 @@
           "New York, NY"
         ],
         "country": "United States",
-        "region": "United States — Multiple regions",
         "workplaceType": "On-site",
         "graduationWindow": "2027 graduate program; exact graduation months not listed",
         "graduationMonths": [],
         "degreeLevels": [
-          "Undergraduate / Master's",
-          "PhD"
+          "Undergraduate / Master's"
         ],
         "experienceRequirements": "Graduate program; no professional experience minimum stated",
         "tags": [
@@ -633,23 +614,7 @@
           "tags": [
             "August start"
           ]
-        },
-        "7814534003": {
-          "category": "Quantitative Research",
-          "applicationUrl": "https://www.oldmissioncapital.com/careers/?gh_jid=7814534003",
-          "sourceUrl": "https://www.oldmissioncapital.com/careers/?gh_jid=7814534003",
-          "locations": [
-            "Chicago, IL"
-          ],
-          "region": "United States — Midwest",
-          "compensation": "$175,000–$250,000 base plus discretionary bonus",
-          "startPeriod": "August 2027",
-          "experienceRequirements": "Master's or PhD graduate role; no professional experience minimum stated",
-          "tags": [
-            "August start",
-            "Research"
-          ]
-        }
+    }
       }
     },
     {
@@ -678,18 +643,16 @@
           "New York, NY"
         ],
         "country": "United States",
-        "region": "United States — Multiple regions",
         "workplaceType": "Hybrid",
         "compensation": "$150,000–$250,000 base plus discretionary bonus",
         "startPeriod": "2027",
-        "graduationWindow": "2027 graduate recruiting cycle; BS, MS, or PhD",
+      "graduationWindow": "2027 graduate recruiting cycle; bachelor's or master's",
         "graduationMonths": [
           "2027-05",
           "2027-08"
         ],
         "degreeLevels": [
-          "Undergraduate / Master's",
-          "PhD"
+          "Undergraduate / Master's"
         ],
         "experienceRequirements": "Zero to two years of experience",
         "tags": [
@@ -729,7 +692,6 @@
           "Chicago, IL"
         ],
         "country": "United States",
-        "region": "United States — Midwest",
         "workplaceType": "On-site",
         "startPeriod": "2027",
         "graduationWindow": "December 2026 through Spring 2027",
@@ -738,8 +700,7 @@
           "2027-05"
         ],
         "degreeLevels": [
-          "Undergraduate / Master's",
-          "PhD"
+          "Undergraduate / Master's"
         ],
         "experienceRequirements": "Junior graduate role; no professional experience minimum stated",
         "tags": [
@@ -777,8 +738,7 @@
         "graduationWindow": null,
         "graduationMonths": [],
         "degreeLevels": [
-          "Undergraduate / Master's",
-          "PhD"
+          "Undergraduate / Master's"
         ],
         "experienceRequirements": "Bachelor's or advanced degree in computer science or a related discipline",
         "tags": [
@@ -793,7 +753,6 @@
           "locations": [
             "San Mateo, CA"
           ],
-          "region": "United States — West",
           "compensation": "$110,000–$135,000 base plus equity",
           "datePosted": "2026-07-02",
           "visaEvidence": {
@@ -808,7 +767,6 @@
           "locations": [
             "Raleigh, NC"
           ],
-          "region": "United States — South",
           "datePosted": "2026-07-02",
           "visaEvidence": {
             "level": "Strong",
@@ -843,7 +801,6 @@
           "Mountain View, CA"
         ],
         "country": "United States",
-        "region": "United States — West",
         "workplaceType": "Unspecified",
         "compensation": "$153,000–$175,000 base plus bonus and equity",
         "datePosted": "2026-07-16",
@@ -851,10 +808,9 @@
         "graduationWindow": null,
         "graduationMonths": [],
         "degreeLevels": [
-          "Undergraduate / Master's",
-          "PhD"
+          "Undergraduate / Master's"
         ],
-        "experienceRequirements": "New graduate with a BS, MS, or PhD in computer science or a related technical field",
+      "experienceRequirements": "New graduate with a bachelor's or master's degree in computer science or a related technical field",
         "tags": [
           "C++",
           "Performance"
@@ -892,15 +848,13 @@
           "San Francisco, CA"
         ],
         "country": "United States",
-        "region": "United States — West",
         "workplaceType": "Hybrid",
         "datePosted": "2026-06-10",
         "startPeriod": null,
         "graduationWindow": null,
         "graduationMonths": [],
         "degreeLevels": [
-          "Undergraduate / Master's",
-          "PhD"
+          "Undergraduate / Master's"
         ],
         "experienceRequirements": "Zero to two years with a degree in computer engineering or a related field",
         "tags": [
@@ -940,7 +894,6 @@
           "Mountain View, CA"
         ],
         "country": "United States",
-        "region": "United States — West",
         "workplaceType": "On-site",
         "compensation": "$135,000–$155,000 base",
         "startPeriod": "Late 2026 or early 2027",
@@ -990,15 +943,13 @@
           "New York, NY"
         ],
         "country": "United States",
-        "region": "United States — Northeast",
         "workplaceType": "Hybrid",
         "compensation": "$150,000–$200,000 base plus equity",
         "startPeriod": "2027",
         "graduationWindow": "2027 new-graduate cohort; exact graduation months not listed",
         "graduationMonths": [],
         "degreeLevels": [
-          "Undergraduate / Master's",
-          "PhD"
+          "Undergraduate / Master's"
         ],
         "experienceRequirements": "New-graduate role; degree level and professional experience minimum are not stated",
         "tags": [
@@ -1039,7 +990,6 @@
           "San Francisco, CA"
         ],
         "country": "United States",
-        "region": "United States — West",
         "workplaceType": "On-site",
         "startPeriod": "Winter 2026 through Summer 2027",
         "graduationWindow": null,

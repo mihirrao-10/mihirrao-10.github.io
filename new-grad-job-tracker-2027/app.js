@@ -1,7 +1,6 @@
 import {
   CATEGORY_ORDER,
   DEFAULT_FILTERS,
-  PERSONAL_STATUSES,
   exportTrackingPayload,
   filterJobs,
   formatDate,
@@ -31,11 +30,6 @@ const elements = {
   sort: document.querySelector("#sort-jobs"),
   category: document.querySelector("#category-filter"),
   company: document.querySelector("#company-filter"),
-  location: document.querySelector("#location-filter"),
-  workplace: document.querySelector("#workplace-filter"),
-  evidence: document.querySelector("#evidence-filter"),
-  degree: document.querySelector("#degree-filter"),
-  graduation: document.querySelector("#graduation-filter"),
   personalStatus: document.querySelector("#personal-filter"),
   exportJson: document.querySelector("#export-json"),
   exportCsv: document.querySelector("#export-csv"),
@@ -48,11 +42,6 @@ const filterElements = {
   sort: elements.sort,
   category: elements.category,
   company: elements.company,
-  location: elements.location,
-  workplace: elements.workplace,
-  evidence: elements.evidence,
-  degree: elements.degree,
-  graduation: elements.graduation,
   personalStatus: elements.personalStatus,
 };
 
@@ -103,8 +92,6 @@ function initializeFilterOptions() {
   const presentCategories = new Set(allJobs.map((job) => job.category));
   populateSelect(elements.category, CATEGORY_ORDER.filter((category) => presentCategories.has(category)));
   populateSelect(elements.company, unique(allJobs.map((job) => job.company)));
-  populateSelect(elements.location, unique(allJobs.flatMap((job) => job.locations ?? [])));
-  populateSelect(elements.workplace, unique(allJobs.map((job) => job.workplaceType)));
 }
 
 function displayCompensation(value) {
@@ -118,12 +105,6 @@ function displayCompensation(value) {
   return String(value);
 }
 
-function trackingOptions(selected) {
-  return ["Untracked", ...PERSONAL_STATUSES]
-    .map((status) => `<option value="${escapeHtml(status)}"${status === selected ? " selected" : ""}>${escapeHtml(status)}</option>`)
-    .join("");
-}
-
 function sourceMarkup(job) {
   if (!job.sourceUrl) return escapeHtml(job.sourcePlatform);
   return `<a class="source-link" href="${escapeHtml(job.sourceUrl)}" target="_blank" rel="noopener noreferrer">${escapeHtml(job.sourcePlatform)}</a>`;
@@ -132,6 +113,7 @@ function sourceMarkup(job) {
 function jobMarkup(job) {
   const tracking = state.tracking.jobs[job.id] ?? { status: "", notes: "" };
   const personalStatus = getPersonalStatus(state.tracking, job.id);
+  const isApplied = personalStatus === "Applied";
   const status = statusLabels[job.status] ?? job.status;
   const locations = (job.locations ?? []).join(" · ") || "Not listed";
   const tags = [job.category, ...(job.tags ?? []).slice(0, 2)];
@@ -140,7 +122,8 @@ function jobMarkup(job) {
     ? `<a class="evidence-link" href="${escapeHtml(evidence.url)}" target="_blank" rel="noopener noreferrer">View evidence</a>`
     : "";
   const deadlineLabel = job.status === "closed" && job.closedDate ? "Closed" : "Deadline";
-  const degreeLevels = (job.degreeLevels ?? []).join(" · ") || "Not listed";
+  const deadline = job.closedDate ?? job.deadline;
+  const deadlineValue = deadline ? formatDate(deadline) : "Not published — apply early";
 
   return `
     <li>
@@ -156,15 +139,12 @@ function jobMarkup(job) {
         <div>
           <dl class="facts-list">
             <div><dt>Location</dt><dd>${escapeHtml(locations)}</dd></div>
-            <div><dt>Workplace</dt><dd>${escapeHtml(job.workplaceType)}</dd></div>
             <div><dt>Compensation</dt><dd>${escapeHtml(displayCompensation(job.compensation))}</dd></div>
           </dl>
           <dl class="timing-list">
             <div><dt>Posted</dt><dd>${escapeHtml(formatDate(job.datePosted))}</dd></div>
-            <div><dt>${deadlineLabel}</dt><dd>${escapeHtml(formatDate(job.closedDate ?? job.deadline))}</dd></div>
+            <div><dt>${deadlineLabel}</dt><dd>${escapeHtml(deadlineValue)}</dd></div>
             <div><dt>Start</dt><dd>${escapeHtml(job.startPeriod || "Not listed")}</dd></div>
-            <div><dt>Graduation</dt><dd>${escapeHtml(job.graduationWindow || "Not listed")}</dd></div>
-            <div><dt>Degree</dt><dd>${escapeHtml(degreeLevels)}</dd></div>
             <div><dt>Experience</dt><dd>${escapeHtml(job.experienceRequirements || "Not listed")}</dd></div>
           </dl>
         </div>
@@ -174,13 +154,14 @@ function jobMarkup(job) {
           <div class="meta-line">${evidenceLink}${sourceMarkup(job)}</div>
         </div>
         <div>
-          <label for="tracking-${escapeHtml(job.id)}"><span>My status</span></label>
-          <select
-            class="tracking-select"
+          <button
+            class="application-toggle ${isApplied ? "is-applied" : "is-not-applied"}"
             id="tracking-${escapeHtml(job.id)}"
-            data-action="tracking-status"
+            type="button"
+            aria-pressed="${String(isApplied)}"
+            data-action="toggle-applied"
             data-job-id="${escapeHtml(job.id)}"
-          >${trackingOptions(personalStatus)}</select>
+          >${escapeHtml(personalStatus)}</button>
           <details class="notes-control"${tracking.notes ? " open" : ""}>
             <summary>Private notes</summary>
             <label class="sr-only" for="notes-${escapeHtml(job.id)}">Private notes for ${escapeHtml(job.company)} ${escapeHtml(job.title)}</label>
@@ -280,18 +261,21 @@ function bindEvents() {
     render();
   });
 
+  elements.jobList.addEventListener("click", (event) => {
+    const control = event.target.closest("[data-action]");
+    if (!control || control.dataset.action !== "toggle-applied") return;
+    const jobId = control.dataset.jobId;
+    const nextStatus = getPersonalStatus(state.tracking, jobId) === "Applied" ? "" : "Applied";
+    state.tracking = updateTracking(state.tracking, jobId, { status: nextStatus });
+    persistTracking();
+    showToast(`${nextStatus || "Not applied"} — saved only in this browser.`);
+    render();
+  });
+
   elements.jobList.addEventListener("change", (event) => {
     const control = event.target.closest("[data-action]");
     if (!control) return;
     const jobId = control.dataset.jobId;
-    if (control.dataset.action === "tracking-status") {
-      state.tracking = updateTracking(state.tracking, jobId, {
-        status: control.value === "Untracked" ? "" : control.value,
-      });
-      persistTracking();
-      showToast(control.value === "Hidden" ? "Role hidden. Filter by Hidden to restore it." : "Application status saved in this browser.");
-      render();
-    }
     if (control.dataset.action === "tracking-notes") {
       state.tracking = updateTracking(state.tracking, jobId, { notes: control.value });
       persistTracking();
