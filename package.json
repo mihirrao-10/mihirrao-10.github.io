@@ -1,0 +1,22 @@
+{
+  "name": "mihirrao-personal-website",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Static personal website and New Graduate Job Tracker data pipeline",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "node tools/job-tracker/build.js",
+    "test": "node --test tests/job-tracker/*.test.js",
+    "update:jobs": "node tools/job-tracker/update.js",
+    "update:jobs:offline": "node tools/job-tracker/update.js --offline",
+    "validate": "node tools/job-tracker/validate-data.js",
+    "check": "npm run validate && npm test && npm run build"
+  },
+  "dependencies": {
+    "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1"
+  }
+}

@@ -1,0 +1,202 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://mihirrao-10.github.io/schemas/new-grad-job.json",
+  "title": "New Graduate Job",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "company",
+    "title",
+    "category",
+    "applicationUrl",
+    "sourceUrl",
+    "sourcePlatform",
+    "locations",
+    "country",
+    "region",
+    "workplaceType",
+    "compensation",
+    "datePosted",
+    "deadline",
+    "startPeriod",
+    "graduationWindow",
+    "graduationMonths",
+    "experienceRequirements",
+    "visaEvidence",
+    "firstSeen",
+    "lastVerified",
+    "status",
+    "closedDate",
+    "tags",
+    "missCount",
+    "sourceId"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9._-]{5,127}$"
+    },
+    "company": {
+      "$ref": "#/definitions/nonEmptyString"
+    },
+    "title": {
+      "$ref": "#/definitions/nonEmptyString"
+    },
+    "category": {
+      "enum": [
+        "Software Engineering",
+        "Machine Learning / AI Engineering",
+        "Data Science / Applied Science / Analytics",
+        "Quantitative Research",
+        "Quantitative Trading",
+        "Quantitative Development",
+        "Systems / Infrastructure / Performance Engineering",
+        "Other Technical"
+      ]
+    },
+    "applicationUrl": {
+      "$ref": "#/definitions/httpsUrl"
+    },
+    "sourceUrl": {
+      "$ref": "#/definitions/httpsUrl"
+    },
+    "sourcePlatform": {
+      "$ref": "#/definitions/nonEmptyString"
+    },
+    "locations": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/definitions/nonEmptyString"
+      }
+    },
+    "country": {
+      "$ref": "#/definitions/nonEmptyString"
+    },
+    "region": {
+      "$ref": "#/definitions/nonEmptyString"
+    },
+    "workplaceType": {
+      "enum": ["Remote", "Hybrid", "On-site", "Unspecified"]
+    },
+    "compensation": {
+      "$ref": "#/definitions/nullableString"
+    },
+    "datePosted": {
+      "$ref": "#/definitions/nullableDate"
+    },
+    "deadline": {
+      "$ref": "#/definitions/nullableDate"
+    },
+    "startPeriod": {
+      "$ref": "#/definitions/nullableString"
+    },
+    "graduationWindow": {
+      "$ref": "#/definitions/nullableString"
+    },
+    "graduationMonths": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^[0-9]{4}-(0[1-9]|1[0-2])$"
+      }
+    },
+    "experienceRequirements": {
+      "$ref": "#/definitions/nullableString"
+    },
+    "visaEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["level", "explanation", "url"],
+      "properties": {
+        "level": {
+          "enum": ["Strong", "Supported", "Historical"]
+        },
+        "explanation": {
+          "type": "string",
+          "minLength": 12,
+          "maxLength": 1000
+        },
+        "url": {
+          "$ref": "#/definitions/httpsUrl"
+        }
+      }
+    },
+    "firstSeen": {
+      "$ref": "#/definitions/date"
+    },
+    "lastVerified": {
+      "$ref": "#/definitions/date"
+    },
+    "status": {
+      "enum": ["active", "closing-soon", "stale", "closed"]
+    },
+    "closedDate": {
+      "$ref": "#/definitions/nullableDate"
+    },
+    "tags": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/definitions/nonEmptyString"
+      }
+    },
+    "missCount": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "sourceId": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9._-]{2,127}$"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": { "const": "closed" }
+        }
+      },
+      "then": {
+        "properties": {
+          "closedDate": { "$ref": "#/definitions/date" }
+        }
+      },
+      "else": {
+        "properties": {
+          "closedDate": { "type": "null" }
+        }
+      }
+    }
+  ],
+  "definitions": {
+    "nonEmptyString": {
+      "type": "string",
+      "minLength": 1
+    },
+    "nullableString": {
+      "anyOf": [
+        { "type": "string", "minLength": 1 },
+        { "type": "null" }
+      ]
+    },
+    "httpsUrl": {
+      "type": "string",
+      "format": "uri",
+      "pattern": "^https://"
+    },
+    "date": {
+      "type": "string",
+      "format": "date"
+    },
+    "nullableDate": {
+      "anyOf": [
+        { "$ref": "#/definitions/date" },
+        { "type": "null" }
+      ]
+    }
+  }
+}

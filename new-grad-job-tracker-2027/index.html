@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta
+    name="description"
+    content="Verified 2027 new-graduate software, machine learning, data, quantitative, and systems roles with evidence relevant to international candidates."
+  />
+  <title>New Graduate Job Tracker (2027) — Mihir Rao</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700;800&amp;display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <a class="skip-link" href="#job-results">Skip to job results</a>
+
+  <header class="site-header">
+    <a class="back-link" href="../">Mihir Rao</a>
+    <p class="eyebrow">Public project</p>
+    <h1>New Graduate Job Tracker <span>(2027)</span></h1>
+    <p class="lede">
+      A carefully verified board of full-time, early-career software, machine learning, data,
+      quantitative, systems, and related computer science roles that may consider international
+      candidates.
+    </p>
+
+    <dl class="board-summary" aria-label="Board status">
+      <div>
+        <dt>Active jobs</dt>
+        <dd id="active-count">—</dd>
+      </div>
+      <div>
+        <dt>Last successful update</dt>
+        <dd id="last-updated">Loading…</dd>
+      </div>
+      <div>
+        <dt>Verification</dt>
+        <dd>Official applications</dd>
+      </div>
+    </dl>
+  </header>
+
+  <main>
+    <aside class="disclaimer" aria-labelledby="eligibility-heading">
+      <h2 id="eligibility-heading">Verify before applying</h2>
+      <p>
+        International-hiring evidence is a research signal, not a promise that a specific job will
+        sponsor any applicant. Eligibility, immigration support, and openings can change at any
+        time. Read the current official posting and confirm your situation with the employer.
+      </p>
+      <details>
+        <summary>How evidence is classified</summary>
+        <dl class="evidence-definitions">
+          <div>
+            <dt>Strong</dt>
+            <dd>The posting or an official company page explicitly mentions international consideration or immigration support.</dd>
+          </div>
+          <div>
+            <dt>Supported</dt>
+            <dd>An official employer policy supports eligible international hires, while this posting is silent.</dd>
+          </div>
+          <div>
+            <dt>Historical</dt>
+            <dd>Recent public records show comparable sponsorship, but say nothing definitive about this opening.</dd>
+          </div>
+        </dl>
+      </details>
+    </aside>
+
+    <section class="local-panel" aria-labelledby="local-heading">
+      <div>
+        <h2 id="local-heading">Your application tracking stays in this browser</h2>
+        <p>
+          Statuses and notes are stored with <code>localStorage</code>. They are not uploaded or
+          committed to this public website.
+        </p>
+      </div>
+      <div class="local-actions" aria-label="Local tracking backup controls">
+        <button class="text-button" id="export-json" type="button">Export JSON</button>
+        <button class="text-button" id="export-csv" type="button">Export CSV</button>
+        <input id="import-json" type="file" accept="application/json,.json" />
+        <label class="text-button file-button" for="import-json">Import JSON</label>
+      </div>
+    </section>
+
+    <section class="controls" aria-labelledby="filters-heading">
+      <div class="controls-heading">
+        <div>
+          <p class="eyebrow">Browse openings</p>
+          <h2 id="filters-heading">Find a role</h2>
+        </div>
+        <button class="reset-button" id="reset-filters" type="button">Reset filters</button>
+      </div>
+
+      <div class="primary-controls">
+        <label class="search-control" for="keyword-search">
+          <span>Keyword</span>
+          <input
+            id="keyword-search"
+            type="search"
+            placeholder="Company, title, location, or skill"
+            autocomplete="off"
+          />
+        </label>
+        <label for="sort-jobs">
+          <span>Sort by</span>
+          <select id="sort-jobs">
+            <option value="newest">Newest</option>
+            <option value="deadline">Deadline</option>
+            <option value="company">Company</option>
+            <option value="verified">Last verified</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="filter-grid">
+        <label for="category-filter">
+          <span>Category</span>
+          <select id="category-filter"><option value="">All categories</option></select>
+        </label>
+        <label for="company-filter">
+          <span>Company</span>
+          <select id="company-filter"><option value="">All companies</option></select>
+        </label>
+        <label for="region-filter">
+          <span>Region</span>
+          <select id="region-filter"><option value="">All regions</option></select>
+        </label>
+        <label for="workplace-filter">
+          <span>Workplace</span>
+          <select id="workplace-filter"><option value="">Any workplace</option></select>
+        </label>
+        <label for="evidence-filter">
+          <span>International evidence</span>
+          <select id="evidence-filter">
+            <option value="">All evidence levels</option>
+            <option value="Strong">Strong</option>
+            <option value="Supported">Supported</option>
+            <option value="Historical">Historical</option>
+          </select>
+        </label>
+        <label for="graduation-filter">
+          <span>Graduation window</span>
+          <select id="graduation-filter">
+            <option value="">Any eligible window</option>
+            <option value="2026-12">December 2026</option>
+            <option value="2027-spring">Spring 2027</option>
+            <option value="2027-summer">Summer 2027</option>
+          </select>
+        </label>
+        <label for="personal-filter">
+          <span>My status</span>
+          <select id="personal-filter">
+            <option value="">Any status</option>
+            <option value="Untracked">Untracked</option>
+            <option value="Interested">Interested</option>
+            <option value="Saved">Saved</option>
+            <option value="Applied">Applied</option>
+            <option value="Interviewing">Interviewing</option>
+            <option value="Rejected">Rejected</option>
+            <option value="Offer">Offer</option>
+            <option value="Hidden">Hidden</option>
+          </select>
+        </label>
+      </div>
+    </section>
+
+    <section class="results" id="job-results" aria-labelledby="results-heading" tabindex="-1">
+      <div class="results-toolbar">
+        <div>
+          <p class="eyebrow">Results</p>
+          <h2 id="results-heading" aria-live="polite" aria-atomic="true"><span id="result-count">—</span> roles</h2>
+        </div>
+        <div class="view-switcher" aria-label="Job status view">
+          <button id="active-view" type="button" aria-pressed="true">Active</button>
+          <button id="archive-view" type="button" aria-pressed="false">Archived / closed</button>
+        </div>
+      </div>
+
+      <div class="job-list-heading" aria-hidden="true">
+        <span>Role</span>
+        <span>Location &amp; timing</span>
+        <span>International evidence</span>
+        <span>Track &amp; apply</span>
+      </div>
+      <ol class="job-list" id="job-list" aria-busy="true"></ol>
+
+      <div class="empty-state" id="empty-state" hidden>
+        <h3 id="empty-heading">No roles match these filters.</h3>
+        <p id="empty-copy">Try a broader keyword or reset the filters. Accuracy takes priority over listing volume.</p>
+        <button class="reset-button" id="empty-reset" type="button">Reset filters</button>
+      </div>
+
+      <div class="error-state" id="error-state" hidden role="alert">
+        <h3>The board data could not be loaded.</h3>
+        <p>Refresh the page, or try again after the next scheduled update.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>
+      Maintained as a static GitHub Pages project. Sources are checked conservatively; a temporary
+      source failure does not close every job from that source.
+    </p>
+    <a href="../">Back to mihirrao-10.github.io</a>
+  </footer>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script type="module" src="app.js"></script>
+</body>
+</html>

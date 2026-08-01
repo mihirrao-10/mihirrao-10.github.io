@@ -1,0 +1,300 @@
+{
+  "schemaVersion": "1.0.0",
+  "settings": {
+    "staleAfterDays": 7,
+    "closingSoonDays": 7,
+    "missThreshold": 2,
+    "timeZone": "America/New_York",
+    "requestTimeoutMs": 12000,
+    "requestRetries": 2,
+    "sourceConcurrency": 2
+  },
+  "sources": [
+    {
+      "id": "pylon-ashby",
+      "company": "Pylon",
+      "platform": "ashby",
+      "enabled": true,
+      "boardName": "pylon-labs",
+      "visaEvidence": {
+        "level": "Historical",
+        "explanation": "Recent public DOL-derived records show Pylon Labs filings for comparable software engineering employees. This is employer history, not a promise for this opening.",
+        "url": "https://www.myvisajobs.com/employer/pylon-labs/"
+      },
+      "selection": {
+        "externalIds": ["38814ce7-217b-40f2-9ba5-8a7733a5691d"],
+        "includeTitle": [],
+        "includeDescription": [],
+        "exclude": []
+      },
+      "defaults": {
+        "country": "United States",
+        "region": "United States — West",
+        "workplaceType": "On-site",
+        "startPeriod": "Summer 2027",
+        "graduationWindow": "Degree completed before a Summer 2027 start",
+        "experienceRequirements": "New graduate; BS or MS in computer science, engineering, or a related field",
+        "tags": ["B2B software", "Distributed systems"]
+      },
+      "overrides": {
+        "38814ce7-217b-40f2-9ba5-8a7733a5691d": {
+          "category": "Software Engineering",
+          "applicationUrl": "https://jobs.ashbyhq.com/pylon-labs/38814ce7-217b-40f2-9ba5-8a7733a5691d/application",
+          "sourceUrl": "https://jobs.ashbyhq.com/pylon-labs/38814ce7-217b-40f2-9ba5-8a7733a5691d",
+          "locations": ["San Francisco, CA"],
+          "compensation": "$150,000–$180,000 base plus equity"
+        }
+      }
+    },
+    {
+      "id": "palantir-lever",
+      "company": "Palantir",
+      "platform": "lever",
+      "enabled": true,
+      "site": "palantir",
+      "selection": {
+        "externalIds": [
+          "2e6b0ac8-83e9-4be5-a3aa-cf319f751728",
+          "e500bcf3-19d8-4d3c-b340-4d76e4a55b40",
+          "95e0d2b0-437a-4096-a5c6-0f247f426c90"
+        ],
+        "includeTitle": [],
+        "includeDescription": [],
+        "exclude": []
+      },
+      "defaults": {
+        "category": "Software Engineering",
+        "country": "United States",
+        "workplaceType": "Hybrid",
+        "compensation": "$135,000–$145,000 base",
+        "startPeriod": "2027",
+        "graduationMonths": ["2026-12", "2027-05"],
+        "experienceRequirements": "New graduate",
+        "tags": ["Early talent", "Product engineering"]
+      },
+      "overrides": {
+        "2e6b0ac8-83e9-4be5-a3aa-cf319f751728": {
+          "applicationUrl": "https://jobs.lever.co/palantir/2e6b0ac8-83e9-4be5-a3aa-cf319f751728/apply",
+          "sourceUrl": "https://jobs.lever.co/palantir/2e6b0ac8-83e9-4be5-a3aa-cf319f751728",
+          "locations": ["New York, NY"],
+          "region": "United States — Northeast",
+          "graduationWindow": "December 2026 or Spring 2027",
+          "visaEvidence": {
+            "level": "Strong",
+            "explanation": "Palantir's official early-talent visa FAQ says its Mobility Team supports international students with visa matters. The role still requires individual eligibility review.",
+            "url": "https://www.palantir.com/careers/students-and-early-talent/"
+          },
+          "tags": ["Forward deployed", "Travel"]
+        },
+        "e500bcf3-19d8-4d3c-b340-4d76e4a55b40": {
+          "applicationUrl": "https://jobs.lever.co/palantir/e500bcf3-19d8-4d3c-b340-4d76e4a55b40/apply",
+          "sourceUrl": "https://jobs.lever.co/palantir/e500bcf3-19d8-4d3c-b340-4d76e4a55b40",
+          "locations": ["Chicago, IL"],
+          "region": "United States — Midwest",
+          "graduationWindow": "December 2026 or Spring 2027",
+          "visaEvidence": {
+            "level": "Strong",
+            "explanation": "Palantir's official early-talent visa FAQ says its Mobility Team supports international students with visa matters. The role still requires individual eligibility review.",
+            "url": "https://www.palantir.com/careers/students-and-early-talent/"
+          },
+          "tags": ["Forward deployed", "Travel"]
+        },
+        "95e0d2b0-437a-4096-a5c6-0f247f426c90": {
+          "applicationUrl": "https://jobs.lever.co/palantir/95e0d2b0-437a-4096-a5c6-0f247f426c90/apply",
+          "sourceUrl": "https://jobs.lever.co/palantir/95e0d2b0-437a-4096-a5c6-0f247f426c90",
+          "locations": ["New York, NY"],
+          "region": "United States — Northeast",
+          "graduationWindow": "Fall 2026 or Spring 2027",
+          "visaEvidence": {
+            "level": "Strong",
+            "explanation": "Palantir's official early-talent visa FAQ says its Mobility Team supports international students with visa matters. The role still requires individual eligibility review.",
+            "url": "https://www.palantir.com/careers/students-and-early-talent/"
+          },
+          "tags": ["AI governance", "Privacy"]
+        }
+      }
+    },
+    {
+      "id": "akuna-greenhouse",
+      "company": "Akuna Capital",
+      "platform": "greenhouse",
+      "enabled": true,
+      "boardToken": "akunacapital",
+      "selection": {
+        "externalIds": ["7773141", "8016687", "8013230", "8013085"],
+        "includeTitle": [],
+        "includeDescription": [],
+        "exclude": []
+      },
+      "defaults": {
+        "locations": ["Chicago, IL"],
+        "country": "United States",
+        "region": "United States — Midwest",
+        "workplaceType": "Unspecified",
+        "compensation": "$145,000 minimum base",
+        "startPeriod": "August 2027",
+        "graduationWindow": "Graduating by August 2027",
+        "graduationMonths": ["2027-05", "2027-08"],
+        "experienceRequirements": "Entry level; technical degree requirements vary by role",
+        "tags": ["Chicago", "Early career"]
+      },
+      "overrides": {
+        "7773141": {
+          "category": "Quantitative Trading",
+          "applicationUrl": "https://akunacapital.com/careers/job/7773141/junior-trader/?gh_jid=7773141",
+          "sourceUrl": "https://akunacapital.com/careers/job/7773141/junior-trader/?gh_jid=7773141",
+          "visaEvidence": {
+            "level": "Strong",
+            "explanation": "The exact posting explicitly accepts F-1 OPT or STEM OPT as day-one work authorization. It does not promise later H-1B sponsorship; verify ongoing support.",
+            "url": "https://akunacapital.com/careers/job/7773141/junior-trader/?gh_jid=7773141"
+          },
+          "tags": ["Options", "Trading"]
+        },
+        "8016687": {
+          "category": "Quantitative Development",
+          "applicationUrl": "https://akunacapital.com/careers/job/8016687/junior-quantitative-developer-strategist/?gh_jid=8016687",
+          "sourceUrl": "https://akunacapital.com/careers/job/8016687/junior-quantitative-developer-strategist/?gh_jid=8016687",
+          "visaEvidence": {
+            "level": "Strong",
+            "explanation": "The exact posting explicitly accepts F-1 OPT or STEM OPT as day-one work authorization. It does not promise later H-1B sponsorship; verify ongoing support.",
+            "url": "https://akunacapital.com/careers/job/8016687/junior-quantitative-developer-strategist/?gh_jid=8016687"
+          },
+          "tags": ["Quant development", "Strategy"]
+        },
+        "8013230": {
+          "category": "Software Engineering",
+          "applicationUrl": "https://akunacapital.com/careers/job/8013230/talent-community/",
+          "sourceUrl": "https://akunacapital.com/careers/job/8013230/talent-community/",
+          "visaEvidence": {
+            "level": "Strong",
+            "explanation": "The exact full job posting explicitly accepts F-1 OPT or STEM OPT as day-one work authorization. It does not promise later H-1B sponsorship; verify ongoing support.",
+            "url": "https://akunacapital.com/careers/job/8013230/talent-community/"
+          },
+          "tags": ["Python", "Trading systems"]
+        },
+        "8013085": {
+          "category": "Software Engineering",
+          "applicationUrl": "https://akunacapital.com/careers/job/8013085/talent-community/",
+          "sourceUrl": "https://akunacapital.com/careers/job/8013085/talent-community/",
+          "visaEvidence": {
+            "level": "Strong",
+            "explanation": "The exact full job posting explicitly accepts F-1 OPT or STEM OPT as day-one work authorization. It does not promise later H-1B sponsorship; verify ongoing support.",
+            "url": "https://akunacapital.com/careers/job/8013085/talent-community/"
+          },
+          "tags": ["C++", "Trading systems"]
+        }
+      }
+    },
+    {
+      "id": "drw-greenhouse",
+      "company": "DRW",
+      "platform": "greenhouse",
+      "enabled": true,
+      "boardToken": "drweng",
+      "visaEvidence": {
+        "level": "Historical",
+        "explanation": "Recent public DOL-derived records show DRW filings for comparable quantitative and software roles. This is historical employer evidence, not role-specific support.",
+        "url": "https://www.ellis.com/visa-sponsors/drw-holdings-llc"
+      },
+      "selection": {
+        "externalIds": ["8030406", "7980165", "8039110"],
+        "includeTitle": [],
+        "includeDescription": [],
+        "exclude": []
+      },
+      "defaults": {
+        "country": "United States",
+        "region": "United States — Midwest",
+        "workplaceType": "Unspecified",
+        "startPeriod": "2027",
+        "experienceRequirements": "New graduate",
+        "tags": ["Graduate", "Trading"]
+      },
+      "overrides": {
+        "8030406": {
+          "category": "Quantitative Research",
+          "locations": ["Chicago, IL", "New York, NY"],
+          "region": "United States — Multiple regions",
+          "compensation": "$250,000–$300,000 base",
+          "graduationWindow": "December 2026 through August 2027",
+          "graduationMonths": ["2026-12", "2027-05", "2027-08"],
+          "tags": ["Research", "Statistics"]
+        },
+        "7980165": {
+          "category": "Software Engineering",
+          "locations": ["Chicago, IL"],
+          "compensation": "$225,000 base",
+          "graduationWindow": "December 2026 through June 2027",
+          "graduationMonths": ["2026-12", "2027-05", "2027-06"],
+          "tags": ["Software", "Trading systems"]
+        },
+        "8039110": {
+          "category": "Systems / Infrastructure / Performance Engineering",
+          "locations": ["Chicago, IL"],
+          "compensation": "$225,000 base",
+          "graduationWindow": "December 2026 through June 2027",
+          "graduationMonths": ["2026-12", "2027-05", "2027-06"],
+          "visaEvidence": {
+            "level": "Historical",
+            "explanation": "Recent public DOL-derived records include comparable FPGA Engineer filings at a DRW entity. This does not establish support for this opening.",
+            "url": "https://www.ellis.com/visa-sponsors/drw-associates-llc/h1b"
+          },
+          "tags": ["FPGA", "Hardware"]
+        }
+      }
+    },
+    {
+      "id": "five-rings-greenhouse",
+      "company": "Five Rings",
+      "platform": "greenhouse",
+      "enabled": true,
+      "boardToken": "fiveringsllc",
+      "visaEvidence": {
+        "level": "Historical",
+        "explanation": "Recent public DOL-derived records show Five Rings filings for comparable quantitative trading and software roles. This history does not promise support for a specific job.",
+        "url": "https://www.ellis.com/visa-sponsors/five-rings-llc/h1b"
+      },
+      "selection": {
+        "externalIds": ["5255334008", "5349839008", "4017982008"],
+        "includeTitle": [],
+        "includeDescription": [],
+        "exclude": []
+      },
+      "defaults": {
+        "locations": ["New York, NY"],
+        "country": "United States",
+        "region": "United States — Northeast",
+        "workplaceType": "Unspecified",
+        "startPeriod": "2027",
+        "experienceRequirements": "Campus full-time role",
+        "tags": ["Campus", "Trading"]
+      },
+      "overrides": {
+        "5255334008": {
+          "category": "Quantitative Trading",
+          "compensation": "$300,000 base",
+          "datePosted": "2026-07-20",
+          "graduationWindow": "Winter 2026 or Spring/Summer 2027",
+          "graduationMonths": ["2026-12", "2027-05", "2027-08"],
+          "tags": ["Quantitative trading"]
+        },
+        "5349839008": {
+          "category": "Software Engineering",
+          "compensation": "$300,000 base",
+          "datePosted": "2026-07-20",
+          "graduationWindow": "2027 graduate recruiting cycle",
+          "graduationMonths": ["2027-05", "2027-08"],
+          "tags": ["Software", "Trading systems"]
+        },
+        "4017982008": {
+          "category": "Systems / Infrastructure / Performance Engineering",
+          "compensation": "$225,000–$250,000 base",
+          "datePosted": "2026-07-15",
+          "graduationWindow": "2027 graduate recruiting cycle",
+          "graduationMonths": ["2027-05", "2027-08"],
+          "tags": ["Linux", "Trading operations"]
+        }
+      }
+    }
+  ]
+}

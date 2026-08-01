@@ -1,0 +1,63 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://mihirrao-10.github.io/schemas/new-grad-job-metadata.json",
+  "title": "New Graduate Job Tracker Metadata",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "lastSuccessfulUpdate",
+    "activeCount",
+    "archivedCount",
+    "staleAfterDays",
+    "closingSoonDays",
+    "missThreshold",
+    "sourceResults"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "lastSuccessfulUpdate": {
+      "anyOf": [
+        { "type": "string", "format": "date-time" },
+        { "type": "null" }
+      ]
+    },
+    "activeCount": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "archivedCount": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "staleAfterDays": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "closingSoonDays": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "missThreshold": {
+      "type": "integer",
+      "minimum": 2
+    },
+    "sourceResults": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["sourceId", "platform", "status", "jobsFound"],
+        "properties": {
+          "sourceId": { "type": "string", "minLength": 1 },
+          "platform": { "type": "string", "minLength": 1 },
+          "status": { "enum": ["success", "failed", "skipped"] },
+          "jobsFound": { "type": "integer", "minimum": 0 },
+          "message": { "type": "string" }
+        }
+      }
+    }
+  }
+}

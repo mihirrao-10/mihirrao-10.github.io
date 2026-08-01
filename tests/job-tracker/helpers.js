@@ -1,0 +1,36 @@
+export function sampleJob(overrides = {}) {
+  return {
+    id: "manual-example-123456",
+    company: "Example Systems",
+    title: "Software Engineer, New Graduate 2027",
+    category: "Software Engineering",
+    applicationUrl: "https://jobs.example.com/jobs/123",
+    sourceUrl: "https://jobs.example.com/jobs/123",
+    sourcePlatform: "Official company careers",
+    locations: ["New York, NY"],
+    country: "United States",
+    region: "Northeast",
+    workplaceType: "Hybrid",
+    compensation: "$120,000–$140,000 USD",
+    datePosted: "2026-07-20",
+    deadline: null,
+    startPeriod: "Summer 2027",
+    graduationWindow: "December 2026 through August 2027",
+    graduationMonths: ["2026-12", "2027-05", "2027-08"],
+    experienceRequirements: "0–2 years",
+    visaEvidence: {
+      level: "Supported",
+      explanation:
+        "The employer publishes an official immigration-support policy for eligible hires.",
+      url: "https://jobs.example.com/immigration",
+    },
+    firstSeen: "2026-07-21",
+    lastVerified: "2026-07-30",
+    status: "active",
+    closedDate: null,
+    tags: ["new graduate", "2027"],
+    missCount: 0,
+    sourceId: "manual-example",
+    ...overrides,
+  };
+}

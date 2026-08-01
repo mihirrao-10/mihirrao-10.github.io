@@ -1,0 +1,137 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://mihirrao-10.github.io/schemas/new-grad-job-sources.json",
+  "title": "New Graduate Job Tracker Sources",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "settings", "sources"],
+  "properties": {
+    "schemaVersion": { "const": "1.0.0" },
+    "settings": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "staleAfterDays",
+        "closingSoonDays",
+        "missThreshold",
+        "timeZone",
+        "requestTimeoutMs",
+        "requestRetries",
+        "sourceConcurrency"
+      ],
+      "properties": {
+        "staleAfterDays": { "type": "integer", "minimum": 1 },
+        "closingSoonDays": { "type": "integer", "minimum": 1 },
+        "missThreshold": { "type": "integer", "minimum": 2 },
+        "timeZone": { "type": "string", "minLength": 1 },
+        "requestTimeoutMs": { "type": "integer", "minimum": 1000, "maximum": 30000 },
+        "requestRetries": { "type": "integer", "minimum": 0, "maximum": 4 },
+        "sourceConcurrency": { "type": "integer", "minimum": 1, "maximum": 4 }
+      }
+    },
+    "sources": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/source" }
+    }
+  },
+  "definitions": {
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "company", "platform", "enabled", "selection", "defaults"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9._-]{2,127}$" },
+        "company": { "type": "string", "minLength": 1 },
+        "platform": { "enum": ["greenhouse", "lever", "ashby"] },
+        "enabled": { "type": "boolean" },
+        "boardToken": { "type": "string", "minLength": 1 },
+        "site": { "type": "string", "minLength": 1 },
+        "instance": { "enum": ["global", "eu"] },
+        "boardName": { "type": "string", "minLength": 1 },
+        "visaEvidence": { "$ref": "#/definitions/visaEvidence" },
+        "selection": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["externalIds", "includeTitle", "includeDescription", "exclude"],
+          "properties": {
+            "externalIds": { "type": "array", "uniqueItems": true, "items": { "type": "string" } },
+            "includeTitle": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+            "includeDescription": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+            "exclude": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+          }
+        },
+        "defaults": { "$ref": "#/definitions/enrichment" },
+        "overrides": {
+          "type": "object",
+          "additionalProperties": { "$ref": "#/definitions/enrichment" }
+        }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "platform": { "const": "greenhouse" } } },
+          "then": {
+            "properties": { "boardToken": { "type": "string", "minLength": 1 } },
+            "required": ["boardToken"]
+          }
+        },
+        {
+          "if": { "properties": { "platform": { "const": "lever" } } },
+          "then": {
+            "properties": { "site": { "type": "string", "minLength": 1 } },
+            "required": ["site"]
+          }
+        },
+        {
+          "if": { "properties": { "platform": { "const": "ashby" } } },
+          "then": {
+            "properties": { "boardName": { "type": "string", "minLength": 1 } },
+            "required": ["boardName"]
+          }
+        }
+      ]
+    },
+    "enrichment": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "category": {
+          "enum": [
+            "Software Engineering",
+            "Machine Learning / AI Engineering",
+            "Data Science / Applied Science / Analytics",
+            "Quantitative Research",
+            "Quantitative Trading",
+            "Quantitative Development",
+            "Systems / Infrastructure / Performance Engineering",
+            "Other Technical"
+          ]
+        },
+        "applicationUrl": { "type": "string", "format": "uri", "pattern": "^https://" },
+        "sourceUrl": { "type": "string", "format": "uri", "pattern": "^https://" },
+        "locations": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+        "country": { "type": "string", "minLength": 1 },
+        "region": { "type": "string", "minLength": 1 },
+        "workplaceType": { "enum": ["Remote", "Hybrid", "On-site", "Unspecified"] },
+        "compensation": { "type": ["string", "null"] },
+        "datePosted": { "type": ["string", "null"], "format": "date" },
+        "deadline": { "type": ["string", "null"], "format": "date" },
+        "startPeriod": { "type": ["string", "null"] },
+        "graduationWindow": { "type": ["string", "null"] },
+        "graduationMonths": { "type": "array", "items": { "type": "string", "pattern": "^[0-9]{4}-(0[1-9]|1[0-2])$" } },
+        "experienceRequirements": { "type": ["string", "null"] },
+        "visaEvidence": { "$ref": "#/definitions/visaEvidence" },
+        "tags": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+      }
+    },
+    "visaEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["level", "explanation", "url"],
+      "properties": {
+        "level": { "enum": ["Strong", "Supported", "Historical"] },
+        "explanation": { "type": "string", "minLength": 12 },
+        "url": { "type": "string", "format": "uri", "pattern": "^https://" }
+      }
+    }
+  }
+}
