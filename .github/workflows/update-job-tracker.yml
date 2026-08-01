@@ -21,6 +21,15 @@ jobs:
       - name: Check out the website
         uses: actions/checkout@v4
 
+      - name: Check out the job tracker
+        uses: actions/checkout@v4
+        with:
+          repository: MihirRao-10/new-grad-job-tracker-2027
+          path: tracker
+
+      - name: Configure tracker path
+        run: echo "JOB_TRACKER_ROOT=${GITHUB_WORKSPACE}/tracker" >> "$GITHUB_ENV"
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
@@ -46,10 +55,10 @@ jobs:
         id: changes
         shell: bash
         run: |
-          if git diff --quiet -- \
-            new-grad-job-tracker-2027/data/jobs.json \
-            new-grad-job-tracker-2027/data/archive.json \
-            new-grad-job-tracker-2027/data/metadata.json; then
+          if git -C tracker diff --quiet -- \
+            data/jobs.json \
+            data/archive.json \
+            data/metadata.json; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
           else
             echo "changed=true" >> "$GITHUB_OUTPUT"
@@ -61,9 +70,8 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add \
-            new-grad-job-tracker-2027/data/jobs.json \
-            new-grad-job-tracker-2027/data/archive.json \
-            new-grad-job-tracker-2027/data/metadata.json
-          git commit -m "chore(job-tracker): refresh verified roles"
-          git push
+          git -C tracker config user.name "github-actions[bot]"
+          git -C tracker config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git -C tracker add data/jobs.json data/archive.json data/metadata.json
+          git -C tracker commit -m "chore(job-tracker): refresh verified roles"
+          git -C tracker push

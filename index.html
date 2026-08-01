@@ -29,6 +29,17 @@
       line-height: 1.5;
     }
 
+    a,
+    a:visited {
+      color: #06c;
+      text-decoration: none;
+    }
+
+    a:hover,
+    a:focus-visible {
+      color: #004c99;
+    }
+
     .hero {
       min-height: 100vh;
       display: flex;
@@ -156,9 +167,7 @@
     }
 
     .notes-list a {
-      color: inherit;
-      text-decoration: none;
-      border-bottom: 1px solid #000000;
+      color: #06c;
     }
 
     .entry-honor {
@@ -169,18 +178,11 @@
     }
 
     .entry-title a {
-      color: inherit;
-      text-decoration: none;
-      border-bottom: 1px solid transparent;
-      transition: border-color 0.15s;
-    }
-
-    .entry-title a:hover {
-      border-bottom-color: #000000;
+      color: #06c;
     }
 
     .entry-title a.project-link {
-      border-bottom-color: #000000;
+      color: #06c;
     }
 
     @media (max-width: 600px) {
@@ -303,8 +305,20 @@
 
       <div class="entry">
         <div class="entry-header">
-          <h3 class="entry-title">Notes</h3>
+          <h3 class="entry-title">
+            <a class="project-link" href="new-grad-job-tracker-2027/">New Graduate Job Tracker (2027)</a>
+          </h3>
         </div>
+        <p class="entry-detail">
+          A continuously updated board of U.S.-based 2027 new-graduate software engineering, machine learning, data science, quantitative, and related computer science roles for undergraduate and master's candidates who may need international-hiring support.
+        </p>
+      </div>
+    </section>
+
+    <section id="notes">
+      <h2 class="section-heading">Notes</h2>
+
+      <div class="entry">
         <p class="entry-detail">
           Notes from courses I've worked through, written for clarity.
         </p>
@@ -319,17 +333,6 @@
             <a href="notes/economic-applications-game-theory-mit.pdf">Economic Applications of Game Theory — MIT 14.12</a>
           </li>
         </ul>
-      </div>
-
-      <div class="entry">
-        <div class="entry-header">
-          <h3 class="entry-title">
-            <a class="project-link" href="new-grad-job-tracker-2027/">New Graduate Job Tracker (2027)</a>
-          </h3>
-        </div>
-        <p class="entry-detail">
-          A continuously updated board of U.S.-based 2027 new-graduate software engineering, machine learning, data science, quantitative, and related computer science roles for undergraduate and master's candidates who may need international-hiring support.
-        </p>
       </div>
     </section>
   </main>

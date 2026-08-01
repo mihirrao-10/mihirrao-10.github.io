@@ -2,7 +2,7 @@
 
 This directory contains reviewed source data for the public 2027 new-graduate
 job tracker. Generated browser data lives under
-`new-grad-job-tracker-2027/data/`; edit the source files here, then run the
+`../new-grad-job-tracker-2027/data/`; edit the source files here, then run the
 updater. Do not hand-edit generated JSON.
 
 ## Data schema

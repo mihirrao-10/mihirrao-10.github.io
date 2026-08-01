@@ -5,11 +5,14 @@ export const SITE_ROOT = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
   "../..",
 );
+export const WORKSPACE_ROOT = path.resolve(SITE_ROOT, "..");
+export const TRACKER_ROOT =
+  process.env.JOB_TRACKER_ROOT ??
+  path.join(WORKSPACE_ROOT, "new-grad-job-tracker-2027");
 
 export const SOURCE_DATA_DIR = path.join(SITE_ROOT, "data", "job-tracker");
 export const PUBLIC_DATA_DIR = path.join(
-  SITE_ROOT,
-  "new-grad-job-tracker-2027",
+  TRACKER_ROOT,
   "data",
 );
 
