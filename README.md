@@ -19,7 +19,7 @@ listing.
 index.html                              personal-site homepage
 assets/                                 shared static assets
 notes/                                  published course-note PDFs
-new-grad-job-tracker-2027/              tracker page, styles, browser logic, public JSON
+../new-grad-job-tracker-2027/           tracker page, styles, browser logic, public JSON
 data/job-tracker/                       schemas, ATS source config, curated source data
 tools/job-tracker/                      collectors, normalization, validation, generator
 tests/job-tracker/                      focused Node tests
@@ -45,7 +45,7 @@ npm run build
 python3 -m http.server 8000 -d dist
 ```
 
-Open `http://localhost:8000/new-grad-job-tracker-2027/`. The offline updater
+From the `web/` directory, open `http://localhost:8000/new-grad-job-tracker-2027/`. The offline updater
 merges and validates the checked-in source data without contacting job sites.
 To perform live verification against public endpoints, run:
 
@@ -66,9 +66,9 @@ npm run check      # validate, test, and build
 
 The browser reads three generated files:
 
-- `new-grad-job-tracker-2027/data/jobs.json` — active, closing-soon, and stale jobs
-- `new-grad-job-tracker-2027/data/archive.json` — confirmed closed jobs
-- `new-grad-job-tracker-2027/data/metadata.json` — counts, last successful run,
+- `../new-grad-job-tracker-2027/data/jobs.json` — active, closing-soon, and stale jobs
+- `../new-grad-job-tracker-2027/data/archive.json` — confirmed closed jobs
+- `../new-grad-job-tracker-2027/data/metadata.json` — counts, last successful run,
   thresholds, and per-source results
 
 `data/job-tracker/sources.json` contains conservative allowlists for public

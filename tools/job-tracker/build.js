@@ -2,12 +2,12 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
 
-import { SITE_ROOT } from "./constants.js";
+import { SITE_ROOT, TRACKER_ROOT } from "./constants.js";
 import { pathExists } from "./lib/io.js";
 import { validateData } from "./validate-data.js";
 
 const DIST = path.join(SITE_ROOT, "dist");
-const PUBLIC_DIRECTORIES = ["assets", "notes", "new-grad-job-tracker-2027"];
+const PUBLIC_DIRECTORIES = ["assets", "notes"];
 const PUBLIC_ROOT_FILES = new Set([
   ".nojekyll",
   "404.html",
@@ -36,6 +36,14 @@ export async function buildSite() {
     if (await pathExists(source)) {
       await fs.cp(source, path.join(DIST, directory), { recursive: true });
     }
+  }
+
+  if (await pathExists(TRACKER_ROOT)) {
+    await fs.cp(
+      TRACKER_ROOT,
+      path.join(DIST, "new-grad-job-tracker-2027"),
+      { recursive: true },
+    );
   }
 
   if (!(await pathExists(path.join(DIST, "index.html")))) {
