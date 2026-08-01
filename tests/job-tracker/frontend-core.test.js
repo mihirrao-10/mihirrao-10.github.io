@@ -21,6 +21,7 @@ const jobs = [
     region: "United States — Midwest",
     country: "United States",
     locations: ["Chicago, IL"],
+    degreeLevels: ["Undergraduate / Master's"],
     workplaceType: "Hybrid",
     visaEvidence: { level: "Strong" },
     graduationMonths: ["2026-12", "2027-05"],
@@ -36,9 +37,10 @@ const jobs = [
     company: "Beta",
     title: "Quantitative Researcher",
     category: "Quantitative Research",
-    region: "Australia",
-    country: "Australia",
-    locations: ["Sydney, NSW"],
+    region: "United States — Northeast",
+    country: "United States",
+    locations: ["New York, NY"],
+    degreeLevels: ["Undergraduate / Master's", "PhD"],
     workplaceType: "On-site",
     visaEvidence: { level: "Historical" },
     graduationMonths: ["2027-08"],
@@ -74,7 +76,7 @@ test("filters jobs by search, normalized facets, and graduation window", () => {
     ["role-alpha"],
   );
   assert.deepEqual(
-    filterJobs(jobs, filters({ category: "Quantitative Research", region: "Australia" })).map(
+    filterJobs(jobs, filters({ category: "Quantitative Research", location: "New York, NY" })).map(
       (job) => job.id,
     ),
     ["role-beta"],
@@ -86,6 +88,14 @@ test("filters jobs by search, normalized facets, and graduation window", () => {
   assert.deepEqual(
     filterJobs(jobs, filters({ graduation: "2027-summer" })).map((job) => job.id),
     ["role-beta"],
+  );
+  assert.deepEqual(
+    filterJobs(jobs, filters({ degree: "PhD" })).map((job) => job.id),
+    ["role-beta"],
+  );
+  assert.deepEqual(
+    filterJobs(jobs, filters({ degree: "Undergraduate / Master's" })).map((job) => job.id),
+    ["role-beta", "role-alpha"],
   );
 });
 

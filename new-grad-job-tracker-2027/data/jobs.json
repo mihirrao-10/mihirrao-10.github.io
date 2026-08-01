@@ -1,5 +1,142 @@
 [
   {
+    "id": "3red-greenhouse-7ff6529bbfc1deb0",
+    "company": "3Red Partners",
+    "title": "Graduate C++ Developer (2027 Incoming Graduate, Full-Time)",
+    "category": "Quantitative Development",
+    "applicationUrl": "https://job-boards.greenhouse.io/3redpartners/jobs/8631086002",
+    "sourceUrl": "https://job-boards.greenhouse.io/3redpartners/jobs/8631086002",
+    "sourcePlatform": "Greenhouse",
+    "locations": [
+      "Chicago, IL"
+    ],
+    "country": "United States",
+    "region": "United States — Midwest",
+    "workplaceType": "Unspecified",
+    "compensation": "$125,000–$200,000 base",
+    "datePosted": null,
+    "deadline": null,
+    "startPeriod": "2027",
+    "graduationWindow": "Graduating in 2027 by August 2027",
+    "graduationMonths": [
+      "2027-05",
+      "2027-08"
+    ],
+    "degreeLevels": [
+      "Undergraduate / Master's",
+      "PhD"
+    ],
+    "experienceRequirements": "Campus graduate role; relevant internship experience expected",
+    "visaEvidence": {
+      "level": "Historical",
+      "explanation": "Recent public DOL-derived records show 3Red Partners filings for comparable quantitative research and development roles. This employer history is not a promise for any opening.",
+      "url": "https://www.myvisajobs.com/employer/3red-partners/"
+    },
+    "firstSeen": "2026-07-31",
+    "lastVerified": "2026-07-31",
+    "status": "active",
+    "closedDate": null,
+    "tags": [
+      "C++",
+      "Campus",
+      "Low latency",
+      "Trading"
+    ],
+    "missCount": 0,
+    "sourceId": "3red-greenhouse"
+  },
+  {
+    "id": "3red-greenhouse-9e99a0f5fae92a4c",
+    "company": "3Red Partners",
+    "title": "Graduate Quantitative Researcher (2027 Incoming Graduate, Full-Time)",
+    "category": "Quantitative Research",
+    "applicationUrl": "https://job-boards.greenhouse.io/3redpartners/jobs/8624128002",
+    "sourceUrl": "https://job-boards.greenhouse.io/3redpartners/jobs/8624128002",
+    "sourcePlatform": "Greenhouse",
+    "locations": [
+      "Chicago, IL"
+    ],
+    "country": "United States",
+    "region": "United States — Midwest",
+    "workplaceType": "Unspecified",
+    "compensation": "$125,000–$200,000 base",
+    "datePosted": null,
+    "deadline": null,
+    "startPeriod": "2027",
+    "graduationWindow": "Graduating in 2027 by August 2027",
+    "graduationMonths": [
+      "2027-05",
+      "2027-08"
+    ],
+    "degreeLevels": [
+      "Undergraduate / Master's",
+      "PhD"
+    ],
+    "experienceRequirements": "Campus graduate role; relevant internship experience expected",
+    "visaEvidence": {
+      "level": "Historical",
+      "explanation": "Recent public DOL-derived records show 3Red Partners filings for comparable quantitative research and development roles. This employer history is not a promise for any opening.",
+      "url": "https://www.myvisajobs.com/employer/3red-partners/"
+    },
+    "firstSeen": "2026-07-31",
+    "lastVerified": "2026-07-31",
+    "status": "active",
+    "closedDate": null,
+    "tags": [
+      "Campus",
+      "Machine learning",
+      "Research",
+      "Trading"
+    ],
+    "missCount": 0,
+    "sourceId": "3red-greenhouse"
+  },
+  {
+    "id": "3red-greenhouse-2b115b2334aabcff",
+    "company": "3Red Partners",
+    "title": "Graduate Trader (2027 Incoming Graduate, Full-Time)",
+    "category": "Quantitative Trading",
+    "applicationUrl": "https://job-boards.greenhouse.io/3redpartners/jobs/8634612002",
+    "sourceUrl": "https://job-boards.greenhouse.io/3redpartners/jobs/8634612002",
+    "sourcePlatform": "Greenhouse",
+    "locations": [
+      "Chicago, IL"
+    ],
+    "country": "United States",
+    "region": "United States — Midwest",
+    "workplaceType": "Unspecified",
+    "compensation": "$100,000–$150,000 base",
+    "datePosted": null,
+    "deadline": null,
+    "startPeriod": "2027",
+    "graduationWindow": "Graduating in 2027 by August 2027",
+    "graduationMonths": [
+      "2027-05",
+      "2027-08"
+    ],
+    "degreeLevels": [
+      "Undergraduate / Master's",
+      "PhD"
+    ],
+    "experienceRequirements": "Campus graduate role; relevant internship experience expected",
+    "visaEvidence": {
+      "level": "Historical",
+      "explanation": "Recent public DOL-derived records show 3Red Partners filings for comparable quantitative research and development roles. This employer history is not a promise for any opening.",
+      "url": "https://www.myvisajobs.com/employer/3red-partners/"
+    },
+    "firstSeen": "2026-07-31",
+    "lastVerified": "2026-07-31",
+    "status": "active",
+    "closedDate": null,
+    "tags": [
+      "Campus",
+      "Python",
+      "Trading"
+    ],
+    "missCount": 0,
+    "sourceId": "3red-greenhouse"
+  },
+  {
     "id": "akuna-greenhouse-9ca00a903e3a538a",
     "company": "Akuna Capital",
     "title": "Junior Quantitative Developer & Strategist",
@@ -21,6 +158,10 @@
     "graduationMonths": [
       "2027-05",
       "2027-08"
+    ],
+    "degreeLevels": [
+      "Undergraduate / Master's",
+      "PhD"
     ],
     "experienceRequirements": "Entry level; technical degree requirements vary by role",
     "visaEvidence": {
@@ -64,6 +205,10 @@
       "2027-05",
       "2027-08"
     ],
+    "degreeLevels": [
+      "Undergraduate / Master's",
+      "PhD"
+    ],
     "experienceRequirements": "Entry level; technical degree requirements vary by role",
     "visaEvidence": {
       "level": "Strong",
@@ -105,6 +250,10 @@
     "graduationMonths": [
       "2027-05",
       "2027-08"
+    ],
+    "degreeLevels": [
+      "Undergraduate / Master's",
+      "PhD"
     ],
     "experienceRequirements": "Entry level; technical degree requirements vary by role",
     "visaEvidence": {
@@ -148,6 +297,10 @@
       "2027-05",
       "2027-08"
     ],
+    "degreeLevels": [
+      "Undergraduate / Master's",
+      "PhD"
+    ],
     "experienceRequirements": "Entry level; technical degree requirements vary by role",
     "visaEvidence": {
       "level": "Strong",
@@ -168,33 +321,30 @@
     "sourceId": "akuna-greenhouse"
   },
   {
-    "id": "amazon-10462011",
-    "company": "Amazon",
-    "title": "Software Development Graduate, 2027 Melbourne",
-    "category": "Software Engineering",
-    "applicationUrl": "https://www.amazon.jobs/en/jobs/10462011/software-development-graduate-2027-melbourne",
-    "sourceUrl": "https://www.amazon.jobs/en/jobs/10462011/software-development-graduate-2027-melbourne",
+    "id": "bytedance-7629488401364060469",
+    "company": "ByteDance",
+    "title": "Applied Scientist - LLM Training System as a Service - Global Frontier Tech Recruitment Program - 2027 Start (PhD)",
+    "category": "Systems / Infrastructure / Performance Engineering",
+    "applicationUrl": "https://joinbytedance.com/search/7629488401364060469",
+    "sourceUrl": "https://joinbytedance.com/search/7629488401364060469",
     "sourcePlatform": "Official company careers",
     "locations": [
-      "Melbourne, VIC"
+      "San Jose, CA"
     ],
-    "country": "Australia",
-    "region": "Australia",
+    "country": "United States",
+    "region": "United States — West",
     "workplaceType": "Unspecified",
-    "compensation": null,
-    "datePosted": "2026-06-30",
+    "compensation": "$212,800–$450,000 USD base",
+    "datePosted": null,
     "deadline": null,
-    "startPeriod": "January through June 2027",
-    "graduationWindow": "Final-semester students or graduates from approximately the preceding 24 months",
-    "graduationMonths": [
-      "2026-12",
-      "2027-05"
-    ],
-    "experienceRequirements": "Graduate software-development role; no professional experience minimum stated",
+    "startPeriod": "2027",
+    "graduationWindow": "Completing or recently completed a PhD and able to onboard by the end of 2027",
+    "graduationMonths": [],
+    "experienceRequirements": "Early-career PhD role; no professional experience minimum stated",
     "visaEvidence": {
-      "level": "Historical",
-      "explanation": "Amazon Support Services Pty Ltd appears on the Australian government's January 2024 accredited-sponsor list. The posting is silent and newer exact-entity support was not confirmed.",
-      "url": "https://www.homeaffairs.gov.au/foi/files/2024/fa-240100298-document-released.PDF"
+      "level": "Supported",
+      "explanation": "ByteDance's official hiring FAQ says some roles may offer visa sponsorship when appropriate, with support decided by role and candidate. This posting is silent, so support is not guaranteed.",
+      "url": "https://joinbytedance.com/faq"
     },
     "firstSeen": "2026-07-31",
     "lastVerified": "2026-07-31",
@@ -202,39 +352,41 @@
     "closedDate": null,
     "tags": [
       "2027",
-      "Software development"
+      "PhD",
+      "LLM",
+      "Training systems"
     ],
     "missCount": 0,
-    "sourceId": "manual-amazon-au"
+    "sourceId": "manual-bytedance",
+    "degreeLevels": [
+      "PhD"
+    ]
   },
   {
-    "id": "amazon-10419485",
-    "company": "Amazon",
-    "title": "Software Development Graduate, 2027 Stores, Brisbane",
-    "category": "Software Engineering",
-    "applicationUrl": "https://amazon.jobs/en/jobs/10419485/software-development-graduate-2027-stores-brisbane",
-    "sourceUrl": "https://amazon.jobs/en/jobs/10419485/software-development-graduate-2027-stores-brisbane",
+    "id": "bytedance-7633537809438689541",
+    "company": "ByteDance",
+    "title": "Research Scientist - AI Compute & DPU - Global Frontier Tech Recruitment Program - 2027 Start (PhD)",
+    "category": "Systems / Infrastructure / Performance Engineering",
+    "applicationUrl": "https://joinbytedance.com/search/7633537809438689541",
+    "sourceUrl": "https://joinbytedance.com/search/7633537809438689541",
     "sourcePlatform": "Official company careers",
     "locations": [
-      "Brisbane, QLD"
+      "San Jose, CA"
     ],
-    "country": "Australia",
-    "region": "Australia",
+    "country": "United States",
+    "region": "United States — West",
     "workplaceType": "Unspecified",
-    "compensation": null,
-    "datePosted": "2026-05-14",
+    "compensation": "$212,800–$387,600 USD base",
+    "datePosted": null,
     "deadline": null,
-    "startPeriod": "By March 1, 2027",
-    "graduationWindow": "Final-semester students or graduates from approximately the preceding 24 months",
-    "graduationMonths": [
-      "2026-12",
-      "2027-02"
-    ],
-    "experienceRequirements": "Graduate software-development role; no professional experience minimum stated",
+    "startPeriod": "2027",
+    "graduationWindow": "Completing or recently completed a PhD and able to onboard by the end of 2027",
+    "graduationMonths": [],
+    "experienceRequirements": "Early-career PhD role; no professional experience minimum stated",
     "visaEvidence": {
-      "level": "Historical",
-      "explanation": "Amazon Support Services Pty Ltd appears on the Australian government's January 2024 accredited-sponsor list. The posting is silent and newer exact-entity support was not confirmed.",
-      "url": "https://www.homeaffairs.gov.au/foi/files/2024/fa-240100298-document-released.PDF"
+      "level": "Supported",
+      "explanation": "ByteDance's official hiring FAQ says some roles may offer visa sponsorship when appropriate, with support decided by role and candidate. This posting is silent, so support is not guaranteed.",
+      "url": "https://joinbytedance.com/faq"
     },
     "firstSeen": "2026-07-31",
     "lastVerified": "2026-07-31",
@@ -242,40 +394,41 @@
     "closedDate": null,
     "tags": [
       "2027",
-      "Stores",
-      "Software development"
+      "PhD",
+      "AI compute",
+      "DPU"
     ],
     "missCount": 0,
-    "sourceId": "manual-amazon-au"
+    "sourceId": "manual-bytedance",
+    "degreeLevels": [
+      "PhD"
+    ]
   },
   {
-    "id": "amazon-10462014",
-    "company": "Amazon",
-    "title": "Software Development Graduate, AWS, 2027 Sydney",
-    "category": "Software Engineering",
-    "applicationUrl": "https://www.amazon.jobs/en-gb/jobs/10462014/software-development-graduate-aws-2027-sydney",
-    "sourceUrl": "https://www.amazon.jobs/en-gb/jobs/10462014/software-development-graduate-aws-2027-sydney",
+    "id": "bytedance-7633538176269306117",
+    "company": "ByteDance",
+    "title": "Research Scientist - AI Compute & DPU - Global Frontier Tech Recruitment Program - 2027 Start (PhD)",
+    "category": "Systems / Infrastructure / Performance Engineering",
+    "applicationUrl": "https://joinbytedance.com/search/7633538176269306117",
+    "sourceUrl": "https://joinbytedance.com/search/7633538176269306117",
     "sourcePlatform": "Official company careers",
     "locations": [
-      "Sydney, NSW"
+      "Seattle, WA"
     ],
-    "country": "Australia",
-    "region": "Australia",
+    "country": "United States",
+    "region": "United States — West",
     "workplaceType": "Unspecified",
-    "compensation": null,
-    "datePosted": "2026-06-30",
+    "compensation": "$202,160–$368,220 USD base",
+    "datePosted": null,
     "deadline": null,
-    "startPeriod": "January through June 2027",
-    "graduationWindow": "Final-semester students or graduates from approximately the preceding 24 months",
-    "graduationMonths": [
-      "2026-12",
-      "2027-05"
-    ],
-    "experienceRequirements": "Graduate software-development role; no professional experience minimum stated",
+    "startPeriod": "2027",
+    "graduationWindow": "Completing or recently completed a PhD and able to onboard by the end of 2027",
+    "graduationMonths": [],
+    "experienceRequirements": "Early-career PhD role; no professional experience minimum stated",
     "visaEvidence": {
-      "level": "Historical",
-      "explanation": "Amazon Support Services Pty Ltd appears on the Australian government's January 2024 accredited-sponsor list. The posting is silent and newer exact-entity support was not confirmed.",
-      "url": "https://www.homeaffairs.gov.au/foi/files/2024/fa-240100298-document-released.PDF"
+      "level": "Supported",
+      "explanation": "ByteDance's official hiring FAQ says some roles may offer visa sponsorship when appropriate, with support decided by role and candidate. This posting is silent, so support is not guaranteed.",
+      "url": "https://joinbytedance.com/faq"
     },
     "firstSeen": "2026-07-31",
     "lastVerified": "2026-07-31",
@@ -283,11 +436,812 @@
     "closedDate": null,
     "tags": [
       "2027",
-      "AWS",
+      "PhD",
+      "AI compute",
+      "DPU"
+    ],
+    "missCount": 0,
+    "sourceId": "manual-bytedance",
+    "degreeLevels": [
+      "PhD"
+    ]
+  },
+  {
+    "id": "bytedance-7629789975396124981",
+    "company": "ByteDance",
+    "title": "Research scientist - AI Infra - Global Frontier Tech Recruitment Program - 2027 Start (PhD)",
+    "category": "Systems / Infrastructure / Performance Engineering",
+    "applicationUrl": "https://joinbytedance.com/search/7629789975396124981",
+    "sourceUrl": "https://joinbytedance.com/search/7629789975396124981",
+    "sourcePlatform": "Official company careers",
+    "locations": [
+      "San Jose, CA"
+    ],
+    "country": "United States",
+    "region": "United States — West",
+    "workplaceType": "Unspecified",
+    "compensation": "$212,800–$387,600 USD base",
+    "datePosted": null,
+    "deadline": null,
+    "startPeriod": "2027",
+    "graduationWindow": "Completing or recently completed a PhD and able to onboard by the end of 2027",
+    "graduationMonths": [],
+    "experienceRequirements": "Early-career PhD role; no professional experience minimum stated",
+    "visaEvidence": {
+      "level": "Supported",
+      "explanation": "ByteDance's official hiring FAQ says some roles may offer visa sponsorship when appropriate, with support decided by role and candidate. This posting is silent, so support is not guaranteed.",
+      "url": "https://joinbytedance.com/faq"
+    },
+    "firstSeen": "2026-07-31",
+    "lastVerified": "2026-07-31",
+    "status": "active",
+    "closedDate": null,
+    "tags": [
+      "2027",
+      "PhD",
+      "AI infrastructure",
       "Distributed systems"
     ],
     "missCount": 0,
-    "sourceId": "manual-amazon-au"
+    "sourceId": "manual-bytedance",
+    "degreeLevels": [
+      "PhD"
+    ]
+  },
+  {
+    "id": "bytedance-7629126608919382277",
+    "company": "ByteDance",
+    "title": "Research Scientist - Compute AI Infra - Global Frontier Tech Recruitment Program - 2027 Start (PhD)",
+    "category": "Systems / Infrastructure / Performance Engineering",
+    "applicationUrl": "https://joinbytedance.com/search/7629126608919382277",
+    "sourceUrl": "https://joinbytedance.com/search/7629126608919382277",
+    "sourcePlatform": "Official company careers",
+    "locations": [
+      "San Jose, CA"
+    ],
+    "country": "United States",
+    "region": "United States — West",
+    "workplaceType": "Unspecified",
+    "compensation": "$212,800–$387,600 USD base",
+    "datePosted": null,
+    "deadline": null,
+    "startPeriod": "2027",
+    "graduationWindow": "Completing or recently completed a PhD and able to onboard by the end of 2027",
+    "graduationMonths": [],
+    "experienceRequirements": "Early-career PhD role; no professional experience minimum stated",
+    "visaEvidence": {
+      "level": "Supported",
+      "explanation": "ByteDance's official hiring FAQ says some roles may offer visa sponsorship when appropriate, with support decided by role and candidate. This posting is silent, so support is not guaranteed.",
+      "url": "https://joinbytedance.com/faq"
+    },
+    "firstSeen": "2026-07-31",
+    "lastVerified": "2026-07-31",
+    "status": "active",
+    "closedDate": null,
+    "tags": [
+      "2027",
+      "PhD",
+      "AI compute",
+      "AI infrastructure"
+    ],
+    "missCount": 0,
+    "sourceId": "manual-bytedance",
+    "degreeLevels": [
+      "PhD"
+    ]
+  },
+  {
+    "id": "bytedance-7629847900210399493",
+    "company": "ByteDance",
+    "title": "Research Scientist - Driven Agent Self-Evolution - Global Frontier Tech Recruitment Program - 2027 Start (PhD)",
+    "category": "Machine Learning / AI Engineering",
+    "applicationUrl": "https://joinbytedance.com/search/7629847900210399493",
+    "sourceUrl": "https://joinbytedance.com/search/7629847900210399493",
+    "sourcePlatform": "Official company careers",
+    "locations": [
+      "Seattle, WA"
+    ],
+    "country": "United States",
+    "region": "United States — West",
+    "workplaceType": "Unspecified",
+    "compensation": "$202,160–$368,220 USD base",
+    "datePosted": null,
+    "deadline": null,
+    "startPeriod": "2027",
+    "graduationWindow": "Completing or recently completed a PhD and able to onboard by the end of 2027",
+    "graduationMonths": [],
+    "experienceRequirements": "Early-career PhD role; no professional experience minimum stated",
+    "visaEvidence": {
+      "level": "Supported",
+      "explanation": "ByteDance's official hiring FAQ says some roles may offer visa sponsorship when appropriate, with support decided by role and candidate. This posting is silent, so support is not guaranteed.",
+      "url": "https://joinbytedance.com/faq"
+    },
+    "firstSeen": "2026-07-31",
+    "lastVerified": "2026-07-31",
+    "status": "active",
+    "closedDate": null,
+    "tags": [
+      "2027",
+      "PhD",
+      "AI agents",
+      "Reinforcement learning"
+    ],
+    "missCount": 0,
+    "sourceId": "manual-bytedance",
+    "degreeLevels": [
+      "PhD"
+    ]
+  },
+  {
+    "id": "bytedance-7631317232770500869",
+    "company": "ByteDance",
+    "title": "Research Scientist - Recommendation Modeling & Large-scale Computing Infrastructure - Global Frontier Tech Recruitment Program - 2027 Start (PhD)",
+    "category": "Systems / Infrastructure / Performance Engineering",
+    "applicationUrl": "https://joinbytedance.com/search/7631317232770500869",
+    "sourceUrl": "https://joinbytedance.com/search/7631317232770500869",
+    "sourcePlatform": "Official company careers",
+    "locations": [
+      "San Jose, CA"
+    ],
+    "country": "United States",
+    "region": "United States — West",
+    "workplaceType": "Unspecified",
+    "compensation": "$212,800–$450,000 USD base",
+    "datePosted": null,
+    "deadline": null,
+    "startPeriod": "2027",
+    "graduationWindow": "Completing or recently completed a PhD and able to onboard by the end of 2027",
+    "graduationMonths": [],
+    "experienceRequirements": "Early-career PhD role; no professional experience minimum stated",
+    "visaEvidence": {
+      "level": "Supported",
+      "explanation": "ByteDance's official hiring FAQ says some roles may offer visa sponsorship when appropriate, with support decided by role and candidate. This posting is silent, so support is not guaranteed.",
+      "url": "https://joinbytedance.com/faq"
+    },
+    "firstSeen": "2026-07-31",
+    "lastVerified": "2026-07-31",
+    "status": "active",
+    "closedDate": null,
+    "tags": [
+      "2027",
+      "PhD",
+      "Computing infrastructure",
+      "Recommendation systems"
+    ],
+    "missCount": 0,
+    "sourceId": "manual-bytedance",
+    "degreeLevels": [
+      "PhD"
+    ]
+  },
+  {
+    "id": "bytedance-7629123702995290421",
+    "company": "ByteDance",
+    "title": "Research Scientist - Technologies of Data Management, LLM and AI Agents - Global Frontier Tech Recruitment Program - 2027 Start (PhD)",
+    "category": "Systems / Infrastructure / Performance Engineering",
+    "applicationUrl": "https://joinbytedance.com/search/7629123702995290421",
+    "sourceUrl": "https://joinbytedance.com/search/7629123702995290421",
+    "sourcePlatform": "Official company careers",
+    "locations": [
+      "Seattle, WA"
+    ],
+    "country": "United States",
+    "region": "United States — West",
+    "workplaceType": "Unspecified",
+    "compensation": "$202,160–$368,220 USD base",
+    "datePosted": null,
+    "deadline": null,
+    "startPeriod": "2027",
+    "graduationWindow": "Completing or recently completed a PhD and able to onboard by the end of 2027",
+    "graduationMonths": [],
+    "experienceRequirements": "Early-career PhD role; no professional experience minimum stated",
+    "visaEvidence": {
+      "level": "Supported",
+      "explanation": "ByteDance's official hiring FAQ says some roles may offer visa sponsorship when appropriate, with support decided by role and candidate. This posting is silent, so support is not guaranteed.",
+      "url": "https://joinbytedance.com/faq"
+    },
+    "firstSeen": "2026-07-31",
+    "lastVerified": "2026-07-31",
+    "status": "active",
+    "closedDate": null,
+    "tags": [
+      "2027",
+      "PhD",
+      "AI agents",
+      "Data management"
+    ],
+    "missCount": 0,
+    "sourceId": "manual-bytedance",
+    "degreeLevels": [
+      "PhD"
+    ]
+  },
+  {
+    "id": "bytedance-7629136672475040053",
+    "company": "ByteDance",
+    "title": "Research Scientist Graduate (Video Quality Analysis & Coding Strategy) - Global Frontier Tech Recruitment Program - 2027 Start (PhD)",
+    "category": "Machine Learning / AI Engineering",
+    "applicationUrl": "https://joinbytedance.com/search/7629136672475040053",
+    "sourceUrl": "https://joinbytedance.com/search/7629136672475040053",
+    "sourcePlatform": "Official company careers",
+    "locations": [
+      "San Jose, CA"
+    ],
+    "country": "United States",
+    "region": "United States — West",
+    "workplaceType": "Unspecified",
+    "compensation": "$244,800–$588,000 USD base",
+    "datePosted": null,
+    "deadline": null,
+    "startPeriod": "2027",
+    "graduationWindow": "Completing or recently completed a PhD and able to onboard by the end of 2027",
+    "graduationMonths": [],
+    "experienceRequirements": "Early-career PhD role; no professional experience minimum stated",
+    "visaEvidence": {
+      "level": "Supported",
+      "explanation": "ByteDance's official hiring FAQ says some roles may offer visa sponsorship when appropriate, with support decided by role and candidate. This posting is silent, so support is not guaranteed.",
+      "url": "https://joinbytedance.com/faq"
+    },
+    "firstSeen": "2026-07-31",
+    "lastVerified": "2026-07-31",
+    "status": "active",
+    "closedDate": null,
+    "tags": [
+      "2027",
+      "PhD",
+      "Video",
+      "Quality analysis"
+    ],
+    "missCount": 0,
+    "sourceId": "manual-bytedance",
+    "degreeLevels": [
+      "PhD"
+    ]
+  },
+  {
+    "id": "bytedance-7623552015124154629",
+    "company": "ByteDance",
+    "title": "Research Scientist in AI Foundation Model Infrastructure - Seed - Graduates - 2027 Start (BS/MS)",
+    "category": "Systems / Infrastructure / Performance Engineering",
+    "applicationUrl": "https://joinbytedance.com/search/7623552015124154629",
+    "sourceUrl": "https://joinbytedance.com/search/7623552015124154629",
+    "sourcePlatform": "Official company careers",
+    "locations": [
+      "Seattle, WA"
+    ],
+    "country": "United States",
+    "region": "United States — West",
+    "workplaceType": "Unspecified",
+    "compensation": "$202,160–$368,220 USD base",
+    "datePosted": null,
+    "deadline": null,
+    "startPeriod": "2027",
+    "graduationWindow": "Expected graduation in 2027 and able to onboard by the end of 2027",
+    "graduationMonths": [],
+    "experienceRequirements": "Bachelor's or master's candidate; no professional experience minimum stated",
+    "visaEvidence": {
+      "level": "Supported",
+      "explanation": "ByteDance's official hiring FAQ says some roles may offer visa sponsorship when appropriate, with support decided by role and candidate. This posting is silent, so support is not guaranteed.",
+      "url": "https://joinbytedance.com/faq"
+    },
+    "firstSeen": "2026-07-31",
+    "lastVerified": "2026-07-31",
+    "status": "active",
+    "closedDate": null,
+    "tags": [
+      "2027",
+      "BS/MS",
+      "AI infrastructure",
+      "Distributed systems"
+    ],
+    "missCount": 0,
+    "sourceId": "manual-bytedance",
+    "degreeLevels": [
+      "Undergraduate / Master's"
+    ]
+  },
+  {
+    "id": "bytedance-7623550778255165701",
+    "company": "ByteDance",
+    "title": "Research Scientist in AI Foundation Model Infrastructure - Seed - Graduates - 2027 Start (PhD)",
+    "category": "Systems / Infrastructure / Performance Engineering",
+    "applicationUrl": "https://joinbytedance.com/search/7623550778255165701",
+    "sourceUrl": "https://joinbytedance.com/search/7623550778255165701",
+    "sourcePlatform": "Official company careers",
+    "locations": [
+      "Seattle, WA"
+    ],
+    "country": "United States",
+    "region": "United States — West",
+    "workplaceType": "Unspecified",
+    "compensation": "$232,560–$427,500 USD base",
+    "datePosted": null,
+    "deadline": null,
+    "startPeriod": "2027",
+    "graduationWindow": "Completing or recently completed a PhD and able to onboard by the end of 2027",
+    "graduationMonths": [],
+    "experienceRequirements": "Early-career PhD role; no professional experience minimum stated",
+    "visaEvidence": {
+      "level": "Supported",
+      "explanation": "ByteDance's official hiring FAQ says some roles may offer visa sponsorship when appropriate, with support decided by role and candidate. This posting is silent, so support is not guaranteed.",
+      "url": "https://joinbytedance.com/faq"
+    },
+    "firstSeen": "2026-07-31",
+    "lastVerified": "2026-07-31",
+    "status": "active",
+    "closedDate": null,
+    "tags": [
+      "2027",
+      "PhD",
+      "AI infrastructure",
+      "Foundation models"
+    ],
+    "missCount": 0,
+    "sourceId": "manual-bytedance",
+    "degreeLevels": [
+      "PhD"
+    ]
+  },
+  {
+    "id": "bytedance-7623536303630469381",
+    "company": "ByteDance",
+    "title": "Research Scientist in Large Language Model (LLM) - Seed - Graduates - 2027 Start (BS/MS)",
+    "category": "Machine Learning / AI Engineering",
+    "applicationUrl": "https://joinbytedance.com/search/7623536303630469381",
+    "sourceUrl": "https://joinbytedance.com/search/7623536303630469381",
+    "sourcePlatform": "Official company careers",
+    "locations": [
+      "San Jose, CA"
+    ],
+    "country": "United States",
+    "region": "United States — West",
+    "workplaceType": "Unspecified",
+    "compensation": "$212,800–$387,600 USD base",
+    "datePosted": null,
+    "deadline": null,
+    "startPeriod": "2027",
+    "graduationWindow": "Expected graduation in 2027 and able to onboard by the end of 2027",
+    "graduationMonths": [],
+    "experienceRequirements": "Bachelor's or master's candidate; no professional experience minimum stated",
+    "visaEvidence": {
+      "level": "Supported",
+      "explanation": "ByteDance's official hiring FAQ says some roles may offer visa sponsorship when appropriate, with support decided by role and candidate. This posting is silent, so support is not guaranteed.",
+      "url": "https://joinbytedance.com/faq"
+    },
+    "firstSeen": "2026-07-31",
+    "lastVerified": "2026-07-31",
+    "status": "active",
+    "closedDate": null,
+    "tags": [
+      "2027",
+      "BS/MS",
+      "Foundation models",
+      "LLM"
+    ],
+    "missCount": 0,
+    "sourceId": "manual-bytedance",
+    "degreeLevels": [
+      "Undergraduate / Master's"
+    ]
+  },
+  {
+    "id": "bytedance-7623525222555961605",
+    "company": "ByteDance",
+    "title": "Research Scientist in Large Language Model (LLM) - Seed - Graduates - 2027 Start (PhD)",
+    "category": "Machine Learning / AI Engineering",
+    "applicationUrl": "https://joinbytedance.com/search/7623525222555961605",
+    "sourceUrl": "https://joinbytedance.com/search/7623525222555961605",
+    "sourcePlatform": "Official company careers",
+    "locations": [
+      "San Jose, CA"
+    ],
+    "country": "United States",
+    "region": "United States — West",
+    "workplaceType": "Unspecified",
+    "compensation": "$244,800–$450,000 USD base",
+    "datePosted": null,
+    "deadline": null,
+    "startPeriod": "2027",
+    "graduationWindow": "Completing or recently completed a PhD and able to onboard by the end of 2027",
+    "graduationMonths": [],
+    "experienceRequirements": "Early-career PhD role; no professional experience minimum stated",
+    "visaEvidence": {
+      "level": "Supported",
+      "explanation": "ByteDance's official hiring FAQ says some roles may offer visa sponsorship when appropriate, with support decided by role and candidate. This posting is silent, so support is not guaranteed.",
+      "url": "https://joinbytedance.com/faq"
+    },
+    "firstSeen": "2026-07-31",
+    "lastVerified": "2026-07-31",
+    "status": "active",
+    "closedDate": null,
+    "tags": [
+      "2027",
+      "PhD",
+      "Foundation models",
+      "LLM"
+    ],
+    "missCount": 0,
+    "sourceId": "manual-bytedance",
+    "degreeLevels": [
+      "PhD"
+    ]
+  },
+  {
+    "id": "bytedance-7623545710681016581",
+    "company": "ByteDance",
+    "title": "Research Scientist in Multimodal Interaction and World Model - Seed - Graduates - 2027 Start (BS/MS)",
+    "category": "Machine Learning / AI Engineering",
+    "applicationUrl": "https://joinbytedance.com/search/7623545710681016581",
+    "sourceUrl": "https://joinbytedance.com/search/7623545710681016581",
+    "sourcePlatform": "Official company careers",
+    "locations": [
+      "San Jose, CA"
+    ],
+    "country": "United States",
+    "region": "United States — West",
+    "workplaceType": "Unspecified",
+    "compensation": "$212,800–$387,600 USD base",
+    "datePosted": null,
+    "deadline": null,
+    "startPeriod": "2027",
+    "graduationWindow": "Expected graduation in 2027 and able to onboard by the end of 2027",
+    "graduationMonths": [],
+    "experienceRequirements": "Bachelor's or master's candidate; no professional experience minimum stated",
+    "visaEvidence": {
+      "level": "Supported",
+      "explanation": "ByteDance's official hiring FAQ says some roles may offer visa sponsorship when appropriate, with support decided by role and candidate. This posting is silent, so support is not guaranteed.",
+      "url": "https://joinbytedance.com/faq"
+    },
+    "firstSeen": "2026-07-31",
+    "lastVerified": "2026-07-31",
+    "status": "active",
+    "closedDate": null,
+    "tags": [
+      "2027",
+      "BS/MS",
+      "Multimodal",
+      "World models"
+    ],
+    "missCount": 0,
+    "sourceId": "manual-bytedance",
+    "degreeLevels": [
+      "Undergraduate / Master's"
+    ]
+  },
+  {
+    "id": "bytedance-7623548379708197125",
+    "company": "ByteDance",
+    "title": "Research Scientist in Speech Foundation Model - Seed - Graduates - 2027 Start (BS/MS)",
+    "category": "Machine Learning / AI Engineering",
+    "applicationUrl": "https://joinbytedance.com/search/7623548379708197125",
+    "sourceUrl": "https://joinbytedance.com/search/7623548379708197125",
+    "sourcePlatform": "Official company careers",
+    "locations": [
+      "San Jose, CA"
+    ],
+    "country": "United States",
+    "region": "United States — West",
+    "workplaceType": "Unspecified",
+    "compensation": "$212,800–$387,600 USD base",
+    "datePosted": null,
+    "deadline": null,
+    "startPeriod": "2027",
+    "graduationWindow": "Expected graduation in 2027 and able to onboard by the end of 2027",
+    "graduationMonths": [],
+    "experienceRequirements": "Bachelor's or master's candidate; no professional experience minimum stated",
+    "visaEvidence": {
+      "level": "Supported",
+      "explanation": "ByteDance's official hiring FAQ says some roles may offer visa sponsorship when appropriate, with support decided by role and candidate. This posting is silent, so support is not guaranteed.",
+      "url": "https://joinbytedance.com/faq"
+    },
+    "firstSeen": "2026-07-31",
+    "lastVerified": "2026-07-31",
+    "status": "active",
+    "closedDate": null,
+    "tags": [
+      "2027",
+      "BS/MS",
+      "Foundation models",
+      "Speech"
+    ],
+    "missCount": 0,
+    "sourceId": "manual-bytedance",
+    "degreeLevels": [
+      "Undergraduate / Master's"
+    ]
+  },
+  {
+    "id": "bytedance-7623545981743286533",
+    "company": "ByteDance",
+    "title": "Research Scientist in Speech Foundation Model - Seed - Graduates - 2027 Start (PhD)",
+    "category": "Machine Learning / AI Engineering",
+    "applicationUrl": "https://joinbytedance.com/search/7623545981743286533",
+    "sourceUrl": "https://joinbytedance.com/search/7623545981743286533",
+    "sourcePlatform": "Official company careers",
+    "locations": [
+      "San Jose, CA"
+    ],
+    "country": "United States",
+    "region": "United States — West",
+    "workplaceType": "Unspecified",
+    "compensation": "$244,800–$450,000 USD base",
+    "datePosted": null,
+    "deadline": null,
+    "startPeriod": "2027",
+    "graduationWindow": "Completing or recently completed a PhD and able to onboard by the end of 2027",
+    "graduationMonths": [],
+    "experienceRequirements": "Early-career PhD role; no professional experience minimum stated",
+    "visaEvidence": {
+      "level": "Supported",
+      "explanation": "ByteDance's official hiring FAQ says some roles may offer visa sponsorship when appropriate, with support decided by role and candidate. This posting is silent, so support is not guaranteed.",
+      "url": "https://joinbytedance.com/faq"
+    },
+    "firstSeen": "2026-07-31",
+    "lastVerified": "2026-07-31",
+    "status": "active",
+    "closedDate": null,
+    "tags": [
+      "2027",
+      "PhD",
+      "Foundation models",
+      "Speech"
+    ],
+    "missCount": 0,
+    "sourceId": "manual-bytedance",
+    "degreeLevels": [
+      "PhD"
+    ]
+  },
+  {
+    "id": "bytedance-7623543228228536581",
+    "company": "ByteDance",
+    "title": "Research Scientist in Vision Foundation Model - Seed - Graduates - 2027 Start (BS/MS)",
+    "category": "Machine Learning / AI Engineering",
+    "applicationUrl": "https://joinbytedance.com/search/7623543228228536581",
+    "sourceUrl": "https://joinbytedance.com/search/7623543228228536581",
+    "sourcePlatform": "Official company careers",
+    "locations": [
+      "San Jose, CA"
+    ],
+    "country": "United States",
+    "region": "United States — West",
+    "workplaceType": "Unspecified",
+    "compensation": "$212,800–$387,600 USD base",
+    "datePosted": null,
+    "deadline": null,
+    "startPeriod": "2027",
+    "graduationWindow": "Expected graduation in 2027 and able to onboard by the end of 2027",
+    "graduationMonths": [],
+    "experienceRequirements": "Bachelor's or master's candidate; no professional experience minimum stated",
+    "visaEvidence": {
+      "level": "Supported",
+      "explanation": "ByteDance's official hiring FAQ says some roles may offer visa sponsorship when appropriate, with support decided by role and candidate. This posting is silent, so support is not guaranteed.",
+      "url": "https://joinbytedance.com/faq"
+    },
+    "firstSeen": "2026-07-31",
+    "lastVerified": "2026-07-31",
+    "status": "active",
+    "closedDate": null,
+    "tags": [
+      "2027",
+      "BS/MS",
+      "Computer vision",
+      "Foundation models"
+    ],
+    "missCount": 0,
+    "sourceId": "manual-bytedance",
+    "degreeLevels": [
+      "Undergraduate / Master's"
+    ]
+  },
+  {
+    "id": "bytedance-7623540885834107189",
+    "company": "ByteDance",
+    "title": "Research Scientist in Vision Foundation Model - Seed - Graduates - 2027 Start (PhD)",
+    "category": "Machine Learning / AI Engineering",
+    "applicationUrl": "https://joinbytedance.com/search/7623540885834107189",
+    "sourceUrl": "https://joinbytedance.com/search/7623540885834107189",
+    "sourcePlatform": "Official company careers",
+    "locations": [
+      "San Jose, CA"
+    ],
+    "country": "United States",
+    "region": "United States — West",
+    "workplaceType": "Unspecified",
+    "compensation": "$244,800–$450,000 USD base",
+    "datePosted": null,
+    "deadline": null,
+    "startPeriod": "2027",
+    "graduationWindow": "Completing or recently completed a PhD and able to onboard by the end of 2027",
+    "graduationMonths": [],
+    "experienceRequirements": "Early-career PhD role; no professional experience minimum stated",
+    "visaEvidence": {
+      "level": "Supported",
+      "explanation": "ByteDance's official hiring FAQ says some roles may offer visa sponsorship when appropriate, with support decided by role and candidate. This posting is silent, so support is not guaranteed.",
+      "url": "https://joinbytedance.com/faq"
+    },
+    "firstSeen": "2026-07-31",
+    "lastVerified": "2026-07-31",
+    "status": "active",
+    "closedDate": null,
+    "tags": [
+      "2027",
+      "PhD",
+      "Computer vision",
+      "Foundation models"
+    ],
+    "missCount": 0,
+    "sourceId": "manual-bytedance",
+    "degreeLevels": [
+      "PhD"
+    ]
+  },
+  {
+    "id": "bytedance-7657930729145944373",
+    "company": "ByteDance",
+    "title": "Research Scientist, AI Safety - Global Frontier Tech Recruitment Program - 2027 Start (PhD)",
+    "category": "Machine Learning / AI Engineering",
+    "applicationUrl": "https://joinbytedance.com/search/7657930729145944373",
+    "sourceUrl": "https://joinbytedance.com/search/7657930729145944373",
+    "sourcePlatform": "Official company careers",
+    "locations": [
+      "San Jose, CA"
+    ],
+    "country": "United States",
+    "region": "United States — West",
+    "workplaceType": "Unspecified",
+    "compensation": "$212,800–$450,000 USD base",
+    "datePosted": null,
+    "deadline": null,
+    "startPeriod": "2027",
+    "graduationWindow": "Completing or recently completed a PhD and able to onboard by the end of 2027",
+    "graduationMonths": [],
+    "experienceRequirements": "Early-career PhD role; no professional experience minimum stated",
+    "visaEvidence": {
+      "level": "Supported",
+      "explanation": "ByteDance's official hiring FAQ says some roles may offer visa sponsorship when appropriate, with support decided by role and candidate. This posting is silent, so support is not guaranteed.",
+      "url": "https://joinbytedance.com/faq"
+    },
+    "firstSeen": "2026-07-31",
+    "lastVerified": "2026-07-31",
+    "status": "active",
+    "closedDate": null,
+    "tags": [
+      "2027",
+      "PhD",
+      "AI safety",
+      "Machine learning"
+    ],
+    "missCount": 0,
+    "sourceId": "manual-bytedance",
+    "degreeLevels": [
+      "PhD"
+    ]
+  },
+  {
+    "id": "bytedance-7629855646167091509",
+    "company": "ByteDance",
+    "title": "Research Scientist, Generative AI Graduate (Intelligent Creation) - Global Frontier Tech Recruitment Program - 2027 Start (PhD)",
+    "category": "Machine Learning / AI Engineering",
+    "applicationUrl": "https://joinbytedance.com/search/7629855646167091509",
+    "sourceUrl": "https://joinbytedance.com/search/7629855646167091509",
+    "sourcePlatform": "Official company careers",
+    "locations": [
+      "San Jose, CA"
+    ],
+    "country": "United States",
+    "region": "United States — West",
+    "workplaceType": "Unspecified",
+    "compensation": "$244,800–$588,000 USD base",
+    "datePosted": null,
+    "deadline": null,
+    "startPeriod": "2027",
+    "graduationWindow": "Completing or recently completed a PhD and able to onboard by the end of 2027",
+    "graduationMonths": [],
+    "experienceRequirements": "Early-career PhD role; no professional experience minimum stated",
+    "visaEvidence": {
+      "level": "Supported",
+      "explanation": "ByteDance's official hiring FAQ says some roles may offer visa sponsorship when appropriate, with support decided by role and candidate. This posting is silent, so support is not guaranteed.",
+      "url": "https://joinbytedance.com/faq"
+    },
+    "firstSeen": "2026-07-31",
+    "lastVerified": "2026-07-31",
+    "status": "active",
+    "closedDate": null,
+    "tags": [
+      "2027",
+      "PhD",
+      "Generative AI",
+      "Multimodal"
+    ],
+    "missCount": 0,
+    "sourceId": "manual-bytedance",
+    "degreeLevels": [
+      "PhD"
+    ]
+  },
+  {
+    "id": "bytedance-7631372899367340293",
+    "company": "ByteDance",
+    "title": "Software Development Engineer - AI/LLM Network - Global Frontier Tech Recruitment Program - 2027 Start (PhD)",
+    "category": "Systems / Infrastructure / Performance Engineering",
+    "applicationUrl": "https://joinbytedance.com/search/7631372899367340293",
+    "sourceUrl": "https://joinbytedance.com/search/7631372899367340293",
+    "sourcePlatform": "Official company careers",
+    "locations": [
+      "Seattle, WA"
+    ],
+    "country": "United States",
+    "region": "United States — West",
+    "workplaceType": "Unspecified",
+    "compensation": "$202,160–$368,220 USD base",
+    "datePosted": null,
+    "deadline": null,
+    "startPeriod": "2027",
+    "graduationWindow": "Completing or recently completed a PhD and able to onboard by the end of 2027",
+    "graduationMonths": [],
+    "experienceRequirements": "Early-career PhD role; no professional experience minimum stated",
+    "visaEvidence": {
+      "level": "Supported",
+      "explanation": "ByteDance's official hiring FAQ says some roles may offer visa sponsorship when appropriate, with support decided by role and candidate. This posting is silent, so support is not guaranteed.",
+      "url": "https://joinbytedance.com/faq"
+    },
+    "firstSeen": "2026-07-31",
+    "lastVerified": "2026-07-31",
+    "status": "active",
+    "closedDate": null,
+    "tags": [
+      "2027",
+      "PhD",
+      "AI infrastructure",
+      "Networking"
+    ],
+    "missCount": 0,
+    "sourceId": "manual-bytedance",
+    "degreeLevels": [
+      "PhD"
+    ]
+  },
+  {
+    "id": "collective-ashby-1870974f58c9134a",
+    "company": "Collective",
+    "title": "Software Engineer (New Grad)",
+    "category": "Software Engineering",
+    "applicationUrl": "https://jobs.ashbyhq.com/collective/40516856-b29c-4b38-b434-68be5241bacf/application",
+    "sourceUrl": "https://jobs.ashbyhq.com/collective/40516856-b29c-4b38-b434-68be5241bacf",
+    "sourcePlatform": "Ashby",
+    "locations": [
+      "San Francisco, CA"
+    ],
+    "country": "United States",
+    "region": "United States — West",
+    "workplaceType": "Hybrid",
+    "compensation": "$115K – $125K • Offers Equity",
+    "datePosted": "2026-06-10",
+    "deadline": null,
+    "startPeriod": null,
+    "graduationWindow": null,
+    "graduationMonths": [],
+    "degreeLevels": [
+      "Undergraduate / Master's",
+      "PhD"
+    ],
+    "experienceRequirements": "Zero to two years with a degree in computer engineering or a related field",
+    "visaEvidence": {
+      "level": "Historical",
+      "explanation": "Recent public DOL-derived records show Collective Hub filings in engineering and infrastructure roles. This limited employer history does not promise support for this opening.",
+      "url": "https://www.ellis.com/visa-sponsors/collective-hub-inc/h1b"
+    },
+    "firstSeen": "2026-07-31",
+    "lastVerified": "2026-07-31",
+    "status": "active",
+    "closedDate": null,
+    "tags": [
+      "Full stack",
+      "New graduate"
+    ],
+    "missCount": 0,
+    "sourceId": "collective-ashby"
   },
   {
     "id": "drw-greenhouse-501c612b205e1fb7",
@@ -312,6 +1266,10 @@
       "2026-12",
       "2027-05",
       "2027-06"
+    ],
+    "degreeLevels": [
+      "Undergraduate / Master's",
+      "PhD"
     ],
     "experienceRequirements": "New graduate",
     "visaEvidence": {
@@ -357,6 +1315,10 @@
       "2027-05",
       "2027-08"
     ],
+    "degreeLevels": [
+      "Undergraduate / Master's",
+      "PhD"
+    ],
     "experienceRequirements": "New graduate",
     "visaEvidence": {
       "level": "Historical",
@@ -400,6 +1362,10 @@
       "2027-05",
       "2027-06"
     ],
+    "degreeLevels": [
+      "Undergraduate / Master's",
+      "PhD"
+    ],
     "experienceRequirements": "New graduate",
     "visaEvidence": {
       "level": "Historical",
@@ -418,6 +1384,47 @@
     ],
     "missCount": 0,
     "sourceId": "drw-greenhouse"
+  },
+  {
+    "id": "ellipsis-ashby-28c18075cd910257",
+    "company": "Ellipsis Labs",
+    "title": "Software Engineer - 2027 New Grads",
+    "category": "Software Engineering",
+    "applicationUrl": "https://jobs.ashbyhq.com/ellipsislabs/256c2ec2-01c8-4ff6-9ad0-b926fe40472d/application",
+    "sourceUrl": "https://jobs.ashbyhq.com/ellipsislabs/256c2ec2-01c8-4ff6-9ad0-b926fe40472d",
+    "sourcePlatform": "Ashby",
+    "locations": [
+      "New York, NY"
+    ],
+    "country": "United States",
+    "region": "United States — Northeast",
+    "workplaceType": "Hybrid",
+    "compensation": "$150,000–$200,000 base plus equity",
+    "datePosted": "2026-03-26",
+    "deadline": null,
+    "startPeriod": "2027",
+    "graduationWindow": "2027 new-graduate cohort; exact graduation months not listed",
+    "graduationMonths": [],
+    "degreeLevels": [
+      "Undergraduate / Master's",
+      "PhD"
+    ],
+    "experienceRequirements": "New-graduate role; degree level and professional experience minimum are not stated",
+    "visaEvidence": {
+      "level": "Historical",
+      "explanation": "Recent DOL-derived records show Ellipsis Research, doing business as Ellipsis Labs, filed certified LCAs in 2026. This employer history does not promise support for this opening.",
+      "url": "https://h1bgrader.com/h1b-sponsors/ellipsis-research-inc-dba-ellipsis-labs-l0yzdmqp2x/salaries/2026"
+    },
+    "firstSeen": "2026-07-31",
+    "lastVerified": "2026-07-31",
+    "status": "active",
+    "closedDate": null,
+    "tags": [
+      "Backend",
+      "Infrastructure"
+    ],
+    "missCount": 0,
+    "sourceId": "ellipsis-ashby"
   },
   {
     "id": "five-rings-greenhouse-df4e912f7c2cbdb7",
@@ -442,6 +1449,10 @@
       "2026-12",
       "2027-05",
       "2027-08"
+    ],
+    "degreeLevels": [
+      "Undergraduate / Master's",
+      "PhD"
     ],
     "experienceRequirements": "Campus full-time role",
     "visaEvidence": {
@@ -483,6 +1494,10 @@
     "graduationMonths": [
       "2027-05",
       "2027-08"
+    ],
+    "degreeLevels": [
+      "Undergraduate / Master's",
+      "PhD"
     ],
     "experienceRequirements": "Campus full-time role",
     "visaEvidence": {
@@ -526,6 +1541,10 @@
       "2027-05",
       "2027-08"
     ],
+    "degreeLevels": [
+      "Undergraduate / Master's",
+      "PhD"
+    ],
     "experienceRequirements": "Campus full-time role",
     "visaEvidence": {
       "level": "Historical",
@@ -554,11 +1573,10 @@
     "sourceUrl": "https://www.hudsonrivertrading.com/hrt-job/algorithm-developer-quant-researcher-2027-grads/",
     "sourcePlatform": "Official company careers (Greenhouse)",
     "locations": [
-      "New York, NY",
-      "Singapore"
+      "New York, NY"
     ],
-    "country": "United States / Singapore",
-    "region": "International — Multiple regions",
+    "country": "United States",
+    "region": "United States — Northeast",
     "workplaceType": "Unspecified",
     "compensation": "$300,000 USD base for U.S. locations; locally competitive salary elsewhere",
     "datePosted": "2026-07-13",
@@ -584,7 +1602,10 @@
       "Trading models"
     ],
     "missCount": 0,
-    "sourceId": "manual-hrt"
+    "sourceId": "manual-hrt",
+    "degreeLevels": [
+      "Undergraduate / Master's"
+    ]
   },
   {
     "id": "hrt-8059845",
@@ -595,11 +1616,10 @@
     "sourceUrl": "https://www.hudsonrivertrading.com/hrt-job/algorithm-developer-quant-researcher-2027-phds/",
     "sourcePlatform": "Official company careers (Greenhouse)",
     "locations": [
-      "New York, NY",
-      "Singapore"
+      "New York, NY"
     ],
-    "country": "United States / Singapore",
-    "region": "International — Multiple regions",
+    "country": "United States",
+    "region": "United States — Northeast",
     "workplaceType": "Unspecified",
     "compensation": "$300,000 USD base for U.S. locations; locally competitive salary elsewhere",
     "datePosted": "2026-07-13",
@@ -625,7 +1645,10 @@
       "Trading models"
     ],
     "missCount": 0,
-    "sourceId": "manual-hrt"
+    "sourceId": "manual-hrt",
+    "degreeLevels": [
+      "PhD"
+    ]
   },
   {
     "id": "hrt-8052122",
@@ -638,11 +1661,10 @@
     "locations": [
       "Austin, TX",
       "Chicago, IL",
-      "New York, NY",
-      "Singapore"
+      "New York, NY"
     ],
-    "country": "United States / Singapore",
-    "region": "International — Multiple regions",
+    "country": "United States",
+    "region": "United States — Multiple regions",
     "workplaceType": "Unspecified",
     "compensation": "$300,000 USD base for U.S. locations; locally competitive salary elsewhere",
     "datePosted": "2026-07-13",
@@ -668,7 +1690,10 @@
       "Low latency"
     ],
     "missCount": 0,
-    "sourceId": "manual-hrt"
+    "sourceId": "manual-hrt",
+    "degreeLevels": [
+      "Undergraduate / Master's"
+    ]
   },
   {
     "id": "imc-4823805101",
@@ -712,7 +1737,11 @@
       "Low latency"
     ],
     "missCount": 0,
-    "sourceId": "manual-imc"
+    "sourceId": "manual-imc",
+    "degreeLevels": [
+      "Undergraduate / Master's",
+      "PhD"
+    ]
   },
   {
     "id": "imc-4907416101",
@@ -752,47 +1781,10 @@
       "PyTorch"
     ],
     "missCount": 0,
-    "sourceId": "manual-imc"
-  },
-  {
-    "id": "imc-4914883101",
-    "company": "IMC Trading",
-    "title": "Graduate Machine Learning Researcher - London",
-    "category": "Machine Learning / AI Engineering",
-    "applicationUrl": "https://www.imc.com/us/careers/jobs/4914883101/apply",
-    "sourceUrl": "https://www.imc.com/us/careers/jobs/4914883101",
-    "sourcePlatform": "Official company careers",
-    "locations": [
-      "London, United Kingdom"
-    ],
-    "country": "United Kingdom",
-    "region": "International — Europe",
-    "workplaceType": "Unspecified",
-    "compensation": null,
-    "datePosted": null,
-    "deadline": null,
-    "startPeriod": "February or August 2027",
-    "graduationWindow": "Final-year student graduating in 2027",
-    "graduationMonths": [],
-    "experienceRequirements": "Graduate MSc role; PhD preferred and no prior finance experience required",
-    "visaEvidence": {
-      "level": "Strong",
-      "explanation": "The exact posting discusses when IMC can obtain immigration sponsorship and lists nationality, study-location, passport, and required-travel restrictions. This is potential role-specific support, not a blanket guarantee.",
-      "url": "https://www.imc.com/us/careers/jobs/4914883101"
-    },
-    "firstSeen": "2026-07-31",
-    "lastVerified": "2026-07-31",
-    "status": "active",
-    "closedDate": null,
-    "tags": [
-      "2027",
-      "MSc",
-      "PhD",
-      "Deep learning",
-      "Python"
-    ],
-    "missCount": 0,
-    "sourceId": "manual-imc"
+    "sourceId": "manual-imc",
+    "degreeLevels": [
+      "PhD"
+    ]
   },
   {
     "id": "imc-4907368101",
@@ -836,7 +1828,10 @@
       "Quantitative modeling"
     ],
     "missCount": 0,
-    "sourceId": "manual-imc"
+    "sourceId": "manual-imc",
+    "degreeLevels": [
+      "Undergraduate / Master's"
+    ]
   },
   {
     "id": "imc-4912325101",
@@ -880,7 +1875,10 @@
       "Quantitative modeling"
     ],
     "missCount": 0,
-    "sourceId": "manual-imc"
+    "sourceId": "manual-imc",
+    "degreeLevels": [
+      "PhD"
+    ]
   },
   {
     "id": "imc-4751729101",
@@ -924,7 +1922,11 @@
       "Trading"
     ],
     "missCount": 0,
-    "sourceId": "manual-imc"
+    "sourceId": "manual-imc",
+    "degreeLevels": [
+      "Undergraduate / Master's",
+      "PhD"
+    ]
   },
   {
     "id": "imc-4818790101",
@@ -968,7 +1970,518 @@
       "Trading systems"
     ],
     "missCount": 0,
-    "sourceId": "manual-imc"
+    "sourceId": "manual-imc",
+    "degreeLevels": [
+      "Undergraduate / Master's",
+      "PhD"
+    ]
+  },
+  {
+    "id": "ixl-greenhouse-c889afe429a3fe0a",
+    "company": "IXL Learning",
+    "title": "Software Engineer, New Grad",
+    "category": "Software Engineering",
+    "applicationUrl": "https://www.ixl.com/company/careers?gh_jid=8615717002",
+    "sourceUrl": "https://www.ixl.com/company/careers?gh_jid=8615717002",
+    "sourcePlatform": "Greenhouse",
+    "locations": [
+      "Raleigh, NC"
+    ],
+    "country": "United States",
+    "region": "United States — South",
+    "workplaceType": "On-site",
+    "compensation": null,
+    "datePosted": "2026-07-02",
+    "deadline": null,
+    "startPeriod": null,
+    "graduationWindow": null,
+    "graduationMonths": [],
+    "degreeLevels": [
+      "Undergraduate / Master's",
+      "PhD"
+    ],
+    "experienceRequirements": "Bachelor's or advanced degree in computer science or a related discipline",
+    "visaEvidence": {
+      "level": "Strong",
+      "explanation": "The exact official posting says H-1B sponsorship is available for this position. Availability still does not guarantee that every candidate or immigration path will qualify.",
+      "url": "https://www.ixl.com/company/careers?gh_jid=8615717002"
+    },
+    "firstSeen": "2026-07-31",
+    "lastVerified": "2026-07-31",
+    "status": "active",
+    "closedDate": null,
+    "tags": [
+      "Education technology",
+      "New graduate"
+    ],
+    "missCount": 0,
+    "sourceId": "ixl-greenhouse"
+  },
+  {
+    "id": "ixl-greenhouse-ece9eb5c07a81a45",
+    "company": "IXL Learning",
+    "title": "Software Engineer, New Grad",
+    "category": "Software Engineering",
+    "applicationUrl": "https://www.ixl.com/company/careers?gh_jid=8615710002",
+    "sourceUrl": "https://www.ixl.com/company/careers?gh_jid=8615710002",
+    "sourcePlatform": "Greenhouse",
+    "locations": [
+      "San Mateo, CA"
+    ],
+    "country": "United States",
+    "region": "United States — West",
+    "workplaceType": "On-site",
+    "compensation": "$110,000–$135,000 base plus equity",
+    "datePosted": "2026-07-02",
+    "deadline": null,
+    "startPeriod": null,
+    "graduationWindow": null,
+    "graduationMonths": [],
+    "degreeLevels": [
+      "Undergraduate / Master's",
+      "PhD"
+    ],
+    "experienceRequirements": "Bachelor's or advanced degree in computer science or a related discipline",
+    "visaEvidence": {
+      "level": "Strong",
+      "explanation": "The exact official posting says H-1B sponsorship is available for this position. Availability still does not guarantee that every candidate or immigration path will qualify.",
+      "url": "https://www.ixl.com/company/careers?gh_jid=8615710002"
+    },
+    "firstSeen": "2026-07-31",
+    "lastVerified": "2026-07-31",
+    "status": "active",
+    "closedDate": null,
+    "tags": [
+      "Education technology",
+      "New graduate"
+    ],
+    "missCount": 0,
+    "sourceId": "ixl-greenhouse"
+  },
+  {
+    "id": "jump-greenhouse-fb9c17e77fb20cfa",
+    "company": "Jump Trading",
+    "title": "Campus Quantitative Researcher, UG/MS (Full-Time)",
+    "category": "Quantitative Research",
+    "applicationUrl": "https://www.jumptrading.com/hr/job?gh_jid=7728630",
+    "sourceUrl": "https://www.jumptrading.com/hr/job?gh_jid=7728630",
+    "sourcePlatform": "Greenhouse",
+    "locations": [
+      "Chicago, IL",
+      "New York, NY"
+    ],
+    "country": "United States",
+    "region": "United States — Multiple regions",
+    "workplaceType": "On-site",
+    "compensation": "$300,000 base",
+    "datePosted": null,
+    "deadline": null,
+    "startPeriod": "2027",
+    "graduationWindow": "Current 2027 U.S. campus recruiting cycle; exact graduation months not listed",
+    "graduationMonths": [],
+    "degreeLevels": [
+      "Undergraduate / Master's"
+    ],
+    "experienceRequirements": "Campus full-time role; no professional experience minimum stated",
+    "visaEvidence": {
+      "level": "Strong",
+      "explanation": "The exact posting encourages international students, accepts CPT or OPT, and says Jump sponsors work visas for full-time positions. Individual eligibility still applies.",
+      "url": "https://www.jumptrading.com/hr/job?gh_jid=7728630"
+    },
+    "firstSeen": "2026-07-31",
+    "lastVerified": "2026-07-31",
+    "status": "active",
+    "closedDate": null,
+    "tags": [
+      "Campus",
+      "Data science",
+      "Research",
+      "Trading"
+    ],
+    "missCount": 0,
+    "sourceId": "jump-greenhouse"
+  },
+  {
+    "id": "jump-greenhouse-bf2b5c453ae7ddba",
+    "company": "Jump Trading",
+    "title": "Campus Quantitative Trader (Full-Time)",
+    "category": "Quantitative Trading",
+    "applicationUrl": "https://www.jumptrading.com/hr/job?gh_jid=7982619",
+    "sourceUrl": "https://www.jumptrading.com/hr/job?gh_jid=7982619",
+    "sourcePlatform": "Greenhouse",
+    "locations": [
+      "Chicago, IL",
+      "New York, NY"
+    ],
+    "country": "United States",
+    "region": "United States — Multiple regions",
+    "workplaceType": "On-site",
+    "compensation": "$300,000 base",
+    "datePosted": null,
+    "deadline": null,
+    "startPeriod": "2027",
+    "graduationWindow": "Current 2027 U.S. campus recruiting cycle; exact graduation months not listed",
+    "graduationMonths": [],
+    "degreeLevels": [
+      "Undergraduate / Master's",
+      "PhD"
+    ],
+    "experienceRequirements": "Campus full-time role; no professional experience minimum stated",
+    "visaEvidence": {
+      "level": "Strong",
+      "explanation": "The exact posting encourages international students, accepts CPT or OPT, and says Jump sponsors work visas for full-time positions. Individual eligibility still applies.",
+      "url": "https://www.jumptrading.com/hr/job?gh_jid=7982619"
+    },
+    "firstSeen": "2026-07-31",
+    "lastVerified": "2026-07-31",
+    "status": "active",
+    "closedDate": null,
+    "tags": [
+      "Campus",
+      "Quantitative trading",
+      "Trading"
+    ],
+    "missCount": 0,
+    "sourceId": "jump-greenhouse"
+  },
+  {
+    "id": "netic-ashby-f089b9722b07f2cb",
+    "company": "Netic",
+    "title": "Forward Deployed Engineer (FDE) - New Grad - 2026-2027",
+    "category": "Machine Learning / AI Engineering",
+    "applicationUrl": "https://jobs.ashbyhq.com/netic/f2d170eb-c4c3-4715-9d2e-84dd4fe857c8/application",
+    "sourceUrl": "https://jobs.ashbyhq.com/netic/f2d170eb-c4c3-4715-9d2e-84dd4fe857c8",
+    "sourcePlatform": "Ashby",
+    "locations": [
+      "San Francisco, CA"
+    ],
+    "country": "United States",
+    "region": "United States — West",
+    "workplaceType": "On-site",
+    "compensation": null,
+    "datePosted": "2026-07-16",
+    "deadline": null,
+    "startPeriod": "Winter 2026 through Summer 2027",
+    "graduationWindow": null,
+    "graduationMonths": [],
+    "degreeLevels": [
+      "Undergraduate / Master's"
+    ],
+    "experienceRequirements": "New-graduate role; degree level and professional experience minimum are not stated",
+    "visaEvidence": {
+      "level": "Historical",
+      "explanation": "Recent DOL-derived records report certified Netic LCAs in 2026. This limited employer history is not a company policy or a promise for any current opening.",
+      "url": "https://interviewos.ai/companies/netic"
+    },
+    "firstSeen": "2026-07-31",
+    "lastVerified": "2026-07-31",
+    "status": "active",
+    "closedDate": null,
+    "tags": [
+      "AI agents",
+      "Customer engineering",
+      "Forward deployed",
+      "New graduate"
+    ],
+    "missCount": 0,
+    "sourceId": "netic-ashby"
+  },
+  {
+    "id": "netic-ashby-66acf18fefd84685",
+    "company": "Netic",
+    "title": "Full-Stack Software Engineer (Product) - New Grad - 2026-2027",
+    "category": "Software Engineering",
+    "applicationUrl": "https://jobs.ashbyhq.com/netic/bab5d1e5-e31b-42f0-9cef-334b1f17fed3/application",
+    "sourceUrl": "https://jobs.ashbyhq.com/netic/bab5d1e5-e31b-42f0-9cef-334b1f17fed3",
+    "sourcePlatform": "Ashby",
+    "locations": [
+      "San Francisco, CA"
+    ],
+    "country": "United States",
+    "region": "United States — West",
+    "workplaceType": "On-site",
+    "compensation": null,
+    "datePosted": "2026-07-15",
+    "deadline": null,
+    "startPeriod": "Winter 2026 through Summer 2027",
+    "graduationWindow": null,
+    "graduationMonths": [],
+    "degreeLevels": [
+      "Undergraduate / Master's"
+    ],
+    "experienceRequirements": "New-graduate role; degree level and professional experience minimum are not stated",
+    "visaEvidence": {
+      "level": "Historical",
+      "explanation": "Recent DOL-derived records report certified Netic LCAs in 2026. This limited employer history is not a company policy or a promise for any current opening.",
+      "url": "https://interviewos.ai/companies/netic"
+    },
+    "firstSeen": "2026-07-31",
+    "lastVerified": "2026-07-31",
+    "status": "active",
+    "closedDate": null,
+    "tags": [
+      "AI agents",
+      "Full stack",
+      "New graduate",
+      "Product engineering"
+    ],
+    "missCount": 0,
+    "sourceId": "netic-ashby"
+  },
+  {
+    "id": "netic-ashby-09d4a96c919946b4",
+    "company": "Netic",
+    "title": "Software Engineer (Agent Platform) - New Grad - 2026-2027",
+    "category": "Machine Learning / AI Engineering",
+    "applicationUrl": "https://jobs.ashbyhq.com/netic/d9bcb6a2-0e54-4cb3-baec-43f2d74db18f/application",
+    "sourceUrl": "https://jobs.ashbyhq.com/netic/d9bcb6a2-0e54-4cb3-baec-43f2d74db18f",
+    "sourcePlatform": "Ashby",
+    "locations": [
+      "San Francisco, CA"
+    ],
+    "country": "United States",
+    "region": "United States — West",
+    "workplaceType": "On-site",
+    "compensation": null,
+    "datePosted": "2026-07-16",
+    "deadline": null,
+    "startPeriod": "Winter 2026 through Summer 2027",
+    "graduationWindow": null,
+    "graduationMonths": [],
+    "degreeLevels": [
+      "Undergraduate / Master's"
+    ],
+    "experienceRequirements": "New-graduate role; degree level and professional experience minimum are not stated",
+    "visaEvidence": {
+      "level": "Historical",
+      "explanation": "Recent DOL-derived records report certified Netic LCAs in 2026. This limited employer history is not a company policy or a promise for any current opening.",
+      "url": "https://interviewos.ai/companies/netic"
+    },
+    "firstSeen": "2026-07-31",
+    "lastVerified": "2026-07-31",
+    "status": "active",
+    "closedDate": null,
+    "tags": [
+      "AI agents",
+      "Agent platform",
+      "New graduate",
+      "Orchestration"
+    ],
+    "missCount": 0,
+    "sourceId": "netic-ashby"
+  },
+  {
+    "id": "newsbreak-greenhouse-f94d51485dcfffc3",
+    "company": "NewsBreak",
+    "title": "Applied AI Engineer, Advertising Agents (New Grad)",
+    "category": "Machine Learning / AI Engineering",
+    "applicationUrl": "https://job-boards.greenhouse.io/newsbreak/jobs/4700278006",
+    "sourceUrl": "https://job-boards.greenhouse.io/newsbreak/jobs/4700278006",
+    "sourcePlatform": "Greenhouse",
+    "locations": [
+      "Mountain View, CA"
+    ],
+    "country": "United States",
+    "region": "United States — West",
+    "workplaceType": "On-site",
+    "compensation": "$135,000–$155,000 base",
+    "datePosted": null,
+    "deadline": null,
+    "startPeriod": "Late 2026 or early 2027",
+    "graduationWindow": "Recently completed or completing a bachelor's or master's degree within six months",
+    "graduationMonths": [
+      "2026-12",
+      "2027-01"
+    ],
+    "degreeLevels": [
+      "Undergraduate / Master's"
+    ],
+    "experienceRequirements": "New graduate; no professional experience minimum stated",
+    "visaEvidence": {
+      "level": "Historical",
+      "explanation": "Recent public DOL-derived records show Particle Media filings for comparable software and data roles in Mountain View. This employer history is not a promise for this opening.",
+      "url": "https://www.ellis.com/visa-sponsors/particle-media-inc/h1b"
+    },
+    "firstSeen": "2026-07-31",
+    "lastVerified": "2026-07-31",
+    "status": "active",
+    "closedDate": null,
+    "tags": [
+      "AI agents",
+      "Applied AI"
+    ],
+    "missCount": 0,
+    "sourceId": "newsbreak-greenhouse"
+  },
+  {
+    "id": "nuro-greenhouse-e6a2d165f34913fb",
+    "company": "Nuro",
+    "title": "Software Engineer, Performance - New Grad",
+    "category": "Systems / Infrastructure / Performance Engineering",
+    "applicationUrl": "https://www.nuro.ai/careersitem?gh_jid=6972272",
+    "sourceUrl": "https://www.nuro.ai/careersitem?gh_jid=6972272",
+    "sourcePlatform": "Greenhouse",
+    "locations": [
+      "Mountain View, CA"
+    ],
+    "country": "United States",
+    "region": "United States — West",
+    "workplaceType": "Unspecified",
+    "compensation": "$153,000–$175,000 base plus bonus and equity",
+    "datePosted": "2026-07-16",
+    "deadline": null,
+    "startPeriod": null,
+    "graduationWindow": null,
+    "graduationMonths": [],
+    "degreeLevels": [
+      "Undergraduate / Master's",
+      "PhD"
+    ],
+    "experienceRequirements": "New graduate with a BS, MS, or PhD in computer science or a related technical field",
+    "visaEvidence": {
+      "level": "Historical",
+      "explanation": "Recent public DOL-derived records show Nuro filings for comparable software engineering roles, including performance engineering. This history is not a promise for this opening.",
+      "url": "https://www.ellis.com/visa-sponsors/nuro-inc/h1b"
+    },
+    "firstSeen": "2026-07-31",
+    "lastVerified": "2026-07-31",
+    "status": "active",
+    "closedDate": null,
+    "tags": [
+      "C++",
+      "Performance"
+    ],
+    "missCount": 0,
+    "sourceId": "nuro-greenhouse"
+  },
+  {
+    "id": "old-mission-greenhouse-b8af27aecc26e25b",
+    "company": "Old Mission",
+    "title": "Quantitative Researcher (Ph.D.) - 2027 Graduate Program - (August Start)",
+    "category": "Quantitative Research",
+    "applicationUrl": "https://www.oldmissioncapital.com/careers/?gh_jid=7814534003",
+    "sourceUrl": "https://www.oldmissioncapital.com/careers/?gh_jid=7814534003",
+    "sourcePlatform": "Greenhouse",
+    "locations": [
+      "Chicago, IL"
+    ],
+    "country": "United States",
+    "region": "United States — Midwest",
+    "workplaceType": "On-site",
+    "compensation": "$175,000–$250,000 base plus discretionary bonus",
+    "datePosted": null,
+    "deadline": null,
+    "startPeriod": "August 2027",
+    "graduationWindow": "2027 graduate program; exact graduation months not listed",
+    "graduationMonths": [],
+    "degreeLevels": [
+      "Undergraduate / Master's",
+      "PhD"
+    ],
+    "experienceRequirements": "Master's or PhD graduate role; no professional experience minimum stated",
+    "visaEvidence": {
+      "level": "Historical",
+      "explanation": "Recent public DOL-derived records show Old Mission Capital employment-visa filings. This is firm-level history, not a promise of support for a specific graduate role.",
+      "url": "https://www.myvisajobs.com/employer/old-mission-capital/"
+    },
+    "firstSeen": "2026-07-31",
+    "lastVerified": "2026-07-31",
+    "status": "active",
+    "closedDate": null,
+    "tags": [
+      "August start",
+      "Graduate program",
+      "Research",
+      "Trading"
+    ],
+    "missCount": 0,
+    "sourceId": "old-mission-greenhouse"
+  },
+  {
+    "id": "old-mission-greenhouse-58477b057b4140b7",
+    "company": "Old Mission",
+    "title": "Quantitative Trader – 2027 Graduate Program (August Start)",
+    "category": "Quantitative Trading",
+    "applicationUrl": "https://www.oldmissioncapital.com/careers/?gh_jid=7796044003",
+    "sourceUrl": "https://www.oldmissioncapital.com/careers/?gh_jid=7796044003",
+    "sourcePlatform": "Greenhouse",
+    "locations": [
+      "Chicago, IL",
+      "New York, NY"
+    ],
+    "country": "United States",
+    "region": "United States — Multiple regions",
+    "workplaceType": "On-site",
+    "compensation": "$200,000 base plus discretionary bonus",
+    "datePosted": null,
+    "deadline": null,
+    "startPeriod": "August 2027",
+    "graduationWindow": "2027 graduate program; exact graduation months not listed",
+    "graduationMonths": [],
+    "degreeLevels": [
+      "Undergraduate / Master's",
+      "PhD"
+    ],
+    "experienceRequirements": "Graduate program; no professional experience minimum stated",
+    "visaEvidence": {
+      "level": "Historical",
+      "explanation": "Recent public DOL-derived records show Old Mission Capital employment-visa filings. This is firm-level history, not a promise of support for a specific graduate role.",
+      "url": "https://www.myvisajobs.com/employer/old-mission-capital/"
+    },
+    "firstSeen": "2026-07-31",
+    "lastVerified": "2026-07-31",
+    "status": "active",
+    "closedDate": null,
+    "tags": [
+      "August start",
+      "Graduate program",
+      "Trading"
+    ],
+    "missCount": 0,
+    "sourceId": "old-mission-greenhouse"
+  },
+  {
+    "id": "old-mission-greenhouse-87f37bb5c3e191d6",
+    "company": "Old Mission",
+    "title": "Quantitative Trader – 2027 Graduate Program (February Start)",
+    "category": "Quantitative Trading",
+    "applicationUrl": "https://www.oldmissioncapital.com/careers/?gh_jid=7796031003",
+    "sourceUrl": "https://www.oldmissioncapital.com/careers/?gh_jid=7796031003",
+    "sourcePlatform": "Greenhouse",
+    "locations": [
+      "Chicago, IL",
+      "New York, NY"
+    ],
+    "country": "United States",
+    "region": "United States — Multiple regions",
+    "workplaceType": "On-site",
+    "compensation": "$200,000 base plus discretionary bonus",
+    "datePosted": null,
+    "deadline": null,
+    "startPeriod": "February 2027",
+    "graduationWindow": "2027 graduate program; exact graduation months not listed",
+    "graduationMonths": [],
+    "degreeLevels": [
+      "Undergraduate / Master's",
+      "PhD"
+    ],
+    "experienceRequirements": "Graduate program; no professional experience minimum stated",
+    "visaEvidence": {
+      "level": "Historical",
+      "explanation": "Recent public DOL-derived records show Old Mission Capital employment-visa filings. This is firm-level history, not a promise of support for a specific graduate role.",
+      "url": "https://www.myvisajobs.com/employer/old-mission-capital/"
+    },
+    "firstSeen": "2026-07-31",
+    "lastVerified": "2026-07-31",
+    "status": "active",
+    "closedDate": null,
+    "tags": [
+      "February start",
+      "Graduate program",
+      "Trading"
+    ],
+    "missCount": 0,
+    "sourceId": "old-mission-greenhouse"
   },
   {
     "id": "optiver-2027-fpga-austin",
@@ -1012,7 +2525,11 @@
       "Low latency"
     ],
     "missCount": 0,
-    "sourceId": "manual-optiver"
+    "sourceId": "manual-optiver",
+    "degreeLevels": [
+      "Undergraduate / Master's",
+      "PhD"
+    ]
   },
   {
     "id": "optiver-2027-fpga-chicago",
@@ -1056,7 +2573,11 @@
       "Low latency"
     ],
     "missCount": 0,
-    "sourceId": "manual-optiver"
+    "sourceId": "manual-optiver",
+    "degreeLevels": [
+      "Undergraduate / Master's",
+      "PhD"
+    ]
   },
   {
     "id": "optiver-2027-qr-phd-austin",
@@ -1097,7 +2618,10 @@
       "Trading"
     ],
     "missCount": 0,
-    "sourceId": "manual-optiver"
+    "sourceId": "manual-optiver",
+    "degreeLevels": [
+      "PhD"
+    ]
   },
   {
     "id": "optiver-2027-qr-phd-chicago",
@@ -1138,7 +2662,10 @@
       "Trading"
     ],
     "missCount": 0,
-    "sourceId": "manual-optiver"
+    "sourceId": "manual-optiver",
+    "degreeLevels": [
+      "PhD"
+    ]
   },
   {
     "id": "optiver-2027-software-austin",
@@ -1182,7 +2709,11 @@
       "Trading systems"
     ],
     "missCount": 0,
-    "sourceId": "manual-optiver"
+    "sourceId": "manual-optiver",
+    "degreeLevels": [
+      "Undergraduate / Master's",
+      "PhD"
+    ]
   },
   {
     "id": "optiver-2027-software-chicago",
@@ -1226,7 +2757,11 @@
       "Trading systems"
     ],
     "missCount": 0,
-    "sourceId": "manual-optiver"
+    "sourceId": "manual-optiver",
+    "degreeLevels": [
+      "Undergraduate / Master's",
+      "PhD"
+    ]
   },
   {
     "id": "palantir-lever-1edb542199d9be79",
@@ -1251,9 +2786,13 @@
       "2026-12",
       "2027-05"
     ],
+    "degreeLevels": [
+      "Undergraduate / Master's",
+      "PhD"
+    ],
     "experienceRequirements": "New graduate",
     "visaEvidence": {
-      "level": "Strong",
+      "level": "Supported",
       "explanation": "Palantir's official early-talent visa FAQ says its Mobility Team supports international students with visa matters. The role still requires individual eligibility review.",
       "url": "https://www.palantir.com/careers/students-and-early-talent/"
     },
@@ -1293,9 +2832,13 @@
       "2026-12",
       "2027-05"
     ],
+    "degreeLevels": [
+      "Undergraduate / Master's",
+      "PhD"
+    ],
     "experienceRequirements": "New graduate",
     "visaEvidence": {
-      "level": "Strong",
+      "level": "Supported",
       "explanation": "Palantir's official early-talent visa FAQ says its Mobility Team supports international students with visa matters. The role still requires individual eligibility review.",
       "url": "https://www.palantir.com/careers/students-and-early-talent/"
     },
@@ -1335,9 +2878,13 @@
       "2026-12",
       "2027-05"
     ],
+    "degreeLevels": [
+      "Undergraduate / Master's",
+      "PhD"
+    ],
     "experienceRequirements": "New graduate",
     "visaEvidence": {
-      "level": "Strong",
+      "level": "Supported",
       "explanation": "Palantir's official early-talent visa FAQ says its Mobility Team supports international students with visa matters. The role still requires individual eligibility review.",
       "url": "https://www.palantir.com/careers/students-and-early-talent/"
     },
@@ -1374,6 +2921,9 @@
     "startPeriod": "Summer 2027",
     "graduationWindow": "Degree completed before a Summer 2027 start",
     "graduationMonths": [],
+    "degreeLevels": [
+      "Undergraduate / Master's"
+    ],
     "experienceRequirements": "New graduate; BS or MS in computer science, engineering, or a related field",
     "visaEvidence": {
       "level": "Historical",
@@ -1392,41 +2942,30 @@
     "sourceId": "pylon-ashby"
   },
   {
-    "id": "revolut-2027-software-frontend",
-    "company": "Revolut",
-    "title": "Graduate Programme 2027: Software Engineer (Frontend)",
-    "category": "Software Engineering",
-    "applicationUrl": "https://www.revolut.com/careers/apply/90f8f44d-d656-4c74-a6a5-a470b858179d/",
-    "sourceUrl": "https://www.revolut.com/careers/position/90f8f44d-d656-4c74-a6a5-a470b858179d/",
+    "id": "tiktok-7628890438180407557",
+    "company": "TikTok",
+    "title": "Applied Scientist - AI-3D Creation Engine - Global Frontier Tech Recruitment Program - 2027 Start (PhD)",
+    "category": "Data Science / Applied Science / Analytics",
+    "applicationUrl": "https://lifeattiktok.com/search/7628890438180407557",
+    "sourceUrl": "https://lifeattiktok.com/search/7628890438180407557",
     "sourcePlatform": "Official company careers",
     "locations": [
-      "Barcelona, Spain",
-      "Dubai, UAE",
-      "Krakow, Poland",
-      "Lisbon, Portugal",
-      "London, UK",
-      "Madrid, Spain",
-      "Remote in eligible listed countries"
+      "San Jose, CA"
     ],
-    "country": "Multiple countries",
-    "region": "Europe / Middle East",
-    "workplaceType": "Hybrid",
-    "compensation": "Poland: PLN 18,400 gross monthly; other locations discussed during interview",
+    "country": "United States",
+    "region": "United States — West",
+    "workplaceType": "Unspecified",
+    "compensation": "$156,000–$387,600 USD base",
     "datePosted": null,
     "deadline": null,
-    "startPeriod": "January–June or July–December 2027",
-    "graduationWindow": "Graduated or graduating in 2025, 2026, or 2027",
-    "graduationMonths": [
-      "2026-12",
-      "2027-05",
-      "2027-08",
-      "2027-12"
-    ],
-    "experienceRequirements": "Graduate role with a relevant degree and React/TypeScript experience",
+    "startPeriod": "2027",
+    "graduationWindow": "Completing or recently completed a PhD and able to onboard by the end of 2027",
+    "graduationMonths": [],
+    "experienceRequirements": "Early-career PhD role; no professional experience minimum stated",
     "visaEvidence": {
-      "level": "Strong",
-      "explanation": "The exact posting welcomes international applicants relocating to listed tech hubs and explicitly offers visa assistance, travel costs, and initial accommodation, subject to conditions.",
-      "url": "https://www.revolut.com/careers/position/90f8f44d-d656-4c74-a6a5-a470b858179d/"
+      "level": "Supported",
+      "explanation": "TikTok's official hiring FAQ says some roles may offer visa sponsorship when appropriate, with support decided by role and candidate. This posting is silent, so support is not guaranteed.",
+      "url": "https://lifeattiktok.com/faq/?language=en"
     },
     "firstSeen": "2026-07-31",
     "lastVerified": "2026-07-31",
@@ -1434,49 +2973,41 @@
     "closedDate": null,
     "tags": [
       "2027",
-      "React",
-      "TypeScript",
-      "Frontend"
+      "PhD",
+      "3D",
+      "Applied science"
     ],
     "missCount": 0,
-    "sourceId": "manual-revolut"
+    "sourceId": "manual-tiktok",
+    "degreeLevels": [
+      "PhD"
+    ]
   },
   {
-    "id": "revolut-2027-software-ios",
-    "company": "Revolut",
-    "title": "Graduate Programme 2027: Software Engineer (iOS)",
-    "category": "Software Engineering",
-    "applicationUrl": "https://www.revolut.com/careers/apply/726455bb-b707-4798-831d-253f7c8773de/",
-    "sourceUrl": "https://www.revolut.com/careers/position/graduate-programme-2027-software-engineer-ios-726455bb-b707-4798-831d-253f7c8773de/",
+    "id": "tiktok-7629209727155996981",
+    "company": "TikTok",
+    "title": "Applied Scientist - Business Integrity - Global Frontier Tech Recruitment Program - 2027 Start (PhD)",
+    "category": "Data Science / Applied Science / Analytics",
+    "applicationUrl": "https://lifeattiktok.com/search/7629209727155996981",
+    "sourceUrl": "https://lifeattiktok.com/search/7629209727155996981",
     "sourcePlatform": "Official company careers",
     "locations": [
-      "Barcelona, Spain",
-      "Dubai, UAE",
-      "Krakow, Poland",
-      "Lisbon, Portugal",
-      "London, UK",
-      "Madrid, Spain",
-      "Remote in eligible listed countries"
+      "San Jose, CA"
     ],
-    "country": "Multiple countries",
-    "region": "Europe / Middle East",
-    "workplaceType": "Hybrid",
-    "compensation": "Poland: PLN 18,400 gross monthly; other locations discussed during interview",
+    "country": "United States",
+    "region": "United States — West",
+    "workplaceType": "Unspecified",
+    "compensation": "$212,800–$450,000 USD base",
     "datePosted": null,
     "deadline": null,
-    "startPeriod": "January–June or July–December 2027",
-    "graduationWindow": "Graduated or graduating in 2025, 2026, or 2027",
-    "graduationMonths": [
-      "2026-12",
-      "2027-05",
-      "2027-08",
-      "2027-12"
-    ],
-    "experienceRequirements": "Graduate role with a relevant degree and Swift/iOS SDK experience",
+    "startPeriod": "2027",
+    "graduationWindow": "Completing or recently completed a PhD and able to onboard by the end of 2027",
+    "graduationMonths": [],
+    "experienceRequirements": "Early-career PhD role; no professional experience minimum stated",
     "visaEvidence": {
-      "level": "Strong",
-      "explanation": "The exact posting welcomes international applicants relocating to listed tech hubs and explicitly offers visa assistance, travel costs, and initial accommodation, subject to conditions.",
-      "url": "https://www.revolut.com/careers/position/graduate-programme-2027-software-engineer-ios-726455bb-b707-4798-831d-253f7c8773de/"
+      "level": "Supported",
+      "explanation": "TikTok's official hiring FAQ says some roles may offer visa sponsorship when appropriate, with support decided by role and candidate. This posting is silent, so support is not guaranteed.",
+      "url": "https://lifeattiktok.com/faq/?language=en"
     },
     "firstSeen": "2026-07-31",
     "lastVerified": "2026-07-31",
@@ -1484,49 +3015,41 @@
     "closedDate": null,
     "tags": [
       "2027",
-      "Swift",
-      "iOS",
-      "Mobile"
+      "PhD",
+      "Applied science",
+      "Integrity"
     ],
     "missCount": 0,
-    "sourceId": "manual-revolut"
+    "sourceId": "manual-tiktok",
+    "degreeLevels": [
+      "PhD"
+    ]
   },
   {
-    "id": "revolut-2027-software-java",
-    "company": "Revolut",
-    "title": "Graduate Programme 2027: Software Engineer (Java)",
-    "category": "Software Engineering",
-    "applicationUrl": "https://www.revolut.com/careers/apply/3b79c804-b7e0-4b1a-9ef6-2fd69723dc7a/",
-    "sourceUrl": "https://www.revolut.com/en-NL/careers/position/graduate-programme-2027-software-engineer-java-3b79c804-b7e0-4b1a-9ef6-2fd69723dc7a/",
+    "id": "tiktok-7631061681279797509",
+    "company": "TikTok",
+    "title": "Applied Scientist - Monetization Technology - Global Frontier Tech Recruitment Program - 2027 Start (PhD)",
+    "category": "Data Science / Applied Science / Analytics",
+    "applicationUrl": "https://lifeattiktok.com/search/7631061681279797509",
+    "sourceUrl": "https://lifeattiktok.com/search/7631061681279797509",
     "sourcePlatform": "Official company careers",
     "locations": [
-      "Barcelona, Spain",
-      "Dubai, UAE",
-      "Krakow, Poland",
-      "Lisbon, Portugal",
-      "London, UK",
-      "Madrid, Spain",
-      "Remote in eligible listed countries"
+      "San Jose, CA"
     ],
-    "country": "Multiple countries",
-    "region": "Europe / Middle East",
-    "workplaceType": "Hybrid",
-    "compensation": "Poland: PLN 18,400 gross monthly; other locations discussed during interview",
+    "country": "United States",
+    "region": "United States — West",
+    "workplaceType": "Unspecified",
+    "compensation": "$212,800–$450,000 USD base",
     "datePosted": null,
     "deadline": null,
-    "startPeriod": "January–June or July–December 2027",
-    "graduationWindow": "Graduated or graduating in 2025, 2026, or 2027",
-    "graduationMonths": [
-      "2026-12",
-      "2027-05",
-      "2027-08",
-      "2027-12"
-    ],
-    "experienceRequirements": "Graduate bachelor's or master's role; no professional experience minimum stated",
+    "startPeriod": "2027",
+    "graduationWindow": "Completing or recently completed a PhD and able to onboard by the end of 2027",
+    "graduationMonths": [],
+    "experienceRequirements": "Early-career PhD role; no professional experience minimum stated",
     "visaEvidence": {
-      "level": "Strong",
-      "explanation": "The exact posting welcomes international applicants relocating to listed tech hubs and explicitly offers visa assistance, travel costs, and initial accommodation, subject to conditions.",
-      "url": "https://www.revolut.com/en-NL/careers/position/graduate-programme-2027-software-engineer-java-3b79c804-b7e0-4b1a-9ef6-2fd69723dc7a/"
+      "level": "Supported",
+      "explanation": "TikTok's official hiring FAQ says some roles may offer visa sponsorship when appropriate, with support decided by role and candidate. This posting is silent, so support is not guaranteed.",
+      "url": "https://lifeattiktok.com/faq/?language=en"
     },
     "firstSeen": "2026-07-31",
     "lastVerified": "2026-07-31",
@@ -1534,49 +3057,41 @@
     "closedDate": null,
     "tags": [
       "2027",
-      "Java",
-      "Microservices",
-      "Backend"
+      "PhD",
+      "Applied science",
+      "Monetization"
     ],
     "missCount": 0,
-    "sourceId": "manual-revolut"
+    "sourceId": "manual-tiktok",
+    "degreeLevels": [
+      "PhD"
+    ]
   },
   {
-    "id": "revolut-2027-software-python",
-    "company": "Revolut",
-    "title": "Graduate Programme 2027: Software Engineer (Python)",
-    "category": "Software Engineering",
-    "applicationUrl": "https://www.revolut.com/careers/apply/f3f6861d-2013-4a52-b95f-15e44a73625f/",
-    "sourceUrl": "https://www.revolut.com/careers/position/f3f6861d-2013-4a52-b95f-15e44a73625f/",
+    "id": "tiktok-7633597487467776309",
+    "company": "TikTok",
+    "title": "Applied Scientist - Trust and Safety (Multimodal Foundation Model) - Global Frontier Tech Recruitment Program - 2027 Start (PhD)",
+    "category": "Data Science / Applied Science / Analytics",
+    "applicationUrl": "https://lifeattiktok.com/search/7633597487467776309",
+    "sourceUrl": "https://lifeattiktok.com/search/7633597487467776309",
     "sourcePlatform": "Official company careers",
     "locations": [
-      "Barcelona, Spain",
-      "Dubai, UAE",
-      "Krakow, Poland",
-      "Lisbon, Portugal",
-      "London, UK",
-      "Madrid, Spain",
-      "Remote in eligible listed countries"
+      "San Jose, CA"
     ],
-    "country": "Multiple countries",
-    "region": "Europe / Middle East",
-    "workplaceType": "Hybrid",
-    "compensation": "Poland: PLN 15,700 gross monthly; other locations discussed during interview",
+    "country": "United States",
+    "region": "United States — West",
+    "workplaceType": "Unspecified",
+    "compensation": "$212,800–$450,000 USD base",
     "datePosted": null,
     "deadline": null,
-    "startPeriod": "January–June or July–December 2027",
-    "graduationWindow": "Graduated or graduating in 2025, 2026, or 2027",
-    "graduationMonths": [
-      "2026-12",
-      "2027-05",
-      "2027-08",
-      "2027-12"
-    ],
-    "experienceRequirements": "Graduate bachelor's or master's role; no professional experience minimum stated",
+    "startPeriod": "2027",
+    "graduationWindow": "Completing or recently completed a PhD and able to onboard by the end of 2027",
+    "graduationMonths": [],
+    "experienceRequirements": "Early-career PhD role; no professional experience minimum stated",
     "visaEvidence": {
-      "level": "Strong",
-      "explanation": "The exact posting welcomes international applicants relocating to listed tech hubs and explicitly offers visa assistance, travel costs, and initial accommodation, subject to conditions.",
-      "url": "https://www.revolut.com/careers/position/f3f6861d-2013-4a52-b95f-15e44a73625f/"
+      "level": "Supported",
+      "explanation": "TikTok's official hiring FAQ says some roles may offer visa sponsorship when appropriate, with support decided by role and candidate. This posting is silent, so support is not guaranteed.",
+      "url": "https://lifeattiktok.com/faq/?language=en"
     },
     "firstSeen": "2026-07-31",
     "lastVerified": "2026-07-31",
@@ -1584,12 +3099,57 @@
     "closedDate": null,
     "tags": [
       "2027",
-      "Python",
-      "SQL",
-      "Data pipelines"
+      "PhD",
+      "Applied science",
+      "Multimodal"
     ],
     "missCount": 0,
-    "sourceId": "manual-revolut"
+    "sourceId": "manual-tiktok",
+    "degreeLevels": [
+      "PhD"
+    ]
+  },
+  {
+    "id": "tiktok-7633601975876880645",
+    "company": "TikTok",
+    "title": "Applied Scientist - Trust and Safety (Multimodal Foundation Model) - Global Frontier Tech Recruitment Program - 2027 Start (PhD)",
+    "category": "Data Science / Applied Science / Analytics",
+    "applicationUrl": "https://lifeattiktok.com/search/7633601975876880645",
+    "sourceUrl": "https://lifeattiktok.com/search/7633601975876880645",
+    "sourcePlatform": "Official company careers",
+    "locations": [
+      "Seattle, WA"
+    ],
+    "country": "United States",
+    "region": "United States — West",
+    "workplaceType": "Unspecified",
+    "compensation": "$202,160–$368,220 USD base",
+    "datePosted": null,
+    "deadline": null,
+    "startPeriod": "2027",
+    "graduationWindow": "Completing or recently completed a PhD and able to onboard by the end of 2027",
+    "graduationMonths": [],
+    "experienceRequirements": "Early-career PhD role; no professional experience minimum stated",
+    "visaEvidence": {
+      "level": "Supported",
+      "explanation": "TikTok's official hiring FAQ says some roles may offer visa sponsorship when appropriate, with support decided by role and candidate. This posting is silent, so support is not guaranteed.",
+      "url": "https://lifeattiktok.com/faq/?language=en"
+    },
+    "firstSeen": "2026-07-31",
+    "lastVerified": "2026-07-31",
+    "status": "active",
+    "closedDate": null,
+    "tags": [
+      "2027",
+      "PhD",
+      "Applied science",
+      "Multimodal"
+    ],
+    "missCount": 0,
+    "sourceId": "manual-tiktok",
+    "degreeLevels": [
+      "PhD"
+    ]
   },
   {
     "id": "tiktok-7629210093117294901",
@@ -1628,36 +3188,35 @@
       "Applied science"
     ],
     "missCount": 0,
-    "sourceId": "manual-tiktok"
+    "sourceId": "manual-tiktok",
+    "degreeLevels": [
+      "PhD"
+    ]
   },
   {
-    "id": "tiktok-7657821105365027077",
+    "id": "tiktok-7628363726332102965",
     "company": "TikTok",
-    "title": "Backend Software Engineer Graduate, Multimedia Platform – 2027 Start",
-    "category": "Software Engineering",
-    "applicationUrl": "https://lifeattiktok.com/search/7657821105365027077",
-    "sourceUrl": "https://lifeattiktok.com/search/7657821105365027077",
+    "title": "Data Knowledge System Research Scientist - (Data Platform-Global Live) - Global Frontier Tech Recruitment Program - 2027 Start (PhD)",
+    "category": "Data Science / Applied Science / Analytics",
+    "applicationUrl": "https://lifeattiktok.com/search/7628363726332102965",
+    "sourceUrl": "https://lifeattiktok.com/search/7628363726332102965",
     "sourcePlatform": "Official company careers",
     "locations": [
-      "Sydney, NSW"
+      "San Jose, CA"
     ],
-    "country": "Australia",
-    "region": "Australia",
+    "country": "United States",
+    "region": "United States — West",
     "workplaceType": "Unspecified",
-    "compensation": null,
+    "compensation": "$212,800–$450,000 USD base",
     "datePosted": null,
     "deadline": null,
-    "startPeriod": "By the end of 2027",
-    "graduationWindow": "Bachelor's or master's candidate able to onboard by the end of 2027",
-    "graduationMonths": [
-      "2027-05",
-      "2027-08",
-      "2027-12"
-    ],
-    "experienceRequirements": "Graduate bachelor's or master's role",
+    "startPeriod": "2027",
+    "graduationWindow": "Completing or recently completed a PhD and able to onboard by the end of 2027",
+    "graduationMonths": [],
+    "experienceRequirements": "Early-career PhD role; no professional experience minimum stated",
     "visaEvidence": {
       "level": "Supported",
-      "explanation": "TikTok's official hiring FAQ says some roles may offer visa sponsorship, decided case by case by role and candidate. This Australian posting is silent, so support is not guaranteed.",
+      "explanation": "TikTok's official hiring FAQ says some roles may offer visa sponsorship when appropriate, with support decided by role and candidate. This posting is silent, so support is not guaranteed.",
       "url": "https://lifeattiktok.com/faq/?language=en"
     },
     "firstSeen": "2026-07-31",
@@ -1666,208 +3225,40 @@
     "closedDate": null,
     "tags": [
       "2027",
-      "Backend",
-      "Multimedia platform"
+      "PhD",
+      "Data platform",
+      "Knowledge systems"
     ],
     "missCount": 0,
-    "sourceId": "manual-tiktok"
+    "sourceId": "manual-tiktok",
+    "degreeLevels": [
+      "PhD"
+    ]
   },
   {
-    "id": "tiktok-7660367427276261685",
+    "id": "tiktok-7629184028664563973",
     "company": "TikTok",
-    "title": "Backend Software Engineer Graduate, TikTok Foundation – 2027 Start",
-    "category": "Software Engineering",
-    "applicationUrl": "https://lifeattiktok.com/search/7660367427276261685",
-    "sourceUrl": "https://lifeattiktok.com/search/7660367427276261685",
-    "sourcePlatform": "Official company careers",
-    "locations": [
-      "Sydney, NSW"
-    ],
-    "country": "Australia",
-    "region": "Australia",
-    "workplaceType": "Unspecified",
-    "compensation": null,
-    "datePosted": null,
-    "deadline": null,
-    "startPeriod": "By the end of 2027",
-    "graduationWindow": "Bachelor's or master's candidate able to onboard by the end of 2027",
-    "graduationMonths": [
-      "2027-05",
-      "2027-08",
-      "2027-12"
-    ],
-    "experienceRequirements": "Graduate bachelor's or master's role",
-    "visaEvidence": {
-      "level": "Supported",
-      "explanation": "TikTok's official hiring FAQ says some roles may offer visa sponsorship, decided case by case by role and candidate. This Australian posting is silent, so support is not guaranteed.",
-      "url": "https://lifeattiktok.com/faq/?language=en"
-    },
-    "firstSeen": "2026-07-31",
-    "lastVerified": "2026-07-31",
-    "status": "active",
-    "closedDate": null,
-    "tags": [
-      "2027",
-      "Backend",
-      "Platform"
-    ],
-    "missCount": 0,
-    "sourceId": "manual-tiktok"
-  },
-  {
-    "id": "tiktok-7605166042878068997",
-    "company": "TikTok",
-    "title": "Backend Software Engineer Graduate, Trust and Safety Engineering – 2027 Start",
-    "category": "Software Engineering",
-    "applicationUrl": "https://lifeattiktok.com/search/7605166042878068997",
-    "sourceUrl": "https://lifeattiktok.com/search/7605166042878068997",
-    "sourcePlatform": "Official company careers",
-    "locations": [
-      "Sydney, NSW"
-    ],
-    "country": "Australia",
-    "region": "Australia",
-    "workplaceType": "Unspecified",
-    "compensation": null,
-    "datePosted": null,
-    "deadline": null,
-    "startPeriod": "By the end of 2027",
-    "graduationWindow": "Bachelor's or master's candidate able to onboard by the end of 2027",
-    "graduationMonths": [
-      "2027-05",
-      "2027-08",
-      "2027-12"
-    ],
-    "experienceRequirements": "Graduate bachelor's or master's role",
-    "visaEvidence": {
-      "level": "Supported",
-      "explanation": "TikTok's official hiring FAQ says some roles may offer visa sponsorship, decided case by case by role and candidate. This Australian posting is silent, so support is not guaranteed.",
-      "url": "https://lifeattiktok.com/faq/?language=en"
-    },
-    "firstSeen": "2026-07-31",
-    "lastVerified": "2026-07-31",
-    "status": "active",
-    "closedDate": null,
-    "tags": [
-      "2027",
-      "Backend",
-      "Trust and safety"
-    ],
-    "missCount": 0,
-    "sourceId": "manual-tiktok"
-  },
-  {
-    "id": "tiktok-7660770288158804229",
-    "company": "TikTok",
-    "title": "Frontend Software Engineer Graduate, TikTok Foundation – 2027 Start",
-    "category": "Software Engineering",
-    "applicationUrl": "https://lifeattiktok.com/search/7660770288158804229",
-    "sourceUrl": "https://lifeattiktok.com/search/7660770288158804229",
-    "sourcePlatform": "Official company careers",
-    "locations": [
-      "Sydney, NSW"
-    ],
-    "country": "Australia",
-    "region": "Australia",
-    "workplaceType": "Unspecified",
-    "compensation": null,
-    "datePosted": null,
-    "deadline": null,
-    "startPeriod": "By the end of 2027",
-    "graduationWindow": "Bachelor's or master's candidate able to onboard by the end of 2027",
-    "graduationMonths": [
-      "2027-05",
-      "2027-08",
-      "2027-12"
-    ],
-    "experienceRequirements": "Graduate bachelor's or master's role",
-    "visaEvidence": {
-      "level": "Supported",
-      "explanation": "TikTok's official hiring FAQ says some roles may offer visa sponsorship, decided case by case by role and candidate. This Australian posting is silent, so support is not guaranteed.",
-      "url": "https://lifeattiktok.com/faq/?language=en"
-    },
-    "firstSeen": "2026-07-31",
-    "lastVerified": "2026-07-31",
-    "status": "active",
-    "closedDate": null,
-    "tags": [
-      "2027",
-      "Frontend",
-      "Web"
-    ],
-    "missCount": 0,
-    "sourceId": "manual-tiktok"
-  },
-  {
-    "id": "tiktok-7661877389786171701",
-    "company": "TikTok",
-    "title": "Hyper-Edge Technology Development Engineer Graduate, Data Application – 2027 Start",
-    "category": "Systems / Infrastructure / Performance Engineering",
-    "applicationUrl": "https://lifeattiktok.com/search/7661877389786171701",
-    "sourceUrl": "https://lifeattiktok.com/search/7661877389786171701",
-    "sourcePlatform": "Official company careers",
-    "locations": [
-      "Sydney, NSW"
-    ],
-    "country": "Australia",
-    "region": "Australia",
-    "workplaceType": "Unspecified",
-    "compensation": null,
-    "datePosted": null,
-    "deadline": null,
-    "startPeriod": "By the end of 2027",
-    "graduationWindow": "Bachelor's or master's candidate able to onboard by the end of 2027",
-    "graduationMonths": [
-      "2027-05",
-      "2027-08",
-      "2027-12"
-    ],
-    "experienceRequirements": "Graduate bachelor's or master's role",
-    "visaEvidence": {
-      "level": "Supported",
-      "explanation": "TikTok's official hiring FAQ says some roles may offer visa sponsorship, decided case by case by role and candidate. This Australian posting is silent, so support is not guaranteed.",
-      "url": "https://lifeattiktok.com/faq/?language=en"
-    },
-    "firstSeen": "2026-07-31",
-    "lastVerified": "2026-07-31",
-    "status": "active",
-    "closedDate": null,
-    "tags": [
-      "2027",
-      "Edge systems",
-      "Data infrastructure"
-    ],
-    "missCount": 0,
-    "sourceId": "manual-tiktok"
-  },
-  {
-    "id": "tiktok-7605165402553944325",
-    "company": "TikTok",
-    "title": "Machine Learning Engineer Graduate, Trust and Safety Engineering – 2027 Start",
+    "title": "Research Scientist - E-commerce Recommendation (LLM Applications) - Global Frontier Tech Recruitment Program - 2027 Start (PhD)",
     "category": "Machine Learning / AI Engineering",
-    "applicationUrl": "https://lifeattiktok.com/search/7605165402553944325",
-    "sourceUrl": "https://lifeattiktok.com/search/7605165402553944325",
+    "applicationUrl": "https://lifeattiktok.com/search/7629184028664563973",
+    "sourceUrl": "https://lifeattiktok.com/search/7629184028664563973",
     "sourcePlatform": "Official company careers",
     "locations": [
-      "Sydney, NSW"
+      "San Jose, CA"
     ],
-    "country": "Australia",
-    "region": "Australia",
+    "country": "United States",
+    "region": "United States — West",
     "workplaceType": "Unspecified",
-    "compensation": null,
+    "compensation": "$212,800–$450,000 USD base",
     "datePosted": null,
     "deadline": null,
-    "startPeriod": "By the end of 2027",
-    "graduationWindow": "Bachelor's or master's candidate able to onboard by the end of 2027",
-    "graduationMonths": [
-      "2027-05",
-      "2027-08",
-      "2027-12"
-    ],
-    "experienceRequirements": "Graduate bachelor's or master's role",
+    "startPeriod": "2027",
+    "graduationWindow": "Completing or recently completed a PhD and able to onboard by the end of 2027",
+    "graduationMonths": [],
+    "experienceRequirements": "Early-career PhD role; no professional experience minimum stated",
     "visaEvidence": {
       "level": "Supported",
-      "explanation": "TikTok's official hiring FAQ says some roles may offer visa sponsorship, decided case by case by role and candidate. This Australian posting is silent, so support is not guaranteed.",
+      "explanation": "TikTok's official hiring FAQ says some roles may offer visa sponsorship when appropriate, with support decided by role and candidate. This posting is silent, so support is not guaranteed.",
       "url": "https://lifeattiktok.com/faq/?language=en"
     },
     "firstSeen": "2026-07-31",
@@ -1876,40 +3267,40 @@
     "closedDate": null,
     "tags": [
       "2027",
-      "Machine learning",
-      "Trust and safety"
+      "PhD",
+      "E-commerce",
+      "Recommendation systems"
     ],
     "missCount": 0,
-    "sourceId": "manual-tiktok"
+    "sourceId": "manual-tiktok",
+    "degreeLevels": [
+      "PhD"
+    ]
   },
   {
-    "id": "tiktok-7660771019354818869",
+    "id": "tiktok-7629243930022267189",
     "company": "TikTok",
-    "title": "Mobile Software Engineer Graduate, TikTok Foundation – 2027 Start",
-    "category": "Software Engineering",
-    "applicationUrl": "https://lifeattiktok.com/search/7660771019354818869",
-    "sourceUrl": "https://lifeattiktok.com/search/7660771019354818869",
+    "title": "Research Scientist - E-commerce Recommendation (LLM Applications) - Global Frontier Tech Recruitment Program - 2027 Start (PhD)",
+    "category": "Machine Learning / AI Engineering",
+    "applicationUrl": "https://lifeattiktok.com/search/7629243930022267189",
+    "sourceUrl": "https://lifeattiktok.com/search/7629243930022267189",
     "sourcePlatform": "Official company careers",
     "locations": [
-      "Sydney, NSW"
+      "Seattle, WA"
     ],
-    "country": "Australia",
-    "region": "Australia",
+    "country": "United States",
+    "region": "United States — West",
     "workplaceType": "Unspecified",
-    "compensation": null,
+    "compensation": "$202,160–$368,220 USD base",
     "datePosted": null,
     "deadline": null,
-    "startPeriod": "By the end of 2027",
-    "graduationWindow": "Bachelor's or master's candidate able to onboard by the end of 2027",
-    "graduationMonths": [
-      "2027-05",
-      "2027-08",
-      "2027-12"
-    ],
-    "experienceRequirements": "Graduate bachelor's or master's role",
+    "startPeriod": "2027",
+    "graduationWindow": "Completing or recently completed a PhD and able to onboard by the end of 2027",
+    "graduationMonths": [],
+    "experienceRequirements": "Early-career PhD role; no professional experience minimum stated",
     "visaEvidence": {
       "level": "Supported",
-      "explanation": "TikTok's official hiring FAQ says some roles may offer visa sponsorship, decided case by case by role and candidate. This Australian posting is silent, so support is not guaranteed.",
+      "explanation": "TikTok's official hiring FAQ says some roles may offer visa sponsorship when appropriate, with support decided by role and candidate. This posting is silent, so support is not guaranteed.",
       "url": "https://lifeattiktok.com/faq/?language=en"
     },
     "firstSeen": "2026-07-31",
@@ -1918,40 +3309,40 @@
     "closedDate": null,
     "tags": [
       "2027",
-      "Mobile",
-      "Product engineering"
+      "PhD",
+      "E-commerce",
+      "Recommendation systems"
     ],
     "missCount": 0,
-    "sourceId": "manual-tiktok"
+    "sourceId": "manual-tiktok",
+    "degreeLevels": [
+      "PhD"
+    ]
   },
   {
-    "id": "tiktok-7660782103374530869",
+    "id": "tiktok-7628321017978767621",
     "company": "TikTok",
-    "title": "Multimedia Engineer Graduate, Multimedia Platform – 2027 Start",
-    "category": "Systems / Infrastructure / Performance Engineering",
-    "applicationUrl": "https://lifeattiktok.com/search/7660782103374530869",
-    "sourceUrl": "https://lifeattiktok.com/search/7660782103374530869",
+    "title": "Research Scientist - TikTok Search (Generative AI) - Global Frontier Tech Recruitment Program - 2027 Start (PhD)",
+    "category": "Machine Learning / AI Engineering",
+    "applicationUrl": "https://lifeattiktok.com/search/7628321017978767621",
+    "sourceUrl": "https://lifeattiktok.com/search/7628321017978767621",
     "sourcePlatform": "Official company careers",
     "locations": [
-      "Sydney, NSW"
+      "San Jose, CA"
     ],
-    "country": "Australia",
-    "region": "Australia",
+    "country": "United States",
+    "region": "United States — West",
     "workplaceType": "Unspecified",
-    "compensation": null,
+    "compensation": "$212,800–$450,000 USD base",
     "datePosted": null,
     "deadline": null,
-    "startPeriod": "By the end of 2027",
-    "graduationWindow": "Bachelor's or master's candidate able to onboard by the end of 2027",
-    "graduationMonths": [
-      "2027-05",
-      "2027-08",
-      "2027-12"
-    ],
-    "experienceRequirements": "Graduate bachelor's or master's role",
+    "startPeriod": "2027",
+    "graduationWindow": "Completing or recently completed a PhD and able to onboard by the end of 2027",
+    "graduationMonths": [],
+    "experienceRequirements": "Early-career PhD role; no professional experience minimum stated",
     "visaEvidence": {
       "level": "Supported",
-      "explanation": "TikTok's official hiring FAQ says some roles may offer visa sponsorship, decided case by case by role and candidate. This Australian posting is silent, so support is not guaranteed.",
+      "explanation": "TikTok's official hiring FAQ says some roles may offer visa sponsorship when appropriate, with support decided by role and candidate. This posting is silent, so support is not guaranteed.",
       "url": "https://lifeattiktok.com/faq/?language=en"
     },
     "firstSeen": "2026-07-31",
@@ -1960,11 +3351,15 @@
     "closedDate": null,
     "tags": [
       "2027",
-      "Multimedia",
-      "Performance"
+      "PhD",
+      "Generative AI",
+      "Search"
     ],
     "missCount": 0,
-    "sourceId": "manual-tiktok"
+    "sourceId": "manual-tiktok",
+    "degreeLevels": [
+      "PhD"
+    ]
   },
   {
     "id": "tiktok-7629234781608724741",
@@ -2003,7 +3398,10 @@
       "Performance"
     ],
     "missCount": 0,
-    "sourceId": "manual-tiktok"
+    "sourceId": "manual-tiktok",
+    "degreeLevels": [
+      "PhD"
+    ]
   },
   {
     "id": "tiktok-7629235064786127109",
@@ -2042,7 +3440,10 @@
       "Recommendation systems"
     ],
     "missCount": 0,
-    "sourceId": "manual-tiktok"
+    "sourceId": "manual-tiktok",
+    "degreeLevels": [
+      "PhD"
+    ]
   },
   {
     "id": "tiktok-7633605978976520453",
@@ -2081,36 +3482,35 @@
       "Recommendation systems"
     ],
     "missCount": 0,
-    "sourceId": "manual-tiktok"
+    "sourceId": "manual-tiktok",
+    "degreeLevels": [
+      "PhD"
+    ]
   },
   {
-    "id": "tiktok-7658157129630517557",
+    "id": "tiktok-7631002754433665333",
     "company": "TikTok",
-    "title": "Site Reliability Engineer Graduate, Technical Infrastructure – 2027 Start",
-    "category": "Systems / Infrastructure / Performance Engineering",
-    "applicationUrl": "https://lifeattiktok.com/search/7658157129630517557",
-    "sourceUrl": "https://lifeattiktok.com/search/7658157129630517557",
+    "title": "Research Scientist, Intelligent Editing and AI Agent (Multimodality) Graduate (Intelligent Creation) - Global Frontier Tech Recruitment Program - 2027 Start (PhD)",
+    "category": "Machine Learning / AI Engineering",
+    "applicationUrl": "https://lifeattiktok.com/search/7631002754433665333",
+    "sourceUrl": "https://lifeattiktok.com/search/7631002754433665333",
     "sourcePlatform": "Official company careers",
     "locations": [
-      "Sydney, NSW"
+      "San Jose, CA"
     ],
-    "country": "Australia",
-    "region": "Australia",
+    "country": "United States",
+    "region": "United States — West",
     "workplaceType": "Unspecified",
-    "compensation": null,
+    "compensation": "$244,800–$588,000 USD base",
     "datePosted": null,
     "deadline": null,
-    "startPeriod": "By the end of 2027",
-    "graduationWindow": "Bachelor's or master's candidate able to onboard by the end of 2027",
-    "graduationMonths": [
-      "2027-05",
-      "2027-08",
-      "2027-12"
-    ],
-    "experienceRequirements": "Graduate bachelor's or master's role",
+    "startPeriod": "2027",
+    "graduationWindow": "Completing or recently completed a PhD and able to onboard by the end of 2027",
+    "graduationMonths": [],
+    "experienceRequirements": "Early-career PhD role; no professional experience minimum stated",
     "visaEvidence": {
       "level": "Supported",
-      "explanation": "TikTok's official hiring FAQ says some roles may offer visa sponsorship, decided case by case by role and candidate. This Australian posting is silent, so support is not guaranteed.",
+      "explanation": "TikTok's official hiring FAQ says some roles may offer visa sponsorship when appropriate, with support decided by role and candidate. This posting is silent, so support is not guaranteed.",
       "url": "https://lifeattiktok.com/faq/?language=en"
     },
     "firstSeen": "2026-07-31",
@@ -2119,40 +3519,40 @@
     "closedDate": null,
     "tags": [
       "2027",
-      "SRE",
-      "Infrastructure"
+      "PhD",
+      "AI agents",
+      "Multimodal"
     ],
     "missCount": 0,
-    "sourceId": "manual-tiktok"
+    "sourceId": "manual-tiktok",
+    "degreeLevels": [
+      "PhD"
+    ]
   },
   {
-    "id": "tiktok-7659933511100811573",
+    "id": "tiktok-7631001669631789365",
     "company": "TikTok",
-    "title": "Software Engineer Graduate, Multimedia Arch-Live – 2027 Start",
-    "category": "Software Engineering",
-    "applicationUrl": "https://lifeattiktok.com/search/7659933511100811573",
-    "sourceUrl": "https://lifeattiktok.com/search/7659933511100811573",
+    "title": "Research Scientist, Multimodal Generative AI (Intelligent Creation) – Global Frontier Tech Recruitment Program - 2027 Start (PhD)",
+    "category": "Machine Learning / AI Engineering",
+    "applicationUrl": "https://lifeattiktok.com/search/7631001669631789365",
+    "sourceUrl": "https://lifeattiktok.com/search/7631001669631789365",
     "sourcePlatform": "Official company careers",
     "locations": [
-      "Sydney, NSW"
+      "San Jose, CA"
     ],
-    "country": "Australia",
-    "region": "Australia",
+    "country": "United States",
+    "region": "United States — West",
     "workplaceType": "Unspecified",
-    "compensation": null,
+    "compensation": "$244,800–$588,000 USD base",
     "datePosted": null,
     "deadline": null,
-    "startPeriod": "By the end of 2027",
-    "graduationWindow": "Bachelor's or master's candidate able to onboard by the end of 2027",
-    "graduationMonths": [
-      "2027-05",
-      "2027-08",
-      "2027-12"
-    ],
-    "experienceRequirements": "Graduate bachelor's or master's role",
+    "startPeriod": "2027",
+    "graduationWindow": "Completing or recently completed a PhD and able to onboard by the end of 2027",
+    "graduationMonths": [],
+    "experienceRequirements": "Early-career PhD role; no professional experience minimum stated",
     "visaEvidence": {
       "level": "Supported",
-      "explanation": "TikTok's official hiring FAQ says some roles may offer visa sponsorship, decided case by case by role and candidate. This Australian posting is silent, so support is not guaranteed.",
+      "explanation": "TikTok's official hiring FAQ says some roles may offer visa sponsorship when appropriate, with support decided by role and candidate. This posting is silent, so support is not guaranteed.",
       "url": "https://lifeattiktok.com/faq/?language=en"
     },
     "firstSeen": "2026-07-31",
@@ -2161,10 +3561,187 @@
     "closedDate": null,
     "tags": [
       "2027",
-      "Multimedia",
-      "Live systems"
+      "PhD",
+      "Generative AI",
+      "Multimodal"
     ],
     "missCount": 0,
-    "sourceId": "manual-tiktok"
+    "sourceId": "manual-tiktok",
+    "degreeLevels": [
+      "PhD"
+    ]
+  },
+  {
+    "id": "tiktok-7630999744861718837",
+    "company": "TikTok",
+    "title": "Research Scientist, Video Generation (Intelligent Creation) - Global Frontier Tech Recruitment Program - 2027 Start (PhD)",
+    "category": "Machine Learning / AI Engineering",
+    "applicationUrl": "https://lifeattiktok.com/search/7630999744861718837",
+    "sourceUrl": "https://lifeattiktok.com/search/7630999744861718837",
+    "sourcePlatform": "Official company careers",
+    "locations": [
+      "San Jose, CA"
+    ],
+    "country": "United States",
+    "region": "United States — West",
+    "workplaceType": "Unspecified",
+    "compensation": "$244,800–$588,000 USD base",
+    "datePosted": null,
+    "deadline": null,
+    "startPeriod": "2027",
+    "graduationWindow": "Completing or recently completed a PhD and able to onboard by the end of 2027",
+    "graduationMonths": [],
+    "experienceRequirements": "Early-career PhD role; no professional experience minimum stated",
+    "visaEvidence": {
+      "level": "Supported",
+      "explanation": "TikTok's official hiring FAQ says some roles may offer visa sponsorship when appropriate, with support decided by role and candidate. This posting is silent, so support is not guaranteed.",
+      "url": "https://lifeattiktok.com/faq/?language=en"
+    },
+    "firstSeen": "2026-07-31",
+    "lastVerified": "2026-07-31",
+    "status": "active",
+    "closedDate": null,
+    "tags": [
+      "2027",
+      "PhD",
+      "Generative AI",
+      "Video"
+    ],
+    "missCount": 0,
+    "sourceId": "manual-tiktok",
+    "degreeLevels": [
+      "PhD"
+    ]
+  },
+  {
+    "id": "tiktok-7631001257579104565",
+    "company": "TikTok",
+    "title": "Research Scientist, World Models (Intelligent Creation) - Global Frontier Tech Recruitment Program - 2027 Start (PhD)",
+    "category": "Machine Learning / AI Engineering",
+    "applicationUrl": "https://lifeattiktok.com/search/7631001257579104565",
+    "sourceUrl": "https://lifeattiktok.com/search/7631001257579104565",
+    "sourcePlatform": "Official company careers",
+    "locations": [
+      "San Jose, CA"
+    ],
+    "country": "United States",
+    "region": "United States — West",
+    "workplaceType": "Unspecified",
+    "compensation": "$244,800–$588,000 USD base",
+    "datePosted": null,
+    "deadline": null,
+    "startPeriod": "2027",
+    "graduationWindow": "Completing or recently completed a PhD and able to onboard by the end of 2027",
+    "graduationMonths": [],
+    "experienceRequirements": "Early-career PhD role; no professional experience minimum stated",
+    "visaEvidence": {
+      "level": "Supported",
+      "explanation": "TikTok's official hiring FAQ says some roles may offer visa sponsorship when appropriate, with support decided by role and candidate. This posting is silent, so support is not guaranteed.",
+      "url": "https://lifeattiktok.com/faq/?language=en"
+    },
+    "firstSeen": "2026-07-31",
+    "lastVerified": "2026-07-31",
+    "status": "active",
+    "closedDate": null,
+    "tags": [
+      "2027",
+      "PhD",
+      "Multimodal",
+      "World models"
+    ],
+    "missCount": 0,
+    "sourceId": "manual-tiktok",
+    "degreeLevels": [
+      "PhD"
+    ]
+  },
+  {
+    "id": "tower-greenhouse-0c52c5de7bf1440a",
+    "company": "Tower Research Capital",
+    "title": "Quantitative Trader - 2027",
+    "category": "Quantitative Trading",
+    "applicationUrl": "https://www.tower-research.com/open-positions/?gh_jid=8024142",
+    "sourceUrl": "https://www.tower-research.com/open-positions/?gh_jid=8024142",
+    "sourcePlatform": "Greenhouse",
+    "locations": [
+      "Chicago, IL",
+      "New York, NY"
+    ],
+    "country": "United States",
+    "region": "United States — Multiple regions",
+    "workplaceType": "Hybrid",
+    "compensation": "$150,000–$250,000 base plus discretionary bonus",
+    "datePosted": null,
+    "deadline": null,
+    "startPeriod": "2027",
+    "graduationWindow": "2027 graduate recruiting cycle; BS, MS, or PhD",
+    "graduationMonths": [
+      "2027-05",
+      "2027-08"
+    ],
+    "degreeLevels": [
+      "Undergraduate / Master's",
+      "PhD"
+    ],
+    "experienceRequirements": "Zero to two years of experience",
+    "visaEvidence": {
+      "level": "Historical",
+      "explanation": "Recent public DOL-derived records show Tower Research Capital filings for comparable quantitative trading and research roles. This does not establish support for this opening.",
+      "url": "https://www.ellis.com/visa-sponsors/tower-research-capital-llc/h1b"
+    },
+    "firstSeen": "2026-07-31",
+    "lastVerified": "2026-07-31",
+    "status": "active",
+    "closedDate": null,
+    "tags": [
+      "Graduate",
+      "Trading"
+    ],
+    "missCount": 0,
+    "sourceId": "tower-greenhouse"
+  },
+  {
+    "id": "transmarket-greenhouse-daf34030f3decb65",
+    "company": "TransMarket Group",
+    "title": "Junior Quantitative Trader",
+    "category": "Quantitative Trading",
+    "applicationUrl": "https://job-boards.greenhouse.io/transmarketgroup/jobs/5151574007",
+    "sourceUrl": "https://job-boards.greenhouse.io/transmarketgroup/jobs/5151574007",
+    "sourcePlatform": "Greenhouse",
+    "locations": [
+      "Chicago, IL"
+    ],
+    "country": "United States",
+    "region": "United States — Midwest",
+    "workplaceType": "On-site",
+    "compensation": null,
+    "datePosted": null,
+    "deadline": null,
+    "startPeriod": "2027",
+    "graduationWindow": "December 2026 through Spring 2027",
+    "graduationMonths": [
+      "2026-12",
+      "2027-05"
+    ],
+    "degreeLevels": [
+      "Undergraduate / Master's",
+      "PhD"
+    ],
+    "experienceRequirements": "Junior graduate role; no professional experience minimum stated",
+    "visaEvidence": {
+      "level": "Historical",
+      "explanation": "Recent public DOL-derived records include comparable junior quantitative trading roles at a TransMarket entity. This history is not a promise for the current opening.",
+      "url": "https://www.ellis.com/visa-sponsors/transmarket-operations-llc"
+    },
+    "firstSeen": "2026-07-31",
+    "lastVerified": "2026-07-31",
+    "status": "active",
+    "closedDate": null,
+    "tags": [
+      "C++",
+      "Python"
+    ],
+    "missCount": 0,
+    "sourceId": "transmarket-greenhouse"
   }
 ]

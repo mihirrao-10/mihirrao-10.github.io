@@ -22,13 +22,16 @@ export const CATEGORY_ORDER = [
   "Other Technical",
 ];
 
+export const DEGREE_LEVELS = ["Undergraduate / Master's", "PhD"];
+
 export const DEFAULT_FILTERS = Object.freeze({
   keyword: "",
   category: "",
   company: "",
-  region: "",
+  location: "",
   workplace: "",
   evidence: "",
+  degree: "",
   graduation: "",
   personalStatus: "",
   sort: "newest",
@@ -154,6 +157,7 @@ function containsKeyword(job, keyword) {
     job.region,
     job.country,
     job.workplaceType,
+    ...(job.degreeLevels ?? []),
     ...(job.locations ?? []),
     ...(job.tags ?? []),
   ]
@@ -231,9 +235,10 @@ export function filterJobs(jobs, filters = DEFAULT_FILTERS, tracking = emptyTrac
     if (!containsKeyword(job, filters.keyword ?? "")) return false;
     if (filters.category && job.category !== filters.category) return false;
     if (filters.company && job.company !== filters.company) return false;
-    if (filters.region && job.region !== filters.region) return false;
+    if (filters.location && !(job.locations ?? []).includes(filters.location)) return false;
     if (filters.workplace && job.workplaceType !== filters.workplace) return false;
     if (filters.evidence && job.visaEvidence?.level !== filters.evidence) return false;
+    if (filters.degree && !(job.degreeLevels ?? []).includes(filters.degree)) return false;
     if (!matchesGraduationWindow(job, filters.graduation)) return false;
     return true;
   });

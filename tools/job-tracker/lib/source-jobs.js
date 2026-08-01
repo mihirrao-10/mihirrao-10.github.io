@@ -5,6 +5,7 @@ import {
   stableJobId,
   uniqueStrings,
 } from "./normalization.js";
+import { DEGREE_LEVELS } from "../constants.js";
 
 const PLATFORM_LABELS = Object.freeze({
   ashby: "Ashby",
@@ -141,7 +142,7 @@ export function normalizeSourceCandidate(source, candidate, today) {
   return {
     id: stableJobId(source.id, candidate.externalId, applicationUrl),
     company: source.company,
-    title: required(candidate.title, "title", source, candidate),
+    title: required(candidate.title, "title", source, candidate).trim(),
     category:
       override.category ?? defaults.category ?? normalizeCategory(candidate.title),
     applicationUrl: required(
@@ -196,6 +197,16 @@ export function normalizeSourceCandidate(source, candidate, today) {
     graduationMonths: uniqueStrings(
       override.graduationMonths ?? defaults.graduationMonths ?? [],
     ).sort(),
+    degreeLevels: DEGREE_LEVELS.filter((level) =>
+      uniqueStrings(
+        required(
+          override.degreeLevels ?? defaults.degreeLevels,
+          "degreeLevels",
+          source,
+          candidate,
+        ),
+      ).includes(level),
+    ),
     experienceRequirements: firstDefined(
       override.experienceRequirements,
       defaults.experienceRequirements,

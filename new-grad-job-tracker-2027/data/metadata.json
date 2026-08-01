@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
-  "lastSuccessfulUpdate": "2026-08-01T02:34:58.742Z",
-  "activeCount": 51,
+  "lastSuccessfulUpdate": "2026-08-01T03:22:58.096Z",
+  "activeCount": 86,
   "archivedCount": 0,
   "staleAfterDays": 7,
   "closingSoonDays": 7,
@@ -38,11 +38,77 @@
       "jobsFound": 3
     },
     {
-      "sourceId": "manual-amazon-au",
+      "sourceId": "3red-greenhouse",
+      "platform": "Greenhouse",
+      "status": "success",
+      "jobsFound": 3
+    },
+    {
+      "sourceId": "jump-greenhouse",
+      "platform": "Greenhouse",
+      "status": "success",
+      "jobsFound": 2
+    },
+    {
+      "sourceId": "old-mission-greenhouse",
+      "platform": "Greenhouse",
+      "status": "success",
+      "jobsFound": 3
+    },
+    {
+      "sourceId": "tower-greenhouse",
+      "platform": "Greenhouse",
+      "status": "success",
+      "jobsFound": 1
+    },
+    {
+      "sourceId": "transmarket-greenhouse",
+      "platform": "Greenhouse",
+      "status": "success",
+      "jobsFound": 1
+    },
+    {
+      "sourceId": "ixl-greenhouse",
+      "platform": "Greenhouse",
+      "status": "success",
+      "jobsFound": 2
+    },
+    {
+      "sourceId": "nuro-greenhouse",
+      "platform": "Greenhouse",
+      "status": "success",
+      "jobsFound": 1
+    },
+    {
+      "sourceId": "collective-ashby",
+      "platform": "Ashby",
+      "status": "success",
+      "jobsFound": 1
+    },
+    {
+      "sourceId": "newsbreak-greenhouse",
+      "platform": "Greenhouse",
+      "status": "success",
+      "jobsFound": 1
+    },
+    {
+      "sourceId": "ellipsis-ashby",
+      "platform": "Ashby",
+      "status": "success",
+      "jobsFound": 1
+    },
+    {
+      "sourceId": "netic-ashby",
+      "platform": "Ashby",
+      "status": "success",
+      "jobsFound": 3
+    },
+    {
+      "sourceId": "manual-bytedance",
       "platform": "Manual",
       "status": "success",
-      "jobsFound": 3,
-      "message": "3 verified, 0 confirmed missing, 0 temporarily unavailable"
+      "jobsFound": 21,
+      "message": "21 verified, 0 confirmed missing, 0 temporarily unavailable"
     },
     {
       "sourceId": "manual-hrt",
@@ -55,8 +121,8 @@
       "sourceId": "manual-imc",
       "platform": "Manual",
       "status": "success",
-      "jobsFound": 7,
-      "message": "7 verified, 0 confirmed missing, 0 temporarily unavailable"
+      "jobsFound": 6,
+      "message": "6 verified, 0 confirmed missing, 0 temporarily unavailable"
     },
     {
       "sourceId": "manual-optiver",
@@ -66,18 +132,11 @@
       "message": "6 verified, 0 confirmed missing, 0 temporarily unavailable"
     },
     {
-      "sourceId": "manual-revolut",
-      "platform": "Manual",
-      "status": "failed",
-      "jobsFound": 4,
-      "message": "0 verified, 0 confirmed missing, 4 temporarily unavailable"
-    },
-    {
       "sourceId": "manual-tiktok",
       "platform": "Manual",
       "status": "success",
-      "jobsFound": 14,
-      "message": "14 verified, 0 confirmed missing, 0 temporarily unavailable"
+      "jobsFound": 17,
+      "message": "17 verified, 0 confirmed missing, 0 temporarily unavailable"
     }
   ]
 }

@@ -22,7 +22,9 @@
         "url": "https://www.myvisajobs.com/employer/pylon-labs/"
       },
       "selection": {
-        "externalIds": ["38814ce7-217b-40f2-9ba5-8a7733a5691d"],
+        "externalIds": [
+          "38814ce7-217b-40f2-9ba5-8a7733a5691d"
+        ],
         "includeTitle": [],
         "includeDescription": [],
         "exclude": []
@@ -34,14 +36,22 @@
         "startPeriod": "Summer 2027",
         "graduationWindow": "Degree completed before a Summer 2027 start",
         "experienceRequirements": "New graduate; BS or MS in computer science, engineering, or a related field",
-        "tags": ["B2B software", "Distributed systems"]
+        "tags": [
+          "B2B software",
+          "Distributed systems"
+        ],
+        "degreeLevels": [
+          "Undergraduate / Master's"
+        ]
       },
       "overrides": {
         "38814ce7-217b-40f2-9ba5-8a7733a5691d": {
           "category": "Software Engineering",
           "applicationUrl": "https://jobs.ashbyhq.com/pylon-labs/38814ce7-217b-40f2-9ba5-8a7733a5691d/application",
           "sourceUrl": "https://jobs.ashbyhq.com/pylon-labs/38814ce7-217b-40f2-9ba5-8a7733a5691d",
-          "locations": ["San Francisco, CA"],
+          "locations": [
+            "San Francisco, CA"
+          ],
           "compensation": "$150,000–$180,000 base plus equity"
         }
       }
@@ -68,49 +78,74 @@
         "workplaceType": "Hybrid",
         "compensation": "$135,000–$145,000 base",
         "startPeriod": "2027",
-        "graduationMonths": ["2026-12", "2027-05"],
+        "graduationMonths": [
+          "2026-12",
+          "2027-05"
+        ],
         "experienceRequirements": "New graduate",
-        "tags": ["Early talent", "Product engineering"]
+        "tags": [
+          "Early talent",
+          "Product engineering"
+        ],
+        "degreeLevels": [
+          "Undergraduate / Master's",
+          "PhD"
+        ]
       },
       "overrides": {
         "2e6b0ac8-83e9-4be5-a3aa-cf319f751728": {
           "applicationUrl": "https://jobs.lever.co/palantir/2e6b0ac8-83e9-4be5-a3aa-cf319f751728/apply",
           "sourceUrl": "https://jobs.lever.co/palantir/2e6b0ac8-83e9-4be5-a3aa-cf319f751728",
-          "locations": ["New York, NY"],
+          "locations": [
+            "New York, NY"
+          ],
           "region": "United States — Northeast",
           "graduationWindow": "December 2026 or Spring 2027",
           "visaEvidence": {
-            "level": "Strong",
+            "level": "Supported",
             "explanation": "Palantir's official early-talent visa FAQ says its Mobility Team supports international students with visa matters. The role still requires individual eligibility review.",
             "url": "https://www.palantir.com/careers/students-and-early-talent/"
           },
-          "tags": ["Forward deployed", "Travel"]
+          "tags": [
+            "Forward deployed",
+            "Travel"
+          ]
         },
         "e500bcf3-19d8-4d3c-b340-4d76e4a55b40": {
           "applicationUrl": "https://jobs.lever.co/palantir/e500bcf3-19d8-4d3c-b340-4d76e4a55b40/apply",
           "sourceUrl": "https://jobs.lever.co/palantir/e500bcf3-19d8-4d3c-b340-4d76e4a55b40",
-          "locations": ["Chicago, IL"],
+          "locations": [
+            "Chicago, IL"
+          ],
           "region": "United States — Midwest",
           "graduationWindow": "December 2026 or Spring 2027",
           "visaEvidence": {
-            "level": "Strong",
+            "level": "Supported",
             "explanation": "Palantir's official early-talent visa FAQ says its Mobility Team supports international students with visa matters. The role still requires individual eligibility review.",
             "url": "https://www.palantir.com/careers/students-and-early-talent/"
           },
-          "tags": ["Forward deployed", "Travel"]
+          "tags": [
+            "Forward deployed",
+            "Travel"
+          ]
         },
         "95e0d2b0-437a-4096-a5c6-0f247f426c90": {
           "applicationUrl": "https://jobs.lever.co/palantir/95e0d2b0-437a-4096-a5c6-0f247f426c90/apply",
           "sourceUrl": "https://jobs.lever.co/palantir/95e0d2b0-437a-4096-a5c6-0f247f426c90",
-          "locations": ["New York, NY"],
+          "locations": [
+            "New York, NY"
+          ],
           "region": "United States — Northeast",
           "graduationWindow": "Fall 2026 or Spring 2027",
           "visaEvidence": {
-            "level": "Strong",
+            "level": "Supported",
             "explanation": "Palantir's official early-talent visa FAQ says its Mobility Team supports international students with visa matters. The role still requires individual eligibility review.",
             "url": "https://www.palantir.com/careers/students-and-early-talent/"
           },
-          "tags": ["AI governance", "Privacy"]
+          "tags": [
+            "AI governance",
+            "Privacy"
+          ]
         }
       }
     },
@@ -121,22 +156,39 @@
       "enabled": true,
       "boardToken": "akunacapital",
       "selection": {
-        "externalIds": ["7773141", "8016687", "8013230", "8013085"],
+        "externalIds": [
+          "7773141",
+          "8016687",
+          "8013230",
+          "8013085"
+        ],
         "includeTitle": [],
         "includeDescription": [],
         "exclude": []
       },
       "defaults": {
-        "locations": ["Chicago, IL"],
+        "locations": [
+          "Chicago, IL"
+        ],
         "country": "United States",
         "region": "United States — Midwest",
         "workplaceType": "Unspecified",
         "compensation": "$145,000 minimum base",
         "startPeriod": "August 2027",
         "graduationWindow": "Graduating by August 2027",
-        "graduationMonths": ["2027-05", "2027-08"],
+        "graduationMonths": [
+          "2027-05",
+          "2027-08"
+        ],
         "experienceRequirements": "Entry level; technical degree requirements vary by role",
-        "tags": ["Chicago", "Early career"]
+        "tags": [
+          "Chicago",
+          "Early career"
+        ],
+        "degreeLevels": [
+          "Undergraduate / Master's",
+          "PhD"
+        ]
       },
       "overrides": {
         "7773141": {
@@ -148,29 +200,10 @@
             "explanation": "The exact posting explicitly accepts F-1 OPT or STEM OPT as day-one work authorization. It does not promise later H-1B sponsorship; verify ongoing support.",
             "url": "https://akunacapital.com/careers/job/7773141/junior-trader/?gh_jid=7773141"
           },
-          "tags": ["Options", "Trading"]
-        },
-        "8016687": {
-          "category": "Quantitative Development",
-          "applicationUrl": "https://akunacapital.com/careers/job/8016687/junior-quantitative-developer-strategist/?gh_jid=8016687",
-          "sourceUrl": "https://akunacapital.com/careers/job/8016687/junior-quantitative-developer-strategist/?gh_jid=8016687",
-          "visaEvidence": {
-            "level": "Strong",
-            "explanation": "The exact posting explicitly accepts F-1 OPT or STEM OPT as day-one work authorization. It does not promise later H-1B sponsorship; verify ongoing support.",
-            "url": "https://akunacapital.com/careers/job/8016687/junior-quantitative-developer-strategist/?gh_jid=8016687"
-          },
-          "tags": ["Quant development", "Strategy"]
-        },
-        "8013230": {
-          "category": "Software Engineering",
-          "applicationUrl": "https://akunacapital.com/careers/job/8013230/talent-community/",
-          "sourceUrl": "https://akunacapital.com/careers/job/8013230/talent-community/",
-          "visaEvidence": {
-            "level": "Strong",
-            "explanation": "The exact full job posting explicitly accepts F-1 OPT or STEM OPT as day-one work authorization. It does not promise later H-1B sponsorship; verify ongoing support.",
-            "url": "https://akunacapital.com/careers/job/8013230/talent-community/"
-          },
-          "tags": ["Python", "Trading systems"]
+          "tags": [
+            "Options",
+            "Trading"
+          ]
         },
         "8013085": {
           "category": "Software Engineering",
@@ -181,7 +214,38 @@
             "explanation": "The exact full job posting explicitly accepts F-1 OPT or STEM OPT as day-one work authorization. It does not promise later H-1B sponsorship; verify ongoing support.",
             "url": "https://akunacapital.com/careers/job/8013085/talent-community/"
           },
-          "tags": ["C++", "Trading systems"]
+          "tags": [
+            "C++",
+            "Trading systems"
+          ]
+        },
+        "8013230": {
+          "category": "Software Engineering",
+          "applicationUrl": "https://akunacapital.com/careers/job/8013230/talent-community/",
+          "sourceUrl": "https://akunacapital.com/careers/job/8013230/talent-community/",
+          "visaEvidence": {
+            "level": "Strong",
+            "explanation": "The exact full job posting explicitly accepts F-1 OPT or STEM OPT as day-one work authorization. It does not promise later H-1B sponsorship; verify ongoing support.",
+            "url": "https://akunacapital.com/careers/job/8013230/talent-community/"
+          },
+          "tags": [
+            "Python",
+            "Trading systems"
+          ]
+        },
+        "8016687": {
+          "category": "Quantitative Development",
+          "applicationUrl": "https://akunacapital.com/careers/job/8016687/junior-quantitative-developer-strategist/?gh_jid=8016687",
+          "sourceUrl": "https://akunacapital.com/careers/job/8016687/junior-quantitative-developer-strategist/?gh_jid=8016687",
+          "visaEvidence": {
+            "level": "Strong",
+            "explanation": "The exact posting explicitly accepts F-1 OPT or STEM OPT as day-one work authorization. It does not promise later H-1B sponsorship; verify ongoing support.",
+            "url": "https://akunacapital.com/careers/job/8016687/junior-quantitative-developer-strategist/?gh_jid=8016687"
+          },
+          "tags": [
+            "Quant development",
+            "Strategy"
+          ]
         }
       }
     },
@@ -197,7 +261,11 @@
         "url": "https://www.ellis.com/visa-sponsors/drw-holdings-llc"
       },
       "selection": {
-        "externalIds": ["8030406", "7980165", "8039110"],
+        "externalIds": [
+          "8030406",
+          "7980165",
+          "8039110"
+        ],
         "includeTitle": [],
         "includeDescription": [],
         "exclude": []
@@ -208,38 +276,73 @@
         "workplaceType": "Unspecified",
         "startPeriod": "2027",
         "experienceRequirements": "New graduate",
-        "tags": ["Graduate", "Trading"]
+        "tags": [
+          "Graduate",
+          "Trading"
+        ],
+        "degreeLevels": [
+          "Undergraduate / Master's",
+          "PhD"
+        ]
       },
       "overrides": {
+        "7980165": {
+          "category": "Software Engineering",
+          "locations": [
+            "Chicago, IL"
+          ],
+          "compensation": "$225,000 base",
+          "graduationWindow": "December 2026 through June 2027",
+          "graduationMonths": [
+            "2026-12",
+            "2027-05",
+            "2027-06"
+          ],
+          "tags": [
+            "Software",
+            "Trading systems"
+          ]
+        },
         "8030406": {
           "category": "Quantitative Research",
-          "locations": ["Chicago, IL", "New York, NY"],
+          "locations": [
+            "Chicago, IL",
+            "New York, NY"
+          ],
           "region": "United States — Multiple regions",
           "compensation": "$250,000–$300,000 base",
           "graduationWindow": "December 2026 through August 2027",
-          "graduationMonths": ["2026-12", "2027-05", "2027-08"],
-          "tags": ["Research", "Statistics"]
-        },
-        "7980165": {
-          "category": "Software Engineering",
-          "locations": ["Chicago, IL"],
-          "compensation": "$225,000 base",
-          "graduationWindow": "December 2026 through June 2027",
-          "graduationMonths": ["2026-12", "2027-05", "2027-06"],
-          "tags": ["Software", "Trading systems"]
+          "graduationMonths": [
+            "2026-12",
+            "2027-05",
+            "2027-08"
+          ],
+          "tags": [
+            "Research",
+            "Statistics"
+          ]
         },
         "8039110": {
           "category": "Systems / Infrastructure / Performance Engineering",
-          "locations": ["Chicago, IL"],
+          "locations": [
+            "Chicago, IL"
+          ],
           "compensation": "$225,000 base",
           "graduationWindow": "December 2026 through June 2027",
-          "graduationMonths": ["2026-12", "2027-05", "2027-06"],
+          "graduationMonths": [
+            "2026-12",
+            "2027-05",
+            "2027-06"
+          ],
           "visaEvidence": {
             "level": "Historical",
             "explanation": "Recent public DOL-derived records include comparable FPGA Engineer filings at a DRW entity. This does not establish support for this opening.",
             "url": "https://www.ellis.com/visa-sponsors/drw-associates-llc/h1b"
           },
-          "tags": ["FPGA", "Hardware"]
+          "tags": [
+            "FPGA",
+            "Hardware"
+          ]
         }
       }
     },
@@ -255,44 +358,731 @@
         "url": "https://www.ellis.com/visa-sponsors/five-rings-llc/h1b"
       },
       "selection": {
-        "externalIds": ["5255334008", "5349839008", "4017982008"],
+        "externalIds": [
+          "5255334008",
+          "5349839008",
+          "4017982008"
+        ],
         "includeTitle": [],
         "includeDescription": [],
         "exclude": []
       },
       "defaults": {
-        "locations": ["New York, NY"],
+        "locations": [
+          "New York, NY"
+        ],
         "country": "United States",
         "region": "United States — Northeast",
         "workplaceType": "Unspecified",
         "startPeriod": "2027",
         "experienceRequirements": "Campus full-time role",
-        "tags": ["Campus", "Trading"]
+        "tags": [
+          "Campus",
+          "Trading"
+        ],
+        "degreeLevels": [
+          "Undergraduate / Master's",
+          "PhD"
+        ]
       },
       "overrides": {
+        "4017982008": {
+          "category": "Systems / Infrastructure / Performance Engineering",
+          "compensation": "$225,000–$250,000 base",
+          "datePosted": "2026-07-15",
+          "graduationWindow": "2027 graduate recruiting cycle",
+          "graduationMonths": [
+            "2027-05",
+            "2027-08"
+          ],
+          "tags": [
+            "Linux",
+            "Trading operations"
+          ]
+        },
         "5255334008": {
           "category": "Quantitative Trading",
           "compensation": "$300,000 base",
           "datePosted": "2026-07-20",
           "graduationWindow": "Winter 2026 or Spring/Summer 2027",
-          "graduationMonths": ["2026-12", "2027-05", "2027-08"],
-          "tags": ["Quantitative trading"]
+          "graduationMonths": [
+            "2026-12",
+            "2027-05",
+            "2027-08"
+          ],
+          "tags": [
+            "Quantitative trading"
+          ]
         },
         "5349839008": {
           "category": "Software Engineering",
           "compensation": "$300,000 base",
           "datePosted": "2026-07-20",
           "graduationWindow": "2027 graduate recruiting cycle",
-          "graduationMonths": ["2027-05", "2027-08"],
-          "tags": ["Software", "Trading systems"]
+          "graduationMonths": [
+            "2027-05",
+            "2027-08"
+          ],
+          "tags": [
+            "Software",
+            "Trading systems"
+          ]
+        }
+      }
+    },
+    {
+      "id": "3red-greenhouse",
+      "company": "3Red Partners",
+      "platform": "greenhouse",
+      "enabled": true,
+      "boardToken": "3redpartners",
+      "visaEvidence": {
+        "level": "Historical",
+        "explanation": "Recent public DOL-derived records show 3Red Partners filings for comparable quantitative research and development roles. This employer history is not a promise for any opening.",
+        "url": "https://www.myvisajobs.com/employer/3red-partners/"
+      },
+      "selection": {
+        "externalIds": [
+          "8624128002",
+          "8631086002",
+          "8634612002"
+        ],
+        "includeTitle": [],
+        "includeDescription": [],
+        "exclude": []
+      },
+      "defaults": {
+        "locations": [
+          "Chicago, IL"
+        ],
+        "country": "United States",
+        "region": "United States — Midwest",
+        "workplaceType": "Unspecified",
+        "startPeriod": "2027",
+        "graduationWindow": "Graduating in 2027 by August 2027",
+        "graduationMonths": [
+          "2027-05",
+          "2027-08"
+        ],
+        "degreeLevels": [
+          "Undergraduate / Master's",
+          "PhD"
+        ],
+        "experienceRequirements": "Campus graduate role; relevant internship experience expected",
+        "tags": [
+          "Campus",
+          "Trading"
+        ]
+      },
+      "overrides": {
+        "8624128002": {
+          "category": "Quantitative Research",
+          "compensation": "$125,000–$200,000 base",
+          "tags": [
+            "Machine learning",
+            "Research"
+          ]
         },
-        "4017982008": {
-          "category": "Systems / Infrastructure / Performance Engineering",
-          "compensation": "$225,000–$250,000 base",
+        "8631086002": {
+          "category": "Quantitative Development",
+          "compensation": "$125,000–$200,000 base",
+          "tags": [
+            "C++",
+            "Low latency"
+          ]
+        },
+        "8634612002": {
+          "category": "Quantitative Trading",
+          "compensation": "$100,000–$150,000 base",
+          "tags": [
+            "Python",
+            "Trading"
+          ]
+        }
+      }
+    },
+    {
+      "id": "jump-greenhouse",
+      "company": "Jump Trading",
+      "platform": "greenhouse",
+      "enabled": true,
+      "boardToken": "jumptrading",
+      "selection": {
+        "externalIds": [
+          "7728630",
+          "7982619"
+        ],
+        "includeTitle": [],
+        "includeDescription": [],
+        "exclude": []
+      },
+      "defaults": {
+        "locations": [
+          "Chicago, IL",
+          "New York, NY"
+        ],
+        "country": "United States",
+        "region": "United States — Multiple regions",
+        "workplaceType": "On-site",
+        "startPeriod": "2027",
+        "graduationWindow": "Current 2027 U.S. campus recruiting cycle; exact graduation months not listed",
+        "graduationMonths": [],
+        "degreeLevels": [
+          "Undergraduate / Master's",
+          "PhD"
+        ],
+        "experienceRequirements": "Campus full-time role; no professional experience minimum stated",
+        "tags": [
+          "Campus",
+          "Trading"
+        ]
+      },
+      "overrides": {
+        "7728630": {
+          "category": "Quantitative Research",
+          "applicationUrl": "https://www.jumptrading.com/hr/job?gh_jid=7728630",
+          "sourceUrl": "https://www.jumptrading.com/hr/job?gh_jid=7728630",
+          "compensation": "$300,000 base",
+          "degreeLevels": [
+            "Undergraduate / Master's"
+          ],
+          "visaEvidence": {
+            "level": "Strong",
+            "explanation": "The exact posting encourages international students, accepts CPT or OPT, and says Jump sponsors work visas for full-time positions. Individual eligibility still applies.",
+            "url": "https://www.jumptrading.com/hr/job?gh_jid=7728630"
+          },
+          "tags": [
+            "Data science",
+            "Research"
+          ]
+        },
+        "7982619": {
+          "category": "Quantitative Trading",
+          "applicationUrl": "https://www.jumptrading.com/hr/job?gh_jid=7982619",
+          "sourceUrl": "https://www.jumptrading.com/hr/job?gh_jid=7982619",
+          "compensation": "$300,000 base",
+          "visaEvidence": {
+            "level": "Strong",
+            "explanation": "The exact posting encourages international students, accepts CPT or OPT, and says Jump sponsors work visas for full-time positions. Individual eligibility still applies.",
+            "url": "https://www.jumptrading.com/hr/job?gh_jid=7982619"
+          },
+          "tags": [
+            "Quantitative trading"
+          ]
+        }
+      }
+    },
+    {
+      "id": "old-mission-greenhouse",
+      "company": "Old Mission",
+      "platform": "greenhouse",
+      "enabled": true,
+      "boardToken": "oldmissioncapital",
+      "visaEvidence": {
+        "level": "Historical",
+        "explanation": "Recent public DOL-derived records show Old Mission Capital employment-visa filings. This is firm-level history, not a promise of support for a specific graduate role.",
+        "url": "https://www.myvisajobs.com/employer/old-mission-capital/"
+      },
+      "selection": {
+        "externalIds": [
+          "7796031003",
+          "7796044003",
+          "7814534003"
+        ],
+        "includeTitle": [],
+        "includeDescription": [],
+        "exclude": []
+      },
+      "defaults": {
+        "locations": [
+          "Chicago, IL",
+          "New York, NY"
+        ],
+        "country": "United States",
+        "region": "United States — Multiple regions",
+        "workplaceType": "On-site",
+        "graduationWindow": "2027 graduate program; exact graduation months not listed",
+        "graduationMonths": [],
+        "degreeLevels": [
+          "Undergraduate / Master's",
+          "PhD"
+        ],
+        "experienceRequirements": "Graduate program; no professional experience minimum stated",
+        "tags": [
+          "Graduate program",
+          "Trading"
+        ]
+      },
+      "overrides": {
+        "7796031003": {
+          "category": "Quantitative Trading",
+          "applicationUrl": "https://www.oldmissioncapital.com/careers/?gh_jid=7796031003",
+          "sourceUrl": "https://www.oldmissioncapital.com/careers/?gh_jid=7796031003",
+          "compensation": "$200,000 base plus discretionary bonus",
+          "startPeriod": "February 2027",
+          "tags": [
+            "February start"
+          ]
+        },
+        "7796044003": {
+          "category": "Quantitative Trading",
+          "applicationUrl": "https://www.oldmissioncapital.com/careers/?gh_jid=7796044003",
+          "sourceUrl": "https://www.oldmissioncapital.com/careers/?gh_jid=7796044003",
+          "compensation": "$200,000 base plus discretionary bonus",
+          "startPeriod": "August 2027",
+          "tags": [
+            "August start"
+          ]
+        },
+        "7814534003": {
+          "category": "Quantitative Research",
+          "applicationUrl": "https://www.oldmissioncapital.com/careers/?gh_jid=7814534003",
+          "sourceUrl": "https://www.oldmissioncapital.com/careers/?gh_jid=7814534003",
+          "locations": [
+            "Chicago, IL"
+          ],
+          "region": "United States — Midwest",
+          "compensation": "$175,000–$250,000 base plus discretionary bonus",
+          "startPeriod": "August 2027",
+          "experienceRequirements": "Master's or PhD graduate role; no professional experience minimum stated",
+          "tags": [
+            "August start",
+            "Research"
+          ]
+        }
+      }
+    },
+    {
+      "id": "tower-greenhouse",
+      "company": "Tower Research Capital",
+      "platform": "greenhouse",
+      "enabled": true,
+      "boardToken": "towerresearchcapital",
+      "visaEvidence": {
+        "level": "Historical",
+        "explanation": "Recent public DOL-derived records show Tower Research Capital filings for comparable quantitative trading and research roles. This does not establish support for this opening.",
+        "url": "https://www.ellis.com/visa-sponsors/tower-research-capital-llc/h1b"
+      },
+      "selection": {
+        "externalIds": [
+          "8024142"
+        ],
+        "includeTitle": [],
+        "includeDescription": [],
+        "exclude": []
+      },
+      "defaults": {
+        "category": "Quantitative Trading",
+        "locations": [
+          "Chicago, IL",
+          "New York, NY"
+        ],
+        "country": "United States",
+        "region": "United States — Multiple regions",
+        "workplaceType": "Hybrid",
+        "compensation": "$150,000–$250,000 base plus discretionary bonus",
+        "startPeriod": "2027",
+        "graduationWindow": "2027 graduate recruiting cycle; BS, MS, or PhD",
+        "graduationMonths": [
+          "2027-05",
+          "2027-08"
+        ],
+        "degreeLevels": [
+          "Undergraduate / Master's",
+          "PhD"
+        ],
+        "experienceRequirements": "Zero to two years of experience",
+        "tags": [
+          "Graduate",
+          "Trading"
+        ]
+      },
+      "overrides": {
+        "8024142": {
+          "applicationUrl": "https://www.tower-research.com/open-positions/?gh_jid=8024142",
+          "sourceUrl": "https://www.tower-research.com/open-positions/?gh_jid=8024142"
+        }
+      }
+    },
+    {
+      "id": "transmarket-greenhouse",
+      "company": "TransMarket Group",
+      "platform": "greenhouse",
+      "enabled": true,
+      "boardToken": "transmarketgroup",
+      "visaEvidence": {
+        "level": "Historical",
+        "explanation": "Recent public DOL-derived records include comparable junior quantitative trading roles at a TransMarket entity. This history is not a promise for the current opening.",
+        "url": "https://www.ellis.com/visa-sponsors/transmarket-operations-llc"
+      },
+      "selection": {
+        "externalIds": [
+          "5151574007"
+        ],
+        "includeTitle": [],
+        "includeDescription": [],
+        "exclude": []
+      },
+      "defaults": {
+        "category": "Quantitative Trading",
+        "locations": [
+          "Chicago, IL"
+        ],
+        "country": "United States",
+        "region": "United States — Midwest",
+        "workplaceType": "On-site",
+        "startPeriod": "2027",
+        "graduationWindow": "December 2026 through Spring 2027",
+        "graduationMonths": [
+          "2026-12",
+          "2027-05"
+        ],
+        "degreeLevels": [
+          "Undergraduate / Master's",
+          "PhD"
+        ],
+        "experienceRequirements": "Junior graduate role; no professional experience minimum stated",
+        "tags": [
+          "C++",
+          "Python"
+        ]
+      },
+      "overrides": {
+        "5151574007": {
+          "applicationUrl": "https://job-boards.greenhouse.io/transmarketgroup/jobs/5151574007",
+          "sourceUrl": "https://job-boards.greenhouse.io/transmarketgroup/jobs/5151574007"
+        }
+      }
+    },
+    {
+      "id": "ixl-greenhouse",
+      "company": "IXL Learning",
+      "platform": "greenhouse",
+      "enabled": true,
+      "boardToken": "ixllearning",
+      "selection": {
+        "externalIds": [
+          "8615710002",
+          "8615717002"
+        ],
+        "includeTitle": [],
+        "includeDescription": [],
+        "exclude": []
+      },
+      "defaults": {
+        "category": "Software Engineering",
+        "country": "United States",
+        "workplaceType": "On-site",
+        "startPeriod": null,
+        "graduationWindow": null,
+        "graduationMonths": [],
+        "degreeLevels": [
+          "Undergraduate / Master's",
+          "PhD"
+        ],
+        "experienceRequirements": "Bachelor's or advanced degree in computer science or a related discipline",
+        "tags": [
+          "Education technology",
+          "New graduate"
+        ]
+      },
+      "overrides": {
+        "8615710002": {
+          "applicationUrl": "https://www.ixl.com/company/careers?gh_jid=8615710002",
+          "sourceUrl": "https://www.ixl.com/company/careers?gh_jid=8615710002",
+          "locations": [
+            "San Mateo, CA"
+          ],
+          "region": "United States — West",
+          "compensation": "$110,000–$135,000 base plus equity",
+          "datePosted": "2026-07-02",
+          "visaEvidence": {
+            "level": "Strong",
+            "explanation": "The exact official posting says H-1B sponsorship is available for this position. Availability still does not guarantee that every candidate or immigration path will qualify.",
+            "url": "https://www.ixl.com/company/careers?gh_jid=8615710002"
+          }
+        },
+        "8615717002": {
+          "applicationUrl": "https://www.ixl.com/company/careers?gh_jid=8615717002",
+          "sourceUrl": "https://www.ixl.com/company/careers?gh_jid=8615717002",
+          "locations": [
+            "Raleigh, NC"
+          ],
+          "region": "United States — South",
+          "datePosted": "2026-07-02",
+          "visaEvidence": {
+            "level": "Strong",
+            "explanation": "The exact official posting says H-1B sponsorship is available for this position. Availability still does not guarantee that every candidate or immigration path will qualify.",
+            "url": "https://www.ixl.com/company/careers?gh_jid=8615717002"
+          }
+        }
+      }
+    },
+    {
+      "id": "nuro-greenhouse",
+      "company": "Nuro",
+      "platform": "greenhouse",
+      "enabled": true,
+      "boardToken": "nuro",
+      "visaEvidence": {
+        "level": "Historical",
+        "explanation": "Recent public DOL-derived records show Nuro filings for comparable software engineering roles, including performance engineering. This history is not a promise for this opening.",
+        "url": "https://www.ellis.com/visa-sponsors/nuro-inc/h1b"
+      },
+      "selection": {
+        "externalIds": [
+          "6972272"
+        ],
+        "includeTitle": [],
+        "includeDescription": [],
+        "exclude": []
+      },
+      "defaults": {
+        "category": "Systems / Infrastructure / Performance Engineering",
+        "locations": [
+          "Mountain View, CA"
+        ],
+        "country": "United States",
+        "region": "United States — West",
+        "workplaceType": "Unspecified",
+        "compensation": "$153,000–$175,000 base plus bonus and equity",
+        "datePosted": "2026-07-16",
+        "startPeriod": null,
+        "graduationWindow": null,
+        "graduationMonths": [],
+        "degreeLevels": [
+          "Undergraduate / Master's",
+          "PhD"
+        ],
+        "experienceRequirements": "New graduate with a BS, MS, or PhD in computer science or a related technical field",
+        "tags": [
+          "C++",
+          "Performance"
+        ]
+      },
+      "overrides": {
+        "6972272": {
+          "applicationUrl": "https://www.nuro.ai/careersitem?gh_jid=6972272",
+          "sourceUrl": "https://www.nuro.ai/careersitem?gh_jid=6972272"
+        }
+      }
+    },
+    {
+      "id": "collective-ashby",
+      "company": "Collective",
+      "platform": "ashby",
+      "enabled": true,
+      "boardName": "collective",
+      "visaEvidence": {
+        "level": "Historical",
+        "explanation": "Recent public DOL-derived records show Collective Hub filings in engineering and infrastructure roles. This limited employer history does not promise support for this opening.",
+        "url": "https://www.ellis.com/visa-sponsors/collective-hub-inc/h1b"
+      },
+      "selection": {
+        "externalIds": [
+          "40516856-b29c-4b38-b434-68be5241bacf"
+        ],
+        "includeTitle": [],
+        "includeDescription": [],
+        "exclude": []
+      },
+      "defaults": {
+        "category": "Software Engineering",
+        "locations": [
+          "San Francisco, CA"
+        ],
+        "country": "United States",
+        "region": "United States — West",
+        "workplaceType": "Hybrid",
+        "datePosted": "2026-06-10",
+        "startPeriod": null,
+        "graduationWindow": null,
+        "graduationMonths": [],
+        "degreeLevels": [
+          "Undergraduate / Master's",
+          "PhD"
+        ],
+        "experienceRequirements": "Zero to two years with a degree in computer engineering or a related field",
+        "tags": [
+          "Full stack",
+          "New graduate"
+        ]
+      },
+      "overrides": {
+        "40516856-b29c-4b38-b434-68be5241bacf": {
+          "applicationUrl": "https://jobs.ashbyhq.com/collective/40516856-b29c-4b38-b434-68be5241bacf/application",
+          "sourceUrl": "https://jobs.ashbyhq.com/collective/40516856-b29c-4b38-b434-68be5241bacf"
+        }
+      }
+    },
+    {
+      "id": "newsbreak-greenhouse",
+      "company": "NewsBreak",
+      "platform": "greenhouse",
+      "enabled": true,
+      "boardToken": "newsbreak",
+      "visaEvidence": {
+        "level": "Historical",
+        "explanation": "Recent public DOL-derived records show Particle Media filings for comparable software and data roles in Mountain View. This employer history is not a promise for this opening.",
+        "url": "https://www.ellis.com/visa-sponsors/particle-media-inc/h1b"
+      },
+      "selection": {
+        "externalIds": [
+          "4700278006"
+        ],
+        "includeTitle": [],
+        "includeDescription": [],
+        "exclude": []
+      },
+      "defaults": {
+        "category": "Machine Learning / AI Engineering",
+        "locations": [
+          "Mountain View, CA"
+        ],
+        "country": "United States",
+        "region": "United States — West",
+        "workplaceType": "On-site",
+        "compensation": "$135,000–$155,000 base",
+        "startPeriod": "Late 2026 or early 2027",
+        "graduationWindow": "Recently completed or completing a bachelor's or master's degree within six months",
+        "graduationMonths": [
+          "2026-12",
+          "2027-01"
+        ],
+        "degreeLevels": [
+          "Undergraduate / Master's"
+        ],
+        "experienceRequirements": "New graduate; no professional experience minimum stated",
+        "tags": [
+          "AI agents",
+          "Applied AI"
+        ]
+      },
+      "overrides": {
+        "4700278006": {
+          "applicationUrl": "https://job-boards.greenhouse.io/newsbreak/jobs/4700278006",
+          "sourceUrl": "https://job-boards.greenhouse.io/newsbreak/jobs/4700278006"
+        }
+      }
+    },
+    {
+      "id": "ellipsis-ashby",
+      "company": "Ellipsis Labs",
+      "platform": "ashby",
+      "enabled": true,
+      "boardName": "ellipsislabs",
+      "visaEvidence": {
+        "level": "Historical",
+        "explanation": "Recent DOL-derived records show Ellipsis Research, doing business as Ellipsis Labs, filed certified LCAs in 2026. This employer history does not promise support for this opening.",
+        "url": "https://h1bgrader.com/h1b-sponsors/ellipsis-research-inc-dba-ellipsis-labs-l0yzdmqp2x/salaries/2026"
+      },
+      "selection": {
+        "externalIds": [
+          "256c2ec2-01c8-4ff6-9ad0-b926fe40472d"
+        ],
+        "includeTitle": [],
+        "includeDescription": [],
+        "exclude": []
+      },
+      "defaults": {
+        "category": "Software Engineering",
+        "locations": [
+          "New York, NY"
+        ],
+        "country": "United States",
+        "region": "United States — Northeast",
+        "workplaceType": "Hybrid",
+        "compensation": "$150,000–$200,000 base plus equity",
+        "startPeriod": "2027",
+        "graduationWindow": "2027 new-graduate cohort; exact graduation months not listed",
+        "graduationMonths": [],
+        "degreeLevels": [
+          "Undergraduate / Master's",
+          "PhD"
+        ],
+        "experienceRequirements": "New-graduate role; degree level and professional experience minimum are not stated",
+        "tags": [
+          "Backend",
+          "Infrastructure"
+        ]
+      },
+      "overrides": {
+        "256c2ec2-01c8-4ff6-9ad0-b926fe40472d": {
+          "applicationUrl": "https://jobs.ashbyhq.com/ellipsislabs/256c2ec2-01c8-4ff6-9ad0-b926fe40472d/application",
+          "sourceUrl": "https://jobs.ashbyhq.com/ellipsislabs/256c2ec2-01c8-4ff6-9ad0-b926fe40472d"
+        }
+      }
+    },
+    {
+      "id": "netic-ashby",
+      "company": "Netic",
+      "platform": "ashby",
+      "enabled": true,
+      "boardName": "netic",
+      "visaEvidence": {
+        "level": "Historical",
+        "explanation": "Recent DOL-derived records report certified Netic LCAs in 2026. This limited employer history is not a company policy or a promise for any current opening.",
+        "url": "https://interviewos.ai/companies/netic"
+      },
+      "selection": {
+        "externalIds": [
+          "bab5d1e5-e31b-42f0-9cef-334b1f17fed3",
+          "d9bcb6a2-0e54-4cb3-baec-43f2d74db18f",
+          "f2d170eb-c4c3-4715-9d2e-84dd4fe857c8"
+        ],
+        "includeTitle": [],
+        "includeDescription": [],
+        "exclude": []
+      },
+      "defaults": {
+        "locations": [
+          "San Francisco, CA"
+        ],
+        "country": "United States",
+        "region": "United States — West",
+        "workplaceType": "On-site",
+        "startPeriod": "Winter 2026 through Summer 2027",
+        "graduationWindow": null,
+        "graduationMonths": [],
+        "degreeLevels": [
+          "Undergraduate / Master's"
+        ],
+        "experienceRequirements": "New-graduate role; degree level and professional experience minimum are not stated",
+        "tags": [
+          "AI agents",
+          "New graduate"
+        ]
+      },
+      "overrides": {
+        "bab5d1e5-e31b-42f0-9cef-334b1f17fed3": {
+          "category": "Software Engineering",
+          "applicationUrl": "https://jobs.ashbyhq.com/netic/bab5d1e5-e31b-42f0-9cef-334b1f17fed3/application",
+          "sourceUrl": "https://jobs.ashbyhq.com/netic/bab5d1e5-e31b-42f0-9cef-334b1f17fed3",
           "datePosted": "2026-07-15",
-          "graduationWindow": "2027 graduate recruiting cycle",
-          "graduationMonths": ["2027-05", "2027-08"],
-          "tags": ["Linux", "Trading operations"]
+          "tags": [
+            "Full stack",
+            "Product engineering"
+          ]
+        },
+        "d9bcb6a2-0e54-4cb3-baec-43f2d74db18f": {
+          "category": "Machine Learning / AI Engineering",
+          "applicationUrl": "https://jobs.ashbyhq.com/netic/d9bcb6a2-0e54-4cb3-baec-43f2d74db18f/application",
+          "sourceUrl": "https://jobs.ashbyhq.com/netic/d9bcb6a2-0e54-4cb3-baec-43f2d74db18f",
+          "datePosted": "2026-07-16",
+          "tags": [
+            "Agent platform",
+            "Orchestration"
+          ]
+        },
+        "f2d170eb-c4c3-4715-9d2e-84dd4fe857c8": {
+          "category": "Machine Learning / AI Engineering",
+          "applicationUrl": "https://jobs.ashbyhq.com/netic/f2d170eb-c4c3-4715-9d2e-84dd4fe857c8/application",
+          "sourceUrl": "https://jobs.ashbyhq.com/netic/f2d170eb-c4c3-4715-9d2e-84dd4fe857c8",
+          "datePosted": "2026-07-16",
+          "tags": [
+            "Customer engineering",
+            "Forward deployed"
+          ]
         }
       }
     }

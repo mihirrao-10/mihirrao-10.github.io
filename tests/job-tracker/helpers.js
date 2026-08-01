@@ -17,6 +17,7 @@ export function sampleJob(overrides = {}) {
     startPeriod: "Summer 2027",
     graduationWindow: "December 2026 through August 2027",
     graduationMonths: ["2026-12", "2027-05", "2027-08"],
+    degreeLevels: ["Undergraduate / Master's"],
     experienceRequirements: "0–2 years",
     visaEvidence: {
       level: "Supported",

@@ -16,11 +16,12 @@ updater. Do not hand-edit generated JSON.
 | `category` | One of the eight normalized technical categories |
 | `applicationUrl` | Official employer or official ATS application destination |
 | `sourceUrl`, `sourcePlatform` | Official detail source and its platform |
-| `locations`, `country`, `region` | Visible location data and filter grouping |
+| `locations`, `country`, `region` | U.S. `City, ST` locations, fixed U.S. country, and internal grouping |
 | `workplaceType` | `Remote`, `Hybrid`, `On-site`, or `Unspecified` |
 | `compensation` | Posting-supplied display text, otherwise `null` |
 | `datePosted`, `deadline` | Verified ISO dates, otherwise `null` |
-| `startPeriod`, `graduationWindow`, `graduationMonths` | 2027-cycle eligibility |
+| `startPeriod`, `graduationWindow`, `graduationMonths` | 2027-cycle timing eligibility |
+| `degreeLevels` | One or both UI eligibility groups: `Undergraduate / Master's`, `PhD` |
 | `experienceRequirements` | Concise entry-level requirement summary |
 | `visaEvidence` | Level, conservative explanation, and evidence URL |
 | `firstSeen`, `lastVerified` | Discovery and most recent successful verification dates |
@@ -53,8 +54,10 @@ Use an official public Greenhouse, Lever, or Ashby board only.
    patterns are supported, but an allowlist is preferred for this high-accuracy
    board.
 3. Supply verified defaults and per-job overrides for geography, graduation
-   window, category, compensation, and evidence. A `Strong` evidence statement
-   must be attached per job rather than assumed for an entire board.
+   window, degree eligibility, category, compensation, and evidence. Every
+   location must use `City, ST`, and only U.S. openings belong on this board. A
+   `Strong` evidence statement must be attached per job rather than assumed for
+   an entire board.
 4. Run `npm run update:jobs`, inspect every selected role, then run
    `npm run check`.
 
@@ -74,14 +77,29 @@ Use `manual/jobs.json` for official sites without a stable public listing API.
 
 1. Confirm the role page and its Apply control are open and official.
 2. Check the title, locations, full-time/entry-level fit, 2027 start or graduation
-   window, experience requirement, and absence of citizenship, clearance-only,
-   or no-sponsorship language.
+   window, degree level, experience requirement, and absence of citizenship,
+   clearance-only, or no-sponsorship language. Include only U.S. locations and
+   normalize each as `City, ST`.
 3. Add a complete schema-valid object. Use the current verification date for a
    new record, a stable human-readable ID, and a grouped `manual-*` source ID.
 4. Cite the strongest available international-hiring evidence and describe
    exactly what it establishes. Leave unknown fields `null` or `Unspecified`.
 5. Run the live updater so the official application URL is probed, then validate
    and inspect the generated output.
+
+## Degree eligibility
+
+The public filter intentionally has two groups:
+
+- **Undergraduate / Master's** for postings that accept bachelor's or master's
+  candidates, or impose no advanced-degree-only restriction.
+- **PhD** for postings that accept PhD candidates.
+
+A posting that accepts all three degree levels carries both values and appears
+under either filter. A degree-specific posting carries only its supported value.
+Record what the official requirements establish; do not infer PhD eligibility
+from a research-oriented title or exclude PhD candidates from a general role
+without a stated restriction.
 
 To correct a record, edit the source object rather than generated JSON. Do not
 advance `lastVerified` merely because metadata changed; it represents an actual

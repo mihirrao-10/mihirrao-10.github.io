@@ -25,6 +25,7 @@ function source(overrides = {}) {
       region: "Northeast",
       graduationWindow: "December 2026 through August 2027",
       graduationMonths: ["2026-12", "2027-05", "2027-08"],
+      degreeLevels: ["Undergraduate / Master's"],
     },
     visaEvidence: {
       level: "Supported",
@@ -53,6 +54,16 @@ test("an explicit ATS allowlist can select a qualifying role", () => {
   const job = normalizeSourceCandidate(source(), candidate, "2026-07-31");
   assert.equal(job.visaEvidence.level, "Supported");
   assert.equal(job.category, "Software Engineering");
+  assert.deepEqual(job.degreeLevels, ["Undergraduate / Master's"]);
+});
+
+test("source normalization trims ATS title whitespace", () => {
+  const job = normalizeSourceCandidate(
+    source(),
+    { ...candidate, title: "  Software Engineer, New Graduate 2027  " },
+    "2026-07-31",
+  );
+  assert.equal(job.title, "Software Engineer, New Graduate 2027");
 });
 
 test("global exclusions override an ATS allowlist", () => {

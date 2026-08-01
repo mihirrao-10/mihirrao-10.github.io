@@ -6,8 +6,11 @@ relative links instead of client-side routing.
 
 The site includes the public **New Graduate Job Tracker (2027)** at
 [`/new-grad-job-tracker-2027/`](https://mihirrao-10.github.io/new-grad-job-tracker-2027/).
-It is a static, generated job board for technically relevant 2027 graduate roles
-with documented evidence that international candidates may be considered.
+It is a static, generated job board for technically relevant, U.S.-based 2027
+graduate roles with documented evidence that international candidates may be
+considered. Visitors can filter exact `City, ST` locations and either
+`Undergraduate / Master's` or `PhD` eligibility; a role can belong to both
+degree groups when its official requirements allow both.
 
 ## Repository layout
 
@@ -86,8 +89,9 @@ international-evidence source.
 During generation the updater validates input, normalizes fields, deduplicates
 canonical application URLs and normalized company/title/location identities,
 preserves `firstSeen`, and advances `lastVerified` only after a successful live
-observation. It never treats a timeout, rate limit, or source failure as proof
-that all jobs closed.
+observation. Schema and semantic checks reject non-U.S. records and locations
+that are not normalized as `City, ST`. It never treats a timeout, rate limit, or
+source failure as proof that all jobs closed.
 
 Detailed schema and maintenance instructions are in
 [`data/job-tracker/README.md`](data/job-tracker/README.md).
@@ -150,6 +154,10 @@ homepage project link and the tracker; no separate hosting project is required.
   review; an HTTP success only confirms that the official page responds.
 - ATS fields are inconsistent, so compensation, workplace type, dates, and
   deadlines remain blank rather than being inferred.
+- Degree eligibility reflects the listed requirements, not an assumption about
+  which degree a role would prefer. The two UI groups intentionally combine
+  undergraduate and master's candidates while keeping PhD-specific recruiting
+  independently filterable.
 - Public ATS formats, career URLs, immigration policies, and legal eligibility
   can change without notice.
 - Source allowlists intentionally favor accuracy over breadth and must be

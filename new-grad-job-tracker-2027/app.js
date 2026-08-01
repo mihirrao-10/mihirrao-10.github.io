@@ -31,9 +31,10 @@ const elements = {
   sort: document.querySelector("#sort-jobs"),
   category: document.querySelector("#category-filter"),
   company: document.querySelector("#company-filter"),
-  region: document.querySelector("#region-filter"),
+  location: document.querySelector("#location-filter"),
   workplace: document.querySelector("#workplace-filter"),
   evidence: document.querySelector("#evidence-filter"),
+  degree: document.querySelector("#degree-filter"),
   graduation: document.querySelector("#graduation-filter"),
   personalStatus: document.querySelector("#personal-filter"),
   exportJson: document.querySelector("#export-json"),
@@ -47,9 +48,10 @@ const filterElements = {
   sort: elements.sort,
   category: elements.category,
   company: elements.company,
-  region: elements.region,
+  location: elements.location,
   workplace: elements.workplace,
   evidence: elements.evidence,
+  degree: elements.degree,
   graduation: elements.graduation,
   personalStatus: elements.personalStatus,
 };
@@ -101,7 +103,7 @@ function initializeFilterOptions() {
   const presentCategories = new Set(allJobs.map((job) => job.category));
   populateSelect(elements.category, CATEGORY_ORDER.filter((category) => presentCategories.has(category)));
   populateSelect(elements.company, unique(allJobs.map((job) => job.company)));
-  populateSelect(elements.region, unique(allJobs.map((job) => job.region)));
+  populateSelect(elements.location, unique(allJobs.flatMap((job) => job.locations ?? [])));
   populateSelect(elements.workplace, unique(allJobs.map((job) => job.workplaceType)));
 }
 
@@ -138,6 +140,7 @@ function jobMarkup(job) {
     ? `<a class="evidence-link" href="${escapeHtml(evidence.url)}" target="_blank" rel="noopener noreferrer">View evidence</a>`
     : "";
   const deadlineLabel = job.status === "closed" && job.closedDate ? "Closed" : "Deadline";
+  const degreeLevels = (job.degreeLevels ?? []).join(" · ") || "Not listed";
 
   return `
     <li>
@@ -161,6 +164,8 @@ function jobMarkup(job) {
             <div><dt>${deadlineLabel}</dt><dd>${escapeHtml(formatDate(job.closedDate ?? job.deadline))}</dd></div>
             <div><dt>Start</dt><dd>${escapeHtml(job.startPeriod || "Not listed")}</dd></div>
             <div><dt>Graduation</dt><dd>${escapeHtml(job.graduationWindow || "Not listed")}</dd></div>
+            <div><dt>Degree</dt><dd>${escapeHtml(degreeLevels)}</dd></div>
+            <div><dt>Experience</dt><dd>${escapeHtml(job.experienceRequirements || "Not listed")}</dd></div>
           </dl>
         </div>
         <div>

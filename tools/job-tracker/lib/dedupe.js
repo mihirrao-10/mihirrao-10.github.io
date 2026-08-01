@@ -1,5 +1,6 @@
 import { canonicalizeUrl, jobIdentityKey } from "./url.js";
 import { uniqueStrings } from "./normalization.js";
+import { DEGREE_LEVELS } from "../constants.js";
 
 const EVIDENCE_STRENGTH = Object.freeze({
   Historical: 1,
@@ -34,6 +35,9 @@ function mergeJobs(left, right) {
       ...left.graduationMonths,
       ...right.graduationMonths,
     ]).sort(),
+    degreeLevels: DEGREE_LEVELS.filter(
+      (level) => left.degreeLevels.includes(level) || right.degreeLevels.includes(level),
+    ),
     visaEvidence: selectEvidence(left.visaEvidence, right.visaEvidence),
     firstSeen: left.firstSeen < right.firstSeen ? left.firstSeen : right.firstSeen,
     lastVerified:

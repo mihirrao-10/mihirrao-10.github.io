@@ -47,5 +47,10 @@ export const EVIDENCE_LEVELS = Object.freeze([
   "Historical",
 ]);
 
+export const DEGREE_LEVELS = Object.freeze([
+  "Undergraduate / Master's",
+  "PhD",
+]);
+
 export const USER_AGENT =
   "MihirRao-NewGradJobTracker/1.0 (+https://mihirrao-10.github.io/new-grad-job-tracker-2027/)";

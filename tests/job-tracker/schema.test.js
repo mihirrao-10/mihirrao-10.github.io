@@ -27,6 +27,41 @@ test("the job schema rejects unsupported evidence levels", async () => {
   );
 });
 
+test("the job schema requires a supported degree eligibility group", async () => {
+  const { validateJob } = await loadValidators();
+  assert.throws(() =>
+    assertValid(
+      validateJob,
+      sampleJob({ degreeLevels: ["MBA"] }),
+      "fixture",
+    ),
+  );
+  assert.throws(() =>
+    assertValid(validateJob, sampleJob({ degreeLevels: [] }), "fixture"),
+  );
+});
+
+test("the job schema restricts the board to normalized U.S. city and state locations", async () => {
+  const { validateJob } = await loadValidators();
+  assert.throws(() =>
+    assertValid(
+      validateJob,
+      sampleJob({ country: "Canada", locations: ["Toronto, ON"] }),
+      "fixture",
+    ),
+  );
+  assert.throws(() =>
+    assertValid(
+      validateJob,
+      sampleJob({ locations: ["United States — Northeast"] }),
+      "fixture",
+    ),
+  );
+  assert.throws(() =>
+    assertValid(validateJob, sampleJob({ locations: ["Springfield, ZZ"] }), "fixture"),
+  );
+});
+
 test("evidence always needs an explanation and an HTTPS source", async () => {
   const { validateJob } = await loadValidators();
   const job = sampleJob({

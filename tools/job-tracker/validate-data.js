@@ -11,6 +11,9 @@ import {
 } from "./lib/schema.js";
 import { validateSourceSemantics } from "./lib/source-jobs.js";
 
+const US_CITY_STATE =
+  /^[^,]+, (AL|AK|AZ|AR|CA|CO|CT|DE|DC|FL|GA|HI|ID|IL|IN|IA|KS|KY|LA|ME|MD|MA|MI|MN|MS|MO|MT|NE|NV|NH|NJ|NM|NY|NC|ND|OH|OK|OR|PA|RI|SC|SD|TN|TX|UT|VT|VA|WA|WV|WI|WY)$/;
+
 function assertNoDuplicates(jobs, name) {
   const duplicateGroups = findDuplicateGroups(jobs);
   if (duplicateGroups.length > 0) {
@@ -23,6 +26,12 @@ function assertNoDuplicates(jobs, name) {
 }
 
 function validateJobSemantics(job, name) {
+  if (job.country !== "United States") {
+    throw new Error(`${name} must be a United States role`);
+  }
+  if (job.locations.some((location) => !US_CITY_STATE.test(location))) {
+    throw new Error(`${name} locations must use City, ST format`);
+  }
   if (job.firstSeen > job.lastVerified) {
     throw new Error(`${name} has firstSeen after lastVerified`);
   }
