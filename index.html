@@ -185,6 +185,41 @@
       color: #06c;
     }
 
+    .project-visual-link {
+      display: block;
+      max-width: 560px;
+      margin: 0 0 1.25rem;
+      overflow: hidden;
+      border: 1px solid #e1e1e1;
+      background: #153b31;
+    }
+
+    .project-visual-link:focus-visible {
+      outline: 3px solid #06c;
+      outline-offset: 3px;
+    }
+
+    .project-visual {
+      display: block;
+      width: 100%;
+      height: auto;
+      aspect-ratio: 16 / 9;
+      object-fit: cover;
+      transition: opacity 160ms ease;
+    }
+
+    .project-visual-link:hover .project-visual {
+      opacity: 0.9;
+    }
+
+    .project-tags {
+      margin: 0.7rem 0 0;
+      color: #555555;
+      font-size: 0.76rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+    }
+
     @media (max-width: 600px) {
       .entry-header,
       .entry-subheader {
@@ -304,25 +339,29 @@
       <h2 class="section-heading">Personal Projects</h2>
 
       <div class="entry">
+        <a
+          class="project-visual-link"
+          href="https://mihirrao-10.github.io/learning-in-auction-mechanisms/"
+          aria-label="Open Can an Auction Make Bidders Tell the Truth?"
+        >
+          <img
+            class="project-visual"
+            src="assets/images/auction-learning.png"
+            width="1200"
+            height="675"
+            loading="lazy"
+            alt="A luminous object suspended in a dark green auction chamber beside two bidding curves"
+          />
+        </a>
         <div class="entry-header">
           <h3 class="entry-title">
-            <a class="project-link" href="https://mihirrao-10.github.io/learning-efficient-equilibria-in-congestion-games/">Learning Efficient Equilibria in Congestion Games</a>
+            <a class="project-link" href="https://mihirrao-10.github.io/learning-in-auction-mechanisms/">Can an Auction Make Bidders Tell the Truth?</a>
           </h3>
         </div>
         <p class="entry-detail">
-          A computational study of how best response, fictitious play, no-regret learning, and independent Q-learning select equilibria in congestion games, with exact welfare analysis and marginal-externality tolls.
+          A guided simulation of how learning bidders respond to first- and second-price rules—and how mechanism design can make honesty strategically optimal.
         </p>
-      </div>
-
-      <div class="entry">
-        <div class="entry-header">
-          <h3 class="entry-title">
-            <a class="project-link" href="https://mihirrao-10.github.io/parallel-combinatorial-auction-engine/">Parallel Combinatorial Auction Engine</a>
-          </h3>
-        </div>
-        <p class="entry-detail">
-          An exact C++20 combinatorial-auction engine that solves NP-hard winner determination with parallel branch-and-bound and computes certified VCG payments through concurrent counterfactual optimizations.
-        </p>
+        <p class="project-tags">Python · Multi-Agent Learning · Mechanism Design · Game Theory</p>
       </div>
 
       <div class="entry">
