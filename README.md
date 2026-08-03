@@ -20,6 +20,12 @@ Its simulator, tests, generated story data, and GitHub Pages workflow live in th
 sibling `learning-in-auction-mechanisms` repository rather than this homepage
 repository.
 
+It also links to **The Shortest Path Through a Curved World** at
+[`/shortest-path-through-a-curved-world/`](https://mihirrao-10.github.io/shortest-path-through-a-curved-world/),
+a guided Heat Method story backed by a standalone C++20/CUDA geometry engine.
+That implementation, its exported numerical data, and its Pages workflow live
+in the sibling `shortest-path-through-a-curved-world` repository.
+
 ## Repository layout
 
 ```text
