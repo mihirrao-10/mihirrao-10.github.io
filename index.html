@@ -198,33 +198,6 @@
       color: #06c;
     }
 
-    .project-visual-link {
-      display: block;
-      max-width: 560px;
-      margin: 0 0 1.25rem;
-      overflow: hidden;
-      border: 1px solid #e1e1e1;
-      background: #153b31;
-    }
-
-    .project-visual-link:focus-visible {
-      outline: 3px solid #06c;
-      outline-offset: 3px;
-    }
-
-    .project-visual {
-      display: block;
-      width: 100%;
-      height: auto;
-      aspect-ratio: 16 / 9;
-      object-fit: cover;
-      transition: opacity 160ms ease;
-    }
-
-    .project-visual-link:hover .project-visual {
-      opacity: 0.9;
-    }
-
     .project-tags {
       margin: 0.7rem 0 0;
       color: #555555;
@@ -352,29 +325,15 @@
       <h2 class="section-heading">Personal Projects</h2>
 
       <div class="entry">
-        <a
-          class="project-visual-link"
-          href="https://mihirrao-10.github.io/shortest-path-through-a-curved-world/"
-          aria-label="Open The Shortest Path Through a Curved World"
-        >
-          <img
-            class="project-visual"
-            src="assets/images/shortest-path-through-a-curved-world.png"
-            width="1200"
-            height="675"
-            loading="lazy"
-            alt="A softly illuminated curved world with a distant destination beacon"
-          />
-        </a>
         <div class="entry-header">
           <h3 class="entry-title">
             <a class="project-link" href="https://mihirrao-10.github.io/shortest-path-through-a-curved-world/">The Shortest Path Through a Curved World</a>
           </h3>
         </div>
         <p class="entry-detail">
-          An interactive C++/CUDA exploration of how heat reveals geodesic paths across complex 3D surfaces.
+          An interactive C++ exploration of how heat reconstructs geodesic distance and surface paths on a triangulated torus.
         </p>
-        <p class="project-tags">C++ · CUDA · Discrete Geometry · Sparse Linear Algebra</p>
+        <p class="project-tags">C++20 · Eigen · Discrete Geometry · Three.js</p>
       </div>
 
       <div class="entry">

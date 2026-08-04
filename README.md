@@ -22,7 +22,8 @@ repository.
 
 It also links to **The Shortest Path Through a Curved World** at
 [`/shortest-path-through-a-curved-world/`](https://mihirrao-10.github.io/shortest-path-through-a-curved-world/),
-a guided Heat Method story backed by a standalone C++20/CUDA geometry engine.
+a guided Heat Method story backed by a standalone C++20 CPU geometry engine
+on a generated toroidal mesh.
 That implementation, its exported numerical data, and its Pages workflow live
 in the sibling `shortest-path-through-a-curved-world` repository.
 
