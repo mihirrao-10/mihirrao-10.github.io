@@ -13,13 +13,6 @@ candidates. Visitors can search and filter by category, company, and their
 browser-local applied state; exact `City, ST` locations remain visible on every
 listing.
 
-The Personal Projects section also links to the standalone interactive essay
-**Can an Auction Make Bidders Tell the Truth?** at
-[`/learning-in-auction-mechanisms/`](https://mihirrao-10.github.io/learning-in-auction-mechanisms/).
-Its simulator, tests, generated story data, and GitHub Pages workflow live in the
-sibling `learning-in-auction-mechanisms` repository rather than this homepage
-repository.
-
 It also links to **The Shortest Path Through a Curved World** at
 [`/shortest-path-through-a-curved-world/`](https://mihirrao-10.github.io/shortest-path-through-a-curved-world/),
 a guided Heat Method story backed by a standalone C++20 CPU geometry engine
