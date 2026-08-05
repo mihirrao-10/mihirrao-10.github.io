@@ -20,6 +20,14 @@ on a generated toroidal mesh.
 That implementation, its exported numerical data, and its Pages workflow live
 in the sibling `shortest-path-through-a-curved-world` repository.
 
+The Personal Projects section also links to **When Every Agent Finds the
+Shortcut** at
+[`/multi-agent-reinforcement-learning-in-congestion-games/`](https://mihirrao-10.github.io/multi-agent-reinforcement-learning-in-congestion-games/),
+an exact atomic Braess-game study with deterministic multi-agent learning
+experiments and an interactive Three.js potential landscape. Its Python
+analysis, exported story data, web experience, tests, and Pages workflow live in
+the sibling `multi-agent-reinforcement-learning-in-congestion-games` repository.
+
 ## Repository layout
 
 ```text
