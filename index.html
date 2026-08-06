@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700;800&amp;display=swap"
+    href="https://fonts.googleapis.com/css2?family=STIX+Two+Text:ital,opsz,wght@0,400..700;1,400..700&amp;display=swap"
     rel="stylesheet"
   />
   <style>
@@ -22,9 +22,9 @@
 
     body {
       margin: 0;
-      background: #ffffff;
-      color: #000000;
-      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+      background: #000000;
+      color: #d7d7d7;
+      font-family: "STIX Two Text", "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
       line-height: 1.5;
@@ -38,7 +38,7 @@
 
     a:hover,
     a:focus-visible {
-      color: #004c99;
+      color: #3385d6;
     }
 
     .hero {
@@ -53,8 +53,9 @@
 
     .hero-name {
       font-size: clamp(3rem, 10vw, 7rem);
-      font-weight: 800;
-      letter-spacing: -0.04em;
+      color: #f5f5f5;
+      font-weight: 600;
+      letter-spacing: -0.03em;
       margin: 0;
       line-height: 1;
     }
@@ -62,8 +63,9 @@
     .hero-title {
       margin: 1.25rem 0 0;
       font-size: clamp(1rem, 2vw, 1.25rem);
-      font-weight: 300;
-      letter-spacing: 0.3em;
+      color: #d7d7d7;
+      font-weight: 400;
+      letter-spacing: 0.16em;
       text-transform: uppercase;
     }
 
@@ -79,6 +81,7 @@
 
     .section-heading {
       font-size: 0.85rem;
+      color: #f5f5f5;
       font-weight: 600;
       letter-spacing: 0.3em;
       text-transform: uppercase;
@@ -111,7 +114,7 @@
       font-size: 0.9rem;
       font-weight: 400;
       white-space: nowrap;
-      color: #000000;
+      color: #d7d7d7;
     }
 
     .entry-subheader {
@@ -130,14 +133,15 @@
 
     .entry-location {
       font-size: 0.9rem;
-      font-weight: 300;
+      color: #b5b5b5;
+      font-weight: 400;
       white-space: nowrap;
     }
 
     .entry ul {
       margin: 0.5rem 0 0;
       padding-left: 1.1rem;
-      font-weight: 300;
+      font-weight: 400;
     }
 
     .entry ul li {
@@ -147,7 +151,7 @@
     .entry-detail {
       margin: 0.5rem 0 0;
       font-size: 0.95rem;
-      font-weight: 300;
+      font-weight: 400;
       line-height: 1.6;
     }
 
@@ -200,7 +204,7 @@
 
     .project-tags {
       margin: 0.7rem 0 0;
-      color: #555555;
+      color: #969696;
       font-size: 0.76rem;
       font-weight: 500;
       letter-spacing: 0.04em;
@@ -223,7 +227,7 @@
 <body>
   <section class="hero">
     <h1 class="hero-name">Mihir Rao</h1>
-    <p class="hero-title">Theoretical Computer Scientist</p>
+    <p class="hero-title">Computer Scientist</p>
   </section>
 
   <main>
@@ -240,7 +244,7 @@
           <span class="entry-location">Chicago, IL</span>
         </div>
         <p class="entry-detail">
-          Interests: Algorithm Design &amp; Combinatorial Optimization, Multiagent Learning &amp; Game Theory, Reinforcement Learning, Generative Models
+          Concentration has been learning algorithms and games.
         </p>
       </div>
 
@@ -253,12 +257,12 @@
           <p class="entry-role">B.S. in Computer Science &amp; B.A. in Mathematics</p>
           <span class="entry-location">Philadelphia, PA</span>
         </div>
-        <p class="entry-honor">Magna Cum Laude</p>
+        <p class="entry-honor">Magna cum laude is cool.</p>
       </div>
     </section>
 
     <section id="experience">
-      <h2 class="section-heading">Work Experience</h2>
+      <h2 class="section-heading">Industry Experience</h2>
 
       <div class="entry">
         <div class="entry-header">
@@ -289,34 +293,18 @@
       </div>
     </section>
 
-    <section id="teaching">
-      <h2 class="section-heading">Teaching Experience</h2>
-
-      <div class="entry">
-        <div class="entry-header">
-          <h3 class="entry-title">University of Chicago</h3>
-          <span class="entry-dates">Jan 2026 – Mar 2026</span>
-        </div>
-        <div class="entry-subheader">
-          <p class="entry-role">Graduate Teaching Assistant &amp; Lecturer</p>
-          <span class="entry-location">Chicago, IL</span>
-        </div>
-        <p class="entry-detail">
-          Honors Theory of Algorithms (CMSC 27230), Algorithms (MPCS 55001)
-        </p>
-      </div>
+    <section id="research">
+      <h2 class="section-heading">Research Experience</h2>
 
       <div class="entry">
         <div class="entry-header">
           <h3 class="entry-title">Drexel University</h3>
-          <span class="entry-dates">Jun 2022 – Jun 2024</span>
         </div>
         <div class="entry-subheader">
-          <p class="entry-role">Undergraduate Teaching Assistant</p>
-          <span class="entry-location">Philadelphia, PA</span>
+          <p class="entry-role">Undergraduate Researcher</p>
         </div>
         <p class="entry-detail">
-          Data Structures (CS260), Algorithms &amp; Analysis (CS277), Artificial Intelligence (CS380), Deep Learning (CS615)
+          Worked on explainable AI research under Dr. <a href="https://shahin-jabbari.github.io/">Shahin Jabbari</a>.
         </p>
       </div>
     </section>
@@ -361,12 +349,9 @@
     </section>
 
     <section id="notes">
-      <h2 class="section-heading">Notes</h2>
+      <h2 class="section-heading">Personal Notes</h2>
 
       <div class="entry">
-        <p class="entry-detail">
-          Notes from courses I've worked through, written for clarity.
-        </p>
         <h3 class="notes-category">Mathematics</h3>
         <ul class="notes-list">
           <li>
