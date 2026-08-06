@@ -69,6 +69,33 @@
       text-transform: uppercase;
     }
 
+    .hero-links {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1.1rem;
+      margin-top: 1.4rem;
+    }
+
+    .hero-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 1.5rem;
+      height: 1.5rem;
+    }
+
+    .hero-link img {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .hero-link:hover,
+    .hero-link:focus-visible {
+      opacity: 0.75;
+    }
+
     main {
       max-width: 720px;
       margin: 0 auto;
@@ -228,6 +255,17 @@
   <section class="hero">
     <h1 class="hero-name">Mihir Rao</h1>
     <p class="hero-title">Computer Scientist</p>
+    <nav class="hero-links" aria-label="Contact links">
+      <a class="hero-link" href="https://github.com/mihirrao-10" aria-label="GitHub">
+        <img src="https://cdn.simpleicons.org/github/06c" alt="" />
+      </a>
+      <a class="hero-link" href="https://www.linkedin.com/in/mihir-rao-6242a8209/" aria-label="LinkedIn">
+        <img src="https://cdn.simpleicons.org/linkedin/06c" alt="" />
+      </a>
+      <a class="hero-link" href="mailto:raomihir.98@gmail.com" aria-label="Email Mihir">
+        <img src="https://cdn.simpleicons.org/gmail/06c" alt="" />
+      </a>
+    </nav>
   </section>
 
   <main>
@@ -244,7 +282,7 @@
           <span class="entry-location">Chicago, IL</span>
         </div>
         <p class="entry-detail">
-          Concentration has been learning algorithms and games.
+          Concentration: Learning, Algorithms, and Games.
         </p>
       </div>
 
@@ -257,7 +295,7 @@
           <p class="entry-role">B.S. in Computer Science &amp; B.A. in Mathematics</p>
           <span class="entry-location">Philadelphia, PA</span>
         </div>
-        <p class="entry-honor">Magna cum laude is cool.</p>
+        <p class="entry-honor">Magna cum laude</p>
       </div>
     </section>
 
@@ -299,12 +337,45 @@
       <div class="entry">
         <div class="entry-header">
           <h3 class="entry-title">Drexel University</h3>
+          <span class="entry-dates">Apr 2023 – Sept 2023</span>
         </div>
         <div class="entry-subheader">
           <p class="entry-role">Undergraduate Researcher</p>
         </div>
         <p class="entry-detail">
           Worked on explainable AI research under Dr. <a href="https://shahin-jabbari.github.io/">Shahin Jabbari</a>.
+        </p>
+      </div>
+    </section>
+
+    <section id="teaching">
+      <h2 class="section-heading">Teaching Experience</h2>
+
+      <div class="entry">
+        <div class="entry-header">
+          <h3 class="entry-title">University of Chicago</h3>
+          <span class="entry-dates">Jan 2026 – Mar 2026</span>
+        </div>
+        <div class="entry-subheader">
+          <p class="entry-role">Graduate Teaching Assistant &amp; Lecturer</p>
+          <span class="entry-location">Chicago, IL</span>
+        </div>
+        <p class="entry-detail">
+          Honors Theory of Algorithms (CMSC 27230), Algorithms (MPCS 55001)
+        </p>
+      </div>
+
+      <div class="entry">
+        <div class="entry-header">
+          <h3 class="entry-title">Drexel University</h3>
+          <span class="entry-dates">Jun 2022 – Jun 2024</span>
+        </div>
+        <div class="entry-subheader">
+          <p class="entry-role">Undergraduate Teaching Assistant</p>
+          <span class="entry-location">Philadelphia, PA</span>
+        </div>
+        <p class="entry-detail">
+          Data Structures (CS260), Algorithms &amp; Analysis (CS277), Artificial Intelligence (CS380), Deep Learning (CS615)
         </p>
       </div>
     </section>
