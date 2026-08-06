@@ -43,6 +43,7 @@
     a:hover,
     a:focus-visible {
       color: #e2b168;
+      text-shadow: 0.012em 0 currentColor;
     }
 
     .hero {
@@ -281,6 +282,16 @@
       font-size: 0.76rem;
       font-weight: 500;
       letter-spacing: 0.04em;
+    }
+
+    a:not(.hero-link) {
+      transition: color 150ms ease, text-shadow 150ms ease;
+    }
+
+    a:not(.hero-link):hover,
+    a:not(.hero-link):focus-visible {
+      color: #e2b168;
+      text-shadow: 0.012em 0 currentColor;
     }
 
     @media (max-width: 600px) {
