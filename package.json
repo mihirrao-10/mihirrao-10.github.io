@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "Static personal website and New Graduate Job Tracker data pipeline",
+  "description": "Static personal website",
   "engines": {
     "node": ">=20"
   },
