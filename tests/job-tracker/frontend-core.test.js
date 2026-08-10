@@ -14,7 +14,7 @@ import {
   sortJobs,
   trackingToCsv,
   updateTracking,
-} from "../../../new-grad-job-tracker-2027/core.js";
+} from "../../new-grad-job-tracker-2027/core.js";
 
 const jobs = [
   {
