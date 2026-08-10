@@ -1,0 +1,159 @@
+{
+  "schemaVersion": "1.0.0",
+  "lastSuccessfulUpdate": "2026-08-10T22:52:23.879Z",
+  "activeCount": 118,
+  "archivedCount": 1,
+  "staleAfterDays": 7,
+  "closingSoonDays": 7,
+  "missThreshold": 2,
+  "sourceResults": [
+    {
+      "sourceId": "pylon-ashby",
+      "platform": "Ashby",
+      "status": "success",
+      "jobsFound": 1
+    },
+    {
+      "sourceId": "palantir-lever",
+      "platform": "Lever",
+      "status": "success",
+      "jobsFound": 3
+    },
+    {
+      "sourceId": "akuna-greenhouse",
+      "platform": "Greenhouse",
+      "status": "success",
+      "jobsFound": 4
+    },
+    {
+      "sourceId": "drw-greenhouse",
+      "platform": "Greenhouse",
+      "status": "success",
+      "jobsFound": 3
+    },
+    {
+      "sourceId": "five-rings-greenhouse",
+      "platform": "Greenhouse",
+      "status": "success",
+      "jobsFound": 3
+    },
+    {
+      "sourceId": "3red-greenhouse",
+      "platform": "Greenhouse",
+      "status": "success",
+      "jobsFound": 3
+    },
+    {
+      "sourceId": "jump-greenhouse",
+      "platform": "Greenhouse",
+      "status": "success",
+      "jobsFound": 2
+    },
+    {
+      "sourceId": "old-mission-greenhouse",
+      "platform": "Greenhouse",
+      "status": "success",
+      "jobsFound": 3
+    },
+    {
+      "sourceId": "tower-greenhouse",
+      "platform": "Greenhouse",
+      "status": "success",
+      "jobsFound": 1
+    },
+    {
+      "sourceId": "transmarket-greenhouse",
+      "platform": "Greenhouse",
+      "status": "success",
+      "jobsFound": 1
+    },
+    {
+      "sourceId": "ixl-greenhouse",
+      "platform": "Greenhouse",
+      "status": "success",
+      "jobsFound": 2
+    },
+    {
+      "sourceId": "nuro-greenhouse",
+      "platform": "Greenhouse",
+      "status": "success",
+      "jobsFound": 1
+    },
+    {
+      "sourceId": "collective-ashby",
+      "platform": "Ashby",
+      "status": "success",
+      "jobsFound": 0
+    },
+    {
+      "sourceId": "newsbreak-greenhouse",
+      "platform": "Greenhouse",
+      "status": "success",
+      "jobsFound": 1
+    },
+    {
+      "sourceId": "ellipsis-ashby",
+      "platform": "Ashby",
+      "status": "success",
+      "jobsFound": 1
+    },
+    {
+      "sourceId": "belvedere-lever",
+      "platform": "Lever",
+      "status": "success",
+      "jobsFound": 2
+    },
+    {
+      "sourceId": "samsara-greenhouse",
+      "platform": "Greenhouse",
+      "status": "success",
+      "jobsFound": 1
+    },
+    {
+      "sourceId": "ctc-greenhouse",
+      "platform": "Greenhouse",
+      "status": "success",
+      "jobsFound": 1
+    },
+    {
+      "sourceId": "tiktok-careers",
+      "platform": "TikTok Careers",
+      "status": "success",
+      "jobsFound": 68
+    },
+    {
+      "sourceId": "netic-ashby",
+      "platform": "Ashby",
+      "status": "success",
+      "jobsFound": 3
+    },
+    {
+      "sourceId": "manual-bytedance",
+      "platform": "Manual",
+      "status": "success",
+      "jobsFound": 5,
+      "message": "5 verified, 0 confirmed missing, 0 temporarily unavailable"
+    },
+    {
+      "sourceId": "manual-hrt",
+      "platform": "Manual",
+      "status": "success",
+      "jobsFound": 2,
+      "message": "2 verified, 0 confirmed missing, 0 temporarily unavailable"
+    },
+    {
+      "sourceId": "manual-imc",
+      "platform": "Manual",
+      "status": "success",
+      "jobsFound": 4,
+      "message": "4 verified, 0 confirmed missing, 0 temporarily unavailable"
+    },
+    {
+      "sourceId": "manual-optiver",
+      "platform": "Manual",
+      "status": "success",
+      "jobsFound": 4,
+      "message": "4 verified, 0 confirmed missing, 0 temporarily unavailable"
+    }
+  ]
+}

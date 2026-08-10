@@ -33,7 +33,7 @@ repository.
 index.html  personal-site homepage
 assets/     shared static assets
 notes/      published course-note PDFs
-../new-grad-job-tracker-2027/  tracker UI and generated public JSON
+new-grad-job-tracker-2027/     tracker UI and generated public JSON
 data/job-tracker/              schemas, source configuration, curated records
 tools/job-tracker/             collectors, validation, and generator
 tests/job-tracker/             data-pipeline and browser-logic tests
@@ -57,10 +57,12 @@ successful observation. Temporary source failures never close prior jobs.
 Detailed scope, evidence, and lifecycle rules are documented in
 [`data/job-tracker/README.md`](data/job-tracker/README.md).
 
-The sibling tracker repository owns the scheduled GitHub Actions workflow and
-its GitHub Pages deployment. The workflow checks out this repository for the
-pipeline, refreshes and validates the three public JSON files each day, runs
-the tests and production build, and commits only changed generated data.
+This repository owns the scheduled GitHub Actions refresh and GitHub Pages
+deployment. The workflow refreshes and validates the three public JSON files
+each day, runs the tests and production build, and commits only changed
+generated data. The standalone tracker repository remains a private working
+copy; the public static mirror lives here so Pages can serve it at the website
+subpath without changing that repository's visibility.
 
 ## Course notes
 

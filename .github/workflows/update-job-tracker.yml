@@ -1,0 +1,56 @@
+name: Update 2027 new graduate jobs
+
+on:
+  schedule:
+    - cron: "23 9 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-2027-new-grad-jobs
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Check out the website
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Fetch and generate job data
+        run: npm run update:jobs
+
+      - name: Validate, test, and build
+        run: npm run check
+
+      - name: Commit changed generated data
+        shell: bash
+        run: |
+          if git diff --quiet -- \
+            new-grad-job-tracker-2027/data/jobs.json \
+            new-grad-job-tracker-2027/data/archive.json \
+            new-grad-job-tracker-2027/data/metadata.json; then
+            echo "No generated data changes."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add \
+            new-grad-job-tracker-2027/data/jobs.json \
+            new-grad-job-tracker-2027/data/archive.json \
+            new-grad-job-tracker-2027/data/metadata.json
+          git commit -m "chore: refresh verified 2027 roles"
+          git push
