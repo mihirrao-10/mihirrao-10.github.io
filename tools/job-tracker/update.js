@@ -17,6 +17,7 @@ const PLATFORM_LABELS = Object.freeze({
   ashby: "Ashby",
   greenhouse: "Greenhouse",
   lever: "Lever",
+  tiktok: "TikTok Careers",
 });
 
 function parseArguments(arguments_) {

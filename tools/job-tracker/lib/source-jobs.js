@@ -11,6 +11,7 @@ const PLATFORM_LABELS = Object.freeze({
   ashby: "Ashby",
   greenhouse: "Greenhouse",
   lever: "Lever",
+  tiktok: "TikTok Careers",
 });
 
 const EXCLUDED_TITLE =

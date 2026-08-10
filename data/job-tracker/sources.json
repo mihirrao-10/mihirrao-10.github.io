@@ -570,7 +570,8 @@
       "selection": {
       "externalIds": [
         "7796031003",
-        "7796044003"
+        "7796044003",
+        "7796048003"
         ],
         "includeTitle": [],
         "includeDescription": [],
@@ -614,7 +615,22 @@
           "tags": [
             "August start"
           ]
-    }
+        },
+        "7796048003": {
+          "category": "Software Engineering",
+          "applicationUrl": "https://www.oldmissioncapital.com/careers/?gh_jid=7796048003",
+          "sourceUrl": "https://www.oldmissioncapital.com/careers/?gh_jid=7796048003",
+          "compensation": "$175,000–$200,000 base plus discretionary bonus",
+          "startPeriod": "August 2027",
+          "locations": [
+            "Chicago, IL"
+          ],
+          "tags": [
+            "C++",
+            "August start",
+            "Trading systems"
+          ]
+        }
       }
     },
     {
@@ -723,8 +739,8 @@
       "boardToken": "ixllearning",
       "selection": {
         "externalIds": [
-          "8615710002",
-          "8615717002"
+          "8662881002",
+          "8663379002"
         ],
         "includeTitle": [],
         "includeDescription": [],
@@ -747,31 +763,32 @@
         ]
       },
       "overrides": {
-        "8615710002": {
-          "applicationUrl": "https://www.ixl.com/company/careers?gh_jid=8615710002",
-          "sourceUrl": "https://www.ixl.com/company/careers?gh_jid=8615710002",
+        "8662881002": {
+          "applicationUrl": "https://www.ixl.com/company/careers?gh_jid=8662881002",
+          "sourceUrl": "https://www.ixl.com/company/careers?gh_jid=8662881002",
           "locations": [
             "San Mateo, CA"
           ],
           "compensation": "$110,000–$135,000 base plus equity",
-          "datePosted": "2026-07-02",
+          "datePosted": "2026-08-06",
           "visaEvidence": {
             "level": "Strong",
             "explanation": "The exact official posting says H-1B sponsorship is available for this position. Availability still does not guarantee that every candidate or immigration path will qualify.",
-            "url": "https://www.ixl.com/company/careers?gh_jid=8615710002"
+            "url": "https://www.ixl.com/company/careers?gh_jid=8662881002"
           }
         },
-        "8615717002": {
-          "applicationUrl": "https://www.ixl.com/company/careers?gh_jid=8615717002",
-          "sourceUrl": "https://www.ixl.com/company/careers?gh_jid=8615717002",
+        "8663379002": {
+          "applicationUrl": "https://www.ixl.com/company/careers?gh_jid=8663379002",
+          "sourceUrl": "https://www.ixl.com/company/careers?gh_jid=8663379002",
           "locations": [
             "Raleigh, NC"
           ],
-          "datePosted": "2026-07-02",
+          "compensation": "$110,000–$135,000 base plus equity",
+          "datePosted": "2026-08-06",
           "visaEvidence": {
             "level": "Strong",
             "explanation": "The exact official posting says H-1B sponsorship is available for this position. Availability still does not guarantee that every candidate or immigration path will qualify.",
-            "url": "https://www.ixl.com/company/careers?gh_jid=8615717002"
+            "url": "https://www.ixl.com/company/careers?gh_jid=8663379002"
           }
         }
       }
@@ -961,6 +978,446 @@
         "256c2ec2-01c8-4ff6-9ad0-b926fe40472d": {
           "applicationUrl": "https://jobs.ashbyhq.com/ellipsislabs/256c2ec2-01c8-4ff6-9ad0-b926fe40472d/application",
           "sourceUrl": "https://jobs.ashbyhq.com/ellipsislabs/256c2ec2-01c8-4ff6-9ad0-b926fe40472d"
+        }
+      }
+    },
+    {
+      "id": "belvedere-lever",
+      "company": "Belvedere Trading",
+      "platform": "lever",
+      "enabled": true,
+      "site": "belvederetrading",
+      "selection": {
+        "externalIds": [
+          "2f6480e5-7bf1-4c41-b3b5-3c7404d95b5f",
+          "34369a5c-55c0-4e9f-9d2e-4f21b9418bee"
+        ],
+        "includeTitle": [],
+        "includeDescription": [],
+        "exclude": []
+      },
+      "defaults": {
+        "locations": [
+          "Chicago, IL"
+        ],
+        "country": "United States",
+        "workplaceType": "On-site",
+        "compensation": "$140,000 base plus discretionary bonus",
+        "startPeriod": "2027",
+        "graduationWindow": "December 2026 or May/June 2027",
+        "graduationMonths": [
+          "2026-12",
+          "2027-05",
+          "2027-06"
+        ],
+        "degreeLevels": [
+          "Undergraduate / Master's"
+        ],
+        "experienceRequirements": "Entry-level graduate role; no professional experience minimum stated",
+        "tags": [
+          "Early career",
+          "Trading"
+        ]
+      },
+      "overrides": {
+        "2f6480e5-7bf1-4c41-b3b5-3c7404d95b5f": {
+          "category": "Software Engineering",
+          "applicationUrl": "https://jobs.lever.co/belvederetrading/2f6480e5-7bf1-4c41-b3b5-3c7404d95b5f/apply",
+          "sourceUrl": "https://jobs.lever.co/belvederetrading/2f6480e5-7bf1-4c41-b3b5-3c7404d95b5f",
+          "visaEvidence": {
+            "level": "Strong",
+            "explanation": "The exact official posting states that sponsorship is available. Eligibility still depends on the candidate and immigration path.",
+            "url": "https://jobs.lever.co/belvederetrading/2f6480e5-7bf1-4c41-b3b5-3c7404d95b5f"
+          },
+          "tags": [
+            "C++",
+            "Low latency"
+          ]
+        },
+        "34369a5c-55c0-4e9f-9d2e-4f21b9418bee": {
+          "category": "Quantitative Trading",
+          "applicationUrl": "https://jobs.lever.co/belvederetrading/34369a5c-55c0-4e9f-9d2e-4f21b9418bee/apply",
+          "sourceUrl": "https://jobs.lever.co/belvederetrading/34369a5c-55c0-4e9f-9d2e-4f21b9418bee",
+          "visaEvidence": {
+            "level": "Strong",
+            "explanation": "The exact official posting states that sponsorship is available. Eligibility still depends on the candidate and immigration path.",
+            "url": "https://jobs.lever.co/belvederetrading/34369a5c-55c0-4e9f-9d2e-4f21b9418bee"
+          },
+          "tags": [
+            "Options",
+            "Trading"
+          ]
+        }
+      }
+    },
+    {
+      "id": "samsara-greenhouse",
+      "company": "Samsara",
+      "platform": "greenhouse",
+      "enabled": true,
+      "boardToken": "samsara",
+      "visaEvidence": {
+        "level": "Historical",
+        "explanation": "Recent public DOL-derived records show Samsara filings for software engineering employees. This employer history is not a promise for this opening.",
+        "url": "https://www.ellis.com/visa-sponsors/samsara-inc/salaries"
+      },
+      "selection": {
+        "externalIds": [
+          "8097343"
+        ],
+        "includeTitle": [],
+        "includeDescription": [],
+        "exclude": []
+      },
+      "defaults": {
+        "category": "Software Engineering",
+        "locations": [
+          "San Francisco, CA"
+        ],
+        "country": "United States",
+        "workplaceType": "Hybrid",
+        "compensation": "$136,850–$161,000 base plus equity",
+        "deadline": "2026-08-24",
+        "startPeriod": "2027",
+        "graduationWindow": "Expected Winter or Spring 2027 graduation",
+        "graduationMonths": [
+          "2027-05"
+        ],
+        "degreeLevels": [
+          "Undergraduate / Master's"
+        ],
+        "experienceRequirements": "Upcoming bachelor's graduate; no professional experience minimum stated",
+        "tags": [
+          "IoT",
+          "New graduate"
+        ]
+      },
+      "overrides": {
+        "8097343": {
+          "applicationUrl": "https://www.samsara.com/company/careers/roles/8097343",
+          "sourceUrl": "https://www.samsara.com/company/careers/roles/8097343"
+        }
+      }
+    },
+    {
+      "id": "ctc-greenhouse",
+      "company": "Chicago Trading Company",
+      "platform": "greenhouse",
+      "enabled": true,
+      "boardToken": "chicagotradingcampus",
+      "visaEvidence": {
+        "level": "Historical",
+        "explanation": "Recent public DOL-derived records show Chicago Trading Company employment-visa filings. This firm-level history is not a promise for the current graduate role.",
+        "url": "https://www.ellis.com/visa-sponsors/ctc-trading-group-llc"
+      },
+      "selection": {
+        "externalIds": [
+          "4716507005"
+        ],
+        "includeTitle": [],
+        "includeDescription": [],
+        "exclude": []
+      },
+      "defaults": {
+        "category": "Quantitative Trading",
+        "locations": [
+          "Chicago, IL"
+        ],
+        "country": "United States",
+        "workplaceType": "On-site",
+        "compensation": "$200,000 base plus discretionary bonus",
+        "startPeriod": "2027",
+        "graduationWindow": "December 2026 through June 2027",
+        "graduationMonths": [
+          "2026-12",
+          "2027-05",
+          "2027-06"
+        ],
+        "degreeLevels": [
+          "Undergraduate / Master's"
+        ],
+        "experienceRequirements": "Entry-level graduate role; no finance experience required",
+        "tags": [
+          "Options",
+          "Python",
+          "Trading"
+        ]
+      },
+      "overrides": {
+        "4716507005": {
+          "applicationUrl": "https://job-boards.greenhouse.io/chicagotradingcampus/jobs/4716507005",
+          "sourceUrl": "https://job-boards.greenhouse.io/chicagotradingcampus/jobs/4716507005"
+        }
+      }
+    },
+    {
+      "id": "tiktok-careers",
+      "company": "TikTok",
+      "platform": "tiktok",
+      "enabled": true,
+      "visaEvidence": {
+        "level": "Supported",
+        "explanation": "TikTok's official hiring FAQ says some roles may provide visa sponsorship when appropriate, and its Americas early-career page says it has historically welcomed CPT and STEM OPT candidates. Support remains role- and candidate-specific.",
+        "url": "https://lifeattiktok.com/faq/?language=en"
+      },
+      "selection": {
+        "externalIds": [
+          "7670558992960358661",
+          "7670387719826786565",
+          "7670391173613160757",
+          "7669957922422507781",
+          "7668724383120804149",
+          "7668717356843977013",
+          "7668701834807101749",
+          "7668701361741007109",
+          "7668855346857019701",
+          "7668879883938203957",
+          "7668845522007722245",
+          "7668843238309824773",
+          "7668831181590513925",
+          "7668828193675036981",
+          "7668827381435517237",
+          "7668827379083823413",
+          "7668824172279875845",
+          "7668824169648097541",
+          "7668554579301124357",
+          "7668592494649690421",
+          "7668662545059023157",
+          "7668582086900680965",
+          "7668569995571726597",
+          "7668680253677504821",
+          "7668566347702569269",
+          "7668561079544154373",
+          "7668582542044072245",
+          "7668557209047894325",
+          "7665989305914984709",
+          "7665986019233958197",
+          "7665994926887291189",
+          "7664533229944178949",
+          "7663032057264244997",
+          "7663036950303050037",
+          "7663036952090347829",
+          "7663042453461600517",
+          "7663028952600807733",
+          "7670876337129425205",
+          "7670285949553707317",
+          "7670285495593273605",
+          "7669913085331409205",
+          "7669910326745434421",
+          "7669660107303684405",
+          "7669654422861383941",
+          "7669702699627661573",
+          "7669700358734170373",
+          "7669698543896054069",
+          "7669691374918011141",
+          "7669658702904871173",
+          "7669711968024430853",
+          "7669709290431236357",
+          "7668693662561634613",
+          "7668700671828707589",
+          "7668663594419374341",
+          "7668376903708281141",
+          "7668384123840514309",
+          "7668390999147776309",
+          "7668512600592812293",
+          "7668550561096665397",
+          "7668592348941273349",
+          "7668629846058223877",
+          "7668669015051405573",
+          "7668660365135808821",
+          "7667837906192877829",
+          "7667770207780194613",
+          "7667344113001384197",
+          "7667349591747758341",
+          "7667346543553710389",
+          "7667035008003328309",
+          "7665797203155896581",
+          "7665994926854555909",
+          "7665991852209932597",
+          "7664978367107713333",
+          "7663389956951918853",
+          "7663389745178757429"
+        ],
+        "includeTitle": [],
+        "includeDescription": [],
+        "exclude": []
+      },
+      "defaults": {
+        "category": "Software Engineering",
+        "locations": [
+          "San Jose, CA"
+        ],
+        "country": "United States",
+        "workplaceType": "Hybrid",
+        "startPeriod": "2027",
+        "graduationWindow": "2027 graduate role; exact degree-completion timing varies by listing",
+        "graduationMonths": [],
+        "degreeLevels": [
+          "Undergraduate / Master's"
+        ],
+        "experienceRequirements": "Graduate role open to bachelor's or master's candidates; no professional experience minimum stated",
+        "tags": [
+          "2027",
+          "Early career",
+          "TikTok"
+        ]
+      },
+      "overrides": {
+        "7670558992960358661": {
+          "locations": ["Seattle, WA"]
+        },
+        "7668701361741007109": {
+          "category": "Systems / Infrastructure / Performance Engineering"
+        },
+        "7668879883938203957": {
+          "category": "Systems / Infrastructure / Performance Engineering"
+        },
+        "7668828193675036981": {
+          "locations": ["Seattle, WA"]
+        },
+        "7668827379083823413": {
+          "locations": ["Seattle, WA"]
+        },
+        "7668824172279875845": {
+          "locations": ["Seattle, WA"]
+        },
+        "7668582086900680965": {
+          "locations": ["Seattle, WA"]
+        },
+        "7668582542044072245": {
+          "locations": ["Seattle, WA"]
+        },
+        "7664533229944178949": {
+          "locations": ["Seattle, WA"]
+        },
+        "7663032057264244997": {
+          "locations": ["Seattle, WA"]
+        },
+        "7663036950303050037": {
+          "locations": ["Seattle, WA"]
+        },
+        "7663028952600807733": {
+          "locations": ["Seattle, WA"]
+        },
+        "7670876337129425205": {
+          "category": "Machine Learning / AI Engineering"
+        },
+        "7670285949553707317": {
+          "category": "Machine Learning / AI Engineering",
+          "locations": ["Seattle, WA"]
+        },
+        "7670285495593273605": {
+          "category": "Machine Learning / AI Engineering"
+        },
+        "7669913085331409205": {
+          "category": "Machine Learning / AI Engineering"
+        },
+        "7669910326745434421": {
+          "category": "Machine Learning / AI Engineering",
+          "locations": ["Seattle, WA"]
+        },
+        "7669660107303684405": {
+          "category": "Data Science / Applied Science / Analytics"
+        },
+        "7669654422861383941": {
+          "category": "Data Science / Applied Science / Analytics"
+        },
+        "7669702699627661573": {
+          "category": "Machine Learning / AI Engineering"
+        },
+        "7669700358734170373": {
+          "category": "Machine Learning / AI Engineering"
+        },
+        "7669698543896054069": {
+          "category": "Machine Learning / AI Engineering"
+        },
+        "7669691374918011141": {
+          "category": "Machine Learning / AI Engineering"
+        },
+        "7669658702904871173": {
+          "category": "Data Science / Applied Science / Analytics"
+        },
+        "7669711968024430853": {
+          "category": "Machine Learning / AI Engineering"
+        },
+        "7669709290431236357": {
+          "category": "Machine Learning / AI Engineering"
+        },
+        "7668693662561634613": {
+          "category": "Machine Learning / AI Engineering"
+        },
+        "7668700671828707589": {
+          "category": "Machine Learning / AI Engineering"
+        },
+        "7668663594419374341": {
+          "category": "Machine Learning / AI Engineering"
+        },
+        "7668376903708281141": {
+          "category": "Machine Learning / AI Engineering",
+          "locations": ["Seattle, WA"]
+        },
+        "7668384123840514309": {
+          "category": "Machine Learning / AI Engineering",
+          "locations": ["Seattle, WA"]
+        },
+        "7668390999147776309": {
+          "category": "Machine Learning / AI Engineering",
+          "locations": ["Seattle, WA"]
+        },
+        "7668512600592812293": {
+          "category": "Data Science / Applied Science / Analytics"
+        },
+        "7668550561096665397": {
+          "category": "Data Science / Applied Science / Analytics"
+        },
+        "7668592348941273349": {
+          "category": "Machine Learning / AI Engineering"
+        },
+        "7668629846058223877": {
+          "category": "Machine Learning / AI Engineering"
+        },
+        "7668669015051405573": {
+          "category": "Machine Learning / AI Engineering"
+        },
+        "7668660365135808821": {
+          "category": "Machine Learning / AI Engineering"
+        },
+        "7667837906192877829": {
+          "category": "Other Technical"
+        },
+        "7667770207780194613": {
+          "category": "Machine Learning / AI Engineering"
+        },
+        "7667344113001384197": {
+          "category": "Machine Learning / AI Engineering"
+        },
+        "7667349591747758341": {
+          "category": "Machine Learning / AI Engineering"
+        },
+        "7667346543553710389": {
+          "category": "Machine Learning / AI Engineering"
+        },
+        "7667035008003328309": {
+          "category": "Data Science / Applied Science / Analytics"
+        },
+        "7665797203155896581": {
+          "category": "Machine Learning / AI Engineering"
+        },
+        "7665994926854555909": {
+          "category": "Machine Learning / AI Engineering",
+          "locations": ["Seattle, WA"]
+        },
+        "7665991852209932597": {
+          "category": "Machine Learning / AI Engineering"
+        },
+        "7664978367107713333": {
+          "category": "Machine Learning / AI Engineering"
+        },
+        "7663389956951918853": {
+          "category": "Machine Learning / AI Engineering"
+        },
+        "7663389745178757429": {
+          "category": "Machine Learning / AI Engineering"
         }
       }
     },

@@ -4,6 +4,13 @@ Mihir Rao's framework-free personal website. GitHub Pages serves the repository
 root from `main`; the production site therefore keeps real directories and
 relative links instead of client-side routing.
 
+The Personal Projects section publishes the **New Graduate Job Tracker (2027)**
+at [`/new-grad-job-tracker-2027/`](https://mihirrao-10.github.io/new-grad-job-tracker-2027/).
+It is a static, generated board of technically relevant U.S. graduate roles
+for undergraduate or master's candidates, with documented evidence about
+international-hiring support. Search, filtering, application state, and
+private notes run entirely in the visitor's browser.
+
 It links to **The Shortest Path Through a Curved World** at
 [`/shortest-path-through-a-curved-world/`](https://mihirrao-10.github.io/shortest-path-through-a-curved-world/),
 a guided Heat Method story backed by a standalone C++20 CPU geometry engine on
@@ -26,6 +33,10 @@ repository.
 index.html  personal-site homepage
 assets/     shared static assets
 notes/      published course-note PDFs
+../new-grad-job-tracker-2027/  tracker UI and generated public JSON
+data/job-tracker/              schemas, source configuration, curated records
+tools/job-tracker/             collectors, validation, and generator
+tests/job-tracker/             data-pipeline and browser-logic tests
 dist/       ignored production-build output
 ```
 
@@ -33,9 +44,23 @@ dist/       ignored production-build output
 
 ```sh
 npm ci
+npm run update:jobs:offline
+npm test
 npm run build
 python3 -m http.server 8000 -d dist
 ```
+
+Run `npm run update:jobs` for a live refresh against the configured official
+career pages and ATS feeds. The updater validates and deduplicates records,
+preserves first-seen history, and advances verification dates only after a
+successful observation. Temporary source failures never close prior jobs.
+Detailed scope, evidence, and lifecycle rules are documented in
+[`data/job-tracker/README.md`](data/job-tracker/README.md).
+
+The sibling tracker repository owns the scheduled GitHub Actions workflow and
+its GitHub Pages deployment. The workflow checks out this repository for the
+pipeline, refreshes and validates the three public JSON files each day, runs
+the tests and production build, and commits only changed generated data.
 
 ## Course notes
 

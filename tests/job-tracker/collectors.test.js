@@ -4,6 +4,7 @@ import test from "node:test";
 import { collectAshby } from "../../tools/job-tracker/collectors/ashby.js";
 import { collectGreenhouse } from "../../tools/job-tracker/collectors/greenhouse.js";
 import { collectLever } from "../../tools/job-tracker/collectors/lever.js";
+import { collectTikTok } from "../../tools/job-tracker/collectors/tiktok.js";
 
 async function withMockFetch(payload, callback) {
   const originalFetch = globalThis.fetch;
@@ -122,4 +123,47 @@ test("Ashby falls back to the documented job URL as its stable ID", async () => 
       assert.equal(jobs[0].compensation, "$130K–$150K");
     },
   );
+});
+
+test("TikTok verifies allowlisted official pages and their direct apply links", async () => {
+  const originalFetch = globalThis.fetch;
+  const requests = [];
+  globalThis.fetch = async (url, options) => {
+    requests.push({ url: String(url), options });
+    return new Response(
+      `<!doctype html>
+        <title>Software Engineer Graduate - Search &amp; Discovery - 2027 Start</title>
+        <p>Completing a Bachelor's or Master's degree.</p>
+        <p>The base salary range for this position is $121600 - $243200 annually.</p>
+        <a href="https://careers.tiktok.com/resume/123456789/apply">Apply</a>`,
+      { status: 200, headers: { "content-type": "text/html" } },
+    );
+  };
+
+  try {
+    const jobs = await collectTikTok(
+      {
+        selection: {
+          externalIds: ["123456789"],
+        },
+      },
+      { retries: 0, timeoutMs: 1000 },
+    );
+    assert.equal(
+      jobs[0].title,
+      "Software Engineer Graduate - Search & Discovery - 2027 Start",
+    );
+    assert.equal(
+      jobs[0].applicationUrl,
+      "https://careers.tiktok.com/resume/123456789/apply",
+    );
+    assert.equal(jobs[0].compensation, "$121,600–$243,200 base");
+    assert.match(requests[0].url, /lifeattiktok\.com\/search\/123456789$/);
+    assert.match(
+      requests[0].options.headers["User-Agent"],
+      /NewGradJobTracker/,
+    );
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
 });
