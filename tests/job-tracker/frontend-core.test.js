@@ -115,6 +115,49 @@ test("deadline sort puts published dates first and keeps undated roles useful", 
   );
 });
 
+test("salary sort uses lower, then upper range bounds and puts missing ranges last", () => {
+  const salaryJobs = [
+    {
+      id: "lower-range",
+      company: "Alpha",
+      title: "Engineer",
+      compensation: "$120,000–$210,000 base",
+    },
+    {
+      id: "equal-lower-smaller-upper",
+      company: "Beta",
+      title: "Engineer",
+      compensation: "$150K - $180K base",
+    },
+    {
+      id: "equal-lower-larger-upper",
+      company: "Gamma",
+      title: "Engineer",
+      compensation: "$150,000 to $220,000 base",
+    },
+    {
+      id: "single-value",
+      company: "Delta",
+      title: "Engineer",
+      compensation: "$300,000 base",
+    },
+    {
+      id: "missing",
+      company: "Epsilon",
+      title: "Engineer",
+      compensation: null,
+    },
+  ];
+
+  assert.deepEqual(sortJobs(salaryJobs, "salary").map((job) => job.id), [
+    "equal-lower-larger-upper",
+    "equal-lower-smaller-upper",
+    "lower-range",
+    "single-value",
+    "missing",
+  ]);
+});
+
 test("legacy browser statuses migrate to binary applied state without losing notes", () => {
   const storage = memoryStorage(
     JSON.stringify({

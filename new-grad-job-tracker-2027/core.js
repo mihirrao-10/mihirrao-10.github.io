@@ -178,10 +178,37 @@ function timestamp(value) {
   return Number.isNaN(time) ? null : time;
 }
 
+function salaryAmount(value, suffix) {
+  const amount = Number(value.replaceAll(",", ""));
+  if (!Number.isFinite(amount)) return null;
+  if (suffix?.toLocaleLowerCase() === "k") return amount * 1_000;
+  if (suffix?.toLocaleLowerCase() === "m") return amount * 1_000_000;
+  return amount;
+}
+
+function salaryRange(compensation) {
+  if (typeof compensation !== "string") return null;
+  if (/\b(?:hour|hourly|per hour)\b|\/\s*hr\b/i.test(compensation)) return null;
+
+  const match = compensation.match(
+    /\$\s*(\d[\d,]*(?:\.\d+)?)\s*([km])?\s*(?:-|–|—|to)\s*\$?\s*(\d[\d,]*(?:\.\d+)?)\s*([km])?/i,
+  );
+  if (!match) return null;
+
+  const lower = salaryAmount(match[1], match[2] ?? match[4]);
+  const upper = salaryAmount(match[3], match[4] ?? match[2]);
+  if (lower === null || upper === null) return null;
+  return lower <= upper ? { lower, upper } : { lower: upper, upper: lower };
+}
+
+function compareCompanyAndTitle(a, b) {
+  return collator.compare(a.company, b.company) || collator.compare(a.title, b.title);
+}
+
 export function sortJobs(jobs, sort = "newest") {
   return [...jobs].sort((a, b) => {
     if (sort === "company") {
-      return collator.compare(a.company, b.company) || collator.compare(a.title, b.title);
+      return compareCompanyAndTitle(a, b);
     }
 
     if (sort === "deadline") {
@@ -199,6 +226,19 @@ export function sortJobs(jobs, sort = "newest") {
 
     if (sort === "verified") {
       return (timestamp(b.lastVerified) ?? 0) - (timestamp(a.lastVerified) ?? 0) || collator.compare(a.company, b.company);
+    }
+
+    if (sort === "salary") {
+      const aRange = salaryRange(a.compensation);
+      const bRange = salaryRange(b.compensation);
+      if (aRange === null && bRange !== null) return 1;
+      if (aRange !== null && bRange === null) return -1;
+      if (aRange === null && bRange === null) return compareCompanyAndTitle(a, b);
+      return (
+        bRange.lower - aRange.lower ||
+        bRange.upper - aRange.upper ||
+        compareCompanyAndTitle(a, b)
+      );
     }
 
     return (
