@@ -385,7 +385,7 @@
     "compensation": "$300,000 USD base for U.S. locations; locally competitive salary elsewhere",
     "datePosted": "2026-07-13",
     "deadline": null,
-    "startPeriod": "2027",
+    "startPeriod": "February or August 2027",
     "graduationWindow": "Eligible for full-time roles in 2027",
     "graduationMonths": [],
     "experienceRequirements": "Current full-time undergraduate or master's student; no professional experience minimum stated",
@@ -427,7 +427,7 @@
     "compensation": "$300,000 USD base for U.S. locations; locally competitive salary elsewhere",
     "datePosted": "2026-07-13",
     "deadline": null,
-    "startPeriod": "2027",
+    "startPeriod": "February or August 2027",
     "graduationWindow": "Eligible for full-time roles in 2027",
     "graduationMonths": [],
     "experienceRequirements": "Current full-time undergraduate or master's student; no professional experience minimum stated",
@@ -654,6 +654,421 @@
     ],
     "missCount": 0,
     "sourceId": "manual-bytedance",
+    "degreeLevels": [
+      "Undergraduate / Master's"
+    ]
+  },
+  {
+    "id": "management-solutions-data-science-boston",
+    "company": "Management Solutions",
+    "title": "Data Science Consultant – Boston",
+    "category": "Data Science / Applied Science / Analytics",
+    "applicationUrl": "https://recruiting.managementsolutions.com/VerOfertas.aspx?num=3",
+    "sourceUrl": "https://recruiting.managementsolutions.com/VerOfertas.aspx?num=3",
+    "sourcePlatform": "Official company careers",
+    "locations": [
+      "Boston, MA"
+    ],
+    "country": "United States",
+    "workplaceType": "Unspecified",
+    "compensation": "$70,000–$73,000 base",
+    "datePosted": null,
+    "deadline": null,
+    "startPeriod": "January 2027 or Summer 2027",
+    "graduationWindow": "Recent graduate or final-year student; postgraduate study is considered",
+    "graduationMonths": [],
+    "experienceRequirements": "Graduate role; no professional experience minimum stated",
+    "visaEvidence": {
+      "level": "Historical",
+      "explanation": "Recent DOL-derived records show GMS Management Solutions USA H-1B filings, including the exact Data Science Consultant title. This history is not a promise for this opening.",
+      "url": "https://h1bvisajobs.com/h1b-sponsors/gms-management-solutions-usa-inc"
+    },
+    "firstSeen": "2026-08-11",
+    "lastVerified": "2026-08-11",
+    "status": "active",
+    "closedDate": null,
+    "tags": [
+      "AI",
+      "Data mining",
+      "Machine learning",
+      "Model validation",
+      "Python"
+    ],
+    "missCount": 0,
+    "sourceId": "manual-management-solutions",
+    "degreeLevels": [
+      "Undergraduate / Master's"
+    ]
+  },
+  {
+    "id": "management-solutions-data-science-new-york",
+    "company": "Management Solutions",
+    "title": "Data Science Consultant – New York",
+    "category": "Data Science / Applied Science / Analytics",
+    "applicationUrl": "https://recruiting.managementsolutions.com/VerOfertas.aspx?num=119",
+    "sourceUrl": "https://recruiting.managementsolutions.com/VerOfertas.aspx?num=119",
+    "sourcePlatform": "Official company careers",
+    "locations": [
+      "New York, NY"
+    ],
+    "country": "United States",
+    "workplaceType": "Unspecified",
+    "compensation": "$70,000–$73,000 base",
+    "datePosted": null,
+    "deadline": null,
+    "startPeriod": "January 2027 or Summer 2027",
+    "graduationWindow": "Recent graduate or final-year student; postgraduate study is considered",
+    "graduationMonths": [],
+    "experienceRequirements": "Graduate role; no professional experience minimum stated",
+    "visaEvidence": {
+      "level": "Historical",
+      "explanation": "Recent DOL-derived records show GMS Management Solutions USA H-1B filings, including the exact Data Science Consultant title. This history is not a promise for this opening.",
+      "url": "https://h1bvisajobs.com/h1b-sponsors/gms-management-solutions-usa-inc"
+    },
+    "firstSeen": "2026-08-11",
+    "lastVerified": "2026-08-11",
+    "status": "active",
+    "closedDate": null,
+    "tags": [
+      "AI",
+      "Data mining",
+      "Machine learning",
+      "Model validation",
+      "Python"
+    ],
+    "missCount": 0,
+    "sourceId": "manual-management-solutions",
+    "degreeLevels": [
+      "Undergraduate / Master's"
+    ]
+  },
+  {
+    "id": "management-solutions-data-science-houston",
+    "company": "Management Solutions",
+    "title": "Data Science Consultant – Houston",
+    "category": "Data Science / Applied Science / Analytics",
+    "applicationUrl": "https://recruiting.managementsolutions.com/VerOfertas.aspx?num=191",
+    "sourceUrl": "https://recruiting.managementsolutions.com/VerOfertas.aspx?num=191",
+    "sourcePlatform": "Official company careers",
+    "locations": [
+      "Houston, TX"
+    ],
+    "country": "United States",
+    "workplaceType": "Unspecified",
+    "compensation": null,
+    "datePosted": null,
+    "deadline": null,
+    "startPeriod": "January 2027 or Summer 2027",
+    "graduationWindow": "Recent graduate or final-year student; postgraduate study is considered",
+    "graduationMonths": [],
+    "experienceRequirements": "Graduate role; no professional experience minimum stated",
+    "visaEvidence": {
+      "level": "Historical",
+      "explanation": "Recent DOL-derived records show GMS Management Solutions USA H-1B filings, including the exact Data Science Consultant title. This history is not a promise for this opening.",
+      "url": "https://h1bvisajobs.com/h1b-sponsors/gms-management-solutions-usa-inc"
+    },
+    "firstSeen": "2026-08-11",
+    "lastVerified": "2026-08-11",
+    "status": "active",
+    "closedDate": null,
+    "tags": [
+      "AI",
+      "Data mining",
+      "Machine learning",
+      "Model validation",
+      "Python"
+    ],
+    "missCount": 0,
+    "sourceId": "manual-management-solutions",
+    "degreeLevels": [
+      "Undergraduate / Master's"
+    ]
+  },
+  {
+    "id": "management-solutions-data-science-miami",
+    "company": "Management Solutions",
+    "title": "Data Science Consultant – Miami",
+    "category": "Data Science / Applied Science / Analytics",
+    "applicationUrl": "https://recruiting.managementsolutions.com/VerOfertas.aspx?num=284",
+    "sourceUrl": "https://recruiting.managementsolutions.com/VerOfertas.aspx?num=284",
+    "sourcePlatform": "Official company careers",
+    "locations": [
+      "Miami, FL"
+    ],
+    "country": "United States",
+    "workplaceType": "Unspecified",
+    "compensation": null,
+    "datePosted": null,
+    "deadline": null,
+    "startPeriod": "January 2027 or Summer 2027",
+    "graduationWindow": "Recent graduate or final-year student; postgraduate study is considered",
+    "graduationMonths": [],
+    "experienceRequirements": "Graduate role; no professional experience minimum stated",
+    "visaEvidence": {
+      "level": "Historical",
+      "explanation": "Recent DOL-derived records show GMS Management Solutions USA H-1B filings, including the exact Data Science Consultant title. This history is not a promise for this opening.",
+      "url": "https://h1bvisajobs.com/h1b-sponsors/gms-management-solutions-usa-inc"
+    },
+    "firstSeen": "2026-08-11",
+    "lastVerified": "2026-08-11",
+    "status": "active",
+    "closedDate": null,
+    "tags": [
+      "AI",
+      "Data mining",
+      "Machine learning",
+      "Model validation",
+      "Python"
+    ],
+    "missCount": 0,
+    "sourceId": "manual-management-solutions",
+    "degreeLevels": [
+      "Undergraduate / Master's"
+    ]
+  },
+  {
+    "id": "management-solutions-data-science-columbus",
+    "company": "Management Solutions",
+    "title": "Data Science Consultant – Columbus",
+    "category": "Data Science / Applied Science / Analytics",
+    "applicationUrl": "https://recruiting.managementsolutions.com/VerOfertas.aspx?num=295",
+    "sourceUrl": "https://recruiting.managementsolutions.com/VerOfertas.aspx?num=295",
+    "sourcePlatform": "Official company careers",
+    "locations": [
+      "Columbus, OH"
+    ],
+    "country": "United States",
+    "workplaceType": "Unspecified",
+    "compensation": null,
+    "datePosted": null,
+    "deadline": null,
+    "startPeriod": "January 2027 or Summer 2027",
+    "graduationWindow": "Recent graduate or final-year student; postgraduate study is considered",
+    "graduationMonths": [],
+    "experienceRequirements": "Graduate role; no professional experience minimum stated",
+    "visaEvidence": {
+      "level": "Historical",
+      "explanation": "Recent DOL-derived records show GMS Management Solutions USA H-1B filings, including the exact Data Science Consultant title. This history is not a promise for this opening.",
+      "url": "https://h1bvisajobs.com/h1b-sponsors/gms-management-solutions-usa-inc"
+    },
+    "firstSeen": "2026-08-11",
+    "lastVerified": "2026-08-11",
+    "status": "active",
+    "closedDate": null,
+    "tags": [
+      "AI",
+      "Data mining",
+      "Machine learning",
+      "Model validation",
+      "Python"
+    ],
+    "missCount": 0,
+    "sourceId": "manual-management-solutions",
+    "degreeLevels": [
+      "Undergraduate / Master's"
+    ]
+  },
+  {
+    "id": "management-solutions-digital-transformation-boston",
+    "company": "Management Solutions",
+    "title": "New Technologies and Digital Transformation Consultant – Boston",
+    "category": "Other Technical",
+    "applicationUrl": "https://recruiting.managementsolutions.com/VerOfertas.aspx?num=5",
+    "sourceUrl": "https://recruiting.managementsolutions.com/VerOfertas.aspx?num=5",
+    "sourcePlatform": "Official company careers",
+    "locations": [
+      "Boston, MA"
+    ],
+    "country": "United States",
+    "workplaceType": "Unspecified",
+    "compensation": "$70,000–$73,000 base",
+    "datePosted": null,
+    "deadline": null,
+    "startPeriod": "January 2027 or Summer 2027",
+    "graduationWindow": "Recent computer science or IT graduate or final-year student; postgraduate study is considered",
+    "graduationMonths": [],
+    "experienceRequirements": "Graduate role; no professional experience minimum stated",
+    "visaEvidence": {
+      "level": "Historical",
+      "explanation": "Recent DOL-derived records show GMS Management Solutions USA H-1B filings for graduate consulting work. This employer history is not a promise for this opening.",
+      "url": "https://h1bvisajobs.com/h1b-sponsors/gms-management-solutions-usa-inc"
+    },
+    "firstSeen": "2026-08-11",
+    "lastVerified": "2026-08-11",
+    "status": "active",
+    "closedDate": null,
+    "tags": [
+      "Big data",
+      "Cybersecurity",
+      "Data governance",
+      "Software engineering"
+    ],
+    "missCount": 0,
+    "sourceId": "manual-management-solutions",
+    "degreeLevels": [
+      "Undergraduate / Master's"
+    ]
+  },
+  {
+    "id": "management-solutions-digital-transformation-new-york",
+    "company": "Management Solutions",
+    "title": "New Technologies and Digital Transformation Consultant – New York",
+    "category": "Other Technical",
+    "applicationUrl": "https://recruiting.managementsolutions.com/VerOfertas.aspx?num=118",
+    "sourceUrl": "https://recruiting.managementsolutions.com/VerOfertas.aspx?num=118",
+    "sourcePlatform": "Official company careers",
+    "locations": [
+      "New York, NY"
+    ],
+    "country": "United States",
+    "workplaceType": "Unspecified",
+    "compensation": "$70,000–$73,000 base",
+    "datePosted": null,
+    "deadline": null,
+    "startPeriod": "January 2027 or Summer 2027",
+    "graduationWindow": "Recent computer science or IT graduate or final-year student; postgraduate study is considered",
+    "graduationMonths": [],
+    "experienceRequirements": "Graduate role; no professional experience minimum stated",
+    "visaEvidence": {
+      "level": "Historical",
+      "explanation": "Recent DOL-derived records show GMS Management Solutions USA H-1B filings for graduate consulting work. This employer history is not a promise for this opening.",
+      "url": "https://h1bvisajobs.com/h1b-sponsors/gms-management-solutions-usa-inc"
+    },
+    "firstSeen": "2026-08-11",
+    "lastVerified": "2026-08-11",
+    "status": "active",
+    "closedDate": null,
+    "tags": [
+      "Big data",
+      "Cybersecurity",
+      "Data governance",
+      "Software engineering"
+    ],
+    "missCount": 0,
+    "sourceId": "manual-management-solutions",
+    "degreeLevels": [
+      "Undergraduate / Master's"
+    ]
+  },
+  {
+    "id": "management-solutions-digital-transformation-houston",
+    "company": "Management Solutions",
+    "title": "New Technologies and Digital Transformation Consultant – Houston",
+    "category": "Other Technical",
+    "applicationUrl": "https://recruiting.managementsolutions.com/VerOfertas.aspx?num=193",
+    "sourceUrl": "https://recruiting.managementsolutions.com/VerOfertas.aspx?num=193",
+    "sourcePlatform": "Official company careers",
+    "locations": [
+      "Houston, TX"
+    ],
+    "country": "United States",
+    "workplaceType": "Unspecified",
+    "compensation": null,
+    "datePosted": null,
+    "deadline": null,
+    "startPeriod": "January 2027 or Summer 2027",
+    "graduationWindow": "Recent computer science or IT graduate or final-year student; postgraduate study is considered",
+    "graduationMonths": [],
+    "experienceRequirements": "Graduate role; no professional experience minimum stated",
+    "visaEvidence": {
+      "level": "Historical",
+      "explanation": "Recent DOL-derived records show GMS Management Solutions USA H-1B filings for graduate consulting work. This employer history is not a promise for this opening.",
+      "url": "https://h1bvisajobs.com/h1b-sponsors/gms-management-solutions-usa-inc"
+    },
+    "firstSeen": "2026-08-11",
+    "lastVerified": "2026-08-11",
+    "status": "active",
+    "closedDate": null,
+    "tags": [
+      "Big data",
+      "Cybersecurity",
+      "Data governance",
+      "Software engineering"
+    ],
+    "missCount": 0,
+    "sourceId": "manual-management-solutions",
+    "degreeLevels": [
+      "Undergraduate / Master's"
+    ]
+  },
+  {
+    "id": "management-solutions-digital-transformation-miami",
+    "company": "Management Solutions",
+    "title": "New Technologies and Digital Transformation Consultant – Miami",
+    "category": "Other Technical",
+    "applicationUrl": "https://recruiting.managementsolutions.com/VerOfertas.aspx?num=285",
+    "sourceUrl": "https://recruiting.managementsolutions.com/VerOfertas.aspx?num=285",
+    "sourcePlatform": "Official company careers",
+    "locations": [
+      "Miami, FL"
+    ],
+    "country": "United States",
+    "workplaceType": "Unspecified",
+    "compensation": null,
+    "datePosted": null,
+    "deadline": null,
+    "startPeriod": "January 2027 or Summer 2027",
+    "graduationWindow": "Recent computer science or IT graduate or final-year student; postgraduate study is considered",
+    "graduationMonths": [],
+    "experienceRequirements": "Graduate role; no professional experience minimum stated",
+    "visaEvidence": {
+      "level": "Historical",
+      "explanation": "Recent DOL-derived records show GMS Management Solutions USA H-1B filings for graduate consulting work. This employer history is not a promise for this opening.",
+      "url": "https://h1bvisajobs.com/h1b-sponsors/gms-management-solutions-usa-inc"
+    },
+    "firstSeen": "2026-08-11",
+    "lastVerified": "2026-08-11",
+    "status": "active",
+    "closedDate": null,
+    "tags": [
+      "Big data",
+      "Cybersecurity",
+      "Data governance",
+      "Software engineering"
+    ],
+    "missCount": 0,
+    "sourceId": "manual-management-solutions",
+    "degreeLevels": [
+      "Undergraduate / Master's"
+    ]
+  },
+  {
+    "id": "management-solutions-digital-transformation-columbus",
+    "company": "Management Solutions",
+    "title": "New Technologies and Digital Transformation Consultant – Columbus",
+    "category": "Other Technical",
+    "applicationUrl": "https://recruiting.managementsolutions.com/VerOfertas.aspx?num=296",
+    "sourceUrl": "https://recruiting.managementsolutions.com/VerOfertas.aspx?num=296",
+    "sourcePlatform": "Official company careers",
+    "locations": [
+      "Columbus, OH"
+    ],
+    "country": "United States",
+    "workplaceType": "Unspecified",
+    "compensation": null,
+    "datePosted": null,
+    "deadline": null,
+    "startPeriod": "January 2027 or Summer 2027",
+    "graduationWindow": "Recent computer science or IT graduate or final-year student; postgraduate study is considered",
+    "graduationMonths": [],
+    "experienceRequirements": "Graduate role; no professional experience minimum stated",
+    "visaEvidence": {
+      "level": "Historical",
+      "explanation": "Recent DOL-derived records show GMS Management Solutions USA H-1B filings for graduate consulting work. This employer history is not a promise for this opening.",
+      "url": "https://h1bvisajobs.com/h1b-sponsors/gms-management-solutions-usa-inc"
+    },
+    "firstSeen": "2026-08-11",
+    "lastVerified": "2026-08-11",
+    "status": "active",
+    "closedDate": null,
+    "tags": [
+      "Big data",
+      "Cybersecurity",
+      "Data governance",
+      "Software engineering"
+    ],
+    "missCount": 0,
+    "sourceId": "manual-management-solutions",
     "degreeLevels": [
       "Undergraduate / Master's"
     ]

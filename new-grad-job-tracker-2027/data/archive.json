@@ -37,5 +37,44 @@
     ],
     "missCount": 2,
     "sourceId": "collective-ashby"
+  },
+  {
+    "id": "nuro-greenhouse-e6a2d165f34913fb",
+    "company": "Nuro",
+    "title": "Software Engineer, Performance - New Grad",
+    "category": "Systems / Infrastructure / Performance Engineering",
+    "applicationUrl": "https://www.nuro.ai/careersitem?gh_jid=6972272",
+    "sourceUrl": "https://www.nuro.ai/careersitem?gh_jid=6972272",
+    "sourcePlatform": "Greenhouse",
+    "locations": [
+      "Mountain View, CA"
+    ],
+    "country": "United States",
+    "workplaceType": "Unspecified",
+    "compensation": "$153,000–$175,000 base plus bonus and equity",
+    "datePosted": "2026-07-16",
+    "deadline": null,
+    "startPeriod": null,
+    "graduationWindow": null,
+    "graduationMonths": [],
+    "degreeLevels": [
+      "Undergraduate / Master's"
+    ],
+    "experienceRequirements": "New graduate with a bachelor's or master's degree in computer science or a related technical field",
+    "visaEvidence": {
+      "level": "Historical",
+      "explanation": "Recent public DOL-derived records show Nuro filings for comparable software engineering roles, including performance engineering. This history is not a promise for this opening.",
+      "url": "https://www.ellis.com/visa-sponsors/nuro-inc/h1b"
+    },
+    "firstSeen": "2026-07-31",
+    "lastVerified": "2026-08-11",
+    "status": "closed",
+    "closedDate": "2026-08-11",
+    "tags": [
+      "C++",
+      "Performance"
+    ],
+    "missCount": 2,
+    "sourceId": "nuro-greenhouse"
   }
 ]

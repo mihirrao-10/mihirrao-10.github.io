@@ -967,7 +967,7 @@
     "compensation": "$300,000 USD base for U.S. locations; locally competitive salary elsewhere",
     "datePosted": "2026-07-13",
     "deadline": null,
-    "startPeriod": "2027",
+    "startPeriod": "February or August 2027",
     "graduationWindow": "Eligible for full-time roles in 2027",
     "graduationMonths": [],
     "experienceRequirements": "Current full-time undergraduate or master's student; no professional experience minimum stated",
@@ -1011,7 +1011,7 @@
     "compensation": "$300,000 USD base for U.S. locations; locally competitive salary elsewhere",
     "datePosted": "2026-07-13",
     "deadline": null,
-    "startPeriod": "2027",
+    "startPeriod": "February or August 2027",
     "graduationWindow": "Eligible for full-time roles in 2027",
     "graduationMonths": [],
     "experienceRequirements": "Current full-time undergraduate or master's student; no professional experience minimum stated",
@@ -1300,6 +1300,262 @@
     "sourceId": "ixl-greenhouse"
   },
   {
+    "id": "jane-street-greenhouse-8c4ea56f66735941",
+    "company": "Jane Street",
+    "title": "Hardware Engineer (FPGA/ASIC)",
+    "category": "Systems / Infrastructure / Performance Engineering",
+    "applicationUrl": "https://www.janestreet.com/join-jane-street/apply/8646893002/",
+    "sourceUrl": "https://www.janestreet.com/join-jane-street/position/8646893002/",
+    "sourcePlatform": "Greenhouse",
+    "locations": [
+      "New York, NY"
+    ],
+    "country": "United States",
+    "workplaceType": "On-site",
+    "compensation": "$300,000 base plus discretionary bonus",
+    "datePosted": "2026-07-24",
+    "deadline": null,
+    "startPeriod": "Flexible; application accepts January or February 2027 availability",
+    "graduationWindow": "Full-Time: New Grad application; exact degree-completion months are not stated",
+    "graduationMonths": [],
+    "degreeLevels": [
+      "Undergraduate / Master's"
+    ],
+    "experienceRequirements": "Full-time new-graduate role; no professional experience minimum stated",
+    "visaEvidence": {
+      "level": "Historical",
+      "explanation": "Recent DOL-derived records show Jane Street H-1B filings for comparable software engineering, research, and trading roles. This employer history is not a promise for any opening.",
+      "url": "https://www.ellis.com/visa-sponsors/jane-street-group-llc"
+    },
+    "firstSeen": "2026-08-11",
+    "lastVerified": "2026-08-11",
+    "status": "active",
+    "closedDate": null,
+    "tags": [
+      "ASIC",
+      "FPGA",
+      "Flexible start",
+      "Hardware",
+      "New graduate",
+      "OCaml"
+    ],
+    "missCount": 0,
+    "sourceId": "jane-street-greenhouse"
+  },
+  {
+    "id": "jane-street-greenhouse-d9591048826aac92",
+    "company": "Jane Street",
+    "title": "Linux Engineer",
+    "category": "Systems / Infrastructure / Performance Engineering",
+    "applicationUrl": "https://www.janestreet.com/join-jane-street/apply/8635672002/",
+    "sourceUrl": "https://www.janestreet.com/join-jane-street/position/8635672002/",
+    "sourcePlatform": "Greenhouse",
+    "locations": [
+      "New York, NY"
+    ],
+    "country": "United States",
+    "workplaceType": "On-site",
+    "compensation": "$250,000–$300,000 base plus discretionary bonus",
+    "datePosted": "2026-07-22",
+    "deadline": null,
+    "startPeriod": "Flexible; application accepts January or February 2027 availability",
+    "graduationWindow": "Full-Time: New Grad application; exact degree-completion months are not stated",
+    "graduationMonths": [],
+    "degreeLevels": [
+      "Undergraduate / Master's"
+    ],
+    "experienceRequirements": "Full-time new-graduate role; no professional experience minimum stated",
+    "visaEvidence": {
+      "level": "Historical",
+      "explanation": "Recent DOL-derived records show Jane Street H-1B filings for comparable software engineering, research, and trading roles. This employer history is not a promise for any opening.",
+      "url": "https://www.ellis.com/visa-sponsors/jane-street-group-llc"
+    },
+    "firstSeen": "2026-08-11",
+    "lastVerified": "2026-08-11",
+    "status": "active",
+    "closedDate": null,
+    "tags": [
+      "Flexible start",
+      "Infrastructure",
+      "Linux",
+      "Networking",
+      "New graduate",
+      "Systems programming"
+    ],
+    "missCount": 0,
+    "sourceId": "jane-street-greenhouse"
+  },
+  {
+    "id": "jane-street-greenhouse-4ddbf70f785f9dfc",
+    "company": "Jane Street",
+    "title": "Machine Learning Researcher",
+    "category": "Machine Learning / AI Engineering",
+    "applicationUrl": "https://www.janestreet.com/join-jane-street/apply/8576928002/",
+    "sourceUrl": "https://www.janestreet.com/join-jane-street/position/8576928002/",
+    "sourcePlatform": "Greenhouse",
+    "locations": [
+      "New York, NY"
+    ],
+    "country": "United States",
+    "workplaceType": "On-site",
+    "compensation": "$300,000 base plus discretionary bonus",
+    "datePosted": "2026-06-03",
+    "deadline": null,
+    "startPeriod": "Flexible; application accepts January or February 2027 availability",
+    "graduationWindow": "Full-Time: New Grad application; exact degree-completion months are not stated",
+    "graduationMonths": [],
+    "degreeLevels": [
+      "Undergraduate / Master's"
+    ],
+    "experienceRequirements": "Full-time new-graduate role; no professional experience minimum stated",
+    "visaEvidence": {
+      "level": "Historical",
+      "explanation": "Recent DOL-derived records show Jane Street H-1B filings for comparable software engineering, research, and trading roles. This employer history is not a promise for any opening.",
+      "url": "https://www.ellis.com/visa-sponsors/jane-street-group-llc"
+    },
+    "firstSeen": "2026-08-11",
+    "lastVerified": "2026-08-11",
+    "status": "active",
+    "closedDate": null,
+    "tags": [
+      "Deep learning",
+      "Flexible start",
+      "Machine learning",
+      "New graduate",
+      "Python",
+      "Research"
+    ],
+    "missCount": 0,
+    "sourceId": "jane-street-greenhouse"
+  },
+  {
+    "id": "jane-street-greenhouse-2c02df882e7fbb1b",
+    "company": "Jane Street",
+    "title": "Quantitative Researcher",
+    "category": "Quantitative Research",
+    "applicationUrl": "https://www.janestreet.com/join-jane-street/apply/8573726002/",
+    "sourceUrl": "https://www.janestreet.com/join-jane-street/position/8573726002/",
+    "sourcePlatform": "Greenhouse",
+    "locations": [
+      "New York, NY"
+    ],
+    "country": "United States",
+    "workplaceType": "On-site",
+    "compensation": "$300,000 base plus discretionary bonus",
+    "datePosted": "2026-06-02",
+    "deadline": null,
+    "startPeriod": "Flexible; application accepts January or February 2027 availability",
+    "graduationWindow": "Full-Time: New Grad application; exact degree-completion months are not stated",
+    "graduationMonths": [],
+    "degreeLevels": [
+      "Undergraduate / Master's"
+    ],
+    "experienceRequirements": "Full-time new-graduate role; no professional experience minimum stated",
+    "visaEvidence": {
+      "level": "Historical",
+      "explanation": "Recent DOL-derived records show Jane Street H-1B filings for comparable software engineering, research, and trading roles. This employer history is not a promise for any opening.",
+      "url": "https://www.ellis.com/visa-sponsors/jane-street-group-llc"
+    },
+    "firstSeen": "2026-08-11",
+    "lastVerified": "2026-08-11",
+    "status": "active",
+    "closedDate": null,
+    "tags": [
+      "Data science",
+      "Flexible start",
+      "Machine learning",
+      "New graduate",
+      "Python",
+      "Research"
+    ],
+    "missCount": 0,
+    "sourceId": "jane-street-greenhouse"
+  },
+  {
+    "id": "jane-street-greenhouse-8d2980dd051c84a1",
+    "company": "Jane Street",
+    "title": "Quantitative Trader",
+    "category": "Quantitative Trading",
+    "applicationUrl": "https://www.janestreet.com/join-jane-street/apply/8573523002/",
+    "sourceUrl": "https://www.janestreet.com/join-jane-street/position/8573523002/",
+    "sourcePlatform": "Greenhouse",
+    "locations": [
+      "New York, NY"
+    ],
+    "country": "United States",
+    "workplaceType": "On-site",
+    "compensation": "$300,000 base plus discretionary bonus",
+    "datePosted": "2026-06-01",
+    "deadline": null,
+    "startPeriod": "Flexible; application accepts January or February 2027 availability",
+    "graduationWindow": "Full-Time: New Grad application; exact degree-completion months are not stated",
+    "graduationMonths": [],
+    "degreeLevels": [
+      "Undergraduate / Master's"
+    ],
+    "experienceRequirements": "Full-time new-graduate role; no professional experience minimum stated",
+    "visaEvidence": {
+      "level": "Historical",
+      "explanation": "Recent DOL-derived records show Jane Street H-1B filings for comparable software engineering, research, and trading roles. This employer history is not a promise for any opening.",
+      "url": "https://www.ellis.com/visa-sponsors/jane-street-group-llc"
+    },
+    "firstSeen": "2026-08-11",
+    "lastVerified": "2026-08-11",
+    "status": "active",
+    "closedDate": null,
+    "tags": [
+      "Flexible start",
+      "Machine learning",
+      "New graduate",
+      "Statistical modeling",
+      "Trading"
+    ],
+    "missCount": 0,
+    "sourceId": "jane-street-greenhouse"
+  },
+  {
+    "id": "jane-street-greenhouse-2923bdecbc6b0bb9",
+    "company": "Jane Street",
+    "title": "Software Engineer",
+    "category": "Software Engineering",
+    "applicationUrl": "https://www.janestreet.com/join-jane-street/apply/8594541002/",
+    "sourceUrl": "https://www.janestreet.com/join-jane-street/position/8594541002/",
+    "sourcePlatform": "Greenhouse",
+    "locations": [
+      "New York, NY"
+    ],
+    "country": "United States",
+    "workplaceType": "On-site",
+    "compensation": "$300,000 base plus discretionary bonus",
+    "datePosted": "2026-07-06",
+    "deadline": null,
+    "startPeriod": "Flexible; application accepts January or February 2027 availability",
+    "graduationWindow": "Full-Time: New Grad application; exact degree-completion months are not stated",
+    "graduationMonths": [],
+    "degreeLevels": [
+      "Undergraduate / Master's"
+    ],
+    "experienceRequirements": "Full-time new-graduate role; no professional experience minimum stated",
+    "visaEvidence": {
+      "level": "Historical",
+      "explanation": "Recent DOL-derived records show Jane Street H-1B filings for comparable software engineering, research, and trading roles. This employer history is not a promise for any opening.",
+      "url": "https://www.ellis.com/visa-sponsors/jane-street-group-llc"
+    },
+    "firstSeen": "2026-08-11",
+    "lastVerified": "2026-08-11",
+    "status": "active",
+    "closedDate": null,
+    "tags": [
+      "Distributed systems",
+      "Flexible start",
+      "New graduate",
+      "OCaml",
+      "Python"
+    ],
+    "missCount": 0,
+    "sourceId": "jane-street-greenhouse"
+  },
+  {
     "id": "jump-greenhouse-fb9c17e77fb20cfa",
     "company": "Jump Trading",
     "title": "Campus Quantitative Researcher, UG/MS (Full-Time)",
@@ -1381,6 +1637,421 @@
     ],
     "missCount": 0,
     "sourceId": "jump-greenhouse"
+  },
+  {
+    "id": "management-solutions-data-science-boston",
+    "company": "Management Solutions",
+    "title": "Data Science Consultant – Boston",
+    "category": "Data Science / Applied Science / Analytics",
+    "applicationUrl": "https://recruiting.managementsolutions.com/VerOfertas.aspx?num=3",
+    "sourceUrl": "https://recruiting.managementsolutions.com/VerOfertas.aspx?num=3",
+    "sourcePlatform": "Official company careers",
+    "locations": [
+      "Boston, MA"
+    ],
+    "country": "United States",
+    "workplaceType": "Unspecified",
+    "compensation": "$70,000–$73,000 base",
+    "datePosted": null,
+    "deadline": null,
+    "startPeriod": "January 2027 or Summer 2027",
+    "graduationWindow": "Recent graduate or final-year student; postgraduate study is considered",
+    "graduationMonths": [],
+    "experienceRequirements": "Graduate role; no professional experience minimum stated",
+    "visaEvidence": {
+      "level": "Historical",
+      "explanation": "Recent DOL-derived records show GMS Management Solutions USA H-1B filings, including the exact Data Science Consultant title. This history is not a promise for this opening.",
+      "url": "https://h1bvisajobs.com/h1b-sponsors/gms-management-solutions-usa-inc"
+    },
+    "firstSeen": "2026-08-11",
+    "lastVerified": "2026-08-11",
+    "status": "active",
+    "closedDate": null,
+    "tags": [
+      "AI",
+      "Data mining",
+      "Machine learning",
+      "Model validation",
+      "Python"
+    ],
+    "missCount": 0,
+    "sourceId": "manual-management-solutions",
+    "degreeLevels": [
+      "Undergraduate / Master's"
+    ]
+  },
+  {
+    "id": "management-solutions-data-science-columbus",
+    "company": "Management Solutions",
+    "title": "Data Science Consultant – Columbus",
+    "category": "Data Science / Applied Science / Analytics",
+    "applicationUrl": "https://recruiting.managementsolutions.com/VerOfertas.aspx?num=295",
+    "sourceUrl": "https://recruiting.managementsolutions.com/VerOfertas.aspx?num=295",
+    "sourcePlatform": "Official company careers",
+    "locations": [
+      "Columbus, OH"
+    ],
+    "country": "United States",
+    "workplaceType": "Unspecified",
+    "compensation": null,
+    "datePosted": null,
+    "deadline": null,
+    "startPeriod": "January 2027 or Summer 2027",
+    "graduationWindow": "Recent graduate or final-year student; postgraduate study is considered",
+    "graduationMonths": [],
+    "experienceRequirements": "Graduate role; no professional experience minimum stated",
+    "visaEvidence": {
+      "level": "Historical",
+      "explanation": "Recent DOL-derived records show GMS Management Solutions USA H-1B filings, including the exact Data Science Consultant title. This history is not a promise for this opening.",
+      "url": "https://h1bvisajobs.com/h1b-sponsors/gms-management-solutions-usa-inc"
+    },
+    "firstSeen": "2026-08-11",
+    "lastVerified": "2026-08-11",
+    "status": "active",
+    "closedDate": null,
+    "tags": [
+      "AI",
+      "Data mining",
+      "Machine learning",
+      "Model validation",
+      "Python"
+    ],
+    "missCount": 0,
+    "sourceId": "manual-management-solutions",
+    "degreeLevels": [
+      "Undergraduate / Master's"
+    ]
+  },
+  {
+    "id": "management-solutions-data-science-houston",
+    "company": "Management Solutions",
+    "title": "Data Science Consultant – Houston",
+    "category": "Data Science / Applied Science / Analytics",
+    "applicationUrl": "https://recruiting.managementsolutions.com/VerOfertas.aspx?num=191",
+    "sourceUrl": "https://recruiting.managementsolutions.com/VerOfertas.aspx?num=191",
+    "sourcePlatform": "Official company careers",
+    "locations": [
+      "Houston, TX"
+    ],
+    "country": "United States",
+    "workplaceType": "Unspecified",
+    "compensation": null,
+    "datePosted": null,
+    "deadline": null,
+    "startPeriod": "January 2027 or Summer 2027",
+    "graduationWindow": "Recent graduate or final-year student; postgraduate study is considered",
+    "graduationMonths": [],
+    "experienceRequirements": "Graduate role; no professional experience minimum stated",
+    "visaEvidence": {
+      "level": "Historical",
+      "explanation": "Recent DOL-derived records show GMS Management Solutions USA H-1B filings, including the exact Data Science Consultant title. This history is not a promise for this opening.",
+      "url": "https://h1bvisajobs.com/h1b-sponsors/gms-management-solutions-usa-inc"
+    },
+    "firstSeen": "2026-08-11",
+    "lastVerified": "2026-08-11",
+    "status": "active",
+    "closedDate": null,
+    "tags": [
+      "AI",
+      "Data mining",
+      "Machine learning",
+      "Model validation",
+      "Python"
+    ],
+    "missCount": 0,
+    "sourceId": "manual-management-solutions",
+    "degreeLevels": [
+      "Undergraduate / Master's"
+    ]
+  },
+  {
+    "id": "management-solutions-data-science-miami",
+    "company": "Management Solutions",
+    "title": "Data Science Consultant – Miami",
+    "category": "Data Science / Applied Science / Analytics",
+    "applicationUrl": "https://recruiting.managementsolutions.com/VerOfertas.aspx?num=284",
+    "sourceUrl": "https://recruiting.managementsolutions.com/VerOfertas.aspx?num=284",
+    "sourcePlatform": "Official company careers",
+    "locations": [
+      "Miami, FL"
+    ],
+    "country": "United States",
+    "workplaceType": "Unspecified",
+    "compensation": null,
+    "datePosted": null,
+    "deadline": null,
+    "startPeriod": "January 2027 or Summer 2027",
+    "graduationWindow": "Recent graduate or final-year student; postgraduate study is considered",
+    "graduationMonths": [],
+    "experienceRequirements": "Graduate role; no professional experience minimum stated",
+    "visaEvidence": {
+      "level": "Historical",
+      "explanation": "Recent DOL-derived records show GMS Management Solutions USA H-1B filings, including the exact Data Science Consultant title. This history is not a promise for this opening.",
+      "url": "https://h1bvisajobs.com/h1b-sponsors/gms-management-solutions-usa-inc"
+    },
+    "firstSeen": "2026-08-11",
+    "lastVerified": "2026-08-11",
+    "status": "active",
+    "closedDate": null,
+    "tags": [
+      "AI",
+      "Data mining",
+      "Machine learning",
+      "Model validation",
+      "Python"
+    ],
+    "missCount": 0,
+    "sourceId": "manual-management-solutions",
+    "degreeLevels": [
+      "Undergraduate / Master's"
+    ]
+  },
+  {
+    "id": "management-solutions-data-science-new-york",
+    "company": "Management Solutions",
+    "title": "Data Science Consultant – New York",
+    "category": "Data Science / Applied Science / Analytics",
+    "applicationUrl": "https://recruiting.managementsolutions.com/VerOfertas.aspx?num=119",
+    "sourceUrl": "https://recruiting.managementsolutions.com/VerOfertas.aspx?num=119",
+    "sourcePlatform": "Official company careers",
+    "locations": [
+      "New York, NY"
+    ],
+    "country": "United States",
+    "workplaceType": "Unspecified",
+    "compensation": "$70,000–$73,000 base",
+    "datePosted": null,
+    "deadline": null,
+    "startPeriod": "January 2027 or Summer 2027",
+    "graduationWindow": "Recent graduate or final-year student; postgraduate study is considered",
+    "graduationMonths": [],
+    "experienceRequirements": "Graduate role; no professional experience minimum stated",
+    "visaEvidence": {
+      "level": "Historical",
+      "explanation": "Recent DOL-derived records show GMS Management Solutions USA H-1B filings, including the exact Data Science Consultant title. This history is not a promise for this opening.",
+      "url": "https://h1bvisajobs.com/h1b-sponsors/gms-management-solutions-usa-inc"
+    },
+    "firstSeen": "2026-08-11",
+    "lastVerified": "2026-08-11",
+    "status": "active",
+    "closedDate": null,
+    "tags": [
+      "AI",
+      "Data mining",
+      "Machine learning",
+      "Model validation",
+      "Python"
+    ],
+    "missCount": 0,
+    "sourceId": "manual-management-solutions",
+    "degreeLevels": [
+      "Undergraduate / Master's"
+    ]
+  },
+  {
+    "id": "management-solutions-digital-transformation-boston",
+    "company": "Management Solutions",
+    "title": "New Technologies and Digital Transformation Consultant – Boston",
+    "category": "Other Technical",
+    "applicationUrl": "https://recruiting.managementsolutions.com/VerOfertas.aspx?num=5",
+    "sourceUrl": "https://recruiting.managementsolutions.com/VerOfertas.aspx?num=5",
+    "sourcePlatform": "Official company careers",
+    "locations": [
+      "Boston, MA"
+    ],
+    "country": "United States",
+    "workplaceType": "Unspecified",
+    "compensation": "$70,000–$73,000 base",
+    "datePosted": null,
+    "deadline": null,
+    "startPeriod": "January 2027 or Summer 2027",
+    "graduationWindow": "Recent computer science or IT graduate or final-year student; postgraduate study is considered",
+    "graduationMonths": [],
+    "experienceRequirements": "Graduate role; no professional experience minimum stated",
+    "visaEvidence": {
+      "level": "Historical",
+      "explanation": "Recent DOL-derived records show GMS Management Solutions USA H-1B filings for graduate consulting work. This employer history is not a promise for this opening.",
+      "url": "https://h1bvisajobs.com/h1b-sponsors/gms-management-solutions-usa-inc"
+    },
+    "firstSeen": "2026-08-11",
+    "lastVerified": "2026-08-11",
+    "status": "active",
+    "closedDate": null,
+    "tags": [
+      "Big data",
+      "Cybersecurity",
+      "Data governance",
+      "Software engineering"
+    ],
+    "missCount": 0,
+    "sourceId": "manual-management-solutions",
+    "degreeLevels": [
+      "Undergraduate / Master's"
+    ]
+  },
+  {
+    "id": "management-solutions-digital-transformation-columbus",
+    "company": "Management Solutions",
+    "title": "New Technologies and Digital Transformation Consultant – Columbus",
+    "category": "Other Technical",
+    "applicationUrl": "https://recruiting.managementsolutions.com/VerOfertas.aspx?num=296",
+    "sourceUrl": "https://recruiting.managementsolutions.com/VerOfertas.aspx?num=296",
+    "sourcePlatform": "Official company careers",
+    "locations": [
+      "Columbus, OH"
+    ],
+    "country": "United States",
+    "workplaceType": "Unspecified",
+    "compensation": null,
+    "datePosted": null,
+    "deadline": null,
+    "startPeriod": "January 2027 or Summer 2027",
+    "graduationWindow": "Recent computer science or IT graduate or final-year student; postgraduate study is considered",
+    "graduationMonths": [],
+    "experienceRequirements": "Graduate role; no professional experience minimum stated",
+    "visaEvidence": {
+      "level": "Historical",
+      "explanation": "Recent DOL-derived records show GMS Management Solutions USA H-1B filings for graduate consulting work. This employer history is not a promise for this opening.",
+      "url": "https://h1bvisajobs.com/h1b-sponsors/gms-management-solutions-usa-inc"
+    },
+    "firstSeen": "2026-08-11",
+    "lastVerified": "2026-08-11",
+    "status": "active",
+    "closedDate": null,
+    "tags": [
+      "Big data",
+      "Cybersecurity",
+      "Data governance",
+      "Software engineering"
+    ],
+    "missCount": 0,
+    "sourceId": "manual-management-solutions",
+    "degreeLevels": [
+      "Undergraduate / Master's"
+    ]
+  },
+  {
+    "id": "management-solutions-digital-transformation-houston",
+    "company": "Management Solutions",
+    "title": "New Technologies and Digital Transformation Consultant – Houston",
+    "category": "Other Technical",
+    "applicationUrl": "https://recruiting.managementsolutions.com/VerOfertas.aspx?num=193",
+    "sourceUrl": "https://recruiting.managementsolutions.com/VerOfertas.aspx?num=193",
+    "sourcePlatform": "Official company careers",
+    "locations": [
+      "Houston, TX"
+    ],
+    "country": "United States",
+    "workplaceType": "Unspecified",
+    "compensation": null,
+    "datePosted": null,
+    "deadline": null,
+    "startPeriod": "January 2027 or Summer 2027",
+    "graduationWindow": "Recent computer science or IT graduate or final-year student; postgraduate study is considered",
+    "graduationMonths": [],
+    "experienceRequirements": "Graduate role; no professional experience minimum stated",
+    "visaEvidence": {
+      "level": "Historical",
+      "explanation": "Recent DOL-derived records show GMS Management Solutions USA H-1B filings for graduate consulting work. This employer history is not a promise for this opening.",
+      "url": "https://h1bvisajobs.com/h1b-sponsors/gms-management-solutions-usa-inc"
+    },
+    "firstSeen": "2026-08-11",
+    "lastVerified": "2026-08-11",
+    "status": "active",
+    "closedDate": null,
+    "tags": [
+      "Big data",
+      "Cybersecurity",
+      "Data governance",
+      "Software engineering"
+    ],
+    "missCount": 0,
+    "sourceId": "manual-management-solutions",
+    "degreeLevels": [
+      "Undergraduate / Master's"
+    ]
+  },
+  {
+    "id": "management-solutions-digital-transformation-miami",
+    "company": "Management Solutions",
+    "title": "New Technologies and Digital Transformation Consultant – Miami",
+    "category": "Other Technical",
+    "applicationUrl": "https://recruiting.managementsolutions.com/VerOfertas.aspx?num=285",
+    "sourceUrl": "https://recruiting.managementsolutions.com/VerOfertas.aspx?num=285",
+    "sourcePlatform": "Official company careers",
+    "locations": [
+      "Miami, FL"
+    ],
+    "country": "United States",
+    "workplaceType": "Unspecified",
+    "compensation": null,
+    "datePosted": null,
+    "deadline": null,
+    "startPeriod": "January 2027 or Summer 2027",
+    "graduationWindow": "Recent computer science or IT graduate or final-year student; postgraduate study is considered",
+    "graduationMonths": [],
+    "experienceRequirements": "Graduate role; no professional experience minimum stated",
+    "visaEvidence": {
+      "level": "Historical",
+      "explanation": "Recent DOL-derived records show GMS Management Solutions USA H-1B filings for graduate consulting work. This employer history is not a promise for this opening.",
+      "url": "https://h1bvisajobs.com/h1b-sponsors/gms-management-solutions-usa-inc"
+    },
+    "firstSeen": "2026-08-11",
+    "lastVerified": "2026-08-11",
+    "status": "active",
+    "closedDate": null,
+    "tags": [
+      "Big data",
+      "Cybersecurity",
+      "Data governance",
+      "Software engineering"
+    ],
+    "missCount": 0,
+    "sourceId": "manual-management-solutions",
+    "degreeLevels": [
+      "Undergraduate / Master's"
+    ]
+  },
+  {
+    "id": "management-solutions-digital-transformation-new-york",
+    "company": "Management Solutions",
+    "title": "New Technologies and Digital Transformation Consultant – New York",
+    "category": "Other Technical",
+    "applicationUrl": "https://recruiting.managementsolutions.com/VerOfertas.aspx?num=118",
+    "sourceUrl": "https://recruiting.managementsolutions.com/VerOfertas.aspx?num=118",
+    "sourcePlatform": "Official company careers",
+    "locations": [
+      "New York, NY"
+    ],
+    "country": "United States",
+    "workplaceType": "Unspecified",
+    "compensation": "$70,000–$73,000 base",
+    "datePosted": null,
+    "deadline": null,
+    "startPeriod": "January 2027 or Summer 2027",
+    "graduationWindow": "Recent computer science or IT graduate or final-year student; postgraduate study is considered",
+    "graduationMonths": [],
+    "experienceRequirements": "Graduate role; no professional experience minimum stated",
+    "visaEvidence": {
+      "level": "Historical",
+      "explanation": "Recent DOL-derived records show GMS Management Solutions USA H-1B filings for graduate consulting work. This employer history is not a promise for this opening.",
+      "url": "https://h1bvisajobs.com/h1b-sponsors/gms-management-solutions-usa-inc"
+    },
+    "firstSeen": "2026-08-11",
+    "lastVerified": "2026-08-11",
+    "status": "active",
+    "closedDate": null,
+    "tags": [
+      "Big data",
+      "Cybersecurity",
+      "Data governance",
+      "Software engineering"
+    ],
+    "missCount": 0,
+    "sourceId": "manual-management-solutions",
+    "degreeLevels": [
+      "Undergraduate / Master's"
+    ]
   },
   {
     "id": "netic-ashby-f089b9722b07f2cb",
@@ -1546,45 +2217,6 @@
     ],
     "missCount": 0,
     "sourceId": "newsbreak-greenhouse"
-  },
-  {
-    "id": "nuro-greenhouse-e6a2d165f34913fb",
-    "company": "Nuro",
-    "title": "Software Engineer, Performance - New Grad",
-    "category": "Systems / Infrastructure / Performance Engineering",
-    "applicationUrl": "https://www.nuro.ai/careersitem?gh_jid=6972272",
-    "sourceUrl": "https://www.nuro.ai/careersitem?gh_jid=6972272",
-    "sourcePlatform": "Greenhouse",
-    "locations": [
-      "Mountain View, CA"
-    ],
-    "country": "United States",
-    "workplaceType": "Unspecified",
-    "compensation": "$153,000–$175,000 base plus bonus and equity",
-    "datePosted": "2026-07-16",
-    "deadline": null,
-    "startPeriod": null,
-    "graduationWindow": null,
-    "graduationMonths": [],
-    "degreeLevels": [
-      "Undergraduate / Master's"
-    ],
-    "experienceRequirements": "New graduate with a bachelor's or master's degree in computer science or a related technical field",
-    "visaEvidence": {
-      "level": "Historical",
-      "explanation": "Recent public DOL-derived records show Nuro filings for comparable software engineering roles, including performance engineering. This history is not a promise for this opening.",
-      "url": "https://www.ellis.com/visa-sponsors/nuro-inc/h1b"
-    },
-    "firstSeen": "2026-07-31",
-    "lastVerified": "2026-08-11",
-    "status": "active",
-    "closedDate": null,
-    "tags": [
-      "C++",
-      "Performance"
-    ],
-    "missCount": 0,
-    "sourceId": "nuro-greenhouse"
   },
   {
     "id": "old-mission-greenhouse-58477b057b4140b7",

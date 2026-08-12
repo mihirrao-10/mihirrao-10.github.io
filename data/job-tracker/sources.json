@@ -1492,6 +1492,127 @@
           ]
         }
       }
+    },
+    {
+      "id": "jane-street-greenhouse",
+      "company": "Jane Street",
+      "platform": "greenhouse",
+      "enabled": true,
+      "boardToken": "janestreet",
+      "visaEvidence": {
+        "level": "Historical",
+        "explanation": "Recent DOL-derived records show Jane Street H-1B filings for comparable software engineering, research, and trading roles. This employer history is not a promise for any opening.",
+        "url": "https://www.ellis.com/visa-sponsors/jane-street-group-llc"
+      },
+      "selection": {
+        "externalIds": [
+          "8573523002",
+          "8573726002",
+          "8576928002",
+          "8594541002",
+          "8635672002",
+          "8646893002"
+        ],
+        "includeTitle": [],
+        "includeDescription": [],
+        "exclude": []
+      },
+      "defaults": {
+        "locations": [
+          "New York, NY"
+        ],
+        "country": "United States",
+        "workplaceType": "On-site",
+        "startPeriod": "Flexible; application accepts January or February 2027 availability",
+        "graduationWindow": "Full-Time: New Grad application; exact degree-completion months are not stated",
+        "graduationMonths": [],
+        "degreeLevels": [
+          "Undergraduate / Master's"
+        ],
+        "experienceRequirements": "Full-time new-graduate role; no professional experience minimum stated",
+        "tags": [
+          "Flexible start",
+          "New graduate"
+        ]
+      },
+      "overrides": {
+        "8573523002": {
+          "category": "Quantitative Trading",
+          "applicationUrl": "https://www.janestreet.com/join-jane-street/apply/8573523002/",
+          "sourceUrl": "https://www.janestreet.com/join-jane-street/position/8573523002/",
+          "compensation": "$300,000 base plus discretionary bonus",
+          "datePosted": "2026-06-01",
+          "tags": [
+            "Machine learning",
+            "Statistical modeling",
+            "Trading"
+          ]
+        },
+        "8573726002": {
+          "category": "Quantitative Research",
+          "applicationUrl": "https://www.janestreet.com/join-jane-street/apply/8573726002/",
+          "sourceUrl": "https://www.janestreet.com/join-jane-street/position/8573726002/",
+          "compensation": "$300,000 base plus discretionary bonus",
+          "datePosted": "2026-06-02",
+          "tags": [
+            "Data science",
+            "Machine learning",
+            "Python",
+            "Research"
+          ]
+        },
+        "8576928002": {
+          "category": "Machine Learning / AI Engineering",
+          "applicationUrl": "https://www.janestreet.com/join-jane-street/apply/8576928002/",
+          "sourceUrl": "https://www.janestreet.com/join-jane-street/position/8576928002/",
+          "compensation": "$300,000 base plus discretionary bonus",
+          "datePosted": "2026-06-03",
+          "tags": [
+            "Deep learning",
+            "Machine learning",
+            "Python",
+            "Research"
+          ]
+        },
+        "8594541002": {
+          "category": "Software Engineering",
+          "applicationUrl": "https://www.janestreet.com/join-jane-street/apply/8594541002/",
+          "sourceUrl": "https://www.janestreet.com/join-jane-street/position/8594541002/",
+          "compensation": "$300,000 base plus discretionary bonus",
+          "datePosted": "2026-07-06",
+          "tags": [
+            "Distributed systems",
+            "OCaml",
+            "Python"
+          ]
+        },
+        "8635672002": {
+          "category": "Systems / Infrastructure / Performance Engineering",
+          "applicationUrl": "https://www.janestreet.com/join-jane-street/apply/8635672002/",
+          "sourceUrl": "https://www.janestreet.com/join-jane-street/position/8635672002/",
+          "compensation": "$250,000–$300,000 base plus discretionary bonus",
+          "datePosted": "2026-07-22",
+          "tags": [
+            "Infrastructure",
+            "Linux",
+            "Networking",
+            "Systems programming"
+          ]
+        },
+        "8646893002": {
+          "category": "Systems / Infrastructure / Performance Engineering",
+          "applicationUrl": "https://www.janestreet.com/join-jane-street/apply/8646893002/",
+          "sourceUrl": "https://www.janestreet.com/join-jane-street/position/8646893002/",
+          "compensation": "$300,000 base plus discretionary bonus",
+          "datePosted": "2026-07-24",
+          "tags": [
+            "ASIC",
+            "FPGA",
+            "Hardware",
+            "OCaml"
+          ]
+        }
+      }
     }
   ]
 }
