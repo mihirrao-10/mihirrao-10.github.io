@@ -155,7 +155,8 @@
           "7773141",
           "8016687",
           "8013230",
-          "8013085"
+          "8013085",
+          "8036541"
         ],
         "includeTitle": [],
         "includeDescription": [],
@@ -238,6 +239,32 @@
           "tags": [
             "Quant development",
             "Strategy"
+          ]
+        },
+        "8036541": {
+          "category": "Quantitative Research",
+          "applicationUrl": "https://www.akunacapital.com/careers/job/8036541/?gh_jid=8036541",
+          "sourceUrl": "https://www.akunacapital.com/careers/job/8036541/?gh_jid=8036541",
+          "compensation": "$145,000 minimum base plus bonus",
+          "datePosted": "2026-07-13",
+          "startPeriod": null,
+          "graduationWindow": "Graduating August 2027 or earlier",
+          "graduationMonths": [
+            "2026-12",
+            "2027-05",
+            "2027-08"
+          ],
+          "experienceRequirements": "Early-career quantitative research role; 3.5+ GPA and a technical degree required",
+          "visaEvidence": {
+            "level": "Strong",
+            "explanation": "The exact posting explicitly accepts F-1 OPT or STEM OPT as day-one work authorization. It does not promise later H-1B sponsorship; verify ongoing support.",
+            "url": "https://www.akunacapital.com/careers/job/8036541/?gh_jid=8036541"
+          },
+          "tags": [
+            "Machine learning",
+            "Python",
+            "Research",
+            "Trading"
           ]
         }
       }
@@ -568,10 +595,10 @@
         "url": "https://www.myvisajobs.com/employer/old-mission-capital/"
       },
       "selection": {
-      "externalIds": [
-        "7796031003",
-        "7796044003",
-        "7796048003"
+        "externalIds": [
+          "7796031003",
+          "7796044003",
+          "7796048003"
         ],
         "includeTitle": [],
         "includeDescription": [],
@@ -662,7 +689,7 @@
         "workplaceType": "Hybrid",
         "compensation": "$150,000–$250,000 base plus discretionary bonus",
         "startPeriod": "2027",
-      "graduationWindow": "2027 graduate recruiting cycle; bachelor's or master's",
+        "graduationWindow": "2027 graduate recruiting cycle; bachelor's or master's",
         "graduationMonths": [
           "2027-05",
           "2027-08"
@@ -696,7 +723,8 @@
       },
       "selection": {
         "externalIds": [
-          "5151574007"
+          "5151574007",
+          "5151549007"
         ],
         "includeTitle": [],
         "includeDescription": [],
@@ -728,6 +756,22 @@
         "5151574007": {
           "applicationUrl": "https://job-boards.greenhouse.io/transmarketgroup/jobs/5151574007",
           "sourceUrl": "https://job-boards.greenhouse.io/transmarketgroup/jobs/5151574007"
+        },
+        "5151549007": {
+          "category": "Quantitative Development",
+          "applicationUrl": "https://job-boards.greenhouse.io/transmarketgroup/jobs/5151549007?gh_jid=5151549007",
+          "sourceUrl": "https://job-boards.greenhouse.io/transmarketgroup/jobs/5151549007?gh_jid=5151549007",
+          "datePosted": "2026-06-02",
+          "startPeriod": null,
+          "graduationWindow": "Junior role; no graduation window stated",
+          "graduationMonths": [],
+          "experienceRequirements": "Junior role; no professional experience minimum stated",
+          "tags": [
+            "C++",
+            "Linux",
+            "Python",
+            "Trading"
+          ]
         }
       }
     },
@@ -827,7 +871,7 @@
         "degreeLevels": [
           "Undergraduate / Master's"
         ],
-      "experienceRequirements": "New graduate with a bachelor's or master's degree in computer science or a related technical field",
+        "experienceRequirements": "New graduate with a bachelor's or master's degree in computer science or a related technical field",
         "tags": [
           "C++",
           "Performance"
@@ -899,7 +943,9 @@
       },
       "selection": {
         "externalIds": [
-          "4700278006"
+          "4700278006",
+          "4694899006",
+          "4615879006"
         ],
         "includeTitle": [],
         "includeDescription": [],
@@ -932,6 +978,38 @@
         "4700278006": {
           "applicationUrl": "https://job-boards.greenhouse.io/newsbreak/jobs/4700278006",
           "sourceUrl": "https://job-boards.greenhouse.io/newsbreak/jobs/4700278006"
+        },
+        "4694899006": {
+          "applicationUrl": "https://job-boards.greenhouse.io/newsbreak/jobs/4694899006",
+          "sourceUrl": "https://job-boards.greenhouse.io/newsbreak/jobs/4694899006",
+          "compensation": "$135,000–$155,000 base",
+          "datePosted": "2026-07-06",
+          "startPeriod": null,
+          "graduationWindow": "Recent graduate or up to two years of experience",
+          "graduationMonths": [],
+          "experienceRequirements": "Recent graduate or up to two years of experience",
+          "tags": [
+            "AI",
+            "Data pipelines",
+            "Python",
+            "SQL"
+          ]
+        },
+        "4615879006": {
+          "applicationUrl": "https://job-boards.greenhouse.io/newsbreak/jobs/4615879006",
+          "sourceUrl": "https://job-boards.greenhouse.io/newsbreak/jobs/4615879006",
+          "compensation": "$125,000–$175,000 base",
+          "datePosted": "2025-11-05",
+          "startPeriod": null,
+          "graduationWindow": "Junior or new-graduate role; master's degree can substitute for experience",
+          "graduationMonths": [],
+          "experienceRequirements": "Bachelor's plus two years, or a master's degree; ML framework experience required",
+          "tags": [
+            "C++",
+            "ML infrastructure",
+            "PyTorch",
+            "Python"
+          ]
         }
       }
     },
@@ -1112,7 +1190,8 @@
       },
       "selection": {
         "externalIds": [
-          "4716507005"
+          "4716507005",
+          "4716937005"
         ],
         "includeTitle": [],
         "includeDescription": [],
@@ -1147,6 +1226,24 @@
         "4716507005": {
           "applicationUrl": "https://job-boards.greenhouse.io/chicagotradingcampus/jobs/4716507005",
           "sourceUrl": "https://job-boards.greenhouse.io/chicagotradingcampus/jobs/4716507005"
+        },
+        "4716937005": {
+          "category": "Quantitative Development",
+          "applicationUrl": "https://job-boards.greenhouse.io/chicagotradingcampus/jobs/4716937005",
+          "sourceUrl": "https://job-boards.greenhouse.io/chicagotradingcampus/jobs/4716937005",
+          "locations": [
+            "Chicago, IL",
+            "New York, NY"
+          ],
+          "compensation": "$200,000 base",
+          "datePosted": "2026-08-03",
+          "experienceRequirements": "Campus role; software internship or substantial programming projects preferred",
+          "tags": [
+            "C++",
+            "Java",
+            "Python",
+            "Trading"
+          ]
         }
       }
     },
@@ -1264,7 +1361,9 @@
       },
       "overrides": {
         "7670558992960358661": {
-          "locations": ["Seattle, WA"]
+          "locations": [
+            "Seattle, WA"
+          ]
         },
         "7668701361741007109": {
           "category": "Systems / Infrastructure / Performance Engineering"
@@ -1273,38 +1372,58 @@
           "category": "Systems / Infrastructure / Performance Engineering"
         },
         "7668828193675036981": {
-          "locations": ["Seattle, WA"]
+          "locations": [
+            "Seattle, WA"
+          ]
         },
         "7668827379083823413": {
-          "locations": ["Seattle, WA"]
+          "locations": [
+            "Seattle, WA"
+          ]
         },
         "7668824172279875845": {
-          "locations": ["Seattle, WA"]
+          "locations": [
+            "Seattle, WA"
+          ]
         },
         "7668582086900680965": {
-          "locations": ["Seattle, WA"]
+          "locations": [
+            "Seattle, WA"
+          ]
         },
         "7668582542044072245": {
-          "locations": ["Seattle, WA"]
+          "locations": [
+            "Seattle, WA"
+          ]
         },
         "7664533229944178949": {
-          "locations": ["Seattle, WA"]
+          "locations": [
+            "Seattle, WA"
+          ]
         },
         "7663032057264244997": {
-          "locations": ["Seattle, WA"]
+          "locations": [
+            "Seattle, WA"
+          ]
         },
         "7663036950303050037": {
-          "locations": ["Seattle, WA"]
+          "locations": [
+            "Seattle, WA"
+          ]
         },
         "7663028952600807733": {
-          "locations": ["Seattle, WA"]
+          "locations": [
+            "Seattle, WA"
+          ]
         },
         "7670876337129425205": {
           "category": "Machine Learning / AI Engineering"
         },
         "7670285949553707317": {
           "category": "Machine Learning / AI Engineering",
-          "locations": ["Seattle, WA"]
+          "locations": [
+            "Seattle, WA"
+          ]
         },
         "7670285495593273605": {
           "category": "Machine Learning / AI Engineering"
@@ -1314,7 +1433,9 @@
         },
         "7669910326745434421": {
           "category": "Machine Learning / AI Engineering",
-          "locations": ["Seattle, WA"]
+          "locations": [
+            "Seattle, WA"
+          ]
         },
         "7669660107303684405": {
           "category": "Data Science / Applied Science / Analytics"
@@ -1354,15 +1475,21 @@
         },
         "7668376903708281141": {
           "category": "Machine Learning / AI Engineering",
-          "locations": ["Seattle, WA"]
+          "locations": [
+            "Seattle, WA"
+          ]
         },
         "7668384123840514309": {
           "category": "Machine Learning / AI Engineering",
-          "locations": ["Seattle, WA"]
+          "locations": [
+            "Seattle, WA"
+          ]
         },
         "7668390999147776309": {
           "category": "Machine Learning / AI Engineering",
-          "locations": ["Seattle, WA"]
+          "locations": [
+            "Seattle, WA"
+          ]
         },
         "7668512600592812293": {
           "category": "Data Science / Applied Science / Analytics"
@@ -1405,7 +1532,9 @@
         },
         "7665994926854555909": {
           "category": "Machine Learning / AI Engineering",
-          "locations": ["Seattle, WA"]
+          "locations": [
+            "Seattle, WA"
+          ]
         },
         "7665991852209932597": {
           "category": "Machine Learning / AI Engineering"
@@ -1611,6 +1740,254 @@
             "Hardware",
             "OCaml"
           ]
+        }
+      }
+    },
+    {
+      "id": "dv-trading-greenhouse",
+      "company": "DV Trading",
+      "platform": "greenhouse",
+      "enabled": true,
+      "boardToken": "dvtrading",
+      "visaEvidence": {
+        "level": "Historical",
+        "explanation": "Recent public DOL-derived DV Group records include junior software developer, software developer, and quantitative development roles. This does not promise support for this opening.",
+        "url": "https://www.ellis.com/visa-sponsors/dv-group-llc/salaries"
+      },
+      "selection": {
+        "externalIds": [
+          "4719126005"
+        ],
+        "includeTitle": [],
+        "includeDescription": [],
+        "exclude": []
+      },
+      "defaults": {
+        "category": "Quantitative Development",
+        "locations": [
+          "New York, NY"
+        ],
+        "country": "United States",
+        "workplaceType": "On-site",
+        "compensation": "$135,000–$150,000 base",
+        "startPeriod": "2027",
+        "graduationWindow": "Graduating by summer 2027",
+        "graduationMonths": [
+          "2026-12",
+          "2027-05",
+          "2027-08"
+        ],
+        "degreeLevels": [
+          "Undergraduate / Master's"
+        ],
+        "experienceRequirements": "Graduate role; strong C++ or Python and Linux fundamentals required",
+        "tags": [
+          "C++",
+          "Commodities",
+          "Linux",
+          "Python"
+        ]
+      },
+      "overrides": {
+        "4719126005": {
+          "applicationUrl": "https://job-boards.greenhouse.io/dvtrading/jobs/4719126005",
+          "sourceUrl": "https://job-boards.greenhouse.io/dvtrading/jobs/4719126005",
+          "datePosted": "2026-08-10"
+        }
+      }
+    },
+    {
+      "id": "esri-greenhouse",
+      "company": "Esri",
+      "platform": "greenhouse",
+      "enabled": true,
+      "boardToken": "esri",
+      "visaEvidence": {
+        "level": "Historical",
+        "explanation": "Current public DOL-derived Esri records include many software development engineering filings in Redlands. This sponsorship history is not a promise for this opening.",
+        "url": "https://www.ellis.com/visa-sponsors/environmental-systems-research-institute-inc/h1b"
+      },
+      "selection": {
+        "externalIds": [
+          "5199136007"
+        ],
+        "includeTitle": [],
+        "includeDescription": [],
+        "exclude": []
+      },
+      "defaults": {
+        "category": "Systems / Infrastructure / Performance Engineering",
+        "locations": [
+          "Redlands, CA"
+        ],
+        "country": "United States",
+        "workplaceType": "Unspecified",
+        "compensation": "$79,040–$133,016 base",
+        "startPeriod": null,
+        "graduationWindow": "Early-career role; no graduation window stated",
+        "graduationMonths": [],
+        "degreeLevels": [
+          "Undergraduate / Master's"
+        ],
+        "experienceRequirements": "One or more years of related development experience; modern C++ and object-oriented design required",
+        "tags": [
+          "C++",
+          "Geometry",
+          "Performance",
+          "SDK"
+        ]
+      },
+      "overrides": {
+        "5199136007": {
+          "applicationUrl": "https://www.esri.com/careers/5199136007?gh_jid=5199136007",
+          "sourceUrl": "https://www.esri.com/careers/5199136007?gh_jid=5199136007",
+          "datePosted": "2026-08-05"
+        }
+      }
+    },
+    {
+      "id": "abridge-ashby",
+      "company": "Abridge",
+      "platform": "ashby",
+      "enabled": true,
+      "boardName": "abridge",
+      "visaEvidence": {
+        "level": "Historical",
+        "explanation": "Current public DOL and USCIS-derived records show Abridge AI software and data engineering sponsorship history. This does not establish support for this opening.",
+        "url": "https://www.myvisajobs.com/employer/abridge-ai/"
+      },
+      "selection": {
+        "externalIds": [
+          "7d6ae2be-cd53-466c-8151-2dae2e87aace"
+        ],
+        "includeTitle": [],
+        "includeDescription": [],
+        "exclude": []
+      },
+      "defaults": {
+        "category": "Machine Learning / AI Engineering",
+        "locations": [
+          "San Francisco, CA"
+        ],
+        "country": "United States",
+        "workplaceType": "On-site",
+        "compensation": null,
+        "startPeriod": null,
+        "graduationWindow": "Early-career role; no graduation window stated",
+        "graduationMonths": [],
+        "degreeLevels": [
+          "Undergraduate / Master's"
+        ],
+        "experienceRequirements": "Early-career role; hands-on generative AI work through projects, research, or internships expected",
+        "tags": [
+          "Agents",
+          "Generative AI",
+          "LLM",
+          "RAG"
+        ]
+      },
+      "overrides": {
+        "7d6ae2be-cd53-466c-8151-2dae2e87aace": {
+          "applicationUrl": "https://jobs.ashbyhq.com/abridge/7d6ae2be-cd53-466c-8151-2dae2e87aace/application",
+          "sourceUrl": "https://jobs.ashbyhq.com/abridge/7d6ae2be-cd53-466c-8151-2dae2e87aace"
+        }
+      }
+    },
+    {
+      "id": "nooks-ashby",
+      "company": "Nooks",
+      "platform": "ashby",
+      "enabled": true,
+      "boardName": "nooks",
+      "visaEvidence": {
+        "level": "Historical",
+        "explanation": "Recent public DOL-derived records show Nooks Communications filings for product and software engineers. This history is not a promise for this opening.",
+        "url": "https://www.ellis.com/visa-sponsors/nooks-communications-inc"
+      },
+      "selection": {
+        "externalIds": [
+          "311d6e70-5cfa-4e80-89f6-fe00ac1f9f53"
+        ],
+        "includeTitle": [],
+        "includeDescription": [],
+        "exclude": []
+      },
+      "defaults": {
+        "category": "Machine Learning / AI Engineering",
+        "locations": [
+          "San Francisco, CA"
+        ],
+        "country": "United States",
+        "workplaceType": "Hybrid",
+        "compensation": "$150,000–$165,000 base plus equity",
+        "startPeriod": null,
+        "graduationWindow": "Completing or recently completed a bachelor's or master's degree",
+        "graduationMonths": [],
+        "degreeLevels": [
+          "Undergraduate / Master's"
+        ],
+        "experienceRequirements": "New-graduate role; internships, research, open-source work, or substantial projects expected",
+        "tags": [
+          "AI products",
+          "Node.js",
+          "Python",
+          "TypeScript"
+        ]
+      },
+      "overrides": {
+        "311d6e70-5cfa-4e80-89f6-fe00ac1f9f53": {
+          "applicationUrl": "https://jobs.ashbyhq.com/nooks/311d6e70-5cfa-4e80-89f6-fe00ac1f9f53/application",
+          "sourceUrl": "https://jobs.ashbyhq.com/nooks/311d6e70-5cfa-4e80-89f6-fe00ac1f9f53"
+        }
+      }
+    },
+    {
+      "id": "quora-ashby",
+      "company": "Quora",
+      "platform": "ashby",
+      "enabled": true,
+      "boardName": "quora",
+      "visaEvidence": {
+        "level": "Historical",
+        "explanation": "Recent public DOL-derived records show Quora software engineering sponsorship history. This employer history does not establish support for this opening or every remote location.",
+        "url": "https://www.ellis.com/visa-sponsors/quora-inc/h1b"
+      },
+      "selection": {
+        "externalIds": [
+          "452afc2e-0c79-41f8-8201-1aab7df775db"
+        ],
+        "includeTitle": [],
+        "includeDescription": [],
+        "exclude": []
+      },
+      "defaults": {
+        "category": "Machine Learning / AI Engineering",
+        "locations": [
+          "Remote, CA"
+        ],
+        "country": "United States",
+        "workplaceType": "Remote",
+        "compensation": "$97,600–$139,000 base in the United States plus equity",
+        "startPeriod": null,
+        "graduationWindow": "Graduating in 2025 or 2026",
+        "graduationMonths": [
+          "2026-12"
+        ],
+        "degreeLevels": [
+          "Undergraduate / Master's"
+        ],
+        "experienceRequirements": "New-graduate role; software internship and machine-learning framework experience expected",
+        "tags": [
+          "ML infrastructure",
+          "Performance",
+          "PyTorch",
+          "Remote"
+        ]
+      },
+      "overrides": {
+        "452afc2e-0c79-41f8-8201-1aab7df775db": {
+          "applicationUrl": "https://jobs.ashbyhq.com/quora/452afc2e-0c79-41f8-8201-1aab7df775db/application",
+          "sourceUrl": "https://jobs.ashbyhq.com/quora/452afc2e-0c79-41f8-8201-1aab7df775db"
         }
       }
     }

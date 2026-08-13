@@ -131,6 +131,47 @@
     "sourceId": "3red-greenhouse"
   },
   {
+    "id": "abridge-ashby-f3f0aa449641cbdb",
+    "company": "Abridge",
+    "title": "Software Engineer - Early Career",
+    "category": "Machine Learning / AI Engineering",
+    "applicationUrl": "https://jobs.ashbyhq.com/abridge/7d6ae2be-cd53-466c-8151-2dae2e87aace/application",
+    "sourceUrl": "https://jobs.ashbyhq.com/abridge/7d6ae2be-cd53-466c-8151-2dae2e87aace",
+    "sourcePlatform": "Ashby",
+    "locations": [
+      "San Francisco, CA"
+    ],
+    "country": "United States",
+    "workplaceType": "On-site",
+    "compensation": null,
+    "datePosted": "2026-08-07",
+    "deadline": null,
+    "startPeriod": null,
+    "graduationWindow": "Early-career role; no graduation window stated",
+    "graduationMonths": [],
+    "degreeLevels": [
+      "Undergraduate / Master's"
+    ],
+    "experienceRequirements": "Early-career role; hands-on generative AI work through projects, research, or internships expected",
+    "visaEvidence": {
+      "level": "Historical",
+      "explanation": "Current public DOL and USCIS-derived records show Abridge AI software and data engineering sponsorship history. This does not establish support for this opening.",
+      "url": "https://www.myvisajobs.com/employer/abridge-ai/"
+    },
+    "firstSeen": "2026-08-13",
+    "lastVerified": "2026-08-13",
+    "status": "active",
+    "closedDate": null,
+    "tags": [
+      "Agents",
+      "Generative AI",
+      "LLM",
+      "RAG"
+    ],
+    "missCount": 0,
+    "sourceId": "abridge-ashby"
+  },
+  {
     "id": "akuna-greenhouse-9ca00a903e3a538a",
     "company": "Akuna Capital",
     "title": "Junior Quantitative Developer & Strategist",
@@ -170,6 +211,53 @@
       "Early career",
       "Quant development",
       "Strategy"
+    ],
+    "missCount": 0,
+    "sourceId": "akuna-greenhouse"
+  },
+  {
+    "id": "akuna-greenhouse-cf446871f041af4c",
+    "company": "Akuna Capital",
+    "title": "Junior Quantitative Researcher",
+    "category": "Quantitative Research",
+    "applicationUrl": "https://www.akunacapital.com/careers/job/8036541/?gh_jid=8036541",
+    "sourceUrl": "https://www.akunacapital.com/careers/job/8036541/?gh_jid=8036541",
+    "sourcePlatform": "Greenhouse",
+    "locations": [
+      "Chicago, IL"
+    ],
+    "country": "United States",
+    "workplaceType": "Unspecified",
+    "compensation": "$145,000 minimum base plus bonus",
+    "datePosted": "2026-07-13",
+    "deadline": null,
+    "startPeriod": null,
+    "graduationWindow": "Graduating August 2027 or earlier",
+    "graduationMonths": [
+      "2026-12",
+      "2027-05",
+      "2027-08"
+    ],
+    "degreeLevels": [
+      "Undergraduate / Master's"
+    ],
+    "experienceRequirements": "Early-career quantitative research role; 3.5+ GPA and a technical degree required",
+    "visaEvidence": {
+      "level": "Strong",
+      "explanation": "The exact posting explicitly accepts F-1 OPT or STEM OPT as day-one work authorization. It does not promise later H-1B sponsorship; verify ongoing support.",
+      "url": "https://www.akunacapital.com/careers/job/8036541/?gh_jid=8036541"
+    },
+    "firstSeen": "2026-08-13",
+    "lastVerified": "2026-08-13",
+    "status": "active",
+    "closedDate": null,
+    "tags": [
+      "Chicago",
+      "Early career",
+      "Machine learning",
+      "Python",
+      "Research",
+      "Trading"
     ],
     "missCount": 0,
     "sourceId": "akuna-greenhouse"
@@ -601,6 +689,53 @@
     ]
   },
   {
+    "id": "ctc-greenhouse-a7f2003b52975d03",
+    "company": "Chicago Trading Company",
+    "title": "Associate Engineer - 2027 Start",
+    "category": "Quantitative Development",
+    "applicationUrl": "https://job-boards.greenhouse.io/chicagotradingcampus/jobs/4716937005",
+    "sourceUrl": "https://job-boards.greenhouse.io/chicagotradingcampus/jobs/4716937005",
+    "sourcePlatform": "Greenhouse",
+    "locations": [
+      "Chicago, IL",
+      "New York, NY"
+    ],
+    "country": "United States",
+    "workplaceType": "On-site",
+    "compensation": "$200,000 base",
+    "datePosted": "2026-08-03",
+    "deadline": null,
+    "startPeriod": "2027",
+    "graduationWindow": "December 2026 through June 2027",
+    "graduationMonths": [
+      "2026-12",
+      "2027-05",
+      "2027-06"
+    ],
+    "degreeLevels": [
+      "Undergraduate / Master's"
+    ],
+    "experienceRequirements": "Campus role; software internship or substantial programming projects preferred",
+    "visaEvidence": {
+      "level": "Historical",
+      "explanation": "Recent public DOL-derived records show Chicago Trading Company employment-visa filings. This firm-level history is not a promise for the current graduate role.",
+      "url": "https://www.ellis.com/visa-sponsors/ctc-trading-group-llc"
+    },
+    "firstSeen": "2026-08-13",
+    "lastVerified": "2026-08-13",
+    "status": "active",
+    "closedDate": null,
+    "tags": [
+      "C++",
+      "Java",
+      "Options",
+      "Python",
+      "Trading"
+    ],
+    "missCount": 0,
+    "sourceId": "ctc-greenhouse"
+  },
+  {
     "id": "ctc-greenhouse-8908ae59799d058d",
     "company": "Chicago Trading Company",
     "title": "Quant Trading Associate - 2027 Start",
@@ -643,6 +778,258 @@
     ],
     "missCount": 0,
     "sourceId": "ctc-greenhouse"
+  },
+  {
+    "id": "ciena-workday-r030880",
+    "company": "Ciena",
+    "title": "Software Engineer (Security) - New Grad",
+    "category": "Systems / Infrastructure / Performance Engineering",
+    "applicationUrl": "https://ciena.wd5.myworkdayjobs.com/en-US/careers/job/Atlanta/Software-Engineer--Security----New-Grad_R030880",
+    "sourceUrl": "https://ciena.wd5.myworkdayjobs.com/en-US/careers/job/Atlanta/Software-Engineer--Security----New-Grad_R030880",
+    "sourcePlatform": "Official company careers",
+    "locations": [
+      "Atlanta, GA"
+    ],
+    "country": "United States",
+    "workplaceType": "Unspecified",
+    "compensation": "$65,500–$104,600 base",
+    "datePosted": "2026-08-10",
+    "deadline": null,
+    "startPeriod": null,
+    "graduationWindow": "Pursuing or recently completed a bachelor's degree",
+    "graduationMonths": [],
+    "degreeLevels": [
+      "Undergraduate / Master's"
+    ],
+    "experienceRequirements": "New-graduate role; one year of C, C++, or Python experience can include academic work",
+    "visaEvidence": {
+      "level": "Historical",
+      "explanation": "Current public DOL-derived Ciena records include Software Engineer 1 and routing or embedded software roles. Historical filings do not guarantee support for this opening.",
+      "url": "https://www.ellis.com/visa-sponsors/ciena-corporation/h1b"
+    },
+    "firstSeen": "2026-08-13",
+    "lastVerified": "2026-08-13",
+    "status": "active",
+    "closedDate": null,
+    "tags": [
+      "C++",
+      "Embedded",
+      "Linux",
+      "Security"
+    ],
+    "missCount": 0,
+    "sourceId": "manual-ciena"
+  },
+  {
+    "id": "citadel-securities-trader-university-graduate-miami",
+    "company": "Citadel Securities",
+    "title": "Quantitative Trader - University Graduate (Miami)",
+    "category": "Quantitative Trading",
+    "applicationUrl": "https://www.citadelsecurities.com/careers/details/quantitative-trader-university-graduate-us-miami/",
+    "sourceUrl": "https://www.citadelsecurities.com/careers/details/quantitative-trader-university-graduate-us-miami/",
+    "sourcePlatform": "Official company careers",
+    "locations": [
+      "Miami, FL"
+    ],
+    "country": "United States",
+    "workplaceType": "Unspecified",
+    "compensation": null,
+    "datePosted": null,
+    "deadline": null,
+    "startPeriod": null,
+    "graduationWindow": "University-graduate role; no graduation window stated",
+    "graduationMonths": [],
+    "degreeLevels": [
+      "Undergraduate / Master's"
+    ],
+    "experienceRequirements": "University-graduate role; quantitative modeling and programming skills required",
+    "visaEvidence": {
+      "level": "Historical",
+      "explanation": "Current public DOL-derived Citadel Securities Americas Services records include software engineering, quantitative research, and trading roles. This history is not a promise for this opening.",
+      "url": "https://www.ellis.com/visa-sponsors/citadel-securities-americas-services-llc/h1b"
+    },
+    "firstSeen": "2026-08-13",
+    "lastVerified": "2026-08-13",
+    "status": "active",
+    "closedDate": null,
+    "tags": [
+      "AI",
+      "C++",
+      "Python",
+      "Trading"
+    ],
+    "missCount": 0,
+    "sourceId": "manual-citadel-securities"
+  },
+  {
+    "id": "citadel-securities-trader-university-graduate-new-york",
+    "company": "Citadel Securities",
+    "title": "Quantitative Trader - University Graduate (New York)",
+    "category": "Quantitative Trading",
+    "applicationUrl": "https://www.citadelsecurities.com/careers/details/quantitative-trader-university-graduate-us-new-york/",
+    "sourceUrl": "https://www.citadelsecurities.com/careers/details/quantitative-trader-university-graduate-us-new-york/",
+    "sourcePlatform": "Official company careers",
+    "locations": [
+      "New York, NY"
+    ],
+    "country": "United States",
+    "workplaceType": "Unspecified",
+    "compensation": "$235,000–$300,000 base plus discretionary incentive",
+    "datePosted": null,
+    "deadline": null,
+    "startPeriod": null,
+    "graduationWindow": "University-graduate role; no graduation window stated",
+    "graduationMonths": [],
+    "degreeLevels": [
+      "Undergraduate / Master's"
+    ],
+    "experienceRequirements": "University-graduate role; quantitative modeling and programming skills required",
+    "visaEvidence": {
+      "level": "Historical",
+      "explanation": "Current public DOL-derived Citadel Securities Americas Services records include software engineering, quantitative research, and trading roles. This history is not a promise for this opening.",
+      "url": "https://www.ellis.com/visa-sponsors/citadel-securities-americas-services-llc/h1b"
+    },
+    "firstSeen": "2026-08-13",
+    "lastVerified": "2026-08-13",
+    "status": "active",
+    "closedDate": null,
+    "tags": [
+      "AI",
+      "C++",
+      "Python",
+      "Trading"
+    ],
+    "missCount": 0,
+    "sourceId": "manual-citadel-securities"
+  },
+  {
+    "id": "citadel-securities-software-university-graduate-us",
+    "company": "Citadel Securities",
+    "title": "Software Engineer - University Graduate (US)",
+    "category": "Software Engineering",
+    "applicationUrl": "https://www.citadelsecurities.com/careers/details/software-engineer-university-graduate-us/",
+    "sourceUrl": "https://www.citadelsecurities.com/careers/details/software-engineer-university-graduate-us/",
+    "sourcePlatform": "Official company careers",
+    "locations": [
+      "New York, NY",
+      "Miami, FL"
+    ],
+    "country": "United States",
+    "workplaceType": "Unspecified",
+    "compensation": "$235,000–$300,000 base plus discretionary incentive",
+    "datePosted": null,
+    "deadline": null,
+    "startPeriod": null,
+    "graduationWindow": "University-graduate role; no graduation window stated",
+    "graduationMonths": [],
+    "degreeLevels": [
+      "Undergraduate / Master's"
+    ],
+    "experienceRequirements": "University-graduate role; exceptional programming, design, probability, and statistics skills expected",
+    "visaEvidence": {
+      "level": "Historical",
+      "explanation": "Current public DOL-derived Citadel Securities Americas Services records include software engineering, quantitative research, and trading roles. This history is not a promise for this opening.",
+      "url": "https://www.ellis.com/visa-sponsors/citadel-securities-americas-services-llc/h1b"
+    },
+    "firstSeen": "2026-08-13",
+    "lastVerified": "2026-08-13",
+    "status": "active",
+    "closedDate": null,
+    "tags": [
+      "Distributed systems",
+      "Machine learning",
+      "Performance",
+      "Trading"
+    ],
+    "missCount": 0,
+    "sourceId": "manual-citadel-securities"
+  },
+  {
+    "id": "citadel-quant-research-university-graduate-us",
+    "company": "Citadel",
+    "title": "Quantitative Research Analyst - University Graduate (US)",
+    "category": "Quantitative Research",
+    "applicationUrl": "https://www.citadel.com/careers/details/quantitative-research-analyst-university-graduate-us/",
+    "sourceUrl": "https://www.citadel.com/careers/details/quantitative-research-analyst-university-graduate-us/",
+    "sourcePlatform": "Official company careers",
+    "locations": [
+      "New York, NY",
+      "Miami, FL",
+      "Greenwich, CT"
+    ],
+    "country": "United States",
+    "workplaceType": "Unspecified",
+    "compensation": "$235,000–$300,000 base plus discretionary incentive",
+    "datePosted": null,
+    "deadline": null,
+    "startPeriod": null,
+    "graduationWindow": "University-graduate role; no graduation window stated",
+    "graduationMonths": [],
+    "degreeLevels": [
+      "Undergraduate / Master's"
+    ],
+    "experienceRequirements": "University-graduate role; data-driven and independent research experience expected",
+    "visaEvidence": {
+      "level": "Historical",
+      "explanation": "Current public DOL-derived records for a Citadel Enterprise Americas entity include software engineering and quantitative research roles. This history is not a promise for this opening.",
+      "url": "https://www.myvisajobs.com/employer/citadel-enterprise-americas-services/"
+    },
+    "firstSeen": "2026-08-13",
+    "lastVerified": "2026-08-13",
+    "status": "active",
+    "closedDate": null,
+    "tags": [
+      "Machine learning",
+      "Probability",
+      "Python",
+      "Research"
+    ],
+    "missCount": 0,
+    "sourceId": "manual-citadel"
+  },
+  {
+    "id": "citadel-software-university-graduate-us",
+    "company": "Citadel",
+    "title": "Software Engineer - University Graduate (US)",
+    "category": "Software Engineering",
+    "applicationUrl": "https://www.citadel.com/careers/details/software-engineer-university-graduate-us/",
+    "sourceUrl": "https://www.citadel.com/careers/details/software-engineer-university-graduate-us/",
+    "sourcePlatform": "Official company careers",
+    "locations": [
+      "New York, NY",
+      "Miami, FL",
+      "Greenwich, CT",
+      "Houston, TX"
+    ],
+    "country": "United States",
+    "workplaceType": "Unspecified",
+    "compensation": "$235,000–$300,000 base plus discretionary incentive",
+    "datePosted": null,
+    "deadline": null,
+    "startPeriod": null,
+    "graduationWindow": "University-graduate role; no graduation window stated",
+    "graduationMonths": [],
+    "degreeLevels": [
+      "Undergraduate / Master's"
+    ],
+    "experienceRequirements": "University-graduate role; exceptional programming and design skills expected",
+    "visaEvidence": {
+      "level": "Historical",
+      "explanation": "Current public DOL-derived records for a Citadel Enterprise Americas entity include software engineering and quantitative roles. This history is not a promise for this opening.",
+      "url": "https://www.myvisajobs.com/employer/citadel-enterprise-americas-services/"
+    },
+    "firstSeen": "2026-08-13",
+    "lastVerified": "2026-08-13",
+    "status": "active",
+    "closedDate": null,
+    "tags": [
+      "C++",
+      "Distributed systems",
+      "Python",
+      "Trading"
+    ],
+    "missCount": 0,
+    "sourceId": "manual-citadel"
   },
   {
     "id": "drw-greenhouse-501c612b205e1fb7",
@@ -781,6 +1168,51 @@
     "sourceId": "drw-greenhouse"
   },
   {
+    "id": "dv-trading-greenhouse-0ee9b2ae09cf2452",
+    "company": "DV Trading",
+    "title": "2027 Graduate Software Engineer (DV Commodities)",
+    "category": "Quantitative Development",
+    "applicationUrl": "https://job-boards.greenhouse.io/dvtrading/jobs/4719126005",
+    "sourceUrl": "https://job-boards.greenhouse.io/dvtrading/jobs/4719126005",
+    "sourcePlatform": "Greenhouse",
+    "locations": [
+      "New York, NY"
+    ],
+    "country": "United States",
+    "workplaceType": "On-site",
+    "compensation": "$135,000–$150,000 base",
+    "datePosted": "2026-08-10",
+    "deadline": null,
+    "startPeriod": "2027",
+    "graduationWindow": "Graduating by summer 2027",
+    "graduationMonths": [
+      "2026-12",
+      "2027-05",
+      "2027-08"
+    ],
+    "degreeLevels": [
+      "Undergraduate / Master's"
+    ],
+    "experienceRequirements": "Graduate role; strong C++ or Python and Linux fundamentals required",
+    "visaEvidence": {
+      "level": "Historical",
+      "explanation": "Recent public DOL-derived DV Group records include junior software developer, software developer, and quantitative development roles. This does not promise support for this opening.",
+      "url": "https://www.ellis.com/visa-sponsors/dv-group-llc/salaries"
+    },
+    "firstSeen": "2026-08-13",
+    "lastVerified": "2026-08-13",
+    "status": "active",
+    "closedDate": null,
+    "tags": [
+      "C++",
+      "Commodities",
+      "Linux",
+      "Python"
+    ],
+    "missCount": 0,
+    "sourceId": "dv-trading-greenhouse"
+  },
+  {
     "id": "ellipsis-ashby-28c18075cd910257",
     "company": "Ellipsis Labs",
     "title": "Software Engineer - 2027 New Grads",
@@ -818,6 +1250,47 @@
     ],
     "missCount": 0,
     "sourceId": "ellipsis-ashby"
+  },
+  {
+    "id": "esri-greenhouse-643d85119dbdb060",
+    "company": "Esri",
+    "title": "C++ Software Engineer I – Maps SDKS",
+    "category": "Systems / Infrastructure / Performance Engineering",
+    "applicationUrl": "https://www.esri.com/careers/5199136007?gh_jid=5199136007",
+    "sourceUrl": "https://www.esri.com/careers/5199136007?gh_jid=5199136007",
+    "sourcePlatform": "Greenhouse",
+    "locations": [
+      "Redlands, CA"
+    ],
+    "country": "United States",
+    "workplaceType": "Unspecified",
+    "compensation": "$79,040–$133,016 base",
+    "datePosted": "2026-08-05",
+    "deadline": null,
+    "startPeriod": null,
+    "graduationWindow": "Early-career role; no graduation window stated",
+    "graduationMonths": [],
+    "degreeLevels": [
+      "Undergraduate / Master's"
+    ],
+    "experienceRequirements": "One or more years of related development experience; modern C++ and object-oriented design required",
+    "visaEvidence": {
+      "level": "Historical",
+      "explanation": "Current public DOL-derived Esri records include many software development engineering filings in Redlands. This sponsorship history is not a promise for this opening.",
+      "url": "https://www.ellis.com/visa-sponsors/environmental-systems-research-institute-inc/h1b"
+    },
+    "firstSeen": "2026-08-13",
+    "lastVerified": "2026-08-13",
+    "status": "active",
+    "closedDate": null,
+    "tags": [
+      "C++",
+      "Geometry",
+      "Performance",
+      "SDK"
+    ],
+    "missCount": 0,
+    "sourceId": "esri-greenhouse"
   },
   {
     "id": "five-rings-greenhouse-df4e912f7c2cbdb7",
@@ -950,6 +1423,56 @@
     ],
     "missCount": 0,
     "sourceId": "five-rings-greenhouse"
+  },
+  {
+    "id": "google-careers-78703249065943750",
+    "company": "Google",
+    "title": "Software Engineer, Early Career, Campus",
+    "category": "Software Engineering",
+    "applicationUrl": "https://www.google.com/about/careers/applications/jobs/results/78703249065943750",
+    "sourceUrl": "https://www.google.com/about/careers/applications/jobs/results/78703249065943750",
+    "sourcePlatform": "Official company careers",
+    "locations": [
+      "Mountain View, CA",
+      "Cambridge, MA",
+      "Kirkland, WA",
+      "Los Angeles, CA",
+      "New York, NY",
+      "Pittsburgh, PA",
+      "San Bruno, CA",
+      "San Jose, CA",
+      "Seattle, WA",
+      "Sunnyvale, CA"
+    ],
+    "country": "United States",
+    "workplaceType": "Unspecified",
+    "compensation": "$123,000–$174,000 base plus 15% bonus and equity",
+    "datePosted": "2026-08-07",
+    "deadline": "2026-08-30",
+    "startPeriod": null,
+    "graduationWindow": "Early-career campus role; no graduation window stated",
+    "graduationMonths": [],
+    "degreeLevels": [
+      "Undergraduate / Master's"
+    ],
+    "experienceRequirements": "Early-career role; programming experience through coursework, research, internships, or open source",
+    "visaEvidence": {
+      "level": "Historical",
+      "explanation": "Current public DOL-derived records show extensive Google software engineering sponsorship history. Historical filings do not guarantee support for this role.",
+      "url": "https://www.ellis.com/visa-sponsors/google-llc/h1b"
+    },
+    "firstSeen": "2026-08-13",
+    "lastVerified": "2026-08-13",
+    "status": "active",
+    "closedDate": null,
+    "tags": [
+      "C++",
+      "Distributed systems",
+      "Machine learning",
+      "Python"
+    ],
+    "missCount": 0,
+    "sourceId": "manual-google"
   },
   {
     "id": "hrt-8052050",
@@ -2054,6 +2577,47 @@
     ]
   },
   {
+    "id": "manhattan-workday-16977",
+    "company": "Manhattan Associates",
+    "title": "Software Engineer - Early Career",
+    "category": "Software Engineering",
+    "applicationUrl": "https://manh.wd5.myworkdayjobs.com/en-US/campus/job/Atlanta-GA/Software-Engineer---Early-Career_16977",
+    "sourceUrl": "https://manh.wd5.myworkdayjobs.com/en-US/campus/job/Atlanta-GA/Software-Engineer---Early-Career_16977",
+    "sourcePlatform": "Official company careers",
+    "locations": [
+      "Atlanta, GA"
+    ],
+    "country": "United States",
+    "workplaceType": "Unspecified",
+    "compensation": null,
+    "datePosted": "2026-08-05",
+    "deadline": null,
+    "startPeriod": null,
+    "graduationWindow": "Early-career campus role; no graduation window stated",
+    "graduationMonths": [],
+    "degreeLevels": [
+      "Undergraduate / Master's"
+    ],
+    "experienceRequirements": "Early-career role; C++ or Java, Linux or Unix, and database experience expected",
+    "visaEvidence": {
+      "level": "Historical",
+      "explanation": "Recent public DOL-derived Manhattan Associates records include software engineering roles in Atlanta. This employer history is not a promise for this opening.",
+      "url": "https://www.ellis.com/visa-sponsors/manhattan-associates-inc/h1b"
+    },
+    "firstSeen": "2026-08-13",
+    "lastVerified": "2026-08-13",
+    "status": "active",
+    "closedDate": null,
+    "tags": [
+      "C++",
+      "Databases",
+      "Java",
+      "Linux"
+    ],
+    "missCount": 0,
+    "sourceId": "manual-manhattan"
+  },
+  {
     "id": "netic-ashby-f089b9722b07f2cb",
     "company": "Netic",
     "title": "Forward Deployed Engineer (FDE) - New Grad - 2026-2027",
@@ -2217,6 +2781,133 @@
     ],
     "missCount": 0,
     "sourceId": "newsbreak-greenhouse"
+  },
+  {
+    "id": "newsbreak-greenhouse-fdc04119ba91e1c5",
+    "company": "NewsBreak",
+    "title": "NewsBreak Venture, AI Growth Intelligence Engineer (New Grad）",
+    "category": "Machine Learning / AI Engineering",
+    "applicationUrl": "https://job-boards.greenhouse.io/newsbreak/jobs/4694899006",
+    "sourceUrl": "https://job-boards.greenhouse.io/newsbreak/jobs/4694899006",
+    "sourcePlatform": "Greenhouse",
+    "locations": [
+      "Mountain View, CA"
+    ],
+    "country": "United States",
+    "workplaceType": "On-site",
+    "compensation": "$135,000–$155,000 base",
+    "datePosted": "2026-07-06",
+    "deadline": null,
+    "startPeriod": null,
+    "graduationWindow": "Recent graduate or up to two years of experience",
+    "graduationMonths": [],
+    "degreeLevels": [
+      "Undergraduate / Master's"
+    ],
+    "experienceRequirements": "Recent graduate or up to two years of experience",
+    "visaEvidence": {
+      "level": "Historical",
+      "explanation": "Recent public DOL-derived records show Particle Media filings for comparable software and data roles in Mountain View. This employer history is not a promise for this opening.",
+      "url": "https://www.ellis.com/visa-sponsors/particle-media-inc/h1b"
+    },
+    "firstSeen": "2026-08-13",
+    "lastVerified": "2026-08-13",
+    "status": "active",
+    "closedDate": null,
+    "tags": [
+      "AI",
+      "AI agents",
+      "Applied AI",
+      "Data pipelines",
+      "Python",
+      "SQL"
+    ],
+    "missCount": 0,
+    "sourceId": "newsbreak-greenhouse"
+  },
+  {
+    "id": "newsbreak-greenhouse-a8d8d1c7ae3da997",
+    "company": "NewsBreak",
+    "title": "Software Engineer, ML Infra (Junior & New Grad)",
+    "category": "Machine Learning / AI Engineering",
+    "applicationUrl": "https://job-boards.greenhouse.io/newsbreak/jobs/4615879006",
+    "sourceUrl": "https://job-boards.greenhouse.io/newsbreak/jobs/4615879006",
+    "sourcePlatform": "Greenhouse",
+    "locations": [
+      "Mountain View, CA"
+    ],
+    "country": "United States",
+    "workplaceType": "On-site",
+    "compensation": "$125,000–$175,000 base",
+    "datePosted": "2025-11-05",
+    "deadline": null,
+    "startPeriod": null,
+    "graduationWindow": "Junior or new-graduate role; master's degree can substitute for experience",
+    "graduationMonths": [],
+    "degreeLevels": [
+      "Undergraduate / Master's"
+    ],
+    "experienceRequirements": "Bachelor's plus two years, or a master's degree; ML framework experience required",
+    "visaEvidence": {
+      "level": "Historical",
+      "explanation": "Recent public DOL-derived records show Particle Media filings for comparable software and data roles in Mountain View. This employer history is not a promise for this opening.",
+      "url": "https://www.ellis.com/visa-sponsors/particle-media-inc/h1b"
+    },
+    "firstSeen": "2026-08-13",
+    "lastVerified": "2026-08-13",
+    "status": "active",
+    "closedDate": null,
+    "tags": [
+      "AI agents",
+      "Applied AI",
+      "C++",
+      "ML infrastructure",
+      "PyTorch",
+      "Python"
+    ],
+    "missCount": 0,
+    "sourceId": "newsbreak-greenhouse"
+  },
+  {
+    "id": "nooks-ashby-026f8291b861229f",
+    "company": "Nooks",
+    "title": "Software Engineer, New Grad",
+    "category": "Machine Learning / AI Engineering",
+    "applicationUrl": "https://jobs.ashbyhq.com/nooks/311d6e70-5cfa-4e80-89f6-fe00ac1f9f53/application",
+    "sourceUrl": "https://jobs.ashbyhq.com/nooks/311d6e70-5cfa-4e80-89f6-fe00ac1f9f53",
+    "sourcePlatform": "Ashby",
+    "locations": [
+      "San Francisco, CA"
+    ],
+    "country": "United States",
+    "workplaceType": "Hybrid",
+    "compensation": "$150,000–$165,000 base plus equity",
+    "datePosted": "2026-08-05",
+    "deadline": null,
+    "startPeriod": null,
+    "graduationWindow": "Completing or recently completed a bachelor's or master's degree",
+    "graduationMonths": [],
+    "degreeLevels": [
+      "Undergraduate / Master's"
+    ],
+    "experienceRequirements": "New-graduate role; internships, research, open-source work, or substantial projects expected",
+    "visaEvidence": {
+      "level": "Historical",
+      "explanation": "Recent public DOL-derived records show Nooks Communications filings for product and software engineers. This history is not a promise for this opening.",
+      "url": "https://www.ellis.com/visa-sponsors/nooks-communications-inc"
+    },
+    "firstSeen": "2026-08-13",
+    "lastVerified": "2026-08-13",
+    "status": "active",
+    "closedDate": null,
+    "tags": [
+      "AI products",
+      "Node.js",
+      "Python",
+      "TypeScript"
+    ],
+    "missCount": 0,
+    "sourceId": "nooks-ashby"
   },
   {
     "id": "old-mission-greenhouse-58477b057b4140b7",
@@ -2698,6 +3389,95 @@
     "sourceId": "pylon-ashby"
   },
   {
+    "id": "quora-ashby-8264340622228cb9",
+    "company": "Quora",
+    "title": "Software Engineer, Machine Learning Platform, New Grad - Quora (Remote)",
+    "category": "Machine Learning / AI Engineering",
+    "applicationUrl": "https://jobs.ashbyhq.com/quora/452afc2e-0c79-41f8-8201-1aab7df775db/application",
+    "sourceUrl": "https://jobs.ashbyhq.com/quora/452afc2e-0c79-41f8-8201-1aab7df775db",
+    "sourcePlatform": "Ashby",
+    "locations": [
+      "Remote, CA"
+    ],
+    "country": "United States",
+    "workplaceType": "Remote",
+    "compensation": "$97,600–$139,000 base in the United States plus equity",
+    "datePosted": "2026-07-31",
+    "deadline": null,
+    "startPeriod": null,
+    "graduationWindow": "Graduating in 2025 or 2026",
+    "graduationMonths": [
+      "2026-12"
+    ],
+    "degreeLevels": [
+      "Undergraduate / Master's"
+    ],
+    "experienceRequirements": "New-graduate role; software internship and machine-learning framework experience expected",
+    "visaEvidence": {
+      "level": "Historical",
+      "explanation": "Recent public DOL-derived records show Quora software engineering sponsorship history. This employer history does not establish support for this opening or every remote location.",
+      "url": "https://www.ellis.com/visa-sponsors/quora-inc/h1b"
+    },
+    "firstSeen": "2026-08-13",
+    "lastVerified": "2026-08-13",
+    "status": "active",
+    "closedDate": null,
+    "tags": [
+      "ML infrastructure",
+      "Performance",
+      "PyTorch",
+      "Remote"
+    ],
+    "missCount": 0,
+    "sourceId": "quora-ashby"
+  },
+  {
+    "id": "salesforce-workday-jr355250",
+    "company": "Salesforce",
+    "title": "Software Engineering AMTS (College Grad)",
+    "category": "Software Engineering",
+    "applicationUrl": "https://salesforce.wd12.myworkdayjobs.com/en-US/futureforce_newgradroles/job/California---San-Francisco/Software-Engineering-AMTS--College-Grad-_JR355250",
+    "sourceUrl": "https://salesforce.wd12.myworkdayjobs.com/en-US/futureforce_newgradroles/job/California---San-Francisco/Software-Engineering-AMTS--College-Grad-_JR355250",
+    "sourcePlatform": "Official company careers",
+    "locations": [
+      "San Francisco, CA",
+      "Palo Alto, CA",
+      "Seattle, WA",
+      "Bellevue, WA",
+      "Indianapolis, IN",
+      "Dallas, TX"
+    ],
+    "country": "United States",
+    "workplaceType": "Unspecified",
+    "compensation": "Typical $110,000–$153,000 base; select SF/NY metro $141,000–$163,000",
+    "datePosted": "2026-08-06",
+    "deadline": null,
+    "startPeriod": null,
+    "graduationWindow": "College-graduate role; no graduation window stated",
+    "graduationMonths": [],
+    "degreeLevels": [
+      "Undergraduate / Master's"
+    ],
+    "experienceRequirements": "College-graduate role; internship, project, or professional programming experience expected",
+    "visaEvidence": {
+      "level": "Historical",
+      "explanation": "Current public DOL-derived records show Salesforce filings for AMTS and software engineering roles. Historical filings do not guarantee support for this opening.",
+      "url": "https://www.ellis.com/visa-sponsors/salesforce-inc/salaries"
+    },
+    "firstSeen": "2026-08-13",
+    "lastVerified": "2026-08-13",
+    "status": "active",
+    "closedDate": null,
+    "tags": [
+      "Backend",
+      "Java",
+      "Python",
+      "SQL"
+    ],
+    "missCount": 0,
+    "sourceId": "manual-salesforce"
+  },
+  {
     "id": "samsara-greenhouse-c5314f1ba6f66cb5",
     "company": "Samsara",
     "title": "Software Engineer I - New Grad, SF",
@@ -2737,6 +3517,47 @@
     ],
     "missCount": 0,
     "sourceId": "samsara-greenhouse"
+  },
+  {
+    "id": "state-street-workday-r-795953",
+    "company": "State Street",
+    "title": "Software Engineer, CRD - New Graduate",
+    "category": "Software Engineering",
+    "applicationUrl": "https://statestreet.wd1.myworkdayjobs.com/en-US/global/job/Burlington-Massachusetts/Software-Engineer--CRD--New-Graduate_R-795953",
+    "sourceUrl": "https://statestreet.wd1.myworkdayjobs.com/en-US/global/job/Burlington-Massachusetts/Software-Engineer--CRD--New-Graduate_R-795953",
+    "sourcePlatform": "Official company careers",
+    "locations": [
+      "Burlington, MA"
+    ],
+    "country": "United States",
+    "workplaceType": "Unspecified",
+    "compensation": "$52,000–$91,000 base",
+    "datePosted": "2026-08-11",
+    "deadline": null,
+    "startPeriod": null,
+    "graduationWindow": "New-graduate role; no graduation window stated",
+    "graduationMonths": [],
+    "degreeLevels": [
+      "Undergraduate / Master's"
+    ],
+    "experienceRequirements": "Zero to two years of experience; substantial academic or personal projects considered",
+    "visaEvidence": {
+      "level": "Historical",
+      "explanation": "Current public DOL-derived State Street Bank and Trust records include software engineering roles in Burlington and nearby offices. This is not a promise for this opening.",
+      "url": "https://www.ellis.com/visa-sponsors/state-street-bank-and-trust-company/h1b"
+    },
+    "firstSeen": "2026-08-13",
+    "lastVerified": "2026-08-13",
+    "status": "active",
+    "closedDate": null,
+    "tags": [
+      "Cloud",
+      "Java",
+      "Kafka",
+      "Kubernetes"
+    ],
+    "missCount": 0,
+    "sourceId": "manual-state-street"
   },
   {
     "id": "tiktok-careers-089d9189ccc8cde7",
@@ -5499,6 +6320,47 @@
     "tags": [
       "C++",
       "Python"
+    ],
+    "missCount": 0,
+    "sourceId": "transmarket-greenhouse"
+  },
+  {
+    "id": "transmarket-greenhouse-2099aa36d58110ea",
+    "company": "TransMarket Group",
+    "title": "Junior Software Engineer",
+    "category": "Quantitative Development",
+    "applicationUrl": "https://job-boards.greenhouse.io/transmarketgroup/jobs/5151549007?gh_jid=5151549007",
+    "sourceUrl": "https://job-boards.greenhouse.io/transmarketgroup/jobs/5151549007?gh_jid=5151549007",
+    "sourcePlatform": "Greenhouse",
+    "locations": [
+      "Chicago, IL"
+    ],
+    "country": "United States",
+    "workplaceType": "On-site",
+    "compensation": null,
+    "datePosted": "2026-06-02",
+    "deadline": null,
+    "startPeriod": null,
+    "graduationWindow": "Junior role; no graduation window stated",
+    "graduationMonths": [],
+    "degreeLevels": [
+      "Undergraduate / Master's"
+    ],
+    "experienceRequirements": "Junior role; no professional experience minimum stated",
+    "visaEvidence": {
+      "level": "Historical",
+      "explanation": "Recent public DOL-derived records include comparable junior quantitative trading roles at a TransMarket entity. This history is not a promise for the current opening.",
+      "url": "https://www.ellis.com/visa-sponsors/transmarket-operations-llc"
+    },
+    "firstSeen": "2026-08-13",
+    "lastVerified": "2026-08-13",
+    "status": "active",
+    "closedDate": null,
+    "tags": [
+      "C++",
+      "Linux",
+      "Python",
+      "Trading"
     ],
     "missCount": 0,
     "sourceId": "transmarket-greenhouse"

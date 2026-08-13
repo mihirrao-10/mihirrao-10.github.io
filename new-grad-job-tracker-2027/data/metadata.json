@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
-  "lastSuccessfulUpdate": "2026-08-13T10:31:20.255Z",
-  "activeCount": 133,
+  "lastSuccessfulUpdate": "2026-08-13T12:56:50.000Z",
+  "activeCount": 153,
   "archivedCount": 2,
   "staleAfterDays": 7,
   "closingSoonDays": 7,
@@ -23,7 +23,7 @@
       "sourceId": "akuna-greenhouse",
       "platform": "Greenhouse",
       "status": "success",
-      "jobsFound": 4
+      "jobsFound": 5
     },
     {
       "sourceId": "drw-greenhouse",
@@ -65,7 +65,7 @@
       "sourceId": "transmarket-greenhouse",
       "platform": "Greenhouse",
       "status": "success",
-      "jobsFound": 1
+      "jobsFound": 2
     },
     {
       "sourceId": "ixl-greenhouse",
@@ -89,7 +89,7 @@
       "sourceId": "newsbreak-greenhouse",
       "platform": "Greenhouse",
       "status": "success",
-      "jobsFound": 1
+      "jobsFound": 3
     },
     {
       "sourceId": "ellipsis-ashby",
@@ -113,13 +113,14 @@
       "sourceId": "ctc-greenhouse",
       "platform": "Greenhouse",
       "status": "success",
-      "jobsFound": 1
+      "jobsFound": 2
     },
     {
       "sourceId": "tiktok-careers",
       "platform": "TikTok Careers",
-      "status": "success",
-      "jobsFound": 68
+      "status": "failed",
+      "jobsFound": 0,
+      "message": "Request failed for https://lifeattiktok.com/search/7670391173613160757: fetch failed"
     },
     {
       "sourceId": "netic-ashby",
@@ -134,11 +135,69 @@
       "jobsFound": 6
     },
     {
+      "sourceId": "dv-trading-greenhouse",
+      "platform": "Greenhouse",
+      "status": "success",
+      "jobsFound": 1
+    },
+    {
+      "sourceId": "esri-greenhouse",
+      "platform": "Greenhouse",
+      "status": "success",
+      "jobsFound": 1
+    },
+    {
+      "sourceId": "abridge-ashby",
+      "platform": "Ashby",
+      "status": "success",
+      "jobsFound": 1
+    },
+    {
+      "sourceId": "nooks-ashby",
+      "platform": "Ashby",
+      "status": "success",
+      "jobsFound": 1
+    },
+    {
+      "sourceId": "quora-ashby",
+      "platform": "Ashby",
+      "status": "success",
+      "jobsFound": 1
+    },
+    {
       "sourceId": "manual-bytedance",
       "platform": "Manual",
       "status": "success",
       "jobsFound": 5,
       "message": "5 verified, 0 confirmed missing, 0 temporarily unavailable"
+    },
+    {
+      "sourceId": "manual-ciena",
+      "platform": "Manual",
+      "status": "success",
+      "jobsFound": 1,
+      "message": "1 verified, 0 confirmed missing, 0 temporarily unavailable"
+    },
+    {
+      "sourceId": "manual-citadel",
+      "platform": "Manual",
+      "status": "failed",
+      "jobsFound": 2,
+      "message": "0 verified, 0 confirmed missing, 2 temporarily unavailable"
+    },
+    {
+      "sourceId": "manual-citadel-securities",
+      "platform": "Manual",
+      "status": "success",
+      "jobsFound": 3,
+      "message": "1 verified, 0 confirmed missing, 2 temporarily unavailable"
+    },
+    {
+      "sourceId": "manual-google",
+      "platform": "Manual",
+      "status": "success",
+      "jobsFound": 1,
+      "message": "1 verified, 0 confirmed missing, 0 temporarily unavailable"
     },
     {
       "sourceId": "manual-hrt",
@@ -162,11 +221,32 @@
       "message": "10 verified, 0 confirmed missing, 0 temporarily unavailable"
     },
     {
+      "sourceId": "manual-manhattan",
+      "platform": "Manual",
+      "status": "success",
+      "jobsFound": 1,
+      "message": "1 verified, 0 confirmed missing, 0 temporarily unavailable"
+    },
+    {
       "sourceId": "manual-optiver",
       "platform": "Manual",
       "status": "success",
       "jobsFound": 4,
       "message": "4 verified, 0 confirmed missing, 0 temporarily unavailable"
+    },
+    {
+      "sourceId": "manual-salesforce",
+      "platform": "Manual",
+      "status": "success",
+      "jobsFound": 1,
+      "message": "1 verified, 0 confirmed missing, 0 temporarily unavailable"
+    },
+    {
+      "sourceId": "manual-state-street",
+      "platform": "Manual",
+      "status": "success",
+      "jobsFound": 1,
+      "message": "1 verified, 0 confirmed missing, 0 temporarily unavailable"
     }
   ]
 }
