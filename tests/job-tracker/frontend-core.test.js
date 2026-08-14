@@ -7,6 +7,7 @@ import {
   TRACKING_VERSION,
   filterJobs,
   getPersonalStatus,
+  groupJobsByCompany,
   loadTracking,
   mergeTracking,
   parseTrackingImport,
@@ -100,6 +101,19 @@ test("filters jobs by search, category, company, and binary application status",
     filterJobs(jobs, filters({ personalStatus: "Not applied" }), tracking).map((job) => job.id),
     ["role-beta"],
   );
+});
+
+test("groups sorted roles under one company while preserving company order", () => {
+  const grouped = groupJobsByCompany([
+    jobs[1],
+    jobs[0],
+    { ...jobs[0], id: "role-alpha-two", title: "Systems Engineer" },
+  ]);
+  assert.deepEqual(grouped.map((group) => group.company), ["Beta", "Alpha"]);
+  assert.deepEqual(grouped[1].jobs.map((job) => job.id), [
+    "role-alpha",
+    "role-alpha-two",
+  ]);
 });
 
 test("deadline sort puts published dates first and keeps undated roles useful", () => {

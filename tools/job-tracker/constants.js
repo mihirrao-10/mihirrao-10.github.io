@@ -47,6 +47,8 @@ export const EVIDENCE_LEVELS = Object.freeze([
   "Strong",
   "Supported",
   "Historical",
+  "Restricted",
+  "Unstated",
 ]);
 
 export const DEGREE_LEVELS = Object.freeze([

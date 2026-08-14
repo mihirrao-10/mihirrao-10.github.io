@@ -114,7 +114,7 @@
       "required": ["level", "explanation", "url"],
       "properties": {
         "level": {
-          "enum": ["Strong", "Supported", "Historical"]
+          "enum": ["Strong", "Supported", "Historical", "Restricted", "Unstated"]
         },
         "explanation": {
           "type": "string",

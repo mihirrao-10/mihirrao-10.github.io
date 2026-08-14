@@ -1,7 +1,8 @@
 {
   "schemaVersion": "1.0.0",
-  "lastSuccessfulUpdate": "2026-08-14T10:27:24.661Z",
-  "activeCount": 153,
+  "lastSuccessfulUpdate": "2026-08-14T19:38:42.754Z",
+  "activeCount": 187,
+  "activeCompanyCount": 61,
   "archivedCount": 2,
   "staleAfterDays": 7,
   "closingSoonDays": 7,
@@ -120,7 +121,7 @@
       "platform": "TikTok Careers",
       "status": "failed",
       "jobsFound": 0,
-      "message": "TikTok posting 7668824172279875845 is missing its official application URL"
+      "message": "Request failed for https://lifeattiktok.com/search/7670558992960358661: fetch failed"
     },
     {
       "sourceId": "netic-ashby",
@@ -165,6 +166,104 @@
       "jobsFound": 1
     },
     {
+      "sourceId": "anduril-greenhouse",
+      "platform": "Manual",
+      "status": "success",
+      "jobsFound": 1,
+      "message": "1 verified, 0 confirmed missing, 0 temporarily unavailable"
+    },
+    {
+      "sourceId": "appian-greenhouse",
+      "platform": "Manual",
+      "status": "success",
+      "jobsFound": 1,
+      "message": "1 verified, 0 confirmed missing, 0 temporarily unavailable"
+    },
+    {
+      "sourceId": "aquatic-greenhouse",
+      "platform": "Manual",
+      "status": "success",
+      "jobsFound": 2,
+      "message": "2 verified, 0 confirmed missing, 0 temporarily unavailable"
+    },
+    {
+      "sourceId": "blackedge-greenhouse",
+      "platform": "Manual",
+      "status": "success",
+      "jobsFound": 2,
+      "message": "2 verified, 0 confirmed missing, 0 temporarily unavailable"
+    },
+    {
+      "sourceId": "confido-ashby",
+      "platform": "Manual",
+      "status": "success",
+      "jobsFound": 1,
+      "message": "1 verified, 0 confirmed missing, 0 temporarily unavailable"
+    },
+    {
+      "sourceId": "deshaw-careers",
+      "platform": "Manual",
+      "status": "success",
+      "jobsFound": 2,
+      "message": "2 verified, 0 confirmed missing, 0 temporarily unavailable"
+    },
+    {
+      "sourceId": "faros-ashby",
+      "platform": "Manual",
+      "status": "success",
+      "jobsFound": 1,
+      "message": "1 verified, 0 confirmed missing, 0 temporarily unavailable"
+    },
+    {
+      "sourceId": "generalmatter-greenhouse",
+      "platform": "Manual",
+      "status": "success",
+      "jobsFound": 1,
+      "message": "1 verified, 0 confirmed missing, 0 temporarily unavailable"
+    },
+    {
+      "sourceId": "goldman-careers",
+      "platform": "Manual",
+      "status": "success",
+      "jobsFound": 1,
+      "message": "1 verified, 0 confirmed missing, 0 temporarily unavailable"
+    },
+    {
+      "sourceId": "handshake-ashby",
+      "platform": "Manual",
+      "status": "success",
+      "jobsFound": 2,
+      "message": "2 verified, 0 confirmed missing, 0 temporarily unavailable"
+    },
+    {
+      "sourceId": "jpmorgan-careers",
+      "platform": "Manual",
+      "status": "success",
+      "jobsFound": 1,
+      "message": "1 verified, 0 confirmed missing, 0 temporarily unavailable"
+    },
+    {
+      "sourceId": "julius-ashby",
+      "platform": "Manual",
+      "status": "success",
+      "jobsFound": 1,
+      "message": "1 verified, 0 confirmed missing, 0 temporarily unavailable"
+    },
+    {
+      "sourceId": "kayak-ashby",
+      "platform": "Manual",
+      "status": "success",
+      "jobsFound": 1,
+      "message": "1 verified, 0 confirmed missing, 0 temporarily unavailable"
+    },
+    {
+      "sourceId": "lightfield-ashby",
+      "platform": "Manual",
+      "status": "success",
+      "jobsFound": 2,
+      "message": "2 verified, 0 confirmed missing, 0 temporarily unavailable"
+    },
+    {
       "sourceId": "manual-bytedance",
       "platform": "Manual",
       "status": "success",
@@ -181,9 +280,9 @@
     {
       "sourceId": "manual-citadel",
       "platform": "Manual",
-      "status": "failed",
+      "status": "success",
       "jobsFound": 2,
-      "message": "0 verified, 0 confirmed missing, 2 temporarily unavailable"
+      "message": "1 verified, 0 confirmed missing, 1 temporarily unavailable"
     },
     {
       "sourceId": "manual-citadel-securities",
@@ -247,6 +346,83 @@
       "status": "success",
       "jobsFound": 1,
       "message": "1 verified, 0 confirmed missing, 0 temporarily unavailable"
+    },
+    {
+      "sourceId": "mathworks-careers",
+      "platform": "Manual",
+      "status": "failed",
+      "jobsFound": 1,
+      "message": "0 verified, 0 confirmed missing, 1 temporarily unavailable"
+    },
+    {
+      "sourceId": "n1-ashby",
+      "platform": "Manual",
+      "status": "success",
+      "jobsFound": 2,
+      "message": "2 verified, 0 confirmed missing, 0 temporarily unavailable"
+    },
+    {
+      "sourceId": "northwood-ashby",
+      "platform": "Manual",
+      "status": "success",
+      "jobsFound": 1,
+      "message": "1 verified, 0 confirmed missing, 0 temporarily unavailable"
+    },
+    {
+      "sourceId": "notion-ashby",
+      "platform": "Manual",
+      "status": "success",
+      "jobsFound": 2,
+      "message": "2 verified, 0 confirmed missing, 0 temporarily unavailable"
+    },
+    {
+      "sourceId": "roblox-greenhouse",
+      "platform": "Manual",
+      "status": "failed",
+      "jobsFound": 2,
+      "message": "0 verified, 0 confirmed missing, 2 temporarily unavailable"
+    },
+    {
+      "sourceId": "sentry-ashby",
+      "platform": "Manual",
+      "status": "success",
+      "jobsFound": 1,
+      "message": "1 verified, 0 confirmed missing, 0 temporarily unavailable"
+    },
+    {
+      "sourceId": "spacex-greenhouse",
+      "platform": "Manual",
+      "status": "success",
+      "jobsFound": 1,
+      "message": "1 verified, 0 confirmed missing, 0 temporarily unavailable"
+    },
+    {
+      "sourceId": "symbotic-workday",
+      "platform": "Manual",
+      "status": "success",
+      "jobsFound": 1,
+      "message": "1 verified, 0 confirmed missing, 0 temporarily unavailable"
+    },
+    {
+      "sourceId": "troweprice-workday",
+      "platform": "Manual",
+      "status": "success",
+      "jobsFound": 1,
+      "message": "1 verified, 0 confirmed missing, 0 temporarily unavailable"
+    },
+    {
+      "sourceId": "uniswap-ashby",
+      "platform": "Manual",
+      "status": "success",
+      "jobsFound": 1,
+      "message": "1 verified, 0 confirmed missing, 0 temporarily unavailable"
+    },
+    {
+      "sourceId": "whoop-ashby",
+      "platform": "Manual",
+      "status": "success",
+      "jobsFound": 2,
+      "message": "2 verified, 0 confirmed missing, 0 temporarily unavailable"
     }
   ]
 }

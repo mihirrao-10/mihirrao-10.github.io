@@ -95,6 +95,12 @@ export async function validateData() {
       `metadata activeCount ${metadata.activeCount} does not match ${jobs.length} jobs`,
     );
   }
+  const activeCompanyCount = new Set(jobs.map((job) => job.company)).size;
+  if (metadata.activeCompanyCount !== activeCompanyCount) {
+    throw new Error(
+      `metadata activeCompanyCount ${metadata.activeCompanyCount} does not match ${activeCompanyCount} companies`,
+    );
+  }
   if (metadata.archivedCount !== archive.length) {
     throw new Error(
       `metadata archivedCount ${metadata.archivedCount} does not match ${archive.length} archived jobs`,

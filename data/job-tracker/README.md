@@ -61,10 +61,12 @@ Use an official public Greenhouse, Lever, or Ashby board only.
 4. Run `npm run update:jobs`, inspect every selected role, then run
    `npm run check`.
 
-Collectors automatically reject internship/co-op, PhD/doctoral-only, and
+Broad automated collection rejects internship/co-op, PhD/doctoral-only, and
 senior/leadership titles, explicit citizenship or clearance requirements,
 explicit no-sponsorship text, and clearly stated requirements above two years.
-Those checks are guardrails, not a substitute for reading each selected posting.
+An individually reviewed manual entry may retain an otherwise in-scope role with
+an authorization barrier only when it is labeled `Restricted`. Those checks are
+guardrails, not a substitute for reading each selected posting.
 
 To support another public ATS, add an isolated adapter under
 `tools/job-tracker/collectors/`, map it to the normalized candidate interface,
@@ -122,6 +124,11 @@ committed to source or public data.
   eligible international early-career hires when the posting is silent.
 - `Historical` needs recent credible public evidence, preferably government data
   or a transparent view of government filings, for comparable technical roles.
+- `Restricted` means the official posting states a sponsorship, work-authorization,
+  citizenship, clearance, or export-control barrier. These roles remain visible for
+  candidates who satisfy that restriction, but the label must be explicit.
+- `Unstated` means the official posting does not address sponsorship. Do not infer
+  support; candidates should confirm eligibility directly with the employer.
 
 Never turn an application question, aggregator badge, anonymous report, or old
 filing into a sponsorship promise. Explain limitations in the record itself.

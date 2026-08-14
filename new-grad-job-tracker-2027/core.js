@@ -267,6 +267,23 @@ export function filterJobs(jobs, filters = DEFAULT_FILTERS, tracking = emptyTrac
   return sortJobs(filtered, filters.sort);
 }
 
+export function groupJobsByCompany(jobs) {
+  const groups = [];
+  const groupsByCompany = new Map();
+
+  for (const job of jobs) {
+    let group = groupsByCompany.get(job.company);
+    if (!group) {
+      group = { company: job.company, jobs: [] };
+      groupsByCompany.set(job.company, group);
+      groups.push(group);
+    }
+    group.jobs.push(job);
+  }
+
+  return groups;
+}
+
 export function exportTrackingPayload(tracking, now = new Date()) {
   return {
     ...normalizeTracking(tracking),

@@ -5,6 +5,7 @@ import {
   filterJobs,
   formatDate,
   getPersonalStatus,
+  groupJobsByCompany,
   loadTracking,
   mergeTracking,
   parseTrackingImport,
@@ -14,11 +15,13 @@ import {
 } from "./core.js";
 
 const elements = {
-  activeCount: document.querySelector("#active-count"),
+  activeCompanyCount: document.querySelector("#active-company-count"),
+  activeRoleCount: document.querySelector("#active-role-count"),
   lastUpdated: document.querySelector("#last-updated"),
   activeView: document.querySelector("#active-view"),
   archiveView: document.querySelector("#archive-view"),
   resultCount: document.querySelector("#result-count"),
+  roleCount: document.querySelector("#role-count"),
   jobList: document.querySelector("#job-list"),
   emptyState: document.querySelector("#empty-state"),
   emptyHeading: document.querySelector("#empty-heading"),
@@ -56,10 +59,13 @@ const state = {
 
 const statusLabels = {
   active: "Active",
+  upcoming: "Opens soon",
   "closing-soon": "Closing soon",
   stale: "Not recently verified",
   closed: "Closed",
 };
+
+const COMPANY_ROLE_PREVIEW = 6;
 
 function escapeHtml(value) {
   return String(value ?? "")
@@ -110,13 +116,12 @@ function sourceMarkup(job) {
   return `<a class="source-link" href="${escapeHtml(job.sourceUrl)}" target="_blank" rel="noopener noreferrer">${escapeHtml(job.sourcePlatform)}</a>`;
 }
 
-function jobMarkup(job) {
+function roleMarkup(job) {
   const tracking = state.tracking.jobs[job.id] ?? { status: "", notes: "" };
   const personalStatus = getPersonalStatus(state.tracking, job.id);
   const isApplied = personalStatus === "Applied";
   const status = statusLabels[job.status] ?? job.status;
   const locations = (job.locations ?? []).join(" · ") || "Not listed";
-  const tags = [job.category, ...(job.tags ?? []).slice(0, 2)];
   const evidence = job.visaEvidence;
   const evidenceLink = evidence?.url
     ? `<a class="evidence-link" href="${escapeHtml(evidence.url)}" target="_blank" rel="noopener noreferrer">View evidence</a>`
@@ -126,55 +131,94 @@ function jobMarkup(job) {
   const deadlineValue = deadline ? formatDate(deadline) : "Not published — apply early";
 
   return `
-    <li>
-      <article class="job-row" aria-labelledby="job-${escapeHtml(job.id)}">
-        <div>
-          <p class="role-company">${escapeHtml(job.company)}</p>
-          <h3 class="role-title" id="job-${escapeHtml(job.id)}">${escapeHtml(job.title)}</h3>
-          <div class="role-tags">
+    <li class="company-role">
+      <details class="role-disclosure">
+        <summary aria-labelledby="job-${escapeHtml(job.id)}">
+          <span class="role-summary-copy">
+            <span class="role-title" id="job-${escapeHtml(job.id)}" title="${escapeHtml(job.title)}">${escapeHtml(job.title)}</span>
+            <span class="role-location" title="${escapeHtml(locations)}">${escapeHtml(locations)}</span>
+          </span>
+          <span class="role-summary-meta">
             <span class="status-badge status-${escapeHtml(job.status)}">${escapeHtml(status)}</span>
-            ${tags.map((tag) => `<span class="tag">${escapeHtml(tag)}</span>`).join("")}
-          </div>
-        </div>
-        <div>
-          <dl class="facts-list">
+            <span class="tag">${escapeHtml(job.category)}</span>
+            <span class="details-cue">Details</span>
+          </span>
+        </summary>
+        <div class="role-details">
+          <dl class="role-facts">
             <div><dt>Location</dt><dd>${escapeHtml(locations)}</dd></div>
+            <div><dt>Workplace</dt><dd>${escapeHtml(job.workplaceType || "Not listed")}</dd></div>
             <div><dt>Compensation</dt><dd>${escapeHtml(displayCompensation(job.compensation))}</dd></div>
-          </dl>
-          <dl class="timing-list">
             <div><dt>Posted</dt><dd>${escapeHtml(formatDate(job.datePosted))}</dd></div>
             <div><dt>${deadlineLabel}</dt><dd>${escapeHtml(deadlineValue)}</dd></div>
             <div><dt>Start</dt><dd>${escapeHtml(job.startPeriod || "Not listed")}</dd></div>
+            <div><dt>Candidate window</dt><dd>${escapeHtml(job.graduationWindow || "Not listed")}</dd></div>
             <div><dt>Experience</dt><dd>${escapeHtml(job.experienceRequirements || "Not listed")}</dd></div>
           </dl>
-        </div>
-        <div>
-          <span class="evidence-badge">${escapeHtml(evidence?.level)}</span>
-          <p class="evidence-copy">${escapeHtml(evidence?.explanation)}</p>
-          <div class="meta-line">${evidenceLink}${sourceMarkup(job)}</div>
-        </div>
-        <div>
-          <button
-            class="application-toggle ${isApplied ? "is-applied" : "is-not-applied"}"
-            id="tracking-${escapeHtml(job.id)}"
-            type="button"
-            aria-pressed="${String(isApplied)}"
-            data-action="toggle-applied"
-            data-job-id="${escapeHtml(job.id)}"
-          >${escapeHtml(personalStatus)}</button>
-          <details class="notes-control"${tracking.notes ? " open" : ""}>
-            <summary>Private notes</summary>
-            <label class="sr-only" for="notes-${escapeHtml(job.id)}">Private notes for ${escapeHtml(job.company)} ${escapeHtml(job.title)}</label>
-            <textarea
-              id="notes-${escapeHtml(job.id)}"
-              data-action="tracking-notes"
+          <div class="role-evidence">
+            <span class="evidence-badge">${escapeHtml(evidence?.level || "Unstated")}</span>
+            <p class="evidence-copy">${escapeHtml(evidence?.explanation || "The posting does not state a sponsorship policy. Confirm directly with the employer.")}</p>
+            <div class="meta-line">${evidenceLink}${sourceMarkup(job)}</div>
+          </div>
+          <div class="role-actions">
+            <button
+              class="application-toggle ${isApplied ? "is-applied" : "is-not-applied"}"
+              id="tracking-${escapeHtml(job.id)}"
+              type="button"
+              aria-pressed="${String(isApplied)}"
+              data-action="toggle-applied"
               data-job-id="${escapeHtml(job.id)}"
-              placeholder="Saved only in this browser"
-            >${escapeHtml(tracking.notes)}</textarea>
-          </details>
-          <a class="apply-link" href="${escapeHtml(job.applicationUrl)}" target="_blank" rel="noopener noreferrer">Official application</a>
-          <p class="verified-line">Verified ${escapeHtml(formatDate(job.lastVerified))}</p>
+            >${escapeHtml(personalStatus)}</button>
+            <details class="notes-control"${tracking.notes ? " open" : ""}>
+              <summary>Private notes</summary>
+              <label class="sr-only" for="notes-${escapeHtml(job.id)}">Private notes for ${escapeHtml(job.company)} ${escapeHtml(job.title)}</label>
+              <textarea
+                id="notes-${escapeHtml(job.id)}"
+                data-action="tracking-notes"
+                data-job-id="${escapeHtml(job.id)}"
+                placeholder="Saved only in this browser"
+              >${escapeHtml(tracking.notes)}</textarea>
+            </details>
+            <a class="apply-link" href="${escapeHtml(job.applicationUrl)}" target="_blank" rel="noopener noreferrer">Open official role ↗</a>
+            <p class="verified-line">Verified ${escapeHtml(formatDate(job.lastVerified))}</p>
+          </div>
         </div>
+      </details>
+    </li>`;
+}
+
+function companyMarkup(group, index) {
+  const visibleRoles = group.jobs.slice(0, COMPANY_ROLE_PREVIEW);
+  const remainingRoles = group.jobs.slice(COMPANY_ROLE_PREVIEW);
+  const categories = unique(group.jobs.map((job) => job.category));
+  const companyId = `company-${index + 1}`;
+  const roleLabel = `${group.jobs.length} ${group.jobs.length === 1 ? "role" : "roles"}`;
+
+  return `
+    <li class="company-card">
+      <article aria-labelledby="${companyId}">
+        <header class="company-heading">
+          <div class="company-heading-main">
+            <span class="company-number" aria-hidden="true">${String(index + 1).padStart(2, "0")}</span>
+            <div>
+              <h3 id="${companyId}">${escapeHtml(group.company)}</h3>
+              <p>${escapeHtml(roleLabel)} matching this view</p>
+            </div>
+          </div>
+          <div class="company-categories" aria-label="Role categories">
+            ${categories.map((category) => `<span class="tag">${escapeHtml(category)}</span>`).join("")}
+          </div>
+        </header>
+        <ul class="company-role-list">
+          ${visibleRoles.map(roleMarkup).join("")}
+        </ul>
+        ${remainingRoles.length ? `
+          <details class="company-overflow">
+            <summary>Show ${remainingRoles.length} more ${remainingRoles.length === 1 ? "role" : "roles"}</summary>
+            <ul class="company-role-list">
+              ${remainingRoles.map(roleMarkup).join("")}
+            </ul>
+          </details>` : ""}
       </article>
     </li>`;
 }
@@ -182,18 +226,20 @@ function jobMarkup(job) {
 function render() {
   const jobs = state.view === "active" ? state.activeJobs : state.archivedJobs;
   const visibleJobs = filterJobs(jobs, state.filters, state.tracking);
+  const companyGroups = groupJobsByCompany(visibleJobs);
 
-  elements.resultCount.textContent = String(visibleJobs.length);
-  elements.jobList.innerHTML = visibleJobs.map(jobMarkup).join("");
+  elements.resultCount.textContent = String(companyGroups.length);
+  elements.roleCount.textContent = String(visibleJobs.length);
+  elements.jobList.innerHTML = companyGroups.map(companyMarkup).join("");
   elements.jobList.setAttribute("aria-busy", "false");
   elements.emptyState.hidden = visibleJobs.length !== 0;
   const archiveIsEmpty = state.view === "archive" && state.archivedJobs.length === 0;
   elements.emptyHeading.textContent = archiveIsEmpty
     ? "No closed roles have been archived yet."
-    : "No roles match these filters.";
+    : "No companies match these filters.";
   elements.emptyCopy.textContent = archiveIsEmpty
     ? "Confirmed closures will remain available here instead of disappearing from the board."
-    : "Try a broader keyword or reset the filters. Accuracy takes priority over listing volume.";
+    : "Try a broader company, role, location, or skill keyword, or reset the filters.";
   elements.emptyReset.hidden = archiveIsEmpty;
   elements.errorState.hidden = true;
   elements.activeView.setAttribute("aria-pressed", String(state.view === "active"));
@@ -336,10 +382,13 @@ async function initialize() {
     state.archivedJobs = archivedJobs;
     state.metadata = metadata;
 
-    elements.activeCount.textContent = String(metadata.activeCount ?? activeJobs.length);
+    const activeCompanyCount = unique(activeJobs.map((job) => job.company)).length;
+    const archivedCompanyCount = unique(archivedJobs.map((job) => job.company)).length;
+    elements.activeCompanyCount.textContent = String(metadata.activeCompanyCount ?? activeCompanyCount);
+    elements.activeRoleCount.textContent = String(metadata.activeCount ?? activeJobs.length);
     elements.lastUpdated.textContent = formatDate(metadata.lastSuccessfulUpdate, { includeTime: true });
-    elements.activeView.textContent = `Active (${activeJobs.length})`;
-    elements.archiveView.textContent = `Archived / closed (${archivedJobs.length})`;
+    elements.activeView.textContent = `Current (${activeCompanyCount})`;
+    elements.archiveView.textContent = `Archived / closed (${archivedCompanyCount})`;
     initializeFilterOptions();
     render();
   } catch (error) {
@@ -347,9 +396,11 @@ async function initialize() {
     elements.jobList.setAttribute("aria-busy", "false");
     elements.jobList.replaceChildren();
     elements.resultCount.textContent = "0";
+    elements.roleCount.textContent = "0";
     elements.emptyState.hidden = true;
     elements.errorState.hidden = false;
-    elements.activeCount.textContent = "Unavailable";
+    elements.activeCompanyCount.textContent = "Unavailable";
+    elements.activeRoleCount.textContent = "Unavailable";
     elements.lastUpdated.textContent = "Unavailable";
   }
 }

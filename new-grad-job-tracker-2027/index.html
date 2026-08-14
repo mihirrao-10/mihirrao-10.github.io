@@ -25,15 +25,19 @@
     <p class="eyebrow">Public project</p>
     <h1>New Graduate Job Tracker <span>(2027)</span></h1>
     <p class="lede">
-      A carefully verified board of U.S.-based, full-time, early-career software, machine learning,
-      data, quantitative, systems, and related computer science roles for undergraduate and master's
-      candidates, with international-hiring evidence for every listing.
+      Start with the company, then scan its openings. This board groups verified U.S.-based,
+      full-time early-career opportunities across software, machine learning, data, quantitative,
+      systems, and related computer science work.
     </p>
 
     <dl class="board-summary" aria-label="Board status">
       <div>
-        <dt>Active jobs</dt>
-        <dd id="active-count">—</dd>
+        <dt>Current companies</dt>
+        <dd id="active-company-count">—</dd>
+      </div>
+      <div>
+        <dt>Open / upcoming roles</dt>
+        <dd id="active-role-count">—</dd>
       </div>
       <div>
         <dt>Last successful update</dt>
@@ -53,7 +57,9 @@
         International-hiring evidence is a research signal, not a promise that a specific job will
         sponsor any applicant. Eligibility, immigration support, and openings can change at any
         time. Read the current official posting and confirm your situation with the employer. Exact
-        deadlines appear only when the employer publishes one; otherwise, apply early.
+        deadlines appear only when the employer publishes one; otherwise, apply early. A
+        <strong>Restricted</strong> label means the posting contains a stated authorization barrier,
+        not an international-hiring signal.
       </p>
       <details>
         <summary>How evidence is classified</summary>
@@ -69,6 +75,14 @@
           <div>
             <dt>Historical</dt>
             <dd>Recent public records show comparable sponsorship, but say nothing definitive about this opening.</dd>
+          </div>
+          <div>
+            <dt>Restricted</dt>
+            <dd>The posting states a sponsorship, work-authorization, citizenship, or export-control restriction.</dd>
+          </div>
+          <div>
+            <dt>Unstated</dt>
+            <dd>The posting does not address sponsorship. Confirm eligibility directly with the employer before applying.</dd>
           </div>
         </dl>
       </details>
@@ -96,8 +110,8 @@
     <section class="controls" aria-labelledby="filters-heading">
       <div class="controls-heading">
         <div>
-          <p class="eyebrow">Browse openings</p>
-          <h2 id="filters-heading">Find a role</h2>
+          <p class="eyebrow">Browse companies</p>
+          <h2 id="filters-heading">Find a company</h2>
         </div>
         <button class="reset-button" id="reset-filters" type="button">Reset filters</button>
       </div>
@@ -108,7 +122,7 @@
           <input
             id="keyword-search"
             type="search"
-            placeholder="Company, title, location, or skill"
+            placeholder="Company, role, location, or skill"
             autocomplete="off"
           />
         </label>
@@ -131,7 +145,7 @@
         <label for="sort-jobs">
           <span>Sort by</span>
           <select id="sort-jobs">
-            <option value="newest">Newest</option>
+            <option value="newest">Newest opening</option>
             <option value="deadline">Deadline</option>
             <option value="salary">Salary (highest first)</option>
             <option value="company">Company</option>
@@ -145,25 +159,21 @@
       <div class="results-toolbar">
         <div>
           <p class="eyebrow">Results</p>
-          <h2 id="results-heading" aria-live="polite" aria-atomic="true"><span id="result-count">—</span> roles</h2>
+          <h2 id="results-heading" aria-live="polite" aria-atomic="true">
+            <span id="result-count">—</span> companies <span class="result-role-count">· <span id="role-count">—</span> roles</span>
+          </h2>
         </div>
         <div class="view-switcher" aria-label="Job status view">
-          <button id="active-view" type="button" aria-pressed="true">Active</button>
+          <button id="active-view" type="button" aria-pressed="true">Current</button>
           <button id="archive-view" type="button" aria-pressed="false">Archived / closed</button>
         </div>
       </div>
 
-      <div class="job-list-heading" aria-hidden="true">
-        <span>Role</span>
-        <span>Timing</span>
-        <span>International evidence</span>
-        <span>Track &amp; apply</span>
-      </div>
       <ol class="job-list" id="job-list" aria-busy="true"></ol>
 
       <div class="empty-state" id="empty-state" hidden>
-        <h3 id="empty-heading">No roles match these filters.</h3>
-        <p id="empty-copy">Try a broader keyword or reset the filters. Accuracy takes priority over listing volume.</p>
+        <h3 id="empty-heading">No companies match these filters.</h3>
+        <p id="empty-copy">Try a broader keyword or reset the filters.</p>
         <button class="reset-button" id="empty-reset" type="button">Reset filters</button>
       </div>
 

@@ -137,8 +137,8 @@ h1 span {
 
 .board-summary {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  max-width: 780px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  max-width: 980px;
   margin: 0;
   border-top: 1px solid var(--border);
 }
@@ -201,7 +201,7 @@ main {
 
 .evidence-definitions {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
   gap: 1.25rem;
   margin: 1rem 0 0;
 }
@@ -367,20 +367,9 @@ input[type="search"]::placeholder {
   color: var(--background);
 }
 
-.job-list-heading,
-.job-row {
-  display: grid;
-  grid-template-columns: minmax(230px, 1.55fr) minmax(190px, 1.05fr) minmax(230px, 1.3fr) minmax(170px, 0.85fr);
-  gap: 1.5rem;
-}
-
-.job-list-heading {
-  padding: 0.7rem 0.9rem;
-  border-bottom: 1px solid var(--foreground);
-  font-size: 0.7rem;
-  font-weight: 650;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+.result-role-count {
+  color: var(--muted);
+  font-weight: 400;
 }
 
 .job-list {
@@ -389,38 +378,63 @@ input[type="search"]::placeholder {
   list-style: none;
 }
 
-.job-row {
-  position: relative;
-  padding: 1.35rem 0.9rem;
-  border-bottom: 1px solid var(--border);
+.company-card {
+  margin-bottom: 1rem;
+  border: 1px solid var(--foreground);
 }
 
-.job-row:hover {
-  background: #fafaf8;
+.company-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  min-height: 6.25rem;
+  padding: 1.1rem 1.2rem;
+  border-bottom: 1px solid var(--foreground);
 }
 
-.role-company {
-  margin-bottom: 0.3rem;
+.company-heading-main {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  gap: 1rem;
+}
+
+.company-number {
+  min-width: 2.2rem;
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+}
+
+.company-heading h3 {
+  margin: 0;
+  font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+  font-weight: 720;
+  letter-spacing: -0.035em;
+  line-height: 1.1;
+}
+
+.company-heading p {
+  margin: 0.35rem 0 0;
   color: var(--muted);
   font-size: 0.76rem;
-  font-weight: 650;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
 }
 
-.role-title {
-  margin-bottom: 0.55rem;
-  font-size: 1rem;
-  font-weight: 650;
-  line-height: 1.35;
-}
-
-.role-tags,
+.company-categories,
+.role-summary-meta,
 .meta-line {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 0.35rem 0.65rem;
+}
+
+.company-categories {
+  justify-content: flex-end;
+  max-width: 56%;
 }
 
 .tag,
@@ -452,30 +466,120 @@ input[type="search"]::placeholder {
   border-color: #8b8b86;
 }
 
-.facts-list,
-.timing-list {
+.status-upcoming {
+  border-style: dashed;
+}
+
+.company-role-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.company-role + .company-role {
+  border-top: 1px solid var(--border);
+}
+
+.role-disclosure > summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 1rem;
+  min-height: 3.65rem;
+  padding: 0.7rem 1.2rem;
+  cursor: pointer;
+  list-style: none;
+}
+
+.role-disclosure > summary::-webkit-details-marker,
+.company-overflow > summary::-webkit-details-marker {
+  display: none;
+}
+
+.role-disclosure > summary:hover {
+  background: #fafaf8;
+}
+
+.role-disclosure[open] > summary {
+  border-bottom: 1px solid var(--border);
+  background: var(--subtle);
+}
+
+.role-summary-copy {
+  display: grid;
+  grid-template-columns: minmax(220px, 1.45fr) minmax(150px, 1fr);
+  align-items: baseline;
+  min-width: 0;
+  gap: 1rem;
+}
+
+.role-title,
+.role-location {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.role-title {
+  font-size: 0.9rem;
+  font-weight: 620;
+}
+
+.role-location {
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+
+.details-cue {
+  color: var(--muted);
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+.details-cue::after {
+  content: " +";
+}
+
+.role-disclosure[open] .details-cue::after {
+  content: " −";
+}
+
+.role-details {
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(220px, 1fr) minmax(175px, 0.72fr);
+  gap: 1.5rem;
+  padding: 1.2rem;
+  background: #fafaf8;
+}
+
+.role-facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-content: start;
+  gap: 0.85rem 1rem;
   margin: 0;
   font-size: 0.79rem;
 }
 
-.facts-list div,
-.timing-list div {
-  margin-bottom: 0.45rem;
-}
-
-.facts-list dt,
-.timing-list dt {
+.role-facts dt {
   color: var(--muted);
-  font-size: 0.67rem;
+  font-size: 0.65rem;
   font-weight: 500;
   letter-spacing: 0.05em;
   text-transform: uppercase;
 }
 
-.facts-list dd,
-.timing-list dd {
+.role-facts dd {
   margin: 0.08rem 0 0;
   font-weight: 400;
+}
+
+.role-evidence {
+  align-self: start;
+  padding-left: 1.1rem;
+  border-left: 1px solid var(--border);
 }
 
 .evidence-badge {
@@ -568,6 +672,31 @@ input[type="search"]::placeholder {
   font-size: 0.68rem;
 }
 
+.company-overflow {
+  border-top: 1px solid var(--foreground);
+}
+
+.company-overflow > summary {
+  padding: 0.85rem 1.2rem;
+  background: var(--subtle);
+  font-size: 0.76rem;
+  font-weight: 650;
+  cursor: pointer;
+  list-style: none;
+}
+
+.company-overflow > summary::after {
+  content: " +";
+}
+
+.company-overflow[open] > summary::after {
+  content: " −";
+}
+
+.company-overflow[open] > summary {
+  border-bottom: 1px solid var(--border);
+}
+
 .empty-state,
 .error-state {
   padding: 3.5rem 1rem;
@@ -642,14 +771,17 @@ footer a {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .job-list-heading {
+  .company-categories .tag:nth-child(n + 3),
+  .role-summary-meta .tag {
     display: none;
   }
 
-  .job-row {
-    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
-    gap: 1.4rem 2rem;
-    padding: 1.5rem 0;
+  .role-details {
+    grid-template-columns: minmax(0, 1.3fr) minmax(220px, 1fr);
+  }
+
+  .role-actions {
+    grid-column: 1 / -1;
   }
 }
 
@@ -669,7 +801,6 @@ footer a {
   }
 
   .board-summary,
-  .evidence-definitions,
   .primary-controls {
     grid-template-columns: 1fr;
   }
@@ -698,9 +829,42 @@ footer a {
     align-self: flex-start;
   }
 
-  .job-row {
+  .company-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.85rem;
+  }
+
+  .company-categories {
+    justify-content: flex-start;
+    max-width: none;
+    padding-left: 3.2rem;
+  }
+
+  .role-disclosure > summary {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.65rem;
+    padding-inline: 0.9rem;
+  }
+
+  .role-summary-copy {
+    display: block;
+  }
+
+  .role-location,
+  .role-summary-meta .tag {
+    display: none;
+  }
+
+  .role-details,
+  .role-facts {
     grid-template-columns: 1fr;
-    gap: 1rem;
+  }
+
+  .role-evidence {
+    padding: 1rem 0 0;
+    border-top: 1px solid var(--border);
+    border-left: 0;
   }
 
   .application-toggle,

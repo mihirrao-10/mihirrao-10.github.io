@@ -130,7 +130,7 @@
       "additionalProperties": false,
       "required": ["level", "explanation", "url"],
       "properties": {
-        "level": { "enum": ["Strong", "Supported", "Historical"] },
+        "level": { "enum": ["Strong", "Supported", "Historical", "Restricted", "Unstated"] },
         "explanation": { "type": "string", "minLength": 12 },
         "url": { "type": "string", "format": "uri", "pattern": "^https://" }
       }

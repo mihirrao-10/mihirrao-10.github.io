@@ -3,9 +3,11 @@ import { uniqueStrings } from "./normalization.js";
 import { DEGREE_LEVELS } from "../constants.js";
 
 const EVIDENCE_STRENGTH = Object.freeze({
+  Unstated: 0,
   Historical: 1,
   Supported: 2,
   Strong: 3,
+  Restricted: 4,
 });
 
 function selectEvidence(left, right) {

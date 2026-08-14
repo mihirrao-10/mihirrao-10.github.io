@@ -27,6 +27,20 @@ test("the job schema rejects unsupported evidence levels", async () => {
   );
 });
 
+test("the job schema accepts transparent restricted and unstated evidence", async () => {
+  const { validateJob } = await loadValidators();
+  for (const level of ["Restricted", "Unstated"]) {
+    const job = sampleJob({
+      visaEvidence: {
+        level,
+        explanation: "This posting-specific classification is intentionally transparent.",
+        url: "https://jobs.example.com/immigration",
+      },
+    });
+    assert.doesNotThrow(() => assertValid(validateJob, job, "fixture"));
+  }
+});
+
 test("the job schema only permits the combined undergraduate and master's scope", async () => {
   const { validateJob } = await loadValidators();
   assert.throws(() =>

@@ -160,6 +160,9 @@ export async function updateJobs(options = parseArguments(process.argv.slice(2))
       ? options.now.toISOString()
       : (previousMetadata?.lastSuccessfulUpdate ?? null),
     activeCount: reconciled.active.length,
+    activeCompanyCount: new Set(
+      reconciled.active.map((job) => job.company),
+    ).size,
     archivedCount: reconciled.archive.length,
     staleAfterDays: sourceConfig.settings.staleAfterDays,
     closingSoonDays: sourceConfig.settings.closingSoonDays,
