@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "lastSuccessfulUpdate": "2026-08-13T12:56:50.000Z",
+  "lastSuccessfulUpdate": "2026-08-14T10:27:24.661Z",
   "activeCount": 153,
   "archivedCount": 2,
   "staleAfterDays": 7,
@@ -120,7 +120,7 @@
       "platform": "TikTok Careers",
       "status": "failed",
       "jobsFound": 0,
-      "message": "Request failed for https://lifeattiktok.com/search/7670391173613160757: fetch failed"
+      "message": "TikTok posting 7668824172279875845 is missing its official application URL"
     },
     {
       "sourceId": "netic-ashby",
@@ -188,9 +188,9 @@
     {
       "sourceId": "manual-citadel-securities",
       "platform": "Manual",
-      "status": "success",
+      "status": "failed",
       "jobsFound": 3,
-      "message": "1 verified, 0 confirmed missing, 2 temporarily unavailable"
+      "message": "0 verified, 0 confirmed missing, 3 temporarily unavailable"
     },
     {
       "sourceId": "manual-google",
