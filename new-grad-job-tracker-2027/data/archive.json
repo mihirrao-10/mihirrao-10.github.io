@@ -76,5 +76,51 @@
     ],
     "missCount": 2,
     "sourceId": "nuro-greenhouse"
+  },
+  {
+    "id": "optiver-2027-fpga-austin",
+    "company": "Optiver",
+    "title": "Graduate FPGA Engineer (2027 Start - Austin)",
+    "category": "Systems / Infrastructure / Performance Engineering",
+    "applicationUrl": "https://www.optiver.com/join-us/jobs/technology/austin/graduate-fpga-engineer-2027-start-austin/apply",
+    "sourceUrl": "https://www.optiver.com/join-us/jobs/technology/austin/graduate-fpga-engineer-2027-start-austin/",
+    "sourcePlatform": "Official company careers",
+    "locations": [
+      "Austin, TX"
+    ],
+    "country": "United States",
+    "workplaceType": "Unspecified",
+    "compensation": null,
+    "datePosted": null,
+    "deadline": null,
+    "startPeriod": "2027",
+    "graduationWindow": "December 2026 through June 2027",
+    "graduationMonths": [
+      "2026-12",
+      "2027-05",
+      "2027-06"
+    ],
+    "experienceRequirements": "Graduate role; no professional experience minimum stated",
+    "visaEvidence": {
+      "level": "Strong",
+      "explanation": "The exact posting states that Optiver supports U.S. immigration sponsorship for this role. Eligibility remains individual and must be confirmed against the current posting.",
+      "url": "https://www.optiver.com/join-us/jobs/technology/austin/graduate-fpga-engineer-2027-start-austin/"
+    },
+    "firstSeen": "2026-07-31",
+    "lastVerified": "2026-08-17",
+    "status": "closed",
+    "closedDate": "2026-08-19",
+    "tags": [
+      "2027",
+      "FPGA",
+      "ASIC",
+      "RTL",
+      "Low latency"
+    ],
+    "missCount": 2,
+    "sourceId": "manual-optiver",
+    "degreeLevels": [
+      "Undergraduate / Master's"
+    ]
   }
 ]
