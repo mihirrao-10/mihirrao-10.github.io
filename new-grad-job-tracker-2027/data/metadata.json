@@ -1,9 +1,9 @@
 {
   "schemaVersion": "1.0.0",
-  "lastSuccessfulUpdate": "2026-08-21T09:54:35.698Z",
-  "activeCount": 186,
-  "activeCompanyCount": 61,
-  "archivedCount": 3,
+  "lastSuccessfulUpdate": "2026-08-22T09:46:09.609Z",
+  "activeCount": 185,
+  "activeCompanyCount": 60,
+  "archivedCount": 4,
   "staleAfterDays": 7,
   "closingSoonDays": 7,
   "missThreshold": 2,
@@ -145,7 +145,7 @@
       "sourceId": "esri-greenhouse",
       "platform": "Greenhouse",
       "status": "success",
-      "jobsFound": 1
+      "jobsFound": 0
     },
     {
       "sourceId": "abridge-ashby",
