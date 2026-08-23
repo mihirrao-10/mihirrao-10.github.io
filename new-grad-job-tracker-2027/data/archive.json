@@ -80,6 +80,47 @@
     "sourceId": "collective-ashby"
   },
   {
+    "id": "esri-greenhouse-643d85119dbdb060",
+    "company": "Esri",
+    "title": "C++ Software Engineer I – Maps SDKS",
+    "category": "Systems / Infrastructure / Performance Engineering",
+    "applicationUrl": "https://www.esri.com/careers/5199136007?gh_jid=5199136007",
+    "sourceUrl": "https://www.esri.com/careers/5199136007?gh_jid=5199136007",
+    "sourcePlatform": "Greenhouse",
+    "locations": [
+      "Redlands, CA"
+    ],
+    "country": "United States",
+    "workplaceType": "Unspecified",
+    "compensation": "$79,040–$133,016 base",
+    "datePosted": "2026-08-05",
+    "deadline": null,
+    "startPeriod": null,
+    "graduationWindow": "Early-career role; no graduation window stated",
+    "graduationMonths": [],
+    "degreeLevels": [
+      "Undergraduate / Master's"
+    ],
+    "experienceRequirements": "One or more years of related development experience; modern C++ and object-oriented design required",
+    "visaEvidence": {
+      "level": "Historical",
+      "explanation": "Current public DOL-derived Esri records include many software development engineering filings in Redlands. This sponsorship history is not a promise for this opening.",
+      "url": "https://www.ellis.com/visa-sponsors/environmental-systems-research-institute-inc/h1b"
+    },
+    "firstSeen": "2026-08-13",
+    "lastVerified": "2026-08-21",
+    "status": "closed",
+    "closedDate": "2026-08-23",
+    "tags": [
+      "C++",
+      "Geometry",
+      "Performance",
+      "SDK"
+    ],
+    "missCount": 2,
+    "sourceId": "esri-greenhouse"
+  },
+  {
     "id": "nuro-greenhouse-e6a2d165f34913fb",
     "company": "Nuro",
     "title": "Software Engineer, Performance - New Grad",
@@ -150,7 +191,7 @@
     "firstSeen": "2026-07-31",
     "lastVerified": "2026-08-17",
     "status": "closed",
-    "closedDate": "2026-08-22",
+    "closedDate": "2026-08-23",
     "tags": [
       "2027",
       "FPGA",
@@ -158,7 +199,7 @@
       "RTL",
       "Low latency"
     ],
-    "missCount": 5,
+    "missCount": 6,
     "sourceId": "manual-optiver",
     "degreeLevels": [
       "Undergraduate / Master's"
