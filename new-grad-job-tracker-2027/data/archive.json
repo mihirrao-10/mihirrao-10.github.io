@@ -191,7 +191,7 @@
     "firstSeen": "2026-07-31",
     "lastVerified": "2026-08-17",
     "status": "closed",
-    "closedDate": "2026-08-23",
+    "closedDate": "2026-08-24",
     "tags": [
       "2027",
       "FPGA",
@@ -199,7 +199,7 @@
       "RTL",
       "Low latency"
     ],
-    "missCount": 6,
+    "missCount": 7,
     "sourceId": "manual-optiver",
     "degreeLevels": [
       "Undergraduate / Master's"
