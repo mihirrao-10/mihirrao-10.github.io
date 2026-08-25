@@ -1,9 +1,9 @@
 {
   "schemaVersion": "1.0.0",
-  "lastSuccessfulUpdate": "2026-08-24T10:07:18.811Z",
-  "activeCount": 184,
-  "activeCompanyCount": 59,
-  "archivedCount": 5,
+  "lastSuccessfulUpdate": "2026-08-25T09:54:57.136Z",
+  "activeCount": 183,
+  "activeCompanyCount": 58,
+  "archivedCount": 6,
   "staleAfterDays": 7,
   "closingSoonDays": 7,
   "missThreshold": 2,
@@ -108,7 +108,7 @@
       "sourceId": "samsara-greenhouse",
       "platform": "Greenhouse",
       "status": "success",
-      "jobsFound": 1
+      "jobsFound": 0
     },
     {
       "sourceId": "ctc-greenhouse",

@@ -191,7 +191,7 @@
     "firstSeen": "2026-07-31",
     "lastVerified": "2026-08-17",
     "status": "closed",
-    "closedDate": "2026-08-24",
+    "closedDate": "2026-08-25",
     "tags": [
       "2027",
       "FPGA",
@@ -199,10 +199,51 @@
       "RTL",
       "Low latency"
     ],
-    "missCount": 7,
+    "missCount": 8,
     "sourceId": "manual-optiver",
     "degreeLevels": [
       "Undergraduate / Master's"
     ]
+  },
+  {
+    "id": "samsara-greenhouse-c5314f1ba6f66cb5",
+    "company": "Samsara",
+    "title": "Software Engineer I - New Grad, SF",
+    "category": "Software Engineering",
+    "applicationUrl": "https://www.samsara.com/company/careers/roles/8097343",
+    "sourceUrl": "https://www.samsara.com/company/careers/roles/8097343",
+    "sourcePlatform": "Greenhouse",
+    "locations": [
+      "San Francisco, CA"
+    ],
+    "country": "United States",
+    "workplaceType": "Hybrid",
+    "compensation": "$136,850–$161,000 base plus equity",
+    "datePosted": null,
+    "deadline": "2026-08-24",
+    "startPeriod": "2027",
+    "graduationWindow": "Expected Winter or Spring 2027 graduation",
+    "graduationMonths": [
+      "2027-05"
+    ],
+    "degreeLevels": [
+      "Undergraduate / Master's"
+    ],
+    "experienceRequirements": "Upcoming bachelor's graduate; no professional experience minimum stated",
+    "visaEvidence": {
+      "level": "Historical",
+      "explanation": "Recent public DOL-derived records show Samsara filings for software engineering employees. This employer history is not a promise for this opening.",
+      "url": "https://www.ellis.com/visa-sponsors/samsara-inc/salaries"
+    },
+    "firstSeen": "2026-08-10",
+    "lastVerified": "2026-08-24",
+    "status": "closed",
+    "closedDate": "2026-08-24",
+    "tags": [
+      "IoT",
+      "New graduate"
+    ],
+    "missCount": 1,
+    "sourceId": "samsara-greenhouse"
   }
 ]
