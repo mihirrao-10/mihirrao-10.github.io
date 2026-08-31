@@ -80,6 +80,56 @@
     "sourceId": "esri-greenhouse"
   },
   {
+    "id": "google-careers-78703249065943750",
+    "company": "Google",
+    "title": "Software Engineer, Early Career, Campus",
+    "category": "Software Engineering",
+    "applicationUrl": "https://www.google.com/about/careers/applications/jobs/results/78703249065943750",
+    "sourceUrl": "https://www.google.com/about/careers/applications/jobs/results/78703249065943750",
+    "sourcePlatform": "Official company careers",
+    "locations": [
+      "Mountain View, CA",
+      "Cambridge, MA",
+      "Kirkland, WA",
+      "Los Angeles, CA",
+      "New York, NY",
+      "Pittsburgh, PA",
+      "San Bruno, CA",
+      "San Jose, CA",
+      "Seattle, WA",
+      "Sunnyvale, CA"
+    ],
+    "country": "United States",
+    "workplaceType": "Unspecified",
+    "compensation": "$123,000–$174,000 base plus 15% bonus and equity",
+    "datePosted": "2026-08-07",
+    "deadline": "2026-08-30",
+    "startPeriod": null,
+    "graduationWindow": "Early-career campus role; no graduation window stated",
+    "graduationMonths": [],
+    "degreeLevels": [
+      "Undergraduate / Master's"
+    ],
+    "experienceRequirements": "Early-career role; programming experience through coursework, research, internships, or open source",
+    "visaEvidence": {
+      "level": "Historical",
+      "explanation": "Current public DOL-derived records show extensive Google software engineering sponsorship history. Historical filings do not guarantee support for this role.",
+      "url": "https://www.ellis.com/visa-sponsors/google-llc/h1b"
+    },
+    "firstSeen": "2026-08-13",
+    "lastVerified": "2026-08-31",
+    "status": "closed",
+    "closedDate": "2026-08-30",
+    "tags": [
+      "C++",
+      "Distributed systems",
+      "Machine learning",
+      "Python"
+    ],
+    "missCount": 0,
+    "sourceId": "manual-google"
+  },
+  {
     "id": "nuro-greenhouse-e6a2d165f34913fb",
     "company": "Nuro",
     "title": "Software Engineer, Performance - New Grad",
@@ -150,7 +200,7 @@
     "firstSeen": "2026-07-31",
     "lastVerified": "2026-08-17",
     "status": "closed",
-    "closedDate": "2026-08-30",
+    "closedDate": "2026-08-31",
     "tags": [
       "2027",
       "FPGA",
@@ -158,7 +208,7 @@
       "RTL",
       "Low latency"
     ],
-    "missCount": 13,
+    "missCount": 14,
     "sourceId": "manual-optiver",
     "degreeLevels": [
       "Undergraduate / Master's"
