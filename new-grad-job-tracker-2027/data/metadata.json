@@ -1,9 +1,9 @@
 {
   "schemaVersion": "1.0.0",
-  "lastSuccessfulUpdate": "2026-08-31T17:06:39.674Z",
-  "activeCount": 183,
+  "lastSuccessfulUpdate": "2026-09-01T14:11:34.705Z",
+  "activeCount": 182,
   "activeCompanyCount": 58,
-  "archivedCount": 6,
+  "archivedCount": 7,
   "staleAfterDays": 7,
   "closingSoonDays": 7,
   "missThreshold": 2,
@@ -48,7 +48,7 @@
       "sourceId": "jump-greenhouse",
       "platform": "Greenhouse",
       "status": "success",
-      "jobsFound": 2
+      "jobsFound": 0
     },
     {
       "sourceId": "old-mission-greenhouse",
@@ -72,7 +72,7 @@
       "sourceId": "ixl-greenhouse",
       "platform": "Greenhouse",
       "status": "success",
-      "jobsFound": 2
+      "jobsFound": 0
     },
     {
       "sourceId": "nuro-greenhouse",

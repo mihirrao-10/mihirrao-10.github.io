@@ -1,5 +1,49 @@
 [
   {
+    "id": "akuna-greenhouse-43103b1b50a8348c",
+    "company": "Akuna Capital",
+    "title": "Junior Trader",
+    "category": "Quantitative Trading",
+    "applicationUrl": "https://akunacapital.com/careers/job/7773141/junior-trader/?gh_jid=7773141",
+    "sourceUrl": "https://akunacapital.com/careers/job/7773141/junior-trader/?gh_jid=7773141",
+    "sourcePlatform": "Greenhouse",
+    "locations": [
+      "Chicago, IL"
+    ],
+    "country": "United States",
+    "workplaceType": "Unspecified",
+    "compensation": "$145,000 minimum base",
+    "datePosted": null,
+    "deadline": null,
+    "startPeriod": "August 2027",
+    "graduationWindow": "Graduating by August 2027",
+    "graduationMonths": [
+      "2027-05",
+      "2027-08"
+    ],
+    "degreeLevels": [
+      "Undergraduate / Master's"
+    ],
+    "experienceRequirements": "Entry level; technical degree requirements vary by role",
+    "visaEvidence": {
+      "level": "Strong",
+      "explanation": "The exact posting explicitly accepts F-1 OPT or STEM OPT as day-one work authorization. It does not promise later H-1B sponsorship; verify ongoing support.",
+      "url": "https://akunacapital.com/careers/job/7773141/junior-trader/?gh_jid=7773141"
+    },
+    "firstSeen": "2026-07-31",
+    "lastVerified": "2026-08-30",
+    "status": "closed",
+    "closedDate": "2026-09-01",
+    "tags": [
+      "Chicago",
+      "Early career",
+      "Options",
+      "Trading"
+    ],
+    "missCount": 2,
+    "sourceId": "akuna-greenhouse"
+  },
+  {
     "id": "collective-ashby-1870974f58c9134a",
     "company": "Collective",
     "title": "Software Engineer (New Grad)",
@@ -117,7 +161,7 @@
       "url": "https://www.ellis.com/visa-sponsors/google-llc/h1b"
     },
     "firstSeen": "2026-08-13",
-    "lastVerified": "2026-08-31",
+    "lastVerified": "2026-09-01",
     "status": "closed",
     "closedDate": "2026-08-30",
     "tags": [
@@ -200,7 +244,7 @@
     "firstSeen": "2026-07-31",
     "lastVerified": "2026-08-17",
     "status": "closed",
-    "closedDate": "2026-08-31",
+    "closedDate": "2026-09-01",
     "tags": [
       "2027",
       "FPGA",
@@ -208,7 +252,7 @@
       "RTL",
       "Low latency"
     ],
-    "missCount": 14,
+    "missCount": 15,
     "sourceId": "manual-optiver",
     "degreeLevels": [
       "Undergraduate / Master's"
