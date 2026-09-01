@@ -32,7 +32,7 @@ Pages workflow live in the sibling
 ```text
 index.html  personal-site homepage
 assets/     shared static assets
-notes/      published course-note PDFs
+notes/      published book-note and course-note PDFs
 new-grad-job-tracker-2027/     tracker UI and generated public JSON
 data/job-tracker/              schemas, source configuration, curated records
 tools/job-tracker/             collectors, validation, and generator
@@ -64,11 +64,11 @@ generated data. The standalone tracker repository remains a private working
 copy; the public static mirror lives here so Pages can serve it at the website
 subpath without changing that repository's visibility.
 
-## Course notes
+## Personal notes
 
-`notes/` holds generated PDFs only. The LaTeX sources live in the sibling
-`web/course-notes/` project. Do not edit the PDFs here by hand. Run
-`make publish` from `course-notes/` to rebuild, verify that course directories,
-published PDFs, and homepage links agree, and copy the files here. Adding a
-course also requires one `<li>` in the homepage `notes-list`; `make check`
-detects missing or extra links.
+`notes/` holds generated PDFs only. Book- and course-note LaTeX sources live in
+the sibling `web/course-notes/` project. Do not edit the PDFs here by hand. Run
+`make publish` there to rebuild, verify that active source directories,
+published PDFs, and homepage links agree, and copy the files here. Each note
+set also requires one `<li>` in the homepage `notes-list`; `make check` detects
+missing or extra links.
