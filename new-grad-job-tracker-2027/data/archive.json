@@ -161,7 +161,7 @@
       "url": "https://www.ellis.com/visa-sponsors/google-llc/h1b"
     },
     "firstSeen": "2026-08-13",
-    "lastVerified": "2026-09-01",
+    "lastVerified": "2026-09-02",
     "status": "closed",
     "closedDate": "2026-08-30",
     "tags": [
@@ -172,6 +172,167 @@
     ],
     "missCount": 0,
     "sourceId": "manual-google"
+  },
+  {
+    "id": "ixl-greenhouse-c889afe429a3fe0a",
+    "company": "IXL Learning",
+    "title": "Software Engineer, New Grad",
+    "category": "Software Engineering",
+    "applicationUrl": "https://www.ixl.com/company/careers?gh_jid=8663379002",
+    "sourceUrl": "https://www.ixl.com/company/careers?gh_jid=8663379002",
+    "sourcePlatform": "Greenhouse",
+    "locations": [
+      "Raleigh, NC"
+    ],
+    "country": "United States",
+    "workplaceType": "On-site",
+    "compensation": "$110,000–$135,000 base plus equity",
+    "datePosted": "2026-08-06",
+    "deadline": null,
+    "startPeriod": null,
+    "graduationWindow": null,
+    "graduationMonths": [],
+    "degreeLevels": [
+      "Undergraduate / Master's"
+    ],
+    "experienceRequirements": "Bachelor's or advanced degree in computer science or a related discipline",
+    "visaEvidence": {
+      "level": "Strong",
+      "explanation": "The exact official posting says H-1B sponsorship is available for this position. Availability still does not guarantee that every candidate or immigration path will qualify.",
+      "url": "https://www.ixl.com/company/careers?gh_jid=8663379002"
+    },
+    "firstSeen": "2026-07-31",
+    "lastVerified": "2026-08-31",
+    "status": "closed",
+    "closedDate": "2026-09-02",
+    "tags": [
+      "Education technology",
+      "New graduate"
+    ],
+    "missCount": 2,
+    "sourceId": "ixl-greenhouse"
+  },
+  {
+    "id": "ixl-greenhouse-ece9eb5c07a81a45",
+    "company": "IXL Learning",
+    "title": "Software Engineer, New Grad",
+    "category": "Software Engineering",
+    "applicationUrl": "https://www.ixl.com/company/careers?gh_jid=8662881002",
+    "sourceUrl": "https://www.ixl.com/company/careers?gh_jid=8662881002",
+    "sourcePlatform": "Greenhouse",
+    "locations": [
+      "San Mateo, CA"
+    ],
+    "country": "United States",
+    "workplaceType": "On-site",
+    "compensation": "$110,000–$135,000 base plus equity",
+    "datePosted": "2026-08-06",
+    "deadline": null,
+    "startPeriod": null,
+    "graduationWindow": null,
+    "graduationMonths": [],
+    "degreeLevels": [
+      "Undergraduate / Master's"
+    ],
+    "experienceRequirements": "Bachelor's or advanced degree in computer science or a related discipline",
+    "visaEvidence": {
+      "level": "Strong",
+      "explanation": "The exact official posting says H-1B sponsorship is available for this position. Availability still does not guarantee that every candidate or immigration path will qualify.",
+      "url": "https://www.ixl.com/company/careers?gh_jid=8662881002"
+    },
+    "firstSeen": "2026-07-31",
+    "lastVerified": "2026-08-31",
+    "status": "closed",
+    "closedDate": "2026-09-02",
+    "tags": [
+      "Education technology",
+      "New graduate"
+    ],
+    "missCount": 2,
+    "sourceId": "ixl-greenhouse"
+  },
+  {
+    "id": "jump-greenhouse-fb9c17e77fb20cfa",
+    "company": "Jump Trading",
+    "title": "Campus Quantitative Researcher, UG/MS (Full-Time)",
+    "category": "Quantitative Research",
+    "applicationUrl": "https://www.jumptrading.com/hr/job?gh_jid=7728630",
+    "sourceUrl": "https://www.jumptrading.com/hr/job?gh_jid=7728630",
+    "sourcePlatform": "Greenhouse",
+    "locations": [
+      "Chicago, IL",
+      "New York, NY"
+    ],
+    "country": "United States",
+    "workplaceType": "On-site",
+    "compensation": "$300,000 base",
+    "datePosted": null,
+    "deadline": null,
+    "startPeriod": "2027",
+    "graduationWindow": "Current 2027 U.S. campus recruiting cycle; exact graduation months not listed",
+    "graduationMonths": [],
+    "degreeLevels": [
+      "Undergraduate / Master's"
+    ],
+    "experienceRequirements": "Campus full-time role; no professional experience minimum stated",
+    "visaEvidence": {
+      "level": "Strong",
+      "explanation": "The exact posting encourages international students, accepts CPT or OPT, and says Jump sponsors work visas for full-time positions. Individual eligibility still applies.",
+      "url": "https://www.jumptrading.com/hr/job?gh_jid=7728630"
+    },
+    "firstSeen": "2026-07-31",
+    "lastVerified": "2026-08-31",
+    "status": "closed",
+    "closedDate": "2026-09-02",
+    "tags": [
+      "Campus",
+      "Data science",
+      "Research",
+      "Trading"
+    ],
+    "missCount": 2,
+    "sourceId": "jump-greenhouse"
+  },
+  {
+    "id": "jump-greenhouse-bf2b5c453ae7ddba",
+    "company": "Jump Trading",
+    "title": "Campus Quantitative Trader (Full-Time)",
+    "category": "Quantitative Trading",
+    "applicationUrl": "https://www.jumptrading.com/hr/job?gh_jid=7982619",
+    "sourceUrl": "https://www.jumptrading.com/hr/job?gh_jid=7982619",
+    "sourcePlatform": "Greenhouse",
+    "locations": [
+      "Chicago, IL",
+      "New York, NY"
+    ],
+    "country": "United States",
+    "workplaceType": "On-site",
+    "compensation": "$300,000 base",
+    "datePosted": null,
+    "deadline": null,
+    "startPeriod": "2027",
+    "graduationWindow": "Current 2027 U.S. campus recruiting cycle; exact graduation months not listed",
+    "graduationMonths": [],
+    "degreeLevels": [
+      "Undergraduate / Master's"
+    ],
+    "experienceRequirements": "Campus full-time role; no professional experience minimum stated",
+    "visaEvidence": {
+      "level": "Strong",
+      "explanation": "The exact posting encourages international students, accepts CPT or OPT, and says Jump sponsors work visas for full-time positions. Individual eligibility still applies.",
+      "url": "https://www.jumptrading.com/hr/job?gh_jid=7982619"
+    },
+    "firstSeen": "2026-07-31",
+    "lastVerified": "2026-08-31",
+    "status": "closed",
+    "closedDate": "2026-09-02",
+    "tags": [
+      "Campus",
+      "Quantitative trading",
+      "Trading"
+    ],
+    "missCount": 2,
+    "sourceId": "jump-greenhouse"
   },
   {
     "id": "nuro-greenhouse-e6a2d165f34913fb",
@@ -244,7 +405,7 @@
     "firstSeen": "2026-07-31",
     "lastVerified": "2026-08-17",
     "status": "closed",
-    "closedDate": "2026-09-01",
+    "closedDate": "2026-09-02",
     "tags": [
       "2027",
       "FPGA",
@@ -252,7 +413,7 @@
       "RTL",
       "Low latency"
     ],
-    "missCount": 15,
+    "missCount": 16,
     "sourceId": "manual-optiver",
     "degreeLevels": [
       "Undergraduate / Master's"

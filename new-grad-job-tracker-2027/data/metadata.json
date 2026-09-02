@@ -1,9 +1,9 @@
 {
   "schemaVersion": "1.0.0",
-  "lastSuccessfulUpdate": "2026-09-01T14:11:34.705Z",
-  "activeCount": 182,
-  "activeCompanyCount": 58,
-  "archivedCount": 7,
+  "lastSuccessfulUpdate": "2026-09-02T13:43:24.551Z",
+  "activeCount": 178,
+  "activeCompanyCount": 56,
+  "archivedCount": 11,
   "staleAfterDays": 7,
   "closingSoonDays": 7,
   "missThreshold": 2,
@@ -24,7 +24,7 @@
       "sourceId": "akuna-greenhouse",
       "platform": "Greenhouse",
       "status": "success",
-      "jobsFound": 4
+      "jobsFound": 3
     },
     {
       "sourceId": "drw-greenhouse",
@@ -331,7 +331,7 @@
       "platform": "Manual",
       "status": "success",
       "jobsFound": 4,
-      "message": "3 verified, 1 confirmed missing, 0 temporarily unavailable"
+      "message": "1 verified, 3 confirmed missing, 0 temporarily unavailable"
     },
     {
       "sourceId": "manual-salesforce",
