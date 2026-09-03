@@ -1,9 +1,9 @@
 {
   "schemaVersion": "1.0.0",
-  "lastSuccessfulUpdate": "2026-09-02T13:43:24.551Z",
-  "activeCount": 178,
+  "lastSuccessfulUpdate": "2026-09-03T13:39:00.339Z",
+  "activeCount": 175,
   "activeCompanyCount": 56,
-  "archivedCount": 11,
+  "archivedCount": 14,
   "staleAfterDays": 7,
   "closingSoonDays": 7,
   "missThreshold": 2,
@@ -151,7 +151,7 @@
       "sourceId": "abridge-ashby",
       "platform": "Ashby",
       "status": "success",
-      "jobsFound": 1
+      "jobsFound": 0
     },
     {
       "sourceId": "nooks-ashby",

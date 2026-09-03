@@ -1,5 +1,52 @@
 [
   {
+    "id": "akuna-greenhouse-cf446871f041af4c",
+    "company": "Akuna Capital",
+    "title": "Junior Quantitative Researcher",
+    "category": "Quantitative Research",
+    "applicationUrl": "https://www.akunacapital.com/careers/job/8036541/?gh_jid=8036541",
+    "sourceUrl": "https://www.akunacapital.com/careers/job/8036541/?gh_jid=8036541",
+    "sourcePlatform": "Greenhouse",
+    "locations": [
+      "Chicago, IL"
+    ],
+    "country": "United States",
+    "workplaceType": "Unspecified",
+    "compensation": "$145,000 minimum base plus bonus",
+    "datePosted": "2026-07-13",
+    "deadline": null,
+    "startPeriod": null,
+    "graduationWindow": "Graduating August 2027 or earlier",
+    "graduationMonths": [
+      "2026-12",
+      "2027-05",
+      "2027-08"
+    ],
+    "degreeLevels": [
+      "Undergraduate / Master's"
+    ],
+    "experienceRequirements": "Early-career quantitative research role; 3.5+ GPA and a technical degree required",
+    "visaEvidence": {
+      "level": "Strong",
+      "explanation": "The exact posting explicitly accepts F-1 OPT or STEM OPT as day-one work authorization. It does not promise later H-1B sponsorship; verify ongoing support.",
+      "url": "https://www.akunacapital.com/careers/job/8036541/?gh_jid=8036541"
+    },
+    "firstSeen": "2026-08-13",
+    "lastVerified": "2026-09-01",
+    "status": "closed",
+    "closedDate": "2026-09-03",
+    "tags": [
+      "Chicago",
+      "Early career",
+      "Machine learning",
+      "Python",
+      "Research",
+      "Trading"
+    ],
+    "missCount": 2,
+    "sourceId": "akuna-greenhouse"
+  },
+  {
     "id": "akuna-greenhouse-43103b1b50a8348c",
     "company": "Akuna Capital",
     "title": "Junior Trader",
@@ -161,7 +208,7 @@
       "url": "https://www.ellis.com/visa-sponsors/google-llc/h1b"
     },
     "firstSeen": "2026-08-13",
-    "lastVerified": "2026-09-02",
+    "lastVerified": "2026-09-03",
     "status": "closed",
     "closedDate": "2026-08-30",
     "tags": [
@@ -405,7 +452,7 @@
     "firstSeen": "2026-07-31",
     "lastVerified": "2026-08-17",
     "status": "closed",
-    "closedDate": "2026-09-02",
+    "closedDate": "2026-09-03",
     "tags": [
       "2027",
       "FPGA",
@@ -413,7 +460,99 @@
       "RTL",
       "Low latency"
     ],
-    "missCount": 16,
+    "missCount": 17,
+    "sourceId": "manual-optiver",
+    "degreeLevels": [
+      "Undergraduate / Master's"
+    ]
+  },
+  {
+    "id": "optiver-2027-software-austin",
+    "company": "Optiver",
+    "title": "Graduate Software Engineer (2027 Start)",
+    "category": "Software Engineering",
+    "applicationUrl": "https://www.optiver.com/join-us/jobs/technology/austin/graduate-software-engineer-2027-start/apply",
+    "sourceUrl": "https://www.optiver.com/join-us/jobs/technology/austin/graduate-software-engineer-2027-start/",
+    "sourcePlatform": "Official company careers",
+    "locations": [
+      "Austin, TX"
+    ],
+    "country": "United States",
+    "workplaceType": "Unspecified",
+    "compensation": "$200,000 USD base",
+    "datePosted": null,
+    "deadline": null,
+    "startPeriod": "2027",
+    "graduationWindow": "December 2026 through June 2027",
+    "graduationMonths": [
+      "2026-12",
+      "2027-05",
+      "2027-06"
+    ],
+    "experienceRequirements": "Graduate role; no professional experience minimum stated",
+    "visaEvidence": {
+      "level": "Strong",
+      "explanation": "The exact posting states that Optiver supports U.S. immigration sponsorship for this role. Eligibility remains individual and must be confirmed against the current posting.",
+      "url": "https://www.optiver.com/join-us/jobs/technology/austin/graduate-software-engineer-2027-start/"
+    },
+    "firstSeen": "2026-07-31",
+    "lastVerified": "2026-09-01",
+    "status": "closed",
+    "closedDate": "2026-09-03",
+    "tags": [
+      "2027",
+      "C++",
+      "Python",
+      "Java",
+      "Trading systems"
+    ],
+    "missCount": 2,
+    "sourceId": "manual-optiver",
+    "degreeLevels": [
+      "Undergraduate / Master's"
+    ]
+  },
+  {
+    "id": "optiver-2027-software-chicago",
+    "company": "Optiver",
+    "title": "Graduate Software Engineer (2027 Start)",
+    "category": "Software Engineering",
+    "applicationUrl": "https://www.optiver.com/join-us/jobs/technology/chicago/graduate-software-engineer-2027-start/apply",
+    "sourceUrl": "https://www.optiver.com/join-us/jobs/technology/chicago/graduate-software-engineer-2027-start/",
+    "sourcePlatform": "Official company careers",
+    "locations": [
+      "Chicago, IL"
+    ],
+    "country": "United States",
+    "workplaceType": "Unspecified",
+    "compensation": "$200,000 USD base",
+    "datePosted": null,
+    "deadline": null,
+    "startPeriod": "2027",
+    "graduationWindow": "December 2026 through June 2027",
+    "graduationMonths": [
+      "2026-12",
+      "2027-05",
+      "2027-06"
+    ],
+    "experienceRequirements": "Graduate role; no professional experience minimum stated",
+    "visaEvidence": {
+      "level": "Strong",
+      "explanation": "The exact posting states that Optiver supports U.S. immigration sponsorship for this role. Eligibility remains individual and must be confirmed against the current posting.",
+      "url": "https://www.optiver.com/join-us/jobs/technology/chicago/graduate-software-engineer-2027-start/"
+    },
+    "firstSeen": "2026-07-31",
+    "lastVerified": "2026-09-01",
+    "status": "closed",
+    "closedDate": "2026-09-03",
+    "tags": [
+      "2027",
+      "C++",
+      "Python",
+      "Java",
+      "Trading systems"
+    ],
+    "missCount": 2,
     "sourceId": "manual-optiver",
     "degreeLevels": [
       "Undergraduate / Master's"
