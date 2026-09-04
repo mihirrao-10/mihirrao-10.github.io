@@ -1,5 +1,46 @@
 [
   {
+    "id": "abridge-ashby-f3f0aa449641cbdb",
+    "company": "Abridge",
+    "title": "Software Engineer, Early Career",
+    "category": "Machine Learning / AI Engineering",
+    "applicationUrl": "https://jobs.ashbyhq.com/abridge/7d6ae2be-cd53-466c-8151-2dae2e87aace/application",
+    "sourceUrl": "https://jobs.ashbyhq.com/abridge/7d6ae2be-cd53-466c-8151-2dae2e87aace",
+    "sourcePlatform": "Ashby",
+    "locations": [
+      "San Francisco, CA"
+    ],
+    "country": "United States",
+    "workplaceType": "On-site",
+    "compensation": null,
+    "datePosted": "2026-08-26",
+    "deadline": null,
+    "startPeriod": null,
+    "graduationWindow": "Early-career role; no graduation window stated",
+    "graduationMonths": [],
+    "degreeLevels": [
+      "Undergraduate / Master's"
+    ],
+    "experienceRequirements": "Early-career role; hands-on generative AI work through projects, research, or internships expected",
+    "visaEvidence": {
+      "level": "Historical",
+      "explanation": "Current public DOL and USCIS-derived records show Abridge AI software and data engineering sponsorship history. This does not establish support for this opening.",
+      "url": "https://www.myvisajobs.com/employer/abridge-ai/"
+    },
+    "firstSeen": "2026-08-13",
+    "lastVerified": "2026-09-02",
+    "status": "closed",
+    "closedDate": "2026-09-04",
+    "tags": [
+      "Agents",
+      "Generative AI",
+      "LLM",
+      "RAG"
+    ],
+    "missCount": 2,
+    "sourceId": "abridge-ashby"
+  },
+  {
     "id": "akuna-greenhouse-cf446871f041af4c",
     "company": "Akuna Capital",
     "title": "Junior Quantitative Researcher",
@@ -208,7 +249,7 @@
       "url": "https://www.ellis.com/visa-sponsors/google-llc/h1b"
     },
     "firstSeen": "2026-08-13",
-    "lastVerified": "2026-09-03",
+    "lastVerified": "2026-09-04",
     "status": "closed",
     "closedDate": "2026-08-30",
     "tags": [
@@ -452,7 +493,7 @@
     "firstSeen": "2026-07-31",
     "lastVerified": "2026-08-17",
     "status": "closed",
-    "closedDate": "2026-09-03",
+    "closedDate": "2026-09-04",
     "tags": [
       "2027",
       "FPGA",
@@ -460,7 +501,7 @@
       "RTL",
       "Low latency"
     ],
-    "missCount": 17,
+    "missCount": 18,
     "sourceId": "manual-optiver",
     "degreeLevels": [
       "Undergraduate / Master's"
@@ -498,7 +539,7 @@
     "firstSeen": "2026-07-31",
     "lastVerified": "2026-09-01",
     "status": "closed",
-    "closedDate": "2026-09-03",
+    "closedDate": "2026-09-04",
     "tags": [
       "2027",
       "C++",
@@ -506,7 +547,7 @@
       "Java",
       "Trading systems"
     ],
-    "missCount": 2,
+    "missCount": 3,
     "sourceId": "manual-optiver",
     "degreeLevels": [
       "Undergraduate / Master's"
@@ -544,7 +585,7 @@
     "firstSeen": "2026-07-31",
     "lastVerified": "2026-09-01",
     "status": "closed",
-    "closedDate": "2026-09-03",
+    "closedDate": "2026-09-04",
     "tags": [
       "2027",
       "C++",
@@ -552,7 +593,7 @@
       "Java",
       "Trading systems"
     ],
-    "missCount": 2,
+    "missCount": 3,
     "sourceId": "manual-optiver",
     "degreeLevels": [
       "Undergraduate / Master's"

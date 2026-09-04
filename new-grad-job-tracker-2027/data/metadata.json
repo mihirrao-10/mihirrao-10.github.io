@@ -1,9 +1,9 @@
 {
   "schemaVersion": "1.0.0",
-  "lastSuccessfulUpdate": "2026-09-03T13:39:00.339Z",
-  "activeCount": 175,
-  "activeCompanyCount": 56,
-  "archivedCount": 14,
+  "lastSuccessfulUpdate": "2026-09-04T13:35:05.547Z",
+  "activeCount": 174,
+  "activeCompanyCount": 55,
+  "archivedCount": 15,
   "staleAfterDays": 7,
   "closingSoonDays": 7,
   "missThreshold": 2,
