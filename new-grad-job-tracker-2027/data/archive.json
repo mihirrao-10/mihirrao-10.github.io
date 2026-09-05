@@ -249,7 +249,7 @@
       "url": "https://www.ellis.com/visa-sponsors/google-llc/h1b"
     },
     "firstSeen": "2026-08-13",
-    "lastVerified": "2026-09-04",
+    "lastVerified": "2026-09-05",
     "status": "closed",
     "closedDate": "2026-08-30",
     "tags": [
@@ -493,7 +493,7 @@
     "firstSeen": "2026-07-31",
     "lastVerified": "2026-08-17",
     "status": "closed",
-    "closedDate": "2026-09-04",
+    "closedDate": "2026-09-05",
     "tags": [
       "2027",
       "FPGA",
@@ -501,7 +501,7 @@
       "RTL",
       "Low latency"
     ],
-    "missCount": 18,
+    "missCount": 19,
     "sourceId": "manual-optiver",
     "degreeLevels": [
       "Undergraduate / Master's"
@@ -539,7 +539,7 @@
     "firstSeen": "2026-07-31",
     "lastVerified": "2026-09-01",
     "status": "closed",
-    "closedDate": "2026-09-04",
+    "closedDate": "2026-09-05",
     "tags": [
       "2027",
       "C++",
@@ -547,7 +547,7 @@
       "Java",
       "Trading systems"
     ],
-    "missCount": 3,
+    "missCount": 4,
     "sourceId": "manual-optiver",
     "degreeLevels": [
       "Undergraduate / Master's"
@@ -585,7 +585,7 @@
     "firstSeen": "2026-07-31",
     "lastVerified": "2026-09-01",
     "status": "closed",
-    "closedDate": "2026-09-04",
+    "closedDate": "2026-09-05",
     "tags": [
       "2027",
       "C++",
@@ -593,7 +593,7 @@
       "Java",
       "Trading systems"
     ],
-    "missCount": 3,
+    "missCount": 4,
     "sourceId": "manual-optiver",
     "degreeLevels": [
       "Undergraduate / Master's"
