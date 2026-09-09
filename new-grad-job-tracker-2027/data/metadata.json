@@ -1,9 +1,9 @@
 {
   "schemaVersion": "1.0.0",
-  "lastSuccessfulUpdate": "2026-09-08T13:41:11.182Z",
-  "activeCount": 174,
+  "lastSuccessfulUpdate": "2026-09-09T13:46:11.869Z",
+  "activeCount": 175,
   "activeCompanyCount": 55,
-  "archivedCount": 15,
+  "archivedCount": 14,
   "staleAfterDays": 7,
   "closingSoonDays": 7,
   "missThreshold": 2,
@@ -24,7 +24,7 @@
       "sourceId": "akuna-greenhouse",
       "platform": "Greenhouse",
       "status": "success",
-      "jobsFound": 3
+      "jobsFound": 4
     },
     {
       "sourceId": "drw-greenhouse",
