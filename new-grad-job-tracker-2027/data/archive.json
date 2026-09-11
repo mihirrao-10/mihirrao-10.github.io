@@ -205,7 +205,7 @@
       "url": "https://www.ellis.com/visa-sponsors/google-llc/h1b"
     },
     "firstSeen": "2026-08-13",
-    "lastVerified": "2026-09-10",
+    "lastVerified": "2026-09-11",
     "status": "closed",
     "closedDate": "2026-08-30",
     "tags": [
@@ -449,7 +449,7 @@
     "firstSeen": "2026-07-31",
     "lastVerified": "2026-08-17",
     "status": "closed",
-    "closedDate": "2026-09-10",
+    "closedDate": "2026-09-11",
     "tags": [
       "2027",
       "FPGA",
@@ -457,7 +457,7 @@
       "RTL",
       "Low latency"
     ],
-    "missCount": 24,
+    "missCount": 25,
     "sourceId": "manual-optiver",
     "degreeLevels": [
       "Undergraduate / Master's"
@@ -495,7 +495,7 @@
     "firstSeen": "2026-07-31",
     "lastVerified": "2026-09-01",
     "status": "closed",
-    "closedDate": "2026-09-10",
+    "closedDate": "2026-09-11",
     "tags": [
       "2027",
       "C++",
@@ -503,53 +503,7 @@
       "Java",
       "Trading systems"
     ],
-    "missCount": 9,
-    "sourceId": "manual-optiver",
-    "degreeLevels": [
-      "Undergraduate / Master's"
-    ]
-  },
-  {
-    "id": "optiver-2027-software-chicago",
-    "company": "Optiver",
-    "title": "Graduate Software Engineer (2027 Start)",
-    "category": "Software Engineering",
-    "applicationUrl": "https://www.optiver.com/join-us/jobs/technology/chicago/graduate-software-engineer-2027-start/apply",
-    "sourceUrl": "https://www.optiver.com/join-us/jobs/technology/chicago/graduate-software-engineer-2027-start/",
-    "sourcePlatform": "Official company careers",
-    "locations": [
-      "Chicago, IL"
-    ],
-    "country": "United States",
-    "workplaceType": "Unspecified",
-    "compensation": "$200,000 USD base",
-    "datePosted": null,
-    "deadline": null,
-    "startPeriod": "2027",
-    "graduationWindow": "December 2026 through June 2027",
-    "graduationMonths": [
-      "2026-12",
-      "2027-05",
-      "2027-06"
-    ],
-    "experienceRequirements": "Graduate role; no professional experience minimum stated",
-    "visaEvidence": {
-      "level": "Strong",
-      "explanation": "The exact posting states that Optiver supports U.S. immigration sponsorship for this role. Eligibility remains individual and must be confirmed against the current posting.",
-      "url": "https://www.optiver.com/join-us/jobs/technology/chicago/graduate-software-engineer-2027-start/"
-    },
-    "firstSeen": "2026-07-31",
-    "lastVerified": "2026-09-01",
-    "status": "closed",
-    "closedDate": "2026-09-10",
-    "tags": [
-      "2027",
-      "C++",
-      "Python",
-      "Java",
-      "Trading systems"
-    ],
-    "missCount": 9,
+    "missCount": 10,
     "sourceId": "manual-optiver",
     "degreeLevels": [
       "Undergraduate / Master's"
