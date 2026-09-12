@@ -1,8 +1,8 @@
 {
   "schemaVersion": "1.0.0",
-  "lastSuccessfulUpdate": "2026-09-11T13:38:25.444Z",
+  "lastSuccessfulUpdate": "2026-09-12T12:54:37.643Z",
   "activeCount": 176,
-  "activeCompanyCount": 55,
+  "activeCompanyCount": 54,
   "archivedCount": 13,
   "staleAfterDays": 7,
   "closingSoonDays": 7,
@@ -331,7 +331,7 @@
       "platform": "Manual",
       "status": "success",
       "jobsFound": 4,
-      "message": "2 verified, 2 confirmed missing, 0 temporarily unavailable"
+      "message": "3 verified, 1 confirmed missing, 0 temporarily unavailable"
     },
     {
       "sourceId": "manual-salesforce",

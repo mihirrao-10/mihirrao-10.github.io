@@ -205,7 +205,7 @@
       "url": "https://www.ellis.com/visa-sponsors/google-llc/h1b"
     },
     "firstSeen": "2026-08-13",
-    "lastVerified": "2026-09-11",
+    "lastVerified": "2026-09-12",
     "status": "closed",
     "closedDate": "2026-08-30",
     "tags": [
@@ -449,7 +449,7 @@
     "firstSeen": "2026-07-31",
     "lastVerified": "2026-08-17",
     "status": "closed",
-    "closedDate": "2026-09-11",
+    "closedDate": "2026-09-12",
     "tags": [
       "2027",
       "FPGA",
@@ -457,57 +457,54 @@
       "RTL",
       "Low latency"
     ],
-    "missCount": 25,
+    "missCount": 26,
     "sourceId": "manual-optiver",
     "degreeLevels": [
       "Undergraduate / Master's"
     ]
   },
   {
-    "id": "optiver-2027-software-austin",
-    "company": "Optiver",
-    "title": "Graduate Software Engineer (2027 Start)",
-    "category": "Software Engineering",
-    "applicationUrl": "https://www.optiver.com/join-us/jobs/technology/austin/graduate-software-engineer-2027-start/apply",
-    "sourceUrl": "https://www.optiver.com/join-us/jobs/technology/austin/graduate-software-engineer-2027-start/",
-    "sourcePlatform": "Official company careers",
+    "id": "quora-ashby-8264340622228cb9",
+    "company": "Quora",
+    "title": "Software Engineer, Machine Learning Platform, New Grad - Quora (Remote)",
+    "category": "Machine Learning / AI Engineering",
+    "applicationUrl": "https://jobs.ashbyhq.com/quora/452afc2e-0c79-41f8-8201-1aab7df775db/application",
+    "sourceUrl": "https://jobs.ashbyhq.com/quora/452afc2e-0c79-41f8-8201-1aab7df775db",
+    "sourcePlatform": "Ashby",
     "locations": [
-      "Austin, TX"
+      "Remote, CA"
     ],
     "country": "United States",
-    "workplaceType": "Unspecified",
-    "compensation": "$200,000 USD base",
-    "datePosted": null,
+    "workplaceType": "Remote",
+    "compensation": "$97,600–$139,000 base in the United States plus equity",
+    "datePosted": "2026-07-31",
     "deadline": null,
-    "startPeriod": "2027",
-    "graduationWindow": "December 2026 through June 2027",
+    "startPeriod": null,
+    "graduationWindow": "Graduating in 2025 or 2026",
     "graduationMonths": [
-      "2026-12",
-      "2027-05",
-      "2027-06"
+      "2026-12"
     ],
-    "experienceRequirements": "Graduate role; no professional experience minimum stated",
-    "visaEvidence": {
-      "level": "Strong",
-      "explanation": "The exact posting states that Optiver supports U.S. immigration sponsorship for this role. Eligibility remains individual and must be confirmed against the current posting.",
-      "url": "https://www.optiver.com/join-us/jobs/technology/austin/graduate-software-engineer-2027-start/"
-    },
-    "firstSeen": "2026-07-31",
-    "lastVerified": "2026-09-01",
-    "status": "closed",
-    "closedDate": "2026-09-11",
-    "tags": [
-      "2027",
-      "C++",
-      "Python",
-      "Java",
-      "Trading systems"
-    ],
-    "missCount": 10,
-    "sourceId": "manual-optiver",
     "degreeLevels": [
       "Undergraduate / Master's"
-    ]
+    ],
+    "experienceRequirements": "New-graduate role; software internship and machine-learning framework experience expected",
+    "visaEvidence": {
+      "level": "Historical",
+      "explanation": "Recent public DOL-derived records show Quora software engineering sponsorship history. This employer history does not establish support for this opening or every remote location.",
+      "url": "https://www.ellis.com/visa-sponsors/quora-inc/h1b"
+    },
+    "firstSeen": "2026-08-13",
+    "lastVerified": "2026-09-10",
+    "status": "closed",
+    "closedDate": "2026-09-12",
+    "tags": [
+      "ML infrastructure",
+      "Performance",
+      "PyTorch",
+      "Remote"
+    ],
+    "missCount": 2,
+    "sourceId": "quora-ashby"
   },
   {
     "id": "samsara-greenhouse-c5314f1ba6f66cb5",
