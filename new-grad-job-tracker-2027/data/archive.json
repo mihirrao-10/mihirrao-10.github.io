@@ -205,7 +205,7 @@
       "url": "https://www.ellis.com/visa-sponsors/google-llc/h1b"
     },
     "firstSeen": "2026-08-13",
-    "lastVerified": "2026-09-12",
+    "lastVerified": "2026-09-13",
     "status": "closed",
     "closedDate": "2026-08-30",
     "tags": [
@@ -449,7 +449,7 @@
     "firstSeen": "2026-07-31",
     "lastVerified": "2026-08-17",
     "status": "closed",
-    "closedDate": "2026-09-12",
+    "closedDate": "2026-09-13",
     "tags": [
       "2027",
       "FPGA",
@@ -457,7 +457,7 @@
       "RTL",
       "Low latency"
     ],
-    "missCount": 26,
+    "missCount": 27,
     "sourceId": "manual-optiver",
     "degreeLevels": [
       "Undergraduate / Master's"
