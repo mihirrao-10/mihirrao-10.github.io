@@ -12,6 +12,8 @@ Publication validation passed all 60 Node tests, the build/generated/root-dist c
 
 The local-only statements, original HEAD and preservation observations below describe the completed implementation phase. They do not restrict the later user-authorized GitHub Pages publication.
 
+The full staged whitespace review also reports upstream spacing inside embedded Three.js shader strings in the generated renderer chunk. Authored files pass the whitespace check. The generated chunk is retained byte-for-byte as verified esbuild output; no runtime or shader change was made to alter third-party formatting.
+
 ## Delivered experience
 
 Mihir Rao's academic serif portfolio retains its identity, black background, six sections, original biography and two project destinations. The hero uses an original asymmetric triangulated surface with a folded opening, dark faces, restrained blue edges, depth and slow bounded movement. Scroll shifts the emphasis through an education trajectory, industry cells, a research neighborhood graph, a teaching traversal, the two project features, and a quieter notes grid that recedes at the footer.
