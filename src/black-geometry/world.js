@@ -13,11 +13,11 @@ varying vec3 vBarycentric;
 varying vec3 vViewPosition;
 void main() {
   // One connected folded sheet organizes the material between different topologies.
-  // All facets meet their true neighbors at the bridge; no independent-model fade.
+  // All facets meet their true neighbors at the bridge.
   float unfold = smoothstep(0.0, 0.48, progress);
   float assemble = smoothstep(0.52, 1.0, progress);
   vec3 transformed = mix(mix(position, scaffold, unfold), destination, assemble);
-  vColor = mix(mix(originColor, vec3(0.58,0.49,0.38), unfold), destinationColor, assemble);
+  vColor = mix(mix(originColor, vec3(0.76,0.79,0.77), unfold), destinationColor, assemble);
   vBarycentric = barycentric;
   vec4 viewPosition = modelViewMatrix * vec4(transformed, 1.0);
   vViewPosition = viewPosition.xyz;
@@ -25,6 +25,7 @@ void main() {
 }`;
 const FRAGMENT = `
 uniform float progress;
+uniform float opacity;
 varying vec3 vColor;
 varying vec3 vBarycentric;
 varying vec3 vViewPosition;
@@ -38,16 +39,31 @@ void main() {
   float shade = 0.42 + 0.64 * key + 0.15 * rim;
   vec3 face = vColor * shade;
   vec3 width = fwidth(vBarycentric);
-  vec3 line = smoothstep(vec3(0.0), width * 0.65, vBarycentric);
-  float edge = (1.0 - min(min(line.x,line.y),line.z)) * 0.55;
-  edge *= 1.0 - 0.7 * sin(progress * 3.14159265);
+  vec3 line = smoothstep(vec3(0.0), width * 0.9, vBarycentric);
+  float edge = (1.0 - min(min(line.x,line.y),line.z)) * 0.7;
+  edge *= 1.0 - 0.35 * sin(progress * 3.14159265);
   float presence = smoothstep(0.003,0.06,max(max(vColor.r,vColor.g),vColor.b));
-  vec3 edgeColor = min(vec3(1.0),vColor * 1.2 + vec3(0.055)) * (0.7+0.3*key);
+  vec3 edgeColor = min(vec3(1.0),vColor * 1.25 + vec3(0.085)) * (0.78+0.22*key);
   float ivory = smoothstep(0.35,0.65,vColor.b) * (1.0-smoothstep(0.18,0.38,abs(vColor.r-vColor.b)));
   edgeColor = mix(edgeColor, vColor * 0.34, ivory);
-  gl_FragColor = vec4(mix(face, edgeColor, edge * presence),1.0);
+  float fade = 1.0 - 0.22 * pow(sin(progress * 3.14159265), 2.0);
+  float alpha = mix(opacity, 0.97, edge) * fade;
+  gl_FragColor = vec4(mix(face, edgeColor, edge * presence), alpha);
   #include <colorspace_fragment>
 }`;
+
+// TubeGeometry normally redistributes samples by arc length. These paths are
+// prepared polylines: preserving their parameterization keeps every original
+// vertex, the reveal length and the animated marker in agreement.
+export class PreparedPath extends THREE.Curve {
+  constructor(points) { super(); this.points=points; this.count=points.length/3; }
+  getPoint(t,target=new THREE.Vector3()) {
+    const at=Math.min(this.count-2,Math.floor(t*(this.count-1))),f=t*(this.count-1)-at;
+    return target.set(...[0,1,2].map(k=>this.points[at*3+k]*(1-f)+this.points[(at+1)*3+k]*f));
+  }
+  getPointAt(t,target) { return this.getPoint(t,target); }
+  getTangentAt(t,target) { return this.getTangent(t,target); }
+}
 
 async function loadSculptures() {
   const compressed = typeof DecompressionStream === "function";
@@ -86,7 +102,8 @@ export async function createWorld({container, quality="medium", onFailure}) {
   const camera=new THREE.PerspectiveCamera(35,1,0.1,60);camera.position.set(0,0,12);
   const material=new THREE.ShaderMaterial({
     vertexShader:VERTEX,fragmentShader:FRAGMENT,side:THREE.DoubleSide,
-    uniforms:{progress:{value:0}},
+    transparent:true,depthWrite:true,forceSinglePass:true,
+    uniforms:{progress:{value:0},opacity:{value:0.9}},
   });
   const mesh=new THREE.Mesh(new THREE.BufferGeometry(),material);
   mesh.frustumCulled=false;pivot.add(mesh);
@@ -117,21 +134,23 @@ export async function createWorld({container, quality="medium", onFailure}) {
   for(const model of packed.manifest.models)for(const path of model.paths){
     const count=path.points.length/3;
     let line, unitsPerPoint=1;
-    if(model.name==="surface"){
-      class PreparedPath extends THREE.Curve {
-        getPoint(t,target=new THREE.Vector3()){
-          const at=Math.min(count-2,Math.floor(t*(count-1))),f=t*(count-1)-at;
-          return target.set(...[0,1,2].map(k=>path.points[at*3+k]*(1-f)+path.points[(at+1)*3+k]*f));
-        }
-      }
-      const geometry=new THREE.TubeGeometry(new PreparedPath(),count-1,0.012,5,false);
-      line=new THREE.Mesh(geometry,new THREE.MeshBasicMaterial({color:0xffa846}));
+    const ascent = path.kind === "ascent", context = path.kind === "context";
+    const color = ascent ? 0xff404b : context ? 0xe9d6d5 : model.name === "surface" ? 0xb7fff0 : 0xffeedf;
+    if(model.name==="surface" || ascent){
+      const geometry=new THREE.TubeGeometry(new PreparedPath(path.points),(count-1)*(ascent?2:1),ascent?0.019:0.012,5,false);
+      line=new THREE.Mesh(geometry,new THREE.MeshBasicMaterial({color,transparent:true,depthWrite:false}));
       unitsPerPoint=30;
     }else{
       const geometry=new THREE.BufferGeometry();geometry.setAttribute("position",new THREE.Float32BufferAttribute(path.points,3));
-      line=new THREE.Line(geometry,new THREE.LineBasicMaterial({color:0xffcf83,depthTest:true}));
+      line=new THREE.Line(geometry,new THREE.LineBasicMaterial({color,depthTest:true,transparent:true,depthWrite:false}));
     }
-    line.visible=false;pivot.add(line);routes.push({line,model:model.name,kind:path.kind,count,unitsPerPoint,shown:count});
+    line.renderOrder=2;line.visible=false;pivot.add(line);
+    let marker;
+    if(ascent){
+      marker=new THREE.Mesh(new THREE.SphereGeometry(0.047,10,8),new THREE.MeshBasicMaterial({color:0xff6570,transparent:true,depthWrite:false}));
+      marker.visible=false;marker.renderOrder=3;pivot.add(marker);
+    }
+    routes.push({line,marker,points:path.points,model:model.name,kind:path.kind,count,unitsPerPoint,shown:count});
   }
   function updatePair(a,b){
     const key=`${a}/${b}`;if(key===pair)return;
@@ -142,13 +161,13 @@ export async function createWorld({container, quality="medium", onFailure}) {
     mesh.geometry.dispose();mesh.geometry=geometry;pair=key;
     for(const name of decoded.keys())if(name!==a&&name!==b)decoded.delete(name);
   }
-  let width=1,height=1,lastDpr=1;
+  let width=1,height=1,lastDpr=1,orbitRadius=12;
   function resize(_width,_height,dpr=lastDpr){
     width=Math.max(1,container.clientWidth);height=Math.max(1,container.clientHeight);lastDpr=dpr;
     renderer.setPixelRatio(Math.min(dpr,QUALITY[currentQuality].dpr));renderer.setSize(width,height,false);
     camera.aspect=width/height;
     // Fit both axes with enough depth clearance for the membrane and wing tips.
-    camera.position.z=Math.max(11.5,10.6/camera.aspect);
+    orbitRadius=Math.max(11.9,11.0/camera.aspect);
     camera.updateProjectionMatrix();
   }
   updatePair("hero","hero");resize(0,0,devicePixelRatio);
@@ -160,21 +179,38 @@ export async function createWorld({container, quality="medium", onFailure}) {
       currentName=state.target||"hero";nextName=state.nextTarget||currentName;
       updatePair(currentName,nextName);
       material.uniforms.progress.value=currentName===nextName?0:state.blend;
-      pivot.rotation.set(pose?.[3]||0,pose?.[4]||0,pose?.[5]||0);
+      const alpha = name => name === "harper" ? 0.72 : name === "hero" || name === "notes" ? 0.87 : 0.94;
+      material.uniforms.opacity.value=alpha(currentName)*(1-state.blend)+alpha(nextName)*state.blend;
+      const elevation=pose?.[3]||0,azimuth=pose?.[4]||0;
+      camera.position.set(orbitRadius*Math.cos(elevation)*Math.sin(azimuth),orbitRadius*Math.sin(elevation),orbitRadius*Math.cos(elevation)*Math.cos(azimuth));
+      camera.lookAt(0,0,0);
       for(const route of routes){
-        route.line.visible=currentName===route.model && state.blend<0.03 &&
-          (route.kind==="route" || route.kind===project.shortcut || route.kind==="boundary");
-        route.shown=route.model==="surface"?Math.max(2,Math.floor(route.count*project.path)):route.count;
-        route.line.geometry.setDrawRange(0,route.unitsPerPoint===1?route.shown:(route.shown-1)*route.unitsPerPoint);
+        const smooth = value => {const x=Math.max(0,Math.min(1,value));return x*x*(3-2*x);};
+        const presence=currentName===route.model ? 1-smooth(state.blend/.2) : nextName===route.model ? smooth((state.blend-.8)/.2) : 0;
+        const ascent=route.kind==="ascent",context=route.kind==="context";
+        const fraction=ascent ? Math.min(1,(time%10)/7) : route.model==="surface" ? project.path : 1;
+        const cycleFade=ascent ? smooth((time%10)/.4)*(1-smooth((time%10)-9)) : 1;
+        route.line.material.opacity=presence*cycleFade*(context?.38:1);
+        route.line.visible=presence>0.001 &&
+          (route.kind==="route" || route.kind===project.shortcut || route.kind==="boundary" || ascent || context);
+        route.shown=Math.max(2,Math.floor(route.count*fraction));
+        const shownSegments=ascent ? Math.floor((route.count-1)*2*fraction) : route.shown-1;
+        route.line.geometry.setDrawRange(0,route.unitsPerPoint===1?route.shown:shownSegments*route.unitsPerPoint);
+        if(route.marker){
+          route.marker.visible=route.line.visible;
+          route.marker.material.opacity=presence*cycleFade;
+          const progress=(route.count-1)*fraction,at=Math.min(route.count-2,Math.floor(progress)),amount=progress-at;
+          route.marker.position.set(...[0,1,2].map(k=>route.points[at*3+k]*(1-amount)+route.points[(at+1)*3+k]*amount));
+        }
       }
       renderer.render(scene,camera);
       if(shaderFailed)throw new Error("Sculpture shader initialization failed");
       frames++;
     },
-    snapshot:()=>({frames,drawCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles,quality:currentQuality,dpr:renderer.getPixelRatio(),geometries:renderer.info.memory.geometries,contextLost:renderer.getContext().isContextLost(),target:currentName,nextTarget:nextName,blend:material.uniforms.progress.value,facets:count,decodedTargets:decoded.size,finiteActiveBuffers,visibleRoutes:routes.filter(r=>r.line.visible).map(r=>r.kind),activePathPoints:routes.filter(r=>r.line.visible).map(r=>r.shown),width,height}),
+    snapshot:()=>({frames,drawCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles,quality:currentQuality,dpr:renderer.getPixelRatio(),geometries:renderer.info.memory.geometries,contextLost:renderer.getContext().isContextLost(),target:currentName,nextTarget:nextName,blend:material.uniforms.progress.value,opacity:material.uniforms.opacity.value,camera:camera.position.toArray(),facets:count,decodedTargets:decoded.size,finiteActiveBuffers,visibleRoutes:routes.filter(r=>r.line.visible).map(r=>r.kind),activePathPoints:routes.filter(r=>r.line.visible).map(r=>r.shown),width,height}),
     dispose(){
       if(disposed)return;disposed=true;canvas.removeEventListener("webglcontextlost",contextLost);
-      mesh.geometry.dispose();material.dispose();routes.forEach(({line})=>{line.geometry.dispose();line.material.dispose();});
+      mesh.geometry.dispose();material.dispose();routes.forEach(({line,marker})=>{line.geometry.dispose();line.material.dispose();marker?.geometry.dispose();marker?.material.dispose();});
       decoded.clear();renderer.dispose();canvas.remove();
     },
   };

@@ -20,8 +20,8 @@
       "id": "education",
       "heading": "education",
       "entries": [
-        "University of Chicago Sept 2025 – Dec 2026 M.S. in Computer Science Chicago, IL Interests → Theoretical Computer Science, Machine Learning, Economics",
-        "Drexel University Sept 2020 – Jun 2025 B.S. in Computer Science & B.A. in Mathematics Philadelphia, PA"
+        "University of Chicago Sept 2025 – Dec 2026 M.S. in Computer Science Chicago, IL Interests → Theoretical Computer Science, Machine Learning, Economics Teaching Graduate Teaching Assistant & Lecturer → Department of Computer Science Jan 2026 – Mar 2026 · Chicago, IL Honors Theory of Algorithms (CMSC 27230) Algorithms (MPCS 55001)",
+        "Drexel University Sept 2020 – Jun 2025 B.S. in Computer Science & B.A. in Mathematics Philadelphia, PA Teaching Undergraduate Teaching Assistant → Department of Computer Science Jun 2022 – Jun 2024 · Philadelphia, PA Data Structures (CS260) Algorithms & Analysis (CS277) Artificial Intelligence (CS380) Deep Learning (CS615) Awards A* Award Jeffrey L. Popyack Outstanding Undergraduate Teaching/Course Assistant Award Student Teaching Excellence Award"
       ],
       "links": []
     },
@@ -44,29 +44,6 @@
           "label": ""
         }
       ]
-    },
-    {
-      "id": "research",
-      "heading": "research experience",
-      "entries": [
-        "Drexel University Apr 2023 – Sept 2023 Undergraduate Researcher → Department of Computer Science Worked on explainable AI research under Dr. Shahin Jabbari."
-      ],
-      "links": [
-        {
-          "href": "https://shahin-jabbari.github.io/",
-          "text": "Shahin Jabbari",
-          "label": ""
-        }
-      ]
-    },
-    {
-      "id": "teaching",
-      "heading": "teaching experience",
-      "entries": [
-        "University of Chicago Jan 2026 – Mar 2026 Graduate Teaching Assistant & Lecturer → Department of Computer Science Chicago, IL Courses → Honors Theory of Algorithms (CMSC 27230), Algorithms (MPCS 55001)",
-        "Drexel University Jun 2022 – Jun 2024 Undergraduate Teaching Assistant → Department of Computer Science Philadelphia, PA Courses → Data Structures (CS260), Algorithms & Analysis (CS277), Artificial Intelligence (CS380), Deep Learning (CS615)"
-      ],
-      "links": []
     },
     {
       "id": "personal-projects",

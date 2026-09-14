@@ -3,9 +3,10 @@ import { createHero } from "../../src/black-geometry/sculptures/hero.js";
 import { createHarper } from "../../src/black-geometry/sculptures/harper.js";
 import { createDragon } from "../../src/black-geometry/sculptures/dragon.js";
 import { createMembrane } from "../../src/black-geometry/sculptures/membrane.js";
+import { createResolution, createNotes } from "../../src/black-geometry/sculptures/mathematical.js";
 
-const COMPONENTS = ["hero", "harper", "dragon", "membrane", "neutral"];
-const factories = [createHero, createHarper, createDragon, createMembrane, () => createHero(true)];
+const COMPONENTS = ["hero", "harper", "dragon", "membrane", "resolution", "notes"];
+const factories = [createHero, createHarper, createDragon, createMembrane, createResolution, createNotes];
 const xyz = new THREE.Vector3();
 const center = (face) => [0, 1, 2].map(k => (face.p[k] + face.p[k + 3] + face.p[k + 6]) / 3);
 const area = (face) => {
@@ -18,7 +19,7 @@ export function bake(group, name) {
   group.updateMatrixWorld(true);
   const box = new THREE.Box3().setFromObject(group), size = box.getSize(new THREE.Vector3());
   const middle = box.getCenter(new THREE.Vector3());
-  const scale = Math.min(5.9 / size.x, 4.65 / size.y, 5.6 / size.z) * (name === "neutral" ? 0.86 : name === "hero" ? 1.22 : 1);
+  const scale = Math.min(5.9 / size.x, 4.65 / size.y, 5.6 / size.z) * (name === "hero" ? 1.14 : 1);
   const faces = [], paths = [];
   group.traverse(object => {
     if (!object.geometry) return;
@@ -45,7 +46,6 @@ export function bake(group, name) {
         face.p.push(...xyz.fromBufferAttribute(p,id).applyMatrix4(object.matrixWorld).sub(middle).multiplyScalar(scale).toArray());
         for (let k=0;k<3;k++) face.c[k] += ((c && material.vertexColors ? c.array[id*3+k] : 1) * (material.color?.["rgb"[k]] ?? 1))/3;
       }
-      if (name === "hero" || name === "neutral") face.c = face.c.map(v => v * ((i / 3) % 2 ? 0.99 : 0.86));
       if (area(face) > 1e-10) faces.push(face);
     }
   });

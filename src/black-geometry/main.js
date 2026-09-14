@@ -2,7 +2,7 @@ import {
   readPreferences, savePreferences, motionPolicy, qualityPolicy, QUALITY, assessPerformance,
 } from "./preferences.js";
 import {
-  chapterState, cameraPose, createProjectState, startReplay, advanceReplay, chooseShortcut,
+  chapterState, cameraPose, smoothScroll, entryReveal, createProjectState, startReplay, advanceReplay, chooseShortcut,
 } from "./scene-state.js";
 import { createAudio } from "./audio.js";
 
@@ -31,6 +31,8 @@ let frame = 0, syncFrame = 0, lastFrame = 0, time = 0, lastDelta = 0;
 let scrollY = window.scrollY, width = innerWidth, height = innerHeight, layoutDirty = true;
 let ranges = [], pointer = [0, 0], pointerTarget = [0, 0];
 let state = chapterState(0, []), project = createProjectState();
+let visualScrollY = scrollY, visualState = state;
+const reveals = [];
 let lastChapter, lastPoster, lastAudioTarget, settledAudioTarget, settledSince = 0;
 let suppressNextAudio = true;
 let downgraded = false, samples = [], slowWindows = 0, warmup = 0;
@@ -92,6 +94,7 @@ function measure() {
     previous = start;
     return { id: element.dataset.scene, target: element.dataset.target, start, end };
   });
+  visualScrollY = scrollY;
   const next = qualityPolicy(preferences.quality, { width, cores: navigator.hardwareConcurrency, downgraded });
   if (next !== profile) {
     profile = next;
@@ -105,6 +108,13 @@ function measure() {
 }
 function updateScene() {
   state = chapterState(scrollY, ranges);
+  ranges.forEach((range, index) => {
+    const reveal = entryReveal(scrollY, range, ranges[index + 1], height).toFixed(3);
+    if (reveals[index] !== reveal) {
+      sceneElements[index].style.setProperty("--entry-reveal", reveal);
+      reveals[index] = reveal;
+    }
+  });
   if (lastChapter !== state.chapter) {
     lastChapter = state.chapter;
     body.dataset.chapter = state.chapter;
@@ -122,8 +132,8 @@ function updateScene() {
     poster.src = `assets/black-geometry/generated/sculpture-${posterTarget}.svg`;
   }
 }
-function updateAudio(now) {
-  const presented = state.blend > (motion === "full" && !failed ? 0.08 : 0.5) ? state.nextTarget : state.target;
+function updateAudio(now, presentedState = state) {
+  const presented = presentedState.blend > (motion === "full" && !failed ? 0.08 : 0.5) ? presentedState.nextTarget : presentedState.target;
   if (suppressNextAudio) {
     lastAudioTarget = settledAudioTarget = presented;
     settledSince = now;
@@ -136,7 +146,7 @@ function updateAudio(now) {
     settledAudioTarget = undefined;
     settledSince = now;
   }
-  const settled = state.blend < 0.01 && state.target === presented;
+  const settled = presentedState.blend < 0.01 && presentedState.target === presented;
   if (!settled) settledSince = now;
   if (settled && settledAudioTarget !== presented && now - settledSince > 220) {
     audio?.cue("settle", identity(presented));
@@ -156,9 +166,11 @@ function draw(now) {
   lastDelta = delta;
   lastFrame = now;
   time += delta;
-  pointer = pointer.map((value, i) => value + (pointerTarget[i] - value) * Math.min(1, delta * 5));
+  pointer = pointer.map((value, i) => value + (pointerTarget[i] - value) * (1 - Math.exp(-delta * 5)));
   updateScene();
-  updateAudio(now);
+  visualScrollY = smoothScroll(visualScrollY, scrollY, delta, Math.max(650, height * 0.85));
+  visualState = chapterState(visualScrollY, ranges);
+  updateAudio(now, visualState);
   if (state.target === "surface" || (state.nextTarget === "surface" && state.blend > 0.85)) {
     if (!project.seen) project = startReplay(project, motion, false);
     const wasReplaying = project.replaying;
@@ -166,7 +178,7 @@ function draw(now) {
     if (wasReplaying && !project.replaying && project.deliberate) audio?.cue("settle", "surface");
   }
   try {
-    world.render({ state, pose: cameraPose(state, { time, pointer, fullMotion: true }), time, project, scrollY, mobile: width < 800 });
+    world.render({ state: visualState, pose: cameraPose(visualState, { time, pointer, fullMotion: true }), time, project });
     body.dataset.experienceState = "ready";
     if (preferences.quality === "auto" && profile !== "low" && elapsed > 0 && elapsed < 150) {
       warmup++;
@@ -281,7 +293,8 @@ document.querySelectorAll("[data-shortcut]").forEach((button) => on(button, "cli
 on(soundControl, "click", () => {
   audio ||= createAudio({ onChange: soundChanged });
   if (audio.snapshot().wanted || audio.snapshot().enabled) { void audio.off(); return; }
-  lastAudioTarget = state.blend > 0.08 ? state.nextTarget : state.target;
+  const presented = motion === "full" && world && !failed ? visualState : state;
+  lastAudioTarget = presented.blend > 0.08 ? presented.nextTarget : presented.target;
   settledAudioTarget = lastAudioTarget;
   void audio.enable().catch(() => soundChanged({ wanted: false, enabled: false, state: "unavailable" }));
 });
@@ -320,7 +333,7 @@ updateScene();
 updateDisplay();
 if (debug) window.__blackGeometry = {
   snapshot: () => ({
-    motion, preferences: { ...preferences }, profile, state: { ...state }, project: { ...project },
+    motion, preferences: { ...preferences }, profile, state: { ...state }, visualState: { ...visualState }, visualScrollY, project: { ...project },
     time, lastDelta, active, pendingFrame: !!frame, world: world?.snapshot() || null,
     audio: audio?.snapshot() || { initialized: false, enabled: false, wanted: false, state: "uninitialized" },
     ranges: structuredClone(ranges),

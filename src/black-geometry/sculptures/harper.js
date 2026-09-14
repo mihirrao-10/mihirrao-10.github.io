@@ -13,6 +13,8 @@ const COLORS = {
   recess: 0x210d14,
   roof: 0x531b21,
   darkStone: 0x651d24,
+  context: 0x5f2530,
+  contextRoof: 0x33151c,
 };
 
 function polygon(points, Shape = THREE.Shape) {
@@ -207,12 +209,14 @@ export function createHarper() {
 
   // The long reading-room range is the identifying horizontal gesture: seven
   // tall Gothic bays above two smaller rows, with a continuous pitched roof.
-  const hallWidth = 4.72;
+  const hallWidth = 4.72 * 1.10;
+  const hallExpansion = hallWidth - 4.72;
+  const bayPitch = 0.665 * 1.10;
   const hallDepth = 1.28;
   const hallHeight = 2.88;
   const hallWindows = [];
   for (let i = 0; i < 7; i++) {
-    const x = (i - 3) * 0.665;
+    const x = (i - 3) * bayPitch;
     hallWindows.push({ x, y: 1.55, w: 0.45, h: 1.09 });
     for (const y of [0.29, 0.87]) hallWindows.push({ x, y, w: 0.34, h: 0.38, arch: false, fine: true });
   }
@@ -222,7 +226,7 @@ export function createHarper() {
   box(root, hallWidth, 0.14, hallDepth, 0, 0.07, 0, "darkStone");
   cornice(root, hallWidth, hallDepth, 1.36);
   cornice(root, hallWidth, hallDepth, 2.82);
-  for (let i = 0; i <= 7; i++) buttress(root, (i - 3.5) * 0.665, hallDepth / 2, 2.82, true);
+  for (let i = 0; i <= 7; i++) buttress(root, (i - 3.5) * bayPitch, hallDepth / 2, 2.82, true);
   parapet(root, hallWidth, hallDepth / 2 + 0.025, 2.86, 0, 14);
   parapet(root, hallWidth, -hallDepth / 2 - 0.025, 2.86, 0, 14);
   const roofShape = polygon([[-hallDepth / 2 - 0.03, 2.94], [0, 3.46], [hallDepth / 2 + 0.03, 2.94]]);
@@ -233,7 +237,7 @@ export function createHarper() {
 
   for (const side of [-1, 1]) {
     const tower = new THREE.Group();
-    tower.position.x = side * 3.075;
+    tower.position.x = side * (3.075 + hallExpansion / 2);
     root.add(tower);
     const width = 1.51;
     const depth = 1.64;
@@ -283,10 +287,79 @@ export function createHarper() {
     }
   }
 
-  // Small stepped footing establishes a grounded building while remaining part
-  // of the sculpture; no surrounding campus plane or decorative display plinth.
-  box(root, 7.84, 0.12, 1.89, 0, -0.035, 0, "darkStone");
-  box(root, 7.94, 0.055, 1.96, 0, -0.122, 0, "molding");
+  // Small stepped footing follows the widened hall. The unchanged tower
+  // geometry and unlike crowns remain the principal architectural profile.
+  box(root, 7.84 + hallExpansion, 0.12, 1.89, 0, -0.035, 0, "darkStone");
+  box(root, 7.94 + hallExpansion, 0.055, 1.96, 0, -0.122, 0, "molding");
+
+  // Original collegiate context, not a claimed reconstruction of the campus.
+  // Low wings continue the Gothic rhythm behind the central building; the
+  // shared renderer can make them quiet through maroon faces and fine edges.
+  const context = new THREE.Group();
+  context.name = "Stylized collegiate continuation behind Harper";
+  root.add(context);
+  for (const side of [-1, 1]) {
+    const wing = new THREE.Group();
+    wing.position.set(side * 3.85, 0, -0.93);
+    context.add(wing);
+    const wingWidth = 1.35, wingDepth = 1.08, wingHeight = 1.94;
+    const windows = [-0.33, 0.33].map(x => ({ x, y: 0.31, w: 0.38, h: 1.25, fine: true }));
+    facade(wing, wingWidth, wingHeight, windows, 0, wingDepth / 2);
+    facade(wing, wingWidth, wingHeight, [], 0, -wingDepth / 2, Math.PI);
+    facade(wing, wingDepth, wingHeight,
+      [{ x: 0, y: 0.39, w: 0.46, h: 1.10, fine: true }],
+      side * wingWidth / 2, 0, side * Math.PI / 2);
+    cornice(wing, wingWidth, wingDepth, wingHeight - 0.035);
+    for (const x of [-0.60, 0, 0.60]) buttress(wing, x, wingDepth / 2, 1.84, true);
+    parapet(wing, wingWidth, wingDepth / 2, 1.94, 0, 5);
+    const profile = polygon([[-wingDepth / 2, 2.02], [0, 2.42], [wingDepth / 2, 2.02]]);
+    const continuationRoof = mesh(wing, extrude(profile, wingWidth), "contextRoof");
+    continuationRoof.rotation.y = Math.PI / 2;
+    continuationRoof.position.x = -wingWidth / 2;
+    box(wing, wingWidth, 0.045, 0.055, 0, 2.42, 0, "molding");
+    box(wing, wingWidth + 0.08, 0.105, wingDepth + 0.08, 0, -0.055, 0, "darkStone");
+  }
+
+  // A low open arcade is geometrically separate from the tower silhouette.
+  // The shallow court boundary stays within the intended composition bounds.
+  const arcade = new THREE.Group();
+  arcade.position.z = -1.53;
+  context.add(arcade);
+  const arches = [-2.30, -1.15, 0, 1.15, 2.30].map(x => ({ x, y: 0.08, w: 0.72, h: 0.89, fine: true }));
+  const arcadeWall = polygon(rectangle(6.18, 1.13));
+  for (const arch of arches) {
+    const opening = lancet(arch.w, arch.h);
+    arcadeWall.holes.push(polygon(opening.map(([x, y]) => [x + arch.x, y + arch.y]), THREE.Path));
+    ribbon(arcade, lancet(arch.w + 0.075, arch.h + 0.035), opening,
+      arch.x, arch.y, 0, "molding", 0.025);
+  }
+  mesh(arcade, extrude(arcadeWall, 0.15), "stone", [0, 0, -0.15]);
+  box(arcade, 6.25, 0.07, 0.27, 0, 1.16, -0.05, "molding");
+  box(arcade, 6.26, 0.07, 0.30, 0, -0.08, -0.05, "darkStone");
+  context.traverse(object => {
+    if (!object.isMesh) return;
+    if (object.material === materials.stone) object.material = materials.context;
+    object.userData.context = true;
+  });
+
+  function contextLine(name, points) {
+    const geometry = new THREE.BufferGeometry().setFromPoints(points.map(point => new THREE.Vector3(...point)));
+    const line = new THREE.Line(geometry, new THREE.LineBasicMaterial({ color: 0x995d58, transparent: true, opacity: 0.35 }));
+    line.name = name;
+    line.userData = { kind: "context", source: "Original stylized collegiate setting, not campus survey data" };
+    root.add(line);
+  }
+  contextLine("Shallow courtyard boundary", [
+    [-4.56, -0.15, 0.98], [-4.56, -0.15, -1.66],
+    [4.56, -0.15, -1.66], [4.56, -0.15, 0.98],
+  ]);
+  contextLine("Rear arcade cornice outline", [[-3.16, 1.21, -1.59], [3.16, 1.21, -1.59]]);
+  for (const side of [-1, 1]) {
+    const x = side * 4.50;
+    contextLine(`${side < 0 ? "West" : "East"} continuation roof outline`, [
+      [x, 0, -1.48], [x, 2.04, -1.48], [x, 2.44, -0.93], [x, 2.04, -0.39],
+    ]);
+  }
 
   // A slightly elevated three-quarter view preserves the long facade, shows
   // both roofs and the return wall, and keeps the unequal crowns distinct.
@@ -294,6 +367,7 @@ export function createHarper() {
   root.userData.sculpture = "harper";
   root.userData.brandReference = "#800000";
   root.userData.feature = "seven-bay hall, twin Gothic towers, unlike lantern crowns";
+  root.userData.context = "Original Gothic continuation wings and shallow collegiate court; not survey-accurate campus geometry";
   root.updateMatrixWorld(true);
   return root;
 }

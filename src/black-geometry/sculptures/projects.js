@@ -115,11 +115,13 @@ export function createSurface() {
   geometry.setAttribute("normal", new THREE.BufferAttribute(surface.normals.slice(), 3));
   geometry.setIndex(new THREE.BufferAttribute(surface.indices.slice(), 1));
   const colors = new Float32Array(surface.positions.length);
-  const low = new THREE.Color("#759d99"), high = new THREE.Color("#e7dec5"), color = new THREE.Color();
+  const low = new THREE.Color("#176aa3"), mid = new THREE.Color("#16a6a2"), high = new THREE.Color("#70dec4"), color = new THREE.Color();
   let maximumDistance = 0;
   for (const distance of surface.distance) maximumDistance = Math.max(maximumDistance, distance);
   for (let i = 0; i < surface.distance.length; i++) {
-    color.copy(low).lerp(high, Math.max(0, surface.distance[i]) / maximumDistance);
+    const t = Math.max(0, surface.distance[i]) / maximumDistance;
+    if (t < 0.55) color.copy(low).lerp(mid, t / 0.55);
+    else color.copy(mid).lerp(high, (t - 0.55) / 0.45);
     color.toArray(colors, i * 3);
   }
   geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
@@ -148,7 +150,9 @@ export function createCongestion() {
   group.name = "exact-rosenthal-potential-landscape";
   const landscape = congestion.potentialLandscape;
   const positions = [], colors = [];
-  const low = new THREE.Color("#70a899"), mid = new THREE.Color("#c5b884"), high = new THREE.Color("#d77c4f");
+  // A brighter red interpretation of the source visualization's copper/red
+  // potential scale; the exact height values and all state geometry stay put.
+  const low = new THREE.Color("#841d28"), mid = new THREE.Color("#e54338"), high = new THREE.Color("#ff735c");
   const color = new THREE.Color();
   let maxHeight = 0;
   for (const vertex of landscape.vertices) maxHeight = Math.max(maxHeight, vertex.displayHeightOriginal);

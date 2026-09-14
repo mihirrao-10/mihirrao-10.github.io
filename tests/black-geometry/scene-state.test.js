@@ -10,6 +10,8 @@ import {
   startReplay,
   advanceReplay,
   chooseShortcut,
+  smoothScroll,
+  entryReveal,
 } from "../../src/black-geometry/scene-state.js";
 import {
   surfaceData,
@@ -17,10 +19,10 @@ import {
   pathPoint,
   TAU,
 } from "../../src/black-geometry/geometry.js";
-const starts = [0, 710, 1095, 1510, 1950, 2390, 2820, 3270, 3775, 4420, 5100, 6490];
-const ranges = CHAPTERS.map((id, index) => ({ id, start: starts[index], end: 6650 }));
+const starts = [0, 910, 1895, 3010, 3850, 4675, 5320, 6100, 7490];
+const ranges = CHAPTERS.map((id, index) => ({ id, start: starts[index], end: 7650 }));
 test("individual entries resolve the correct institution, project and recurring identity", () => {
-  const targets = ["hero", "harper", "dragon", "membrane", "neutral", "dragon", "harper", "dragon", "surface", "congestion", "neutral", "neutral"];
+  const targets = ["hero", "harper", "dragon", "membrane", "resolution", "surface", "congestion", "notes", "notes"];
   assert.equal(chapterState(-100, ranges).chapter, "hero");
   for (let index = 0; index < ranges.length; index++) {
     const state = chapterState(starts[index], ranges);
@@ -33,8 +35,8 @@ test("individual entries resolve the correct institution, project and recurring 
   assert.equal(chapterState(99999, ranges).progress, 1);
   assert.equal(chapterState(NaN, []).target, "hero");
   assert.equal(chapterState(1095, ranges).section, "education");
-  assert.equal(chapterState(1510, ranges).section, "experience");
-  assert.equal(chapterState(3775, ranges).section, "personal-projects");
+  assert.equal(chapterState(3010, ranges).section, "experience");
+  assert.equal(chapterState(4675, ranges).section, "personal-projects");
 });
 test("measured unequal entry intervals have substantial holds and continuous reversible morphs", () => {
   for (let i = 0; i < ranges.length - 1; i++) {
@@ -76,6 +78,39 @@ test("reverse, fast jumps and restored positions reconstruct identical finite st
   assert.deepEqual(cameraPose(state, { pointer: [1, -1] }), cameraPose(state, { pointer: [999, -999] }));
   // Mobile retains the authored sculpture size; composition happens in its viewport.
   assert.equal(cameraPose(state, { mobile: true, width: 320 })[6], cameraPose(state)[6]);
+});
+test("visual scroll damping is refresh-rate independent, reversible and anchor-safe", () => {
+  let sixty = 0, thirty = 0;
+  for (let i=0;i<60;i++) sixty=smoothScroll(sixty,500,1/60);
+  for (let i=0;i<30;i++) thirty=smoothScroll(thirty,500,1/30);
+  assert.ok(Math.abs(sixty-thirty)<1e-8);
+  assert.ok(sixty>499 && sixty<500);
+  const reversed=smoothScroll(sixty,100,1/60);
+  assert.ok(reversed<sixty && reversed>100);
+  assert.equal(smoothScroll(0,4000,1/60),4000);
+  assert.equal(smoothScroll(NaN,1200,0),1200);
+  assert.equal(smoothScroll(100,200,0),100);
+});
+test("entry fades arrive at full reading opacity and retrace on upward scrolling", () => {
+  const a=ranges[1],b=ranges[2],middle=a.start+(b.start-a.start)*.5;
+  assert.equal(entryReveal(a.start,a,b,900),1);
+  assert.equal(entryReveal(middle,a,b,900),1);
+  assert.ok(entryReveal(b.start-20,a,b,900)<.1);
+  assert.equal(entryReveal(a.start,a,b,900),1);
+  assert.equal(entryReveal(a.start-900,a,b,900),0);
+  assert.equal(entryReveal(9000,ranges.at(-1),undefined,900),1);
+});
+test("every full-motion sculpture follows a bounded, continuous camera ellipse", () => {
+  for (const range of ranges) {
+    const state=chapterState(range.start,ranges);
+    const a=cameraPose(state,{time:0}),b=cameraPose(state,{time:12*Math.PI/2});
+    assert.ok(Math.abs(a[4]-b[4])>.25);
+    assert.ok(Math.abs(a[3]-b[3])>.05);
+    for(let time=0;time<90;time+=.5){
+      const p=cameraPose(state,{time});
+      assert.ok(Math.abs(p[3])<.8 && Math.abs(p[4])<.34);
+    }
+  }
 });
 test("replay restarts, pauses outside updates, finishes, and is immediate with reduced/off motion", () => {
   let state = startReplay(createProjectState(), "full");

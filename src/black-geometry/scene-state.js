@@ -3,14 +3,11 @@ export const ENTRIES = Object.freeze([
   { id: "education-uchicago", target: "harper", section: "education" },
   { id: "education-drexel", target: "dragon", section: "education" },
   { id: "experience-mathworks", target: "membrane", section: "experience" },
-  { id: "experience-resolution", target: "neutral", section: "experience" },
-  { id: "research-drexel", target: "dragon", section: "research" },
-  { id: "teaching-uchicago", target: "harper", section: "teaching" },
-  { id: "teaching-drexel", target: "dragon", section: "teaching" },
+  { id: "experience-resolution", target: "resolution", section: "experience" },
   { id: "project-surface", target: "surface", section: "personal-projects" },
   { id: "project-congestion", target: "congestion", section: "personal-projects" },
-  { id: "notes", target: "neutral", section: "notes" },
-  { id: "contact", target: "neutral", section: "contact" },
+  { id: "notes", target: "notes", section: "notes" },
+  { id: "contact", target: "notes", section: "contact" },
 ]);
 export const CHAPTERS = ENTRIES.map(({ id }) => id);
 export const clamp = (x, lo = 0, hi = 1) =>
@@ -18,13 +15,30 @@ export const clamp = (x, lo = 0, hi = 1) =>
 export const mix = (a, b, t) => a + (b - a) * clamp(t);
 export const ease = (t) => {
   const x = clamp(t);
-  return x * x * (3 - 2 * x);
+  return x * x * x * (x * (x * 6 - 15) + 10);
 };
 const entryFor = (id) => ENTRIES.find((entry) => entry.id === id) || ENTRIES[0];
 
+// Smooth only the artwork's sampled scroll position. Native scrolling, text and
+// anchors stay immediate. Exponential damping is independent of refresh rate;
+// long jumps and restored anchors resolve directly instead of touring the page.
+export function smoothScroll(current, target, delta, snapDistance = 700) {
+  if (!Number.isFinite(current) || Math.abs(target - current) > snapDistance) return target;
+  if (Math.abs(target - current) < 0.1) return target;
+  return mix(current, target, 1 - Math.exp(-Math.max(0, delta) / 0.14));
+}
+
+// These intervals are cached from DOM layout. The reading position stays fully
+// visible, with an arrival fade and a gentle departure in the inter-entry gap.
+export function entryReveal(y, range, next, viewportHeight) {
+  const arrival = ease((y - range.start + viewportHeight * 0.42) / (viewportHeight * 0.42));
+  const departure = next ? 1 - ease(((y - range.start) / Math.max(1, next.start - range.start) - 0.65) / 0.33) : 1;
+  return arrival * departure;
+}
+
 // Starts are measured from individual DOM entries relative to the reading focus.
-// Holding the first 58% gives every identity a readable settled interval. Only
-// the final 42% transports material toward the next entry; no scroll history is
+// Holding the first half gives every identity a readable settled interval. The
+// second half transports material toward the next entry; no scroll history is
 // involved, so reversals, interrupted transitions and restored positions agree.
 export function chapterState(scrollY, ranges) {
   const y = Math.max(0, Number.isFinite(scrollY) ? scrollY : 0);
@@ -50,18 +64,19 @@ export function chapterState(scrollY, ranges) {
     index,
     next,
     progress,
-    blend: target === nextTarget ? 0 : ease((progress - 0.58) / 0.42),
+    blend: target === nextTarget ? 0 : ease((progress - 0.5) / 0.5),
   };
 }
 
 // The authored geometry already carries its recognition-preserving viewpoint.
 // These are small camera changes around that view, not a second model rotation.
 const TARGET_POSES = {
-  hero: [0.5, 0.5, 9, 0, 0, 0, 1],
+  hero: [0.5, 0.5, 9, 0.7, 0, 0, 1],
   harper: [0.5, 0.5, 9, 0, 0, 0, 1],
   dragon: [0.5, 0.5, 9, 0, 0.015, 0, 1],
   membrane: [0.5, 0.5, 9, 0, -0.025, 0, 1],
-  neutral: [0.5, 0.5, 9, 0.018, 0.025, 0, 0.94],
+  resolution: [0.5, 0.5, 9, 0, 0, 0, 1],
+  notes: [0.5, 0.5, 9, 0, 0, 0, 1],
   surface: [0.5, 0.5, 9, 0, 0, 0, 1],
   congestion: [0.5, 0.5, 9, 0, 0, 0, 1],
 };
@@ -71,15 +86,12 @@ export function cameraPose(state, { time = 0, pointer = [0, 0], fullMotion = tru
   const b = TARGET_POSES[state.nextTarget] || a;
   const pose = a.map((value, i) => mix(value, b[i], state.blend));
   if (fullMotion) {
-    const idle = (target) => {
-      const hero = target === "hero";
-      const amplitude = hero ? 0.12 : target === "neutral" ? 0.065 : 0.021;
-      return [Math.sin(time / (hero ? 3.8 : 5.7)) * amplitude * 0.5,
-        Math.sin(time / (hero ? 5.1 : 7.3)) * amplitude];
-    };
-    const from = idle(state.target), to = idle(state.nextTarget);
-    pose[3] += mix(from[0], to[0], state.blend) + clamp(pointer[1], -1, 1) * 0.014;
-    pose[4] += mix(from[1], to[1], state.blend) + clamp(pointer[0], -1, 1) * 0.023;
+    // A slow ellipse in azimuth/elevation moves the camera around a fixed
+    // center. Shared phase keeps the orbit continuous through every identity.
+    const phase = time / 12;
+    const elevationRange = mix(state.target === "hero" ? 0.06 : 0.12, state.nextTarget === "hero" ? 0.06 : 0.12, state.blend);
+    pose[3] += Math.sin(phase) * elevationRange + clamp(pointer[1], -1, 1) * 0.025;
+    pose[4] += Math.cos(phase) * 0.3 + clamp(pointer[0], -1, 1) * 0.04;
   }
   return pose;
 }

@@ -27,10 +27,9 @@ async function ready(page, url = "/?bg-debug") {
 const identities = [
   ["hero", "hero"], ["education-uchicago", "harper"],
   ["education-drexel", "dragon"], ["experience-mathworks", "membrane"],
-  ["experience-resolution", "neutral"], ["research-drexel", "dragon"],
-  ["teaching-uchicago", "harper"], ["teaching-drexel", "dragon"],
+  ["experience-resolution", "resolution"],
   ["project-surface", "surface"], ["project-congestion", "congestion"],
-  ["notes", "neutral"], ["contact", "neutral"],
+  ["notes", "notes"], ["contact", "notes"],
 ];
 async function jump(page, id) {
   const chapter = id === "top" ? "hero" : id;
@@ -44,6 +43,19 @@ async function jump(page, id) {
   }, chapter);
   await expect.poll(async () => (await snapshot(page)).state.chapter).toBe(chapter);
   await expect.poll(async () => (await snapshot(page)).state.blend).toBe(0);
+  // Native content follows scroll immediately; the rendered sculpture eases
+  // toward that position. Static/failure modes have no active visual state.
+  const current = await snapshot(page);
+  if (current.motion === "full" && current.world) {
+    await expect.poll(async () => {
+      const { visualState, world } = await snapshot(page);
+      return {
+        chapter: visualState.chapter,
+        target: world.target,
+        blend: world.blend,
+      };
+    }).toEqual({ chapter, target: current.state.target, blend: 0 });
+  }
 }
 function assertActiveGeometry(state, expectedTarget) {
   expect(state.world.target).toBe(expectedTarget);
@@ -76,6 +88,17 @@ async function audioContextCapture(page) {
             nativeConnect.call(analyser, silentTap);
             nativeConnect.call(silentTap, context.destination);
             context.__outputAnalyser = analyser;
+            // Observe from graph creation, before the confirmation plays. A
+            // post-click browser round trip can outlast the short sound under
+            // GPU load, so retain the measured peak rather than sampling late.
+            const samples = new Float32Array(analyser.fftSize);
+            context.__outputPeak = 0;
+            const observe = () => {
+              analyser.getFloatTimeDomainData(samples);
+              for (const sample of samples) context.__outputPeak = Math.max(context.__outputPeak, Math.abs(sample));
+              if (context.state !== "closed" && context.currentTime < 1) requestAnimationFrame(observe);
+            };
+            requestAnimationFrame(observe);
           }
           return nativeConnect.call(gain, destination, ...args);
         };
@@ -92,7 +115,7 @@ async function display(page) {
 async function content(page) {
   await expect(page.locator("h1")).toHaveText(baseline.name);
   await expect(page.locator(".hero-title")).toHaveText(baseline.title);
-  await expect(page.locator("main > section")).toHaveCount(6);
+  await expect(page.locator("main > section")).toHaveCount(4);
   for (const section of baseline.sections) {
     await expect(page.locator(`#${section.id} h2`)).toHaveText(section.heading);
     const entries = await page
@@ -197,6 +220,50 @@ test("individual entries settle correctly through forward and reverse scrolling"
   expect(new Set(hashes.values()).size).toBe(hashes.size);
 });
 
+
+test("education consolidates teaching and awards with clear sections, neutral text and reversible content fading", async ({ page }) => {
+  await ready(page);
+  await expect(page.locator("#research, #teaching")).toHaveCount(0);
+  await expect(page.locator(".index-links a")).toHaveCount(4);
+  await expect(page.locator("#education-uchicago .course-list li")).toHaveCount(2);
+  await expect(page.locator("#education-drexel .course-list li")).toHaveCount(4);
+  await expect(page.locator("#education-drexel .awards-list li")).toHaveText([
+    "A* Award",
+    "Jeffrey L. Popyack Outstanding Undergraduate Teaching/Course Assistant Award",
+    "Student Teaching Excellence Award",
+  ]);
+  await jump(page, "education-uchicago");
+  const composition = await page.evaluate(() => {
+    const chicago = document.querySelector("#education-uchicago .teaching-record").getBoundingClientRect();
+    const drexel = document.querySelector("#education-drexel .entry-header").getBoundingClientRect();
+    return {
+      gap: drexel.top - chicago.bottom,
+      headingSize: parseFloat(getComputedStyle(document.querySelector("#education h2")).fontSize),
+      color: getComputedStyle(document.body).color,
+    };
+  });
+  expect(composition.gap).toBeGreaterThan(100);
+  expect(composition.headingSize).toBeGreaterThan(25);
+  const channels = composition.color.match(/[\d.]+/g).slice(0, 3).map(Number);
+  expect(Math.max(...channels) - Math.min(...channels)).toBeLessThanOrEqual(2);
+  expect(Math.min(...channels)).toBeGreaterThan(220);
+  const entry = page.locator("#education-uchicago");
+  const opacity = () => entry.evaluate((element) => Number(getComputedStyle(element).opacity));
+  await expect.poll(opacity).toBeGreaterThanOrEqual(0.95);
+  await page.evaluate(() => {
+    const ranges = window.__blackGeometry.snapshot().ranges;
+    const index = ranges.findIndex((range) => range.id === "education-uchicago");
+    scrollTo(0, ranges[index].start + (ranges[index + 1].start - ranges[index].start) * 0.94);
+  });
+  await expect.poll(opacity).toBeLessThan(0.87);
+  expect(await opacity()).toBeGreaterThanOrEqual(0.3);
+  await jump(page, "education-uchicago");
+  await expect.poll(opacity).toBeGreaterThanOrEqual(0.95);
+  await display(page);
+  await page.getByLabel("Motion", { exact: true }).selectOption("off");
+  await expect.poll(opacity).toBe(1);
+});
+
 test("entry positions follow DOM layout and core morphs are finite, reversible and interruptible", async ({ page }, info) => {
   test.setTimeout(45000);
   await ready(page);
@@ -222,14 +289,20 @@ test("entry positions follow DOM layout and core morphs are finite, reversible a
       }, { id, progress });
       await expect.poll(async () => (await snapshot(page)).state.chapter).toBe(id);
       await expect.poll(async () => Math.abs((await snapshot(page)).state.progress - progress)).toBeLessThan(0.002);
-      await expect.poll(async () => (await snapshot(page)).world.blend).toBeGreaterThan(0);
+      await expect.poll(async () => {
+        const { state, visualState, world } = await snapshot(page);
+        return visualState.chapter === id && world.target === target && world.nextTarget === nextTarget
+          ? Math.abs(world.blend - state.blend)
+          : Infinity;
+      }).toBeLessThan(0.00001);
       const current = await snapshot(page);
       assertActiveGeometry(current, target);
       expect(current.world.nextTarget).toBe(nextTarget);
+      expect(current.world.blend).toBeGreaterThan(0);
       expect(current.world.blend).toBeLessThan(1);
       if (progress === 0.79) {
-        if (forward !== undefined) expect(current.state.blend).toBeCloseTo(forward, 4);
-        else forward = current.state.blend;
+        if (forward !== undefined) expect(current.world.blend).toBeCloseTo(forward, 4);
+        else forward = current.world.blend;
         await page.screenshot({ path: `${output}/${info.project.name}-morph-${id}-${progress}.png` });
       }
     }
@@ -248,6 +321,7 @@ for (const width of [1440, 390])
       await expect.poll(async () => (await snapshot(page)).state.chapter).toBe(id);
       await expect.poll(async () => (await snapshot(page)).world.target).toBe(target);
       await expect.poll(async () => (await snapshot(page)).state.blend).toBe(0);
+      await expect.poll(async () => (await snapshot(page)).world.blend).toBe(0);
       assertActiveGeometry(await snapshot(page), target);
     }
     await page.setViewportSize({ width: width === 390 ? 430 : 1280, height: 820 });
@@ -342,19 +416,9 @@ test("sound confirmation produces nonzero bounded output and suspension retains 
   await ready(page);
   await page.locator("#sound-toggle").click();
   await expect(page.locator("#sound-toggle")).toHaveAttribute("aria-pressed", "true");
-  const peak = await page.evaluate(async () => {
-    const analyser = window.__audioContexts[0].__outputAnalyser;
-    if (!analyser) throw new Error("No output tap captured");
-    const samples = new Float32Array(analyser.fftSize);
-    let peak = 0;
-    const until = performance.now() + 450;
-    while (performance.now() < until) {
-      analyser.getFloatTimeDomainData(samples);
-      for (const sample of samples) peak = Math.max(peak, Math.abs(sample));
-      await new Promise(requestAnimationFrame);
-    }
-    return peak;
-  });
+  await expect.poll(() => page.evaluate(() => window.__audioContexts[0].__outputPeak)).toBeGreaterThan(0.001);
+  await expect.poll(() => page.evaluate(() => window.__audioContexts[0].currentTime)).toBeGreaterThan(0.6);
+  const peak = await page.evaluate(() => window.__audioContexts[0].__outputPeak);
   expect(peak).toBeGreaterThan(0.001);
   expect(peak).toBeLessThan(0.9);
   await page.evaluate(() => window.__audioContexts[0].suspend());
@@ -511,13 +575,13 @@ test("keyboard skip, index, Escape, native hashes/back and ordinary page scrolli
   await page.locator("#section-index summary").focus();
   await page.keyboard.press("Enter");
   await page
-    .getByRole("link", { name: "Research experience", exact: true })
+    .getByRole("link", { name: "Industry experience", exact: true })
     .focus();
   await page.keyboard.press("Enter");
-  expect(await page.evaluate(() => location.hash)).toBe("#research");
+  expect(await page.evaluate(() => location.hash)).toBe("#experience");
   await expect(page.locator("#section-index")).not.toHaveAttribute("open");
   const top = await page
-    .locator("#research h2")
+    .locator("#experience h2")
     .evaluate((el) => el.getBoundingClientRect().top);
   expect(top).toBeGreaterThan(72);
   await display(page);
@@ -543,6 +607,7 @@ for (const [width, height] of [
   [320, 740],
   [390, 844],
   [768, 1024],
+  [740, 390],
   [1024, 768],
   [1440, 900],
   [1920, 1080],
@@ -571,9 +636,10 @@ for (const [width, height] of [
       const target = identities.find(([entry]) => entry === (id === "top" ? "hero" : id))[1];
       assertActiveGeometry(await snapshot(page), target);
       const stage = await page.locator(".world").boundingBox();
-      expect(stage.width).toBeGreaterThan(width < 800 ? width * 0.9 : width * 0.4);
-      expect(stage.height).toBeGreaterThan(width < 800 ? 150 : height * 0.75);
-      if (width < 800 && id !== "top" && id !== "notes") {
+      const stacked = width < 800 && !(width >= 600 && height <= 500);
+      expect(stage.width).toBeGreaterThan(stacked ? width * 0.9 : width * 0.4);
+      expect(stage.height).toBeGreaterThan(stacked ? 150 : height * 0.75);
+      if (stacked && id !== "top" && id !== "notes") {
         const title = await page.locator(`#${id} h3`).boundingBox();
         expect(title.y).toBeGreaterThanOrEqual(stage.y + stage.height);
       }
@@ -632,6 +698,9 @@ for (const mode of ["module", "asset", "renderer", "shader", "context"])
       path: `${output}/${info.project.name}-failure-${mode}.png`,
     });
     await jump(page, "project-congestion");
+    expect(await page.locator("[data-scene]").evaluateAll((entries) =>
+      entries.every((entry) => getComputedStyle(entry).opacity === "1"),
+    )).toBe(true);
     await page
       .getByRole("button", { name: "Shortcut closed", exact: true })
       .click();
@@ -649,7 +718,7 @@ test("returning from the tracker restores the entry without replaying queued sou
   page,
 }) => {
   await ready(page);
-  await jump(page, "teaching-uchicago");
+  await jump(page, "education-drexel");
   await page.waitForTimeout(100);
   const before = await page.evaluate(() => scrollY);
   await page.getByRole("button", { name: "Sound off", exact: true }).click();
@@ -665,7 +734,7 @@ test("returning from the tracker restores the entry without replaying queued sou
   );
   await expect
     .poll(async () => (await snapshot(page)).state.chapter)
-    .toBe("teaching-uchicago");
+    .toBe("education-drexel");
   expect(Math.abs((await page.evaluate(() => scrollY)) - before)).toBeLessThan(
     5,
   );

@@ -78,10 +78,13 @@ missing or extra links.
 
 The homepage remains real HTML with STIX Two Text, native anchor navigation, and
 all biography/project/note content available without JavaScript. Its central
-faceted sculpture changes with individual entries: an original ivory Enneper
-surface, Harper Memorial Library in maroon, an original navy-and-gold dragon,
-and an independently reconstructed MATLAB membrane. A connected folded scaffold
-organizes the same mesh between the different target topologies.
+faceted sculpture changes with individual entries: a white-and-green three-crest
+surface with a computed red gradient-ascent trace, wider translucent Harper
+Memorial Library in maroon, an original navy-and-gold dragon, an independently
+reconstructed MATLAB membrane, a red-and-blue trefoil ribbon for Resolution
+Life, and a square-root Riemann-surface projection for notes. A connected folded
+scaffold organizes the same mesh between the different target topologies.
+Teaching courses and awards sit within the corresponding Education entries.
 
 The two project sculptures use prepared results from the actual studies: the
 complete genus-two mesh and computed Heat Method route, and the N=100 Rosenthal
@@ -103,7 +106,10 @@ synthesized cues. A compressor and bounded envelopes control output. Hidden
 pages are silent; suspended context state and the retained opt-in are reported
 separately, without queued transition bursts. Motion and sound are independent.
 
-One Three.js context renders one transported mesh, plus the active project path.
+One Three.js context renders one transported mesh, plus the visible paths and
+context outlines. A slow camera ellipse keeps each sculpture centered. Native
+scrolling stays immediate while the artwork follows with 140ms exponential
+damping; quintic transitions and gentle opacity fades work in both directions.
 Expensive target authoring, spatial correspondence and subdivision happen at
 build time. The browser fetches a prepared compressed packet and retains only
 the active source/destination and shared folded scaffold as geometry buffers.
@@ -150,6 +156,8 @@ For local diagnostics, append `?bg-debug` to the homepage. The read-only
 draw calls, quality and audio lifecycle. It does not change rendering or expose
 private data. Browser tests use this observation hook and real production code.
 
-See [implementation log](docs/black-geometry/implementation-log.md) and
-[acceptance report](docs/black-geometry/acceptance-report.md) for historical first-pass evidence. The current [revision report](docs/black-geometry/revision-report.md)
-records the second-pass implementation, validation, limitations, and publication.
+See the [refinement report](docs/black-geometry/refinement-report.md) for the current
+visual and content revision. The [implementation log](docs/black-geometry/implementation-log.md),
+[acceptance report](docs/black-geometry/acceptance-report.md), and
+[revision report](docs/black-geometry/revision-report.md) retain historical evidence
+from the earlier passes.
