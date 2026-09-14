@@ -5,18 +5,29 @@
   "type": "module",
   "description": "Static personal website and New Graduate Job Tracker data pipeline",
   "engines": {
-    "node": ">=20"
+    "node": ">=20.19"
   },
   "scripts": {
-    "build": "node tools/job-tracker/build.js",
-    "test": "node --test tests/job-tracker/*.test.js",
+    "build": "npm run build:experience && node tools/job-tracker/build.js",
+    "test": "node --test tests/job-tracker/*.test.js tests/black-geometry/*.test.js",
     "update:jobs": "node tools/job-tracker/update.js",
     "update:jobs:offline": "node tools/job-tracker/update.js --offline",
     "validate": "node tools/job-tracker/validate-data.js",
-    "check": "npm run validate && npm test && npm run build"
+    "check": "npm run validate && npm test && npm run build && npm run verify:experience && npm run verify:site",
+    "build:experience": "node tools/black-geometry/build.js",
+    "verify:experience": "node tools/black-geometry/build.js --check",
+    "test:experience": "node --test tests/black-geometry/*.test.js",
+    "test:browser": "PLAYWRIGHT_BROWSERS_PATH=./node_modules/.cache/ms-playwright playwright test",
+    "verify:site": "node tools/black-geometry/verify-site.js"
   },
   "dependencies": {
     "ajv": "^8.17.1",
-    "ajv-formats": "^3.0.1"
+    "ajv-formats": "^3.0.1",
+    "three": "0.186.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.63.0",
+    "esbuild": "0.28.2",
+    "parse5": "8.0.1"
   }
 }

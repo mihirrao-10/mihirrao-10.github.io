@@ -15,337 +15,72 @@
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
     rel="stylesheet"
   />
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    html {
-      background: #080808;
-      font-size: 17px;
-      scroll-behavior: smooth;
-    }
-
-    body {
-      margin: 0;
-      background: #080808;
-      color: #d7d7d7;
-      font-family: "STIX Two Text", "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-      line-height: 1.5;
-    }
-
-    a,
-    a:visited {
-      color: #78b7e8;
-      text-decoration: none;
-    }
-
-    a:hover,
-    a:focus-visible {
-      color: #a8d7f4;
-      text-shadow: 0.012em 0 currentColor;
-    }
-
-    .hero {
-      position: relative;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 2rem;
-    }
-
-    .hero-name {
-      font-size: clamp(3rem, 10vw, 7rem);
-      color: #f5f5f5;
-      font-weight: 600;
-      letter-spacing: -0.03em;
-      margin: 0;
-      line-height: 1;
-    }
-
-    .hero-title {
-      margin: 1.25rem 0 0;
-      font-size: clamp(1rem, 2vw, 1.25rem);
-      color: #d7d7d7;
-      font-weight: 400;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-    }
-
-    .hero-links {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 1.75rem;
-      margin-top: 1.4rem;
-    }
-
-    a.hero-link,
-    a.hero-link:visited,
-    a.hero-link:hover,
-    a.hero-link:focus-visible {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 1.5rem;
-      height: 1.5rem;
-      color: #f5f5f5 !important;
-      font-size: 1.5rem;
-    }
-
-    .hero-link i {
-      color: inherit !important;
-    }
-
-    .hero-link:hover,
-    .hero-link:focus-visible {
-      opacity: 0.75;
-    }
-
-    .scroll-cue {
-      position: absolute;
-      bottom: 2rem;
-      left: 50%;
-      width: 1.1rem;
-      height: 0.7rem;
-      opacity: 0.85;
-      pointer-events: none;
-      transform: translateX(-50%);
-      transition: opacity 180ms ease;
-    }
-
-    .scroll-cue::before,
-    .scroll-cue::after {
-      position: absolute;
-      bottom: 0;
-      width: 0.78rem;
-      height: 1px;
-      background: #f5f5f5;
-      content: "";
-    }
-
-    .scroll-cue::before {
-      right: 50%;
-      transform: rotate(-45deg);
-      transform-origin: right center;
-    }
-
-    .scroll-cue::after {
-      left: 50%;
-      transform: rotate(45deg);
-      transform-origin: left center;
-    }
-
-    .scroll-cue.is-hidden {
-      opacity: 0;
-    }
-
-    main {
-      max-width: 720px;
-      margin: 0 auto;
-      padding: 0 2rem 8rem;
-    }
-
-    section {
-      padding: 4rem 0;
-    }
-
-    main > section + section {
-      position: relative;
-    }
-
-    main > section + section::before {
-      position: absolute;
-      top: 0;
-      left: 50%;
-      width: min(16rem, 55vw);
-      height: 1px;
-      background: #282828;
-      content: "";
-      transform: translateX(-50%);
-    }
-
-    .section-heading {
-      font-size: 0.85rem;
-      color: #f5f5f5;
-      font-weight: 600;
-      letter-spacing: 0.3em;
-      text-transform: uppercase;
-      margin: 0 0 2.5rem;
-    }
-
-    .entry {
-      margin-bottom: 2.5rem;
-    }
-
-    .entry:last-child {
-      margin-bottom: 0;
-    }
-
-    .entry-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      gap: 1rem;
-      margin-bottom: 0.25rem;
-    }
-
-    .entry-title {
-      font-size: 1.25rem;
-      font-weight: 600;
-      margin: 0;
-    }
-
-    .entry-dates {
-      font-size: 0.9rem;
-      font-weight: 400;
-      white-space: nowrap;
-      color: #d7d7d7;
-    }
-
-    .entry-subheader {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      gap: 1rem;
-      margin-bottom: 0.75rem;
-    }
-
-    .entry-role {
-      font-size: 1rem;
-      font-weight: 400;
-      margin: 0;
-    }
-
-    .entry-location {
-      font-size: 0.9rem;
-      color: #b5b5b5;
-      font-weight: 400;
-      white-space: nowrap;
-    }
-
-    .entry ul {
-      margin: 0.5rem 0 0;
-      padding-left: 1.1rem;
-      font-weight: 400;
-    }
-
-    .entry ul li {
-      margin-bottom: 0.35rem;
-    }
-
-    .entry-detail {
-      margin: 0.5rem 0 0;
-      font-size: 0.95rem;
-      font-weight: 400;
-      line-height: 1.6;
-    }
-
-    .entry-detail strong {
-      font-weight: 600;
-    }
-
-    .notes-list {
-      list-style: none;
-      margin: 0.9rem 0 0;
-      padding: 0;
-      font-size: 0.95rem;
-      font-weight: 300;
-    }
-
-    .notes-list li {
-      margin-bottom: 0.45rem;
-    }
-
-    .notes-list a {
-      color: #78b7e8;
-    }
-
-    .notes-category {
-      margin: 1.4rem 0 0;
-      font-size: 0.78rem;
-      font-weight: 600;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-    }
-
-    .notes-category:first-of-type {
-      margin-top: 1.1rem;
-    }
-
-    .entry-honor {
-      margin: 0.25rem 0 0;
-      font-size: 0.9rem;
-      font-weight: 500;
-      font-style: italic;
-    }
-
-    .entry-title a {
-      color: #78b7e8;
-    }
-
-    .entry-title a.project-link {
-      color: #78b7e8;
-    }
-
-    .project-tags {
-      margin: 0.7rem 0 0;
-      color: #969696;
-      font-size: 0.76rem;
-      font-weight: 500;
-      letter-spacing: 0.04em;
-    }
-
-    a:not(.hero-link) {
-      transition: color 150ms ease, text-shadow 150ms ease;
-    }
-
-    a:not(.hero-link):hover,
-    a:not(.hero-link):focus-visible {
-      color: #a8d7f4;
-      text-shadow: 0.012em 0 currentColor;
-    }
-
-    @media (max-width: 600px) {
-      .entry-header,
-      .entry-subheader {
-        flex-direction: column;
-        gap: 0.15rem;
-      }
-
-      .entry-dates,
-      .entry-location {
-        white-space: normal;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="assets/css/black-geometry.css" />
+  <meta name="description" content="Mihir Rao — Theoretical Computer Scientist. Education, industry, research, teaching, mathematical projects, and personal notes." />
 </head>
-<body>
-  <section class="hero">
+<body data-experience-state="static">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="world" aria-hidden="true"></div>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="home-link" href="#top">Mihir Rao</a>
+      <div class="header-controls">
+        <details id="section-index">
+          <summary>Index<span class="sr-only"> of sections</span></summary>
+          <nav class="disclosure-panel index-links" aria-label="Section index">
+            <a href="#education"><span aria-hidden="true">01</span>Education</a>
+            <a href="#experience"><span aria-hidden="true">02</span>Industry experience</a>
+            <a href="#research"><span aria-hidden="true">03</span>Research experience</a>
+            <a href="#teaching"><span aria-hidden="true">04</span>Teaching experience</a>
+            <a href="#personal-projects"><span aria-hidden="true">05</span>Personal projects</a>
+            <a href="#notes"><span aria-hidden="true">06</span>Personal notes</a>
+          </nav>
+        </details>
+        <details id="display-settings" hidden>
+          <summary>Display</summary>
+          <div class="disclosure-panel display-panel">
+            <label for="motion-setting">Motion</label>
+              <select id="motion-setting">
+                <option value="system">System preference</option>
+                <option value="on">On</option>
+                <option value="off">Off</option>
+              </select>
+            <label for="quality-setting">Quality</label>
+              <select id="quality-setting">
+                <option value="auto">Auto</option>
+                <option value="low">Low</option>
+                <option value="high">High</option>
+              </select>
+            <p id="display-status" role="status">Static illustration.</p>
+          </div>
+        </details>
+        <button id="sound-toggle" type="button" aria-pressed="false" hidden><span class="sound-dot" aria-hidden="true"></span><span>Sound off</span></button>
+        <span id="sound-status" class="sr-only" role="status"></span>
+      </div>
+    </div>
+  </header>
+  <section class="hero" id="top" aria-label="Introduction">
+    <img class="hero-art" src="assets/black-geometry/generated/poster.svg" width="800" height="600" alt="" aria-hidden="true" />
     <h1 class="hero-name">Mihir Rao</h1>
     <p class="hero-title">Theoretical Computer Scientist</p>
     <nav class="hero-links" aria-label="Contact links">
       <a class="hero-link" href="https://github.com/mihirrao-10" aria-label="GitHub">
-        <i class="fa-brands fa-github" aria-hidden="true"></i>
+        <i class="fa-brands fa-github" aria-hidden="true"></i><span>GitHub</span>
       </a>
       <a class="hero-link" href="https://www.linkedin.com/in/mihir-rao-6242a8209/" aria-label="LinkedIn">
-        <i class="fa-brands fa-linkedin-in" aria-hidden="true"></i>
+        <i class="fa-brands fa-linkedin-in" aria-hidden="true"></i><span>LinkedIn</span>
       </a>
       <a class="hero-link" href="mailto:raomihir.98@gmail.com" aria-label="Email Mihir">
-        <i class="fa-solid fa-envelope" aria-hidden="true"></i>
+        <i class="fa-solid fa-envelope" aria-hidden="true"></i><span>Email</span>
       </a>
     </nav>
-    <div class="scroll-cue" aria-hidden="true"></div>
+    <a class="scroll-cue" href="#education">EXPLORE</a>
+    <p class="hero-coordinate" aria-hidden="true">SURFACES / PATHS / CONNECTIONS</p>
   </section>
 
-  <main>
-    <section id="education">
-      <h2 class="section-heading">education</h2>
+  <main id="main" tabindex="-1">
+    <section id="education" class="reading">
+      <h2 class="section-heading" data-number="01">education</h2>
 
       <div class="entry">
         <div class="entry-header">
@@ -373,8 +108,8 @@
       </div>
     </section>
 
-    <section id="experience">
-      <h2 class="section-heading">industry experience</h2>
+    <section id="experience" class="reading">
+      <h2 class="section-heading" data-number="02">industry experience</h2>
 
       <div class="entry">
         <div class="entry-header">
@@ -399,8 +134,8 @@
       </div>
     </section>
 
-    <section id="research">
-      <h2 class="section-heading">research experience</h2>
+    <section id="research" class="reading">
+      <h2 class="section-heading" data-number="03">research experience</h2>
 
       <div class="entry">
         <div class="entry-header">
@@ -416,8 +151,8 @@
       </div>
     </section>
 
-    <section id="teaching">
-      <h2 class="section-heading">teaching experience</h2>
+    <section id="teaching" class="reading">
+      <h2 class="section-heading" data-number="04">teaching experience</h2>
 
       <div class="entry">
         <div class="entry-header">
@@ -449,8 +184,9 @@
     </section>
 
     <section id="personal-projects">
-      <h2 class="section-heading">personal projects</h2>
+      <h2 class="section-heading" data-number="05">personal projects</h2>
 
+      <article class="project-feature" id="project-surface">
       <div class="entry">
         <div class="entry-header">
           <h3 class="entry-title">
@@ -464,6 +200,19 @@
         <p class="project-tags">C++20 · Eigen · Discrete Geometry · Three.js</p>
       </div>
 
+        <figure class="project-visual">
+          <div class="project-stage" data-stage="surface" aria-hidden="true">
+            <img src="assets/black-geometry/generated/project-surface.svg" width="800" height="600" alt="" />
+            <span class="stage-label">01 / Surface path</span>
+          </div>
+          <div class="project-controls">
+            <button id="replay-path" type="button" hidden>Replay path</button>
+            <a class="open-project" href="https://mihirrao-10.github.io/shortest-path-through-a-curved-world/" aria-label="Open The Shortest Path Through a Curved World">Open project</a>
+          </div>
+          <figcaption>Illustrative surface path. Explore the project for the computed Heat Method results.</figcaption>
+        </figure>
+      </article>
+      <article class="project-feature" id="project-congestion">
       <div class="entry">
         <div class="entry-header">
           <h3 class="entry-title">
@@ -477,10 +226,26 @@
         <p class="project-tags">Python · Multi-Agent Reinforcement Learning · Congestion Games · Three.js</p>
       </div>
 
+        <figure class="project-visual">
+          <div class="project-stage" data-stage="congestion" aria-hidden="true">
+            <img id="network-poster" src="assets/black-geometry/generated/project-congestion-open.svg" width="800" height="600" alt="" />
+            <span class="stage-label">02 / Congestion network</span>
+            <span class="node-label">S</span><span class="node-label node-upper">U</span><span class="node-label">V</span><span class="node-label">T</span>
+          </div>
+          <div class="project-controls">
+            <div id="shortcut-controls" role="group" aria-label="Shortcut availability" hidden>
+              <button type="button" data-shortcut="open" aria-pressed="true">Shortcut open</button>
+              <button type="button" data-shortcut="closed" aria-pressed="false">Shortcut closed</button>
+            </div>
+            <a class="open-project" href="https://mihirrao-10.github.io/multi-agent-reinforcement-learning-in-congestion-games/" aria-label="Open When Every Agent Finds the Shortcut">Open project</a>
+          </div>
+          <figcaption><span class="route-status" id="route-status" role="status">The middle connection is open.</span>Schematic routes and illustrative flow, not a training replay. Explore the project for the finite congestion-game study.</figcaption>
+        </figure>
+      </article>
     </section>
 
-    <section id="notes">
-      <h2 class="section-heading">personal notes</h2>
+    <section id="notes" class="reading">
+      <h2 class="section-heading" data-number="06">personal notes</h2>
 
       <div class="entry">
         <h3 class="notes-category">Caltech</h3>
@@ -534,17 +299,15 @@
       </div>
     </section>
   </main>
-  <script>
-    const scrollCue = document.querySelector('.scroll-cue');
-
-    if (scrollCue) {
-      const updateScrollCue = () => {
-        scrollCue.classList.toggle('is-hidden', window.scrollY > 12);
-      };
-
-      window.addEventListener('scroll', updateScrollCue, { passive: true });
-      updateScrollCue();
-    }
-  </script>
+  <footer class="site-footer" id="contact">
+    <p>Mihir Rao</p>
+    <nav class="footer-links" aria-label="Footer contact links">
+      <a href="mailto:raomihir.98@gmail.com">Email</a>
+      <a href="https://github.com/mihirrao-10">GitHub</a>
+      <a href="https://www.linkedin.com/in/mihir-rao-6242a8209/">LinkedIn</a>
+      <a href="#top">Back to top ↑</a>
+    </nav>
+  </footer>
+  <script type="module" src="assets/black-geometry/generated/main.js"></script>
 </body>
 </html>
