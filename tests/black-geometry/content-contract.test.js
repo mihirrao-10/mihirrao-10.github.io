@@ -28,7 +28,7 @@ test("teaching and awards belong to their education entries and removed sections
   assert.deepEqual(courses(drexel), ["CS 260 | Data Structures", "CS 277 | Algorithms & Analysis", "CS 380 | Artificial Intelligence", "CS 615 | Deep Learning"]);
   assert.equal(all(doc, (node) => ["teaching-role", "teaching-dates"].some((name) => hasClass(node, name))).length, 0);
   const honors = all(drexel, (node) => hasClass(node, "degree-honors"))[0];
-  assert.equal(normalize(text(honors)), "magna cum laude");
+  assert.equal(normalize(text(honors)), "Magna Cum Laude");
   assert.equal(all(honors, (node) => node.tagName === "em").length, 1);
   const degreeLines = honors.parentNode.childNodes.filter((node) => node.tagName);
   assert.equal(hasClass(degreeLines[0], "entry-role"), true);

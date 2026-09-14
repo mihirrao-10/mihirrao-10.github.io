@@ -89,7 +89,7 @@ export function createResolution() {
 export const KLEIN_BOTTLE = Object.freeze({
   longitudinalSegments: 256,
   radialSegments: 80,
-  palette: Object.freeze(["#f7fbff", "#dceaf2", "#a3afb9"]),
+  palette: Object.freeze(["#fafaff", "#e8e2f7", "#ddeef9", "#ffe4d4"]),
   source: "https://arxiv.org/abs/0909.5354",
 });
 
@@ -113,13 +113,13 @@ export function kleinBottlePoint(u, v) {
   ];
 }
 
-/** The classical self-penetrating bottle, in white, ice and silver. */
+/** The classical self-penetrating bottle, in pearl with faint opalescent tints. */
 export function createNotes() {
   const root = new THREE.Group();
   root.name = "classical-immersed-klein-bottle";
   const positions = [], colors = [], indices = [], parameters = [];
   const { longitudinalSegments: steps, radialSegments: sides } = KLEIN_BOTTLE;
-  const [white, ice, silver] = KLEIN_BOTTLE.palette.map(hex => new THREE.Color(hex));
+  const [pearl, lavender, ice, peach] = KLEIN_BOTTLE.palette.map(hex => new THREE.Color(hex));
   const color = new THREE.Color();
   for (let i = 0; i < steps; i++) {
     const u = i / steps * Math.PI;
@@ -127,9 +127,12 @@ export function createNotes() {
       const v = j / sides * Math.PI * 2;
       positions.push(...kleinBottlePoint(u, v));
       parameters.push(u, v);
-      // Both terms respect the reversed seam; no rainbow or false data scale.
-      color.copy(white).lerp(ice, 0.18 + 0.28 * Math.sin(v) ** 2);
-      color.lerp(silver, 0.24 * Math.cos(v) ** 2 * Math.sin(u) ** 2);
+      // Each term respects the reflected seam. The surface remains mostly
+      // pearl, with a small warm glint on the loop instead of rainbow bands.
+      color.copy(pearl).lerp(lavender, 0.24 * Math.cos(v) ** 2);
+      color.lerp(ice, 0.22 * Math.sin(v) ** 2);
+      const warmGlint = Math.max(0, Math.sin(v)) ** 12 * Math.sin(u) ** 6;
+      color.lerp(pearl, warmGlint).lerp(peach, 0.30 * warmGlint);
       colors.push(color.r, color.g, color.b);
       const a = i * sides + j, d = i * sides + (j + 1) % sides;
       const next = column => i + 1 < steps
@@ -141,7 +144,7 @@ export function createNotes() {
       indices.push(a, c, b, a, d, c);
     }
   }
-  const mesh = meshFrom(positions, colors, indices, "ice-silver-klein-bottle");
+  const mesh = meshFrom(positions, colors, indices, "pearl-opalescent-klein-bottle");
   mesh.geometry.setAttribute("parameter", new THREE.Float32BufferAttribute(parameters, 2));
   mesh.material.roughness = 0.24;
   mesh.material.metalness = 0.33;
@@ -156,7 +159,7 @@ export function createNotes() {
     parameterChange: "t=pi(1-cos(u))/2",
     seam: "(pi,v)~(0,pi-v)",
     meaning: "Classical closed nonorientable Klein bottle immersed in 3D; self-intersections are intentional",
-    palette: "Crystalline white, ice and silver; authored display colors",
+    palette: "Mostly pearl with faint lavender, ice blue and a small peach glint; authored display colors",
   };
   return root;
 }

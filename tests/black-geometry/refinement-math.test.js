@@ -117,7 +117,7 @@ test("the classical bottle obeys its published tube equation and reversed seam",
   }
 });
 
-test("notes triangulation is closed and nonorientable with finite ice-only colors", () => {
+test("notes triangulation is closed and nonorientable with restrained pearl tints", () => {
   const group = createNotes();
   try {
     const geometry = group.children.find(object => object.isMesh).geometry;
@@ -125,14 +125,22 @@ test("notes triangulation is closed and nonorientable with finite ice-only color
     assert.equal(isOrientable(geometry), false, "The reversed quotient must produce a Klein bottle, not another torus");
     assert.ok(geometry.index.count / 3 >= 30000 && geometry.index.count / 3 <= 65536);
     const { position, parameter, color } = geometry.attributes;
+    const tints = { lavender: 0, blue: 0, peach: 0 };
     for (let i = 0; i < position.count; i++) {
       const p = [position.getX(i), position.getY(i), position.getZ(i)];
       assert.ok(p.every(Number.isFinite));
       assert.ok(distance(p, kleinBottlePoint(parameter.getX(i), parameter.getY(i))) < .000003);
       const rgb = [color.getX(i), color.getY(i), color.getZ(i)];
-      assert.ok(rgb.every(value => value >= .6 && value <= 1));
-      assert.ok(Math.max(...rgb) - Math.min(...rgb) < .15, "The sculpture must remain white/ice/silver without saturated rainbow regions");
+      assert.ok(rgb.every(value => value >= .75 && value <= 1));
+      assert.ok(Math.max(...rgb) - Math.min(...rgb) < .15, "The sculpture must remain pearl-like without saturated rainbow regions");
+      if (rgb[2] > rgb[0] + .01 && rgb[0] > rgb[1] + .003) tints.lavender++;
+      if (rgb[2] > rgb[0] + .01 && rgb[1] > rgb[0] + .003) tints.blue++;
+      if (rgb[0] > rgb[2] + .01 && rgb[0] > rgb[1] + .005) tints.peach++;
     }
+    assert.ok(tints.lavender / position.count > .15 && tints.blue / position.count > .15,
+      "Both faint cool tints must survive in the prepared vertex colors");
+    assert.ok(tints.peach / position.count > .005 && tints.peach / position.count < .10,
+      "The slightly orange glint must occupy only a small part of the pearl surface");
     assert.equal(KLEIN_BOTTLE.radialSegments % 2, 0, "The reflected seam needs an exact half-circle vertex");
   } finally { dispose(group); }
 });

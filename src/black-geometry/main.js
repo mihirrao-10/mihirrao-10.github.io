@@ -3,6 +3,7 @@ import { chapterState, cameraPose, createTransition, advanceTransition } from '.
 import { createInteraction } from './interaction.js';
 
 const body = document.body;
+const root = document.documentElement;
 const container = document.querySelector('.world');
 const poster = document.querySelector('#sculpture-poster');
 const system = matchMedia('(prefers-reduced-motion: reduce)');
@@ -13,9 +14,12 @@ const on = (target, event, callback, options = {}) => target.addEventListener(ev
 const debug = new URLSearchParams(location.search).has('bg-debug');
 const profile = 'high';
 const project = { shortcut: 'open', path: 1 };
+const navigation = performance.getEntriesByType('navigation')[0];
 let motion = motionPolicy(system.matches);
 let world, worldImport, enhancementPending;
-let failed = false, disposed = false, active = !document.hidden;
+let failed = root.dataset.boot === 'fallback', disposed = false, active = !document.hidden;
+const introVisit = root.dataset.boot === 'loading' && navigation?.type !== 'back_forward' && (!location.hash || location.hash === '#top');
+const entrance = { started: false, progress: introVisit ? 0 : 1 };
 let frame = 0, syncFrame = 0, lastFrame = 0, time = 0, orbitTime = 0;
 let scrollY = window.scrollY, width = innerWidth, height = innerHeight, layoutDirty = true;
 let ranges = [], pointer = [0, 0], pointerTarget = [0, 0];
@@ -28,6 +32,11 @@ const interaction = createInteraction({
 });
 body.dataset.enhanced = 'true';
 body.dataset.motion = motion;
+
+function finishBoot(status = 'complete') {
+  root.dataset.boot = status;
+  window.dispatchEvent(new Event('portfolio:boot-complete'));
+}
 
 function pixels(value) {
   if (!value || value === 'auto' || value === 'normal') return 0;
@@ -87,6 +96,8 @@ function settlePresentation() {
   visualState = { ...state };
 }
 function showStatic(reason = 'static') {
+  entrance.progress = 1;
+  finishBoot(reason === 'fallback' ? 'fallback' : 'complete');
   interaction.setEnabled(false);
   cancelAnimationFrame(frame);
   frame = lastFrame = 0;
@@ -122,14 +133,26 @@ function draw(now) {
   // Real elapsed time completes the selected sculpture even when scrolling stops.
   transition = advanceTransition(transition, state.target, elapsed / 1000);
   visualState = { ...state, target: transition.from, nextTarget: transition.to, blend: transition.blend };
+  // Only the opening hero grows into view. A deep link or an early scroll
+  // always gets its complete sculpture, and returning never replays the intro.
+  if (state.target !== 'hero') entrance.progress = 1;
+  else if (entrance.started) entrance.progress = Math.min(1, entrance.progress + elapsed / 1100);
   try {
     world.render({ state: visualState,
       pose: cameraPose(visualState, { time: orbitTime, pointer, fullMotion: true }),
       time, orbitTime, pointer, project, interactionTarget: state.target,
+      entrance: entrance.progress,
       interaction: { orientation: grab.orientation, rotation: grab.rotation, dragging: grab.dragging },
     });
     body.dataset.experienceState = 'ready';
-    interaction.setEnabled(true);
+    if (!entrance.started) {
+      entrance.started = true;
+      // Shader compilation can take time. Start the visible animation after
+      // that first successful frame, not while it is still being prepared.
+      lastFrame = performance.now();
+      finishBoot(entrance.progress < 1 ? 'revealing' : 'complete');
+    } else if (entrance.progress === 1 && root.dataset.boot === 'revealing') finishBoot();
+    interaction.setEnabled(entrance.progress === 1);
   } catch (error) { fail(error); return; }
   frame = requestAnimationFrame(draw);
 }
@@ -177,6 +200,8 @@ on(system, 'change', () => {
   if (motion !== 'full') showStatic();
   else enhance();
 });
+on(window, 'portfolio:boot-fallback', () => fail(new Error('Sculpture startup timed out')));
+on(window, 'portfolio:boot-bypass', () => { entrance.progress = 1; });
 on(window, 'scroll', () => {
   scrollY = window.scrollY;
   if (motion !== 'full' || !world || failed) syncStatic();
@@ -234,9 +259,9 @@ on(window, 'pageshow', resume);
 measure();
 updateScene();
 settlePresentation();
+if (motion !== 'full' || failed) showStatic(failed ? 'fallback' : 'static');
 // WebKit can revisit an old fragment after restoring the reading position,
 // including after late fonts settle. Correct only that full-history case.
-const navigation = performance.getEntriesByType('navigation')[0];
 let returnAnchor;
 try { returnAnchor = document.getElementById(decodeURIComponent(location.hash.slice(1)))?.dataset.scene; } catch {}
 const reading = history.state?.portfolioReading;
@@ -262,7 +287,7 @@ if (debug) window.__blackGeometry = {
     motion, preferences: { ...DEFAULTS }, profile, state: { ...state }, visualState: { ...visualState },
     transition: { ...transition }, project: { ...project }, time, orbitTime,
     interaction: interaction.snapshot(), active, pendingFrame: !!frame, world: world?.snapshot() || null,
-    ranges: structuredClone(ranges),
+    ranges: structuredClone(ranges), entrance: { ...entrance },
   }),
 };
 if ('requestIdleCallback' in window) requestIdleCallback(() => enhance(), { timeout: 400 });

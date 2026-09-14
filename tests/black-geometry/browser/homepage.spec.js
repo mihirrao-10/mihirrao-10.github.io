@@ -16,7 +16,44 @@ async function ready(page, url = '/?bg-debug') {
   await page.goto(url);
   await page.evaluate(() => document.fonts?.ready);
   await expect(page.locator('body')).toHaveAttribute('data-experience-state', 'ready');
+  await expect(page.locator('html')).toHaveAttribute('data-boot', 'complete');
+  await expect(page.locator('.site-loader')).toBeHidden();
   await expect.poll(() => page.locator('#sculpture-poster').evaluate(el => getComputedStyle(el).opacity)).toBe('0');
+}
+async function gateSculptureData(page) {
+  let release, requested = false;
+  const gate = new Promise(resolve => { release = resolve; });
+  await page.route('**/sculpture-data.bin*', async route => {
+    requested = true;
+    await gate;
+    await route.continue();
+  });
+  return { release, requested: () => requested };
+}
+async function observeBoot(page) {
+  await page.addInitScript(() => {
+    window.__bootSamples = [];
+    let observedLoading = false, finished = false;
+    const collect = source => {
+      const boot = document.documentElement?.dataset.boot;
+      if (boot === 'loading') observedLoading = true;
+      if (!observedLoading || finished) return;
+      const state = window.__blackGeometry?.snapshot();
+      const opacity = selector => {
+        const element = document.querySelector(selector);
+        return element ? Number(getComputedStyle(element).opacity) : null;
+      };
+      window.__bootSamples.push({ source, boot, progress: state?.entrance.progress,
+        scale: state?.world?.entranceScale, frames: state?.world?.frames,
+        enabled: state?.interaction.enabled, nameOpacity: opacity('.hero-name'),
+        titleOpacity: opacity('.hero-title'), linksOpacity: opacity('.hero-links') });
+      if (boot === 'complete' || boot === 'fallback') { finished = true; observer.disconnect(); }
+    };
+    const observer = new MutationObserver(() => collect('mutation'));
+    observer.observe(document, { subtree: true, attributes: true, attributeFilter: ['data-boot'] });
+    const frame = () => { collect('frame'); if (!finished) requestAnimationFrame(frame); };
+    requestAnimationFrame(frame);
+  });
 }
 async function settled(page, chapter) {
   await expect.poll(async () => (await snapshot(page)).state.chapter).toBe(chapter);
@@ -49,7 +86,7 @@ function assertActiveGeometry(state, target) {
   expect(state.profile).toBe('high');
   expect(state.world.quality).toBe('high');
   expect(state.world.opaque).toBe(false);
-  expect(state.world.opacity).toBeCloseTo(target === 'notes' ? 0.70 : 0.88, 3);
+  expect(state.world.opacity).toBeCloseTo(target === 'notes' ? 0.52 : 0.88, 3);
   expect(state.world.depthPrepass).toBe(true);
   expect(state.world.shading).toBe('tessellated');
   expect(state.world.presentationScale).toBeCloseTo(0.84, 3);
@@ -101,6 +138,101 @@ for (const port of [8000, 8001]) test(`root/dist ${port}: reviewed content, loca
   await page.getByRole('button', { name: 'Archived / closed' }).click();
   await expect(page.locator('#archive-view')).toHaveAttribute('aria-pressed', 'true');
   expect(failures).toEqual([]);
+});
+
+test('delayed sculpture data keeps a black loader until the first live frame, then reveals and grows the introduction', async ({ page }) => {
+  await observeBoot(page);
+  const gate = await gateSculptureData(page);
+  try {
+    await page.goto('/?bg-debug', { waitUntil: 'domcontentloaded' });
+    await expect.poll(gate.requested).toBe(true);
+    await expect(page.locator('html')).toHaveAttribute('data-boot', 'loading');
+    await expect(page.getByRole('status')).toHaveText('Loading...');
+    await expect(page.locator('.site-loader')).toBeVisible();
+    const loading = await page.evaluate(() => {
+      const loader = document.querySelector('.site-loader'), style = getComputedStyle(loader), box = loader.getBoundingClientRect();
+      return { background: style.backgroundColor, position: style.position,
+        box: [box.x, box.y, box.width, box.height], viewport: [innerWidth, innerHeight],
+        protectedOpacity: [...document.querySelectorAll('.hero, main, .site-footer, .world')].map(el => getComputedStyle(el).opacity),
+        retainedLayout: document.documentElement.scrollHeight > innerHeight,
+        state: window.__blackGeometry.snapshot() };
+    });
+    expect(loading.background).toBe('rgb(8, 8, 8)');
+    expect(loading.position).toBe('fixed');
+    expect(loading.box).toEqual([0, 0, ...loading.viewport]);
+    expect(loading.protectedOpacity).toEqual(['0', '0', '0', '0']);
+    expect(loading.retainedLayout).toBe(true);
+    expect(loading.state.world).toBe(null);
+    expect(loading.state.interaction.enabled).toBe(false);
+  } finally { gate.release(); }
+  await expect(page.locator('html')).toHaveAttribute('data-boot', 'complete');
+  await expect(page.locator('.site-loader')).toBeHidden();
+  await expect(page.locator('body')).toHaveAttribute('data-experience-state', 'ready');
+  const samples = await page.evaluate(() => window.__bootSamples);
+  const firstFrame = samples.find(sample => sample.boot === 'revealing');
+  expect(firstFrame).toBeDefined();
+  expect(firstFrame.frames).toBeGreaterThan(0);
+  expect(firstFrame.progress).toBe(0);
+  expect(firstFrame.scale).toBeCloseTo(0.08, 5);
+  expect(firstFrame.enabled).toBe(false);
+  for (const opacity of ['nameOpacity', 'titleOpacity', 'linksOpacity']) expect(firstFrame[opacity]).toBeLessThan(1);
+  const growing = samples.filter(sample => sample.progress > 0 && sample.progress < 1);
+  expect(growing.length).toBeGreaterThan(0);
+  expect(growing.every(sample => sample.scale > 0.08 && sample.scale < 1 && !sample.enabled)).toBe(true);
+  // A newly constructed, still-hidden world has not received its first
+  // entrance scale. Compare only frames that were actually rendered.
+  const scales = samples.filter(sample => sample.frames > 0).map(sample => sample.scale);
+  expect(scales.every((scale, index) => !index || scale >= scales[index - 1])).toBe(true);
+  const final = await snapshot(page);
+  expect(final.entrance).toEqual({ started: true, progress: 1 });
+  expect(final.world.entranceProgress).toBe(1);
+  expect(final.world.entranceScale).toBe(1);
+  expect(final.interaction.enabled).toBe(true);
+  expect(await page.locator('.hero-name, .hero-title, .hero-links').evaluateAll(elements => elements.map(el => getComputedStyle(el).opacity))).toEqual(['1', '1', '1']);
+  await expect.poll(async () => (await snapshot(page)).world.frames).toBeGreaterThan(final.world.frames);
+});
+
+test('keyboard intent bypasses delayed loading for immediate native navigation without replaying the entrance', async ({ page }, info) => {
+  await observeBoot(page);
+  const gate = await gateSculptureData(page);
+  try {
+    await page.goto('/?bg-debug', { waitUntil: 'domcontentloaded' });
+    await expect.poll(gate.requested).toBe(true);
+    await expect(page.locator('html')).toHaveAttribute('data-boot', 'loading');
+    await page.keyboard.press(info.project.name === 'webkit' ? 'Alt+Tab' : 'Tab');
+    const skip = page.getByRole('link', { name: 'Skip to content' });
+    await expect(skip).toBeFocused();
+    await expect(skip).toBeVisible();
+    await expect(skip).toBeInViewport();
+    await expect(page.locator('html')).toHaveAttribute('data-boot', 'bypassed');
+    await expect(page.locator('.site-loader')).toBeHidden();
+    expect(await page.locator('main').evaluate(el => getComputedStyle(el).opacity)).toBe('1');
+    expect(await page.locator('.world').evaluate(el => getComputedStyle(el).opacity)).toBe('0');
+    expect(await page.locator('.scene-fallback').evaluateAll(images => images.every(el => getComputedStyle(el).opacity === '0'))).toBe(true);
+    expect((await snapshot(page)).entrance.progress).toBe(1);
+  } finally { gate.release(); }
+  await expect(page.locator('html')).toHaveAttribute('data-boot', 'complete');
+  const final = await snapshot(page);
+  expect(final.entrance).toEqual({ started: true, progress: 1 });
+  expect(final.world.entranceScale).toBe(1);
+  expect(final.interaction.enabled).toBe(true);
+  expect(await page.evaluate(() => window.__bootSamples.some(sample => sample.boot === 'revealing'))).toBe(false);
+});
+
+test('entry module failure releases the loader and retains the unenhanced native portfolio', async ({ page }) => {
+  await page.route('**/assets/black-geometry/generated/main.js', route => route.abort());
+  await page.goto('/?bg-debug');
+  await expect(page.locator('html')).toHaveAttribute('data-boot', 'fallback');
+  await expect(page.locator('.site-loader')).toBeHidden();
+  expect(await page.evaluate(() => window.__blackGeometry)).toBeUndefined();
+  await expect(page.locator('body')).not.toHaveAttribute('data-enhanced');
+  await content(page);
+  await expect(page.locator('.hero-art')).toBeVisible();
+  expect(await page.locator('.hero, main, .site-footer').evaluateAll(elements => elements.every(el => getComputedStyle(el).opacity === '1'))).toBe(true);
+  await page.goto('/?bg-debug#notes');
+  await expect(page.locator('#notes h2')).toBeInViewport();
+  await expect(page.locator('#notes a')).toHaveCount(11);
+  await expect(page.locator('.open-project').first()).toHaveAttribute('target', '_blank');
 });
 
 test('minimal interface stays silent and uses highest quality despite legacy preferences', async ({ page }) => {
@@ -180,7 +312,7 @@ test('stopping at a former partial-scroll position finishes the selected sculptu
     expect(samples.every(sample => sample.target === sample.next && sample.desiredBlend === 0 && sample.decoded <= 2)).toBe(true);
     const moving = samples.filter(sample => sample.blend > 0 && sample.blend < 1);
     observedTransitions += moving.length;
-    expect(moving.every(sample => !sample.opaque && sample.opacity === (sample.worldTarget === 'notes' ? .70 : .88) && sample.depthPrepass && sample.activeMeshes === 2 && sample.activeDepthMeshes === 2)).toBe(true);
+    expect(moving.every(sample => !sample.opaque && sample.opacity === (sample.worldTarget === 'notes' ? .52 : .88) && sample.depthPrepass && sample.activeMeshes === 2 && sample.activeDepthMeshes === 2)).toBe(true);
     const final = samples.at(-1);
     expect(final.blend).toBe(0);
     expect(final.worldTarget).toBe(final.target);
@@ -417,8 +549,23 @@ test('teaching and industry remain complete, section links use matching colors, 
   await expect(page.locator('#experience-mathworks .experience-points > li')).toHaveCount(4);
   await expect(page.locator('#experience-resolution .experience-points > li')).toHaveCount(4);
   await expect(page.locator('#education-drexel .awards-list li')).toHaveText(['A* Award', 'Jeffrey L. Popyack Teaching Assistant Award', 'Student Teaching Excellence Award']);
+  await expect(page.locator('#education-drexel .degree-honors em')).toHaveText('Magna Cum Laude');
+  await expect(page.locator('.entry-subheading')).toHaveText(['Teaching', 'Teaching', 'Awards']);
+  expect(await page.locator('.entry-subheading').evaluateAll(headings => headings.every(el => getComputedStyle(el).color === 'rgb(250, 250, 250)'))).toBe(true);
+  expect(await page.locator('.experience-points > li').evaluateAll(items => items.every(el => getComputedStyle(el, '::marker').color === 'rgb(250, 250, 250)'))).toBe(true);
+  expect(await page.locator('.awards-list > li').evaluateAll(items => items.every(el => getComputedStyle(el, '::before').color === 'rgb(250, 250, 250)'))).toBe(true);
+  for (const [id, accent] of [['experience-mathworks', 'rgb(239, 179, 107)'], ['experience-resolution', 'rgb(145, 182, 238)'], ['project-surface', 'rgb(121, 212, 207)'], ['project-congestion', 'rgb(240, 170, 112)']]) {
+    const metrics = await page.locator(`#${id} .metric`).evaluateAll(elements => elements.map(el => ({ color: getComputedStyle(el).color, parentColor: getComputedStyle(el.parentElement).color })));
+    expect(metrics.length).toBeGreaterThan(0);
+    expect(metrics.every(metric => metric.color === accent && metric.parentColor !== accent)).toBe(true);
+  }
   const colors = await page.locator('#notes .notes-list a').evaluateAll(links => links.map(link => getComputedStyle(link).color));
   expect(colors.every(color => color === 'rgb(216, 237, 243)')).toBe(true);
+  const underlines = await page.locator('#notes .notes-list a').evaluateAll(links => links.map(link => {
+    const style = getComputedStyle(link);
+    return { line: style.textDecorationLine, thickness: style.textDecorationThickness, color: style.textDecorationColor, textColor: style.color };
+  }));
+  expect(underlines.every(style => style.line.includes('underline') && style.thickness === '1px' && style.color !== style.textColor)).toBe(true);
   expect(await page.locator('.hero-link').evaluateAll(links => links.every(link => getComputedStyle(link).color === 'rgb(250, 250, 250)'))).toBe(true);
   expect(await page.locator('.back-to-top, .open-project').evaluateAll(links => links.every(link => getComputedStyle(link).borderRadius === '0px'))).toBe(true);
   await expect(page.locator('#contact .back-to-top')).toHaveAttribute('href', '#top');
@@ -437,7 +584,11 @@ test('teaching and industry remain complete, section links use matching colors, 
 for (const width of [1440, 390]) test(`institutional hashes, resize and reload retain the chosen entry at ${width}px`, async ({ page }) => {
   await page.setViewportSize({ width, height: 900 });
   for (const [id, target] of identities.slice(1, 4)) {
-    await ready(page, `/?bg-debug#${id}`); await settled(page, id); assertActiveGeometry(await snapshot(page), target);
+    await ready(page, `/?bg-debug#${id}`); await settled(page, id);
+    const current = await snapshot(page); assertActiveGeometry(current, target);
+    expect(current.entrance.progress).toBe(1);
+    expect(current.world.entranceProgress).toBe(1);
+    expect(current.world.entranceScale).toBe(1);
   }
   await page.setViewportSize({ width: width === 390 ? 430 : 1280, height: 820 });
   await jump(page, 'experience-mathworks'); await page.reload();
@@ -449,6 +600,9 @@ test('OS reduced motion skips heavy imports, renders fallback identities, and st
   const requests = []; page.on('request', request => requests.push(request.url()));
   await page.emulateMedia({ reducedMotion: 'reduce' }); await page.goto('/?bg-debug');
   await expect.poll(async () => (await snapshot(page)).motion).toBe('reduced');
+  await expect(page.locator('html')).toHaveAttribute('data-boot', 'complete');
+  await expect(page.locator('.site-loader')).toBeHidden();
+  expect((await snapshot(page)).entrance.progress).toBe(1);
   await expect(page.locator('.world')).not.toHaveAttribute('tabindex'); await expect(page.locator('canvas')).toHaveCount(0);
   expect(requests.some(url => /world-.*\.js/.test(url))).toBe(false);
   for (const [id, target] of identities.slice(1, 4)) {
@@ -457,6 +611,7 @@ test('OS reduced motion skips heavy imports, renders fallback identities, and st
   }
   await page.emulateMedia({ reducedMotion: 'no-preference' }); await expect(page.locator('body')).toHaveAttribute('data-experience-state', 'ready');
   await page.emulateMedia({ reducedMotion: 'reduce' }); await expect.poll(async () => (await snapshot(page)).motion).toBe('reduced');
+  await expect(page.locator('.site-loader')).toBeHidden();
   const before = await snapshot(page); await page.mouse.wheel(0, 500); await page.waitForTimeout(200);
   const after = await snapshot(page); expect(after.world.frames).toBe(before.world.frames); expect(after.pendingFrame).toBe(false);
   expect(after.interaction.enabled).toBe(false); await expect(page.locator('.world')).not.toHaveAttribute('tabindex');
@@ -487,6 +642,8 @@ for (const mode of ['module', 'asset', 'renderer', 'shader', 'context']) test(`$
     await ready(page); await page.evaluate(() => document.querySelector('canvas').getContext('webgl2').getExtension('WEBGL_lose_context').loseContext());
   } else await page.goto('/?bg-debug');
   await expect(page.locator('body')).toHaveAttribute('data-experience-state', 'fallback'); await content(page);
+  await expect(page.locator('html')).toHaveAttribute('data-boot', 'fallback');
+  await expect(page.locator('.site-loader')).toBeHidden();
   await expect(page.locator('#sculpture-poster')).toBeVisible(); await expect(page.locator('.world')).not.toHaveAttribute('tabindex');
   expect((await snapshot(page)).interaction.enabled).toBe(false); expect((await snapshot(page)).pendingFrame).toBe(false);
   await jump(page, 'project-congestion'); await expect(page.locator('#sculpture-poster')).toHaveAttribute('src', /sculpture-congestion\.svg$/);
@@ -516,6 +673,8 @@ for (const [width, height] of [[1440, 900], [390, 844]]) test(`skip link, native
 test('without JavaScript all content, static sculptures, projects and PDFs stay native', async ({ browser }) => {
   const context = await browser.newContext({ javaScriptEnabled: false, viewport: { width: 390, height: 844 } }), page = await context.newPage();
   await page.goto('http://127.0.0.1:8000/'); await content(page);
+  await expect(page.locator('.site-loader')).toBeHidden();
+  await expect(page.locator('html')).not.toHaveAttribute('data-boot');
   for (const [id, target] of identities.slice(1, 4)) {
     const art = page.locator(`#${id} .scene-fallback`); await art.scrollIntoViewIfNeeded(); await expect(art).toBeVisible();
     await expect(art).toHaveAttribute('src', new RegExp(`sculpture-${target}\\.svg$`));

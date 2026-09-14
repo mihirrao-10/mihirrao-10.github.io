@@ -57,7 +57,7 @@ button:disabled { cursor: default; color: var(--muted); opacity: 0.65; }
   position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
   overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0;
 }
-.skip-link { position: fixed; top: -100px; left: 1rem; z-index: 20; padding: 0.6rem 1rem; background: #111; }
+.skip-link { position: fixed; top: -100px; left: 1rem; z-index: 40; padding: 0.6rem 1rem; background: #111; }
 .skip-link:focus { top: 0.5rem; }
 .world {
   position: fixed; top: 0; right: 0; bottom: 0; left: 47%;
@@ -93,6 +93,19 @@ body:not([data-enhanced]) .world { display: none; }
 .hero-link:hover { color: var(--bright); }
 .hero-link i { font-size: 0.83rem; }
 .hero-link span { border-bottom: 1px solid #ffffff55; }
+/* A first-frame handoff reveals the live canvas and introduction together.
+   Opacity leaves native fragment positions and reading restoration intact. */
+[data-boot="revealing"] .world canvas { animation: sculpture-arrive 850ms ease-out both; }
+[data-boot="revealing"] .hero-name { animation: introduction-arrive 720ms cubic-bezier(.2,.7,.2,1) both; }
+[data-boot="revealing"] .hero-title { animation: introduction-arrive 720ms 100ms cubic-bezier(.2,.7,.2,1) both; }
+[data-boot="revealing"] .hero-links { animation: introduction-arrive 720ms 200ms cubic-bezier(.2,.7,.2,1) both; }
+[data-boot="revealing"] .hero > .scene-next { animation: sculpture-arrive 650ms 350ms ease-out both; }
+[data-boot="revealing"] .rotation-hint { animation: sculpture-arrive 400ms 650ms ease-out both; }
+@keyframes introduction-arrive {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes sculpture-arrive { from { opacity: 0; } to { opacity: 1; } }
 main { width: 47%; margin: 0; padding: 0 0 0 var(--content-left); }
 main > section { scroll-margin-top: 1.5rem; padding: 5.5rem 0 0; margin-top: 3rem; position: relative; border-top: 1px solid var(--divider); }
 .section-heading { margin: 0 0 3.8rem; color: var(--strong); font-size: clamp(1.55rem, 2.1vw, 2rem); font-weight: 500; letter-spacing: -0.02em; text-transform: capitalize; }
@@ -101,7 +114,7 @@ main > section { scroll-margin-top: 1.5rem; padding: 5.5rem 0 0; margin-top: 3re
 .entry[data-scene] + .entry[data-scene] { margin-top: 2rem; padding-top: 4.5rem; border-top: 1px solid #ffffff26; }
 .entry:last-child { margin-bottom: 0; }
 /* Titles identify each sculpture; secondary accents carry through links,
-   course codes and list markers without recoloring the reading text. */
+   course codes and key measurements without recoloring the reading text. */
 #education-uchicago { --scene-title: #d47783; --scene-accent: #e1a0aa; --scene-hover: #f4c8ce; }
 #education-drexel { --scene-title: #81b8ef; --scene-accent: #e7c565; --scene-hover: #f7e3a5; }
 #experience-mathworks { --scene-title: #75bce8; --scene-accent: #efb36b; --scene-hover: #f8d9b4; }
@@ -137,16 +150,20 @@ main > section { scroll-margin-top: 1.5rem; padding: 5.5rem 0 0; margin-top: 3re
 .entry-detail { margin: 0.8rem 0 0; font-size: 0.98rem; line-height: 1.65; }
 .entry-detail a { text-decoration: underline; text-decoration-color: #ffffff66; text-underline-offset: 0.2em; }
 .entry-detail strong { font-weight: 600; }
+.metric { color: var(--scene-accent); font-weight: 600; }
+li::marker { color: var(--strong); }
 .experience-points { margin: 1.2rem 0 0; padding-left: 1.1rem; font-size: 0.94rem; line-height: 1.65; }
 .experience-points li { padding-left: 0.15rem; margin: 0.9rem 0; }
-.experience-points li::marker { color: var(--scene-accent); font-size: 0.75em; }
+.experience-points li::marker { font-size: 0.75em; }
 .teaching-record, .awards-record { margin-top: 2.25rem; }
-.entry-subheading { margin: 0 0 0.9rem; font-size: 0.76rem; font-weight: 600; letter-spacing: 0.13em; text-transform: uppercase; color: var(--scene-accent); }
+.entry-subheading { margin: 0 0 0.9rem; font-size: 0.76rem; font-weight: 600; letter-spacing: 0.13em; text-transform: uppercase; color: var(--strong); }
 .course-list, .awards-list { list-style: none; padding: 0; margin: 0.9rem 0 0; }
 .course-list li { padding: 0.3rem 0; font-size: 0.91rem; }
 .course-code { white-space: nowrap; color: var(--scene-accent); font-size: 0.82rem; }
+#education-uchicago .course-code { color: #e7838f; }
 .awards-list li { position: relative; padding: 0.35rem 0 0.35rem 1rem; font-size: 0.92rem; line-height: 1.55; }
-.awards-list li::before { content: "·"; position: absolute; left: 0; color: var(--scene-accent); }
+.awards-list li::before { content: "·"; position: absolute; left: 0; color: var(--strong); }
+#education-drexel .awards-list { color: var(--scene-accent); }
 .project-feature { position: relative; min-height: var(--reading-height); padding: 1rem 0 6rem; }
 .project-feature + .project-feature { border-top: 1px solid var(--divider); padding-top: 3.5rem; }
 .project-feature .entry { margin: 0; }
@@ -160,8 +177,8 @@ main > section { scroll-margin-top: 1.5rem; padding: 5.5rem 0 0; margin-top: 3re
 }
 .open-project:hover { color: var(--scene-hover); background: #ffffff08; }
 .notes-list { list-style: none; margin: 0.65rem 0 0; padding: 0; font-size: 0.95rem; }
-.notes-list a, .notes-list a:visited { display: flex; align-items: center; min-height: 44px; padding: 0.5rem 0; line-height: 1.5; color: var(--scene-accent); }
-.notes-list a:hover { color: var(--scene-hover); text-decoration: underline; text-underline-offset: 0.2em; }
+.notes-list a, .notes-list a:visited { display: flex; align-items: center; min-height: 44px; padding: 0.5rem 0; line-height: 1.5; color: var(--scene-accent); text-decoration: underline; text-decoration-color: #d8edf355; text-decoration-thickness: 1px; text-underline-offset: 0.2em; }
+.notes-list a:hover { color: var(--scene-hover); text-decoration-color: currentColor; }
 .notes-category { margin: 1.9rem 0 0; color: var(--scene-title); font-size: 0.72rem; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; }
 .notes-category:first-child { margin-top: 0; }
 #notes { min-height: var(--reading-height); padding-bottom: 5rem; scroll-margin-bottom: var(--notes-tail); }
@@ -252,6 +269,8 @@ main > section { scroll-margin-top: 1.5rem; padding: 5.5rem 0 0; margin-top: 3re
 }
 [data-motion="off"] *, [data-motion="reduced"] * { transition: none !important; animation: none !important; }
 @media print {
+  .site-loader { display: none !important; }
+  [data-boot="loading"] .hero, [data-boot="loading"] main, [data-boot="loading"] .site-footer { opacity: 1 !important; }
   :root { color-scheme: light; --bg: white; --text: #222; --strong: #111; --muted: #444; --accent: #222; --divider: #ccc; }
   body, [data-scene] { --scene-title: #111 !important; --scene-accent: #222 !important; --scene-hover: #111 !important; }
   html { font-size: 11pt; scroll-snap-type: none; scroll-behavior: auto; }
@@ -267,6 +286,7 @@ main > section { scroll-margin-top: 1.5rem; padding: 5.5rem 0 0; margin-top: 3re
   [data-enhanced][data-motion="full"][data-experience-state="ready"] [data-scene] { opacity: 1; transform: none; transition: none; }
   .entry, .project-feature { break-inside: avoid; }
   .notes-list a { min-height: 0; padding: 0.2rem 0; }
+  #education-uchicago .course-code { color: var(--scene-accent); }
   .site-footer { width: auto; margin: 0; padding: 1rem 0; }
   a { text-decoration: underline; }
 }
