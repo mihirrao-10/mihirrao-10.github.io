@@ -62,11 +62,17 @@ function measure() {
   layoutDirty = false;
 }
 function updateScene() {
+  const previousTarget = state.target;
   state = chapterState(scrollY, ranges);
   if (lastChapter !== state.chapter) {
-    if (lastChapter) interaction.cancel();
+    if (lastChapter) {
+      if (previousTarget !== state.target) interaction.reset(world?.entryOrientation(state.target));
+      else interaction.cancel();
+    }
     lastChapter = state.chapter;
     body.dataset.chapter = state.chapter;
+    for (const element of sceneElements)
+      element.toggleAttribute('data-current-scene', element.dataset.scene === state.chapter);
   }
   body.dataset.sculpture = state.target;
   // Parsing a dense, hidden SVG on every live section change stalls scrolling.
@@ -119,7 +125,7 @@ function draw(now) {
   try {
     world.render({ state: visualState,
       pose: cameraPose(visualState, { time: orbitTime, pointer, fullMotion: true }),
-      time, project,
+      time, orbitTime, pointer, project, interactionTarget: state.target,
       interaction: { orientation: grab.orientation, rotation: grab.rotation, dragging: grab.dragging },
     });
     body.dataset.experienceState = 'ready';
@@ -208,6 +214,13 @@ function resume() {
 }
 on(document, 'visibilitychange', () => document.hidden ? suspend() : resume());
 on(window, 'pagehide', event => {
+  // Save into this existing entry without changing its URL or adding history.
+  // Startup can run before CSS or native scroll restoration on a cold return.
+  try {
+    const saved = history.state;
+    if (saved === null || (typeof saved === 'object' && !Array.isArray(saved)))
+      history.replaceState({ ...saved, portfolioReading: { href: location.href, y: window.scrollY } }, '');
+  } catch { /* Native restoration remains available when history writes fail. */ }
   suspend();
   if (!event.persisted) {
     disposed = true;
@@ -221,21 +234,25 @@ on(window, 'pageshow', resume);
 measure();
 updateScene();
 settlePresentation();
-// WebKit can restore the saved reading position, then revisit an old URL
-// fragment before pageshow even with snapping and this renderer disabled.
-// Preserve that already-restored position only for this full-history case.
+// WebKit can revisit an old fragment after restoring the reading position,
+// including after late fonts settle. Correct only that full-history case.
 const navigation = performance.getEntriesByType('navigation')[0];
-const returnAnchor = document.querySelector(':target')?.dataset.scene;
-if (navigation?.type === 'back_forward' && scrollY > 0 && returnAnchor && state.chapter !== returnAnchor) {
-  const restoredY = scrollY;
+let returnAnchor;
+try { returnAnchor = document.getElementById(decodeURIComponent(location.hash.slice(1)))?.dataset.scene; } catch {}
+const reading = history.state?.portfolioReading;
+if (navigation?.type === 'back_forward' && returnAnchor && reading?.href === location.href && Number.isFinite(reading.y) && reading.y >= 0) {
   let interrupted = false;
   for (const event of ['pointerdown', 'wheel', 'keydown'])
     on(window, event, () => { interrupted = true; }, { once: true, passive: true });
-  on(window, 'pageshow', event => {
+  on(window, 'pageshow', async event => {
     if (event.persisted || interrupted) return;
+    await document.fonts?.ready;
+    await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+    if (disposed || interrupted || location.href !== reading.href) return;
     measure();
+    if (chapterState(reading.y, ranges).chapter === returnAnchor) return;
     if (chapterState(window.scrollY, ranges).chapter !== returnAnchor) return;
-    window.scrollTo({ top: restoredY, behavior: 'instant' });
+    window.scrollTo({ top: reading.y, behavior: 'instant' });
     scrollY = window.scrollY;
     invalidate();
   }, { once: true });

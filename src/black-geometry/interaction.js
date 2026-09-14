@@ -27,6 +27,11 @@ export function createInteraction({ element, hint, onChange = () => {} }) {
     releaseCapture(id);
     publish();
   }
+  function reset(restoredOrientation = [0, 0, 0, 1]) {
+    cancel();
+    rotation = [0, 0]; orientation = [...restoredOrientation];
+    publish();
+  }
   function addRotation(pitch, yaw) {
     const angle = Math.hypot(pitch, yaw);
     if (!angle) return;
@@ -124,6 +129,7 @@ export function createInteraction({ element, hint, onChange = () => {} }) {
     snapshot,
     setEnabled,
     cancel,
+    reset,
     step(delta) {
       if (!enabled || dragging || pending || !Number.isFinite(delta) || delta <= 0) return;
       const decay = Math.exp(-DRAG_DECAY * delta);

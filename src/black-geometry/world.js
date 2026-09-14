@@ -1,17 +1,19 @@
 import * as THREE from "three";
 import { QUALITY } from "./preferences.js";
+import { cameraPose } from "./scene-state.js";
 
 export const SCULPTURE_PALETTES = Object.freeze({
-  hero: ["#6c2de4", "#e4429c", "#ff7625", "#ffe85b"],
+  hero: ["#5146c8", "#a08af5", "#df82a4", "#ffe2bd"],
   phoenix: ["#580000", "#800000", "#767676", "#D6D6CE"],
   dragon: ["#063766", "#087fcc", "#f4b411", "#fff176"],
   membrane: ["#066ae2", "#31d3ef", "#ff6c18", "#ffcf4f"],
-  resolution: ["#164ce6", "#2bafff", "#ed244a", "#ff6e88"],
+  resolution: ["#202945", "#476cba", "#e53e51", "#ff6a6b"],
   surface: ["#093fbc", "#126dff", "#08c7ba", "#69ffe1"],
-  congestion: ["#7514bc", "#d73580", "#ff5035", "#ffd239"],
+  congestion: ["#ae1425", "#f13b30", "#ff6729", "#ffb24b"],
   notes: ["#bbcbdc", "#e2edfa", "#edf3fc", "#ffffff"],
 });
 export const SCULPTURE_STYLE = Object.freeze({ scale: .84, opacity: .88 });
+export const sculptureOpacity = name => name === 'notes' ? .70 : SCULPTURE_STYLE.opacity;
 
 /** Smooth coincident corners without rounding genuine creases or changing data positions. */
 export function smoothSurfaceNormals(position, creaseCosine = 0.65) {
@@ -159,7 +161,7 @@ void main(){
   face=mix(face,thread,edge*.66);
   float spark=pow(max(vBarycentric.x,max(vBarycentric.y,vBarycentric.z)),35.0);
   face+=mix(base,vec3(.8,.9,1.0),.28)*spark*shimmer*.48;
-  gl_FragColor=vec4(face,mix(opacity,.98,edge));
+  gl_FragColor=vec4(face,mix(opacity,min(.98,opacity+.18),edge));
   #include <colorspace_fragment>
 }`;
 // TubeGeometry normally redistributes samples by arc length. These paths are
@@ -203,7 +205,8 @@ export async function createWorld({container,quality="high",onFailure}) {
   renderer.debug.onShaderError=()=>{shaderFailed=true;};
   const contextLost=event=>{event.preventDefault();onFailure(new Error("WebGL context lost"));};canvas.addEventListener("webglcontextlost",contextLost);
   const scene=new THREE.Scene(),pivot=new THREE.Group();scene.add(pivot);
-  const camera=new THREE.PerspectiveCamera(35,1,.1,60),dragQuaternion=new THREE.Quaternion(),inverseView=new THREE.Quaternion(),fitRotation=new THREE.Quaternion();
+  const camera=new THREE.PerspectiveCamera(35,1,.1,60),entryCamera=new THREE.PerspectiveCamera(),dragQuaternion=new THREE.Quaternion(),inverseView=new THREE.Quaternion(),fitRotation=new THREE.Quaternion();
+  let orbitClock=0;
   let userRotation=[0,0],userOrientation=[0,0,0,1],dragging=false;
   const count=packed.manifest.count,bary=new Float32Array(count*9),facetSeeds=new Float32Array(count*3),decoded=new Map();
   for(let i=0;i<count;i++){
@@ -237,7 +240,7 @@ export async function createWorld({container,quality="high",onFailure}) {
     for(const [attribute,array] of Object.entries({position,normal,surfaceColor:color,barycentric:bary}))geometry.setAttribute(attribute,new THREE.BufferAttribute(array,3));
     geometry.setAttribute('facetSeed',new THREE.BufferAttribute(facetSeeds,1));
     const finite=position.every(Number.isFinite)&&normal.every(Number.isFinite);
-    const result={position,color,normal,bounds,geometry,finite};decoded.set(name,result);return result;
+    const result={name,position,color,normal,bounds,geometry,finite,orbitStart:orbitClock,orientation:[0,0,0,1]};decoded.set(name,result);return result;
   }
   let activeModels=[];
   function updatePair(a,b){
@@ -248,6 +251,7 @@ export async function createWorld({container,quality="high",onFailure}) {
       // meshes can reference it safely; only one endpoint is visible.
       meshes[i].geometry=activeModels[i].geometry;
       depthMeshes[i].geometry=activeModels[i].geometry;
+      meshes[i].material.uniforms.opacity.value=sculptureOpacity(i?b:a);
       SCULPTURE_PALETTES[i?b:a].forEach((color,k)=>meshes[i].material.uniforms[`palette${k}`].value.set(color));
     }
     finiteActiveBuffers=activeModels.every(model=>model.finite);
@@ -257,10 +261,11 @@ export async function createWorld({container,quality="high",onFailure}) {
   const routes=[];
   for(const model of packed.manifest.models)for(const path of model.paths){
     const points=path.points,count=points.length/3,context=path.kind==="context";
-    const color=context?0xe9d6d5:model.name==="surface"?0xb7fff0:0xffeedf;
+    const color=context?0xe9d6d5:model.name==="surface"?0xb7fff0:0xffd18a;
     let line,unitsPerPoint=1;
-    if(model.name==="surface"){
-      line=new THREE.Mesh(new THREE.TubeGeometry(new PreparedPath(points),count-1,.013,8,false),new THREE.MeshBasicMaterial({color,transparent:true,depthWrite:false}));unitsPerPoint=48;
+    if(model.name==="surface"||model.name==="congestion"){
+      const radius=model.name==="congestion"?.027:.013;
+      line=new THREE.Mesh(new THREE.TubeGeometry(new PreparedPath(points),count-1,radius,8,false),new THREE.MeshBasicMaterial({color,transparent:true,depthWrite:false}));unitsPerPoint=48;
     }else{
       const geometry=new THREE.BufferGeometry().setAttribute("position",new THREE.Float32BufferAttribute(points,3));
       line=new THREE.Line(geometry,new THREE.LineBasicMaterial({color,depthTest:true,transparent:true,depthWrite:false}));
@@ -279,21 +284,33 @@ export async function createWorld({container,quality="high",onFailure}) {
   updatePair("hero","hero");resize(0,0,devicePixelRatio);
   return {
     resize,setQuality(next){currentQuality=next;resize();},
-    render({state,pose,time,project,interaction}){
+    // Reversing a still-visible transition resumes that visit; a target evicted
+    // from the two-entry cache starts fresh the next time it is decoded.
+    entryOrientation:name=>decoded.get(name)?.orientation.slice(),
+    render({state,pose,time,orbitTime=time,pointer=[0,0],project,interaction,interactionTarget=state.nextTarget||state.target}){
       if(disposed)return;
+      orbitClock=orbitTime;
       currentName=state.target||"hero";nextName=state.nextTarget||currentName;updatePair(currentName,nextName);
       blend=currentName===nextName?0:THREE.MathUtils.clamp(state.blend,0,1);gradientTime=time;
       const elevation=pose?.[3]||0,azimuth=pose?.[4]||0;
       camera.position.set(Math.cos(elevation)*Math.sin(azimuth),Math.sin(elevation),Math.cos(elevation)*Math.cos(azimuth));
       camera.lookAt(0,0,0);camera.rotateZ(pose?.[5]||0);
       userRotation=interaction?.rotation||[0,0];userOrientation=interaction?.orientation||[0,0,0,1];dragging=!!interaction?.dragging;
-      dragQuaternion.fromArray(userOrientation).normalize();inverseView.copy(camera.quaternion).invert();
-      pivot.quaternion.copy(camera.quaternion).multiply(dragQuaternion).multiply(inverseView);
-      fitRotation.copy(dragQuaternion).multiply(inverseView);
-      // Each identity owns its fit, independent of which other endpoint is
-      // active. Uniform scaling is equivalent to moving its camera by 1/scale,
-      // so perspective clearance is preserved without a pair-change zoom pop.
-      fitScales=activeModels.map(model=>SCULPTURE_STYLE.scale*orbitRadius/fitSurfaceDistance(model.bounds,fitRotation,camera.aspect));
+      // Each endpoint retains its own visit clock and last drag orientation.
+      // The outgoing sculpture keeps moving continuously while the incoming
+      // one opens at its authored view, without a shared-camera reset jump.
+      fitScales=activeModels.map((model,index)=>{
+        if(model.name===interactionTarget)model.orientation=[...userOrientation];
+        const localPose=cameraPose({target:model.name,nextTarget:model.name,blend:0},{time:Math.max(0,orbitClock-model.orbitStart),pointer});
+        const elevation=localPose[3],azimuth=localPose[4];
+        entryCamera.position.set(Math.cos(elevation)*Math.sin(azimuth),Math.sin(elevation),Math.cos(elevation)*Math.cos(azimuth));
+        entryCamera.lookAt(0,0,0);entryCamera.rotateZ(localPose[5]);
+        dragQuaternion.fromArray(model.orientation).normalize();inverseView.copy(entryCamera.quaternion).invert();
+        fitRotation.copy(dragQuaternion).multiply(inverseView);
+        meshes[index].quaternion.copy(camera.quaternion).multiply(fitRotation);
+        depthMeshes[index].quaternion.copy(meshes[index].quaternion);
+        return SCULPTURE_STYLE.scale*orbitRadius/fitSurfaceDistance(model.bounds,fitRotation,camera.aspect);
+      });
       meshes.forEach((mesh,index)=>{mesh.scale.setScalar(fitScales[index]);depthMeshes[index].scale.copy(mesh.scale);});
       camera.position.multiplyScalar(orbitRadius);
       meshes[0].visible=blend<1;meshes[1].visible=currentName!==nextName&&blend>0;
@@ -303,6 +320,7 @@ export async function createWorld({container,quality="high",onFailure}) {
         const presence=currentName===route.model?1-blend:nextName===route.model?blend:0;
         // Prepared route and host sculpture share the same presentation scale.
         route.line.scale.setScalar(currentName===route.model?fitScales[0]:fitScales[1]);
+        route.line.quaternion.copy(meshes[currentName===route.model?0:1].quaternion);
         route.line.material.opacity=presence*(route.kind==="context"?.38:1);
         route.line.visible=presence>.001&&(route.kind==="route"||route.kind===project.shortcut||route.kind==="boundary"||route.kind==="context");
         route.shown=Math.max(2,Math.floor(route.count*(route.model==="surface"?project.path:1)));
@@ -310,7 +328,7 @@ export async function createWorld({container,quality="high",onFailure}) {
       }
       renderer.render(scene,camera);if(shaderFailed)throw new Error("Sculpture shader initialization failed");frames++;
     },
-    snapshot:()=>({frames,drawCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles,quality:currentQuality,dpr:renderer.getPixelRatio(),geometries:renderer.info.memory.geometries,contextLost:renderer.getContext().isContextLost(),target:currentName,nextTarget:nextName,blend,opacity:meshes[0].material.uniforms.opacity.value,opaque:meshes.every(mesh=>!mesh.material.transparent),depthPrepass:depthMeshes.every((depth,i)=>depth.geometry===meshes[i].geometry&&depth.material.uniforms===meshes[i].material.uniforms&&depth.material.depthWrite&&!depth.material.colorWrite&&depth.visible===meshes[i].visible&&depth.scale.equals(meshes[i].scale)),presentationScale:SCULPTURE_STYLE.scale,gradientTime,activeMeshes:meshes.filter(m=>m.visible).length,activeDepthMeshes:depthMeshes.filter(m=>m.visible).length,shading:"tessellated",camera:camera.position.toArray(),cameraOrientation:camera.quaternion.toArray(),rotation:[...userRotation],userOrientation:[...userOrientation],orientation:pivot.quaternion.toArray(),dragging,facets:count,decodedTargets:decoded.size,finiteActiveBuffers,visibleRoutes:routes.filter(r=>r.line.visible).map(r=>r.kind),activePathPoints:routes.filter(r=>r.line.visible).map(r=>r.shown),width,height,orbitRadius,fitScales:[...fitScales]}),
+    snapshot:()=>({frames,drawCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles,quality:currentQuality,dpr:renderer.getPixelRatio(),geometries:renderer.info.memory.geometries,contextLost:renderer.getContext().isContextLost(),target:currentName,nextTarget:nextName,blend,opacity:meshes[0].material.uniforms.opacity.value,opaque:meshes.every(mesh=>!mesh.material.transparent),depthPrepass:depthMeshes.every((depth,i)=>depth.geometry===meshes[i].geometry&&depth.material.uniforms===meshes[i].material.uniforms&&depth.material.depthWrite&&!depth.material.colorWrite&&depth.visible===meshes[i].visible&&depth.scale.equals(meshes[i].scale)&&depth.quaternion.equals(meshes[i].quaternion)),presentationScale:SCULPTURE_STYLE.scale,gradientTime,orbitAges:activeModels.map(model=>Math.max(0,orbitClock-model.orbitStart)),endpointOpacities:meshes.map(mesh=>mesh.material.uniforms.opacity.value),activeMeshes:meshes.filter(m=>m.visible).length,activeDepthMeshes:depthMeshes.filter(m=>m.visible).length,shading:"tessellated",camera:camera.position.toArray(),cameraOrientation:camera.quaternion.toArray(),rotation:[...userRotation],userOrientation:[...userOrientation],orientation:meshes[0].quaternion.toArray(),dragging,facets:count,decodedTargets:decoded.size,finiteActiveBuffers,visibleRoutes:routes.filter(r=>r.line.visible).map(r=>r.kind),activePathPoints:routes.filter(r=>r.line.visible).map(r=>r.shown),width,height,orbitRadius,fitScales:[...fitScales]}),
     dispose(){if(disposed)return;disposed=true;canvas.removeEventListener("webglcontextlost",contextLost);[...meshes,...depthMeshes].forEach(mesh=>mesh.material.dispose());for(const model of decoded.values())model.geometry.dispose();routes.forEach(({line})=>{line.geometry.dispose();line.material.dispose();});decoded.clear();renderer.dispose();canvas.remove();},
   };
 }

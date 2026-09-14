@@ -34,6 +34,7 @@ test("teaching and awards belong to their education entries and removed sections
   assert.equal(hasClass(degreeLines[0], "entry-role"), true);
   assert.equal(degreeLines[1], honors);
   assert.equal(normalize(text(all(chicago, (node) => hasClass(node, "degree-specialization"))[0])), "Specialization | Artificial Intelligence Foundations");
+  assert.doesNotMatch(normalize(text(chicago)), /Interests\s*\|/);
   const awards = all(drexel, (node) => hasClass(node, "awards-list"))
     .flatMap((list) => all(list, (node) => node.tagName === "li")).map((node) => normalize(text(node)));
   assert.deepEqual(awards, ["A* Award", "Jeffrey L. Popyack Teaching Assistant Award", "Student Teaching Excellence Award"]);
@@ -51,7 +52,7 @@ test("minimal navigation retains a native return link and opens projects in sepa
   assert.equal(attr(footerLinks[0], "href"), "#top");
   assert.equal(normalize(text(footer)), "Back to top");
   const projects = all(doc, (node) => attr(node, "id") === "personal-projects")[0];
-  const links = all(projects, (node) => node.tagName === "a");
+  const links = all(projects, (node) => node.tagName === "a" && !hasClass(node, "scene-next"));
   assert.equal(links.length, 4);
   for (const link of links) {
     assert.equal(attr(link, "target"), "_blank");
@@ -59,6 +60,24 @@ test("minimal navigation retains a native return link and opens projects in sepa
   }
   assert.equal(all(projects, (node) => hasClass(node, "open-project")).length, 2);
   assert.doesNotMatch(normalize(text(projects)), /Categories|Replay path|Shortcut open|Shortcut closed/);
+});
+test("next-entry cues have accessible names and follow the native reading order", async () => {
+  const doc = parse(await fs.readFile(new URL("index.html", root), "utf8"));
+  const scenes = all(doc, (node) => attr(node, "data-scene"));
+  const cues = all(doc, (node) => hasClass(node, "scene-next"));
+  assert.equal(cues.length, 7);
+  for (let index = 0; index < cues.length; index++) {
+    const cue = cues[index];
+    assert.equal(cue.tagName, "a");
+    assert.equal(cue.parentNode, scenes[index]);
+    assert.equal(attr(cue, "href"), `#${attr(scenes[index + 1], "id")}`);
+    assert.ok(attr(cue, "aria-label")?.length > 10);
+    assert.equal(attr(cue, "target"), undefined);
+    assert.equal(attr(cue, "tabindex"), undefined);
+    const icon = all(cue, (node) => node.tagName === "svg")[0];
+    assert.equal(attr(icon, "aria-hidden"), "true");
+    assert.equal(attr(icon, "focusable"), "false");
+  }
 });
 test("industry roles remain concise while all eight resume bullets retain their metrics", async () => {
   const doc = parse(await fs.readFile(new URL("index.html", root), "utf8"));

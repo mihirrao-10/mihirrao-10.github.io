@@ -172,12 +172,13 @@ export function createDragon() {
     [-1.16, 1.48, 0.15, 0.24, 0.23], [-1.42, 1.73, 0.17, 0.26, 0.26],
   ], { rings: 34, sides: 14 });
 
-  loft('Long articulated tail', [
+  const tailControls = [
     [0.59, -0.44, -0.15, 0.38, 0.35], [1.15, -0.61, -0.18, 0.33, 0.30],
     [1.75, -0.86, -0.12, 0.25, 0.24], [2.32, -0.78, 0.04, 0.19, 0.19],
     [2.73, -0.43, 0.20, 0.135, 0.13], [2.88, 0.13, 0.29, 0.090, 0.085],
     [2.88, 0.60, 0.30, 0.055, 0.05], [2.62, 0.82, 0.31, 0.002, 0.002],
-  ], { rings: 36, sides: 10, rib: 0.025 });
+  ];
+  loft('Long articulated tail', tailControls, { rings: 36, sides: 10, rib: 0.025 });
 
   // Far-side limbs are displaced enough to keep four readable claw forms.
   const limb = (name, controls, material = materials.body) => loft(name, controls, { rings: 13, sides: 10, material });
@@ -230,6 +231,14 @@ export function createDragon() {
   loft('Back cheek horn', [[-1.17, 1.75, 0.39, 0.10], [-0.94, 1.87, 0.54, 0.05], [-0.80, 2.01, 0.58, 0.002]], { rings: 7, sides: 6, material: materials.gold });
   loft('Small chin barb', [[-1.59, 1.50, 0.22, 0.065], [-1.47, 1.35, 0.24, 0.035], [-1.33, 1.40, 0.21, 0.002]], { rings: 6, sides: 6, material: materials.oldGold });
 
+  // Give the far side the same small facial landmarks. These are recessed
+  // around the existing skull, so rotation reveals anatomy without a new head.
+  for (const name of ['Sculpted near cheekbone', 'Angular eye socket', 'Gold slit eye', 'Heavy sculpted brow', 'Near nostril recess']) {
+    const original = dragon.getObjectByName(name);
+    const geometry = original.geometry.clone().scale(1, 1, -1).translate(0, 0, 0.32);
+    add(`Far ${name.toLowerCase()}`, geometry, original.material);
+  }
+
   // Shorter skull proportion and a thin, tapered muzzle avoid the broad mascot
   // head. The eyes, cheeks and crown share the authored anatomical transform.
   const headNames = /skull|lower jaw|cheekbone|eye|brow|nostril|tooth|crown horn|cheek horn|chin barb/;
@@ -257,6 +266,31 @@ export function createDragon() {
       const z = 0.40 + 0.08 * Math.sin(i / 4 * Math.PI) - row * 0.012;
       plate(`Faceted flank scute ${row}-${i}`, [[x - 0.10, y, z], [x, y + 0.12, z], [x + 0.14, y, z], [x + 0.01, y - 0.10, z]], 0.035, (row + i) % 4 === 0 ? materials.blueRidge : materials.litBlue, 0.87);
     }
+  }
+
+  // Small overlapping neck scutes stay inside the neck outline. Their low
+  // relief catches light without enlarging the gold ventral armor or silhouette.
+  for (let row = 0; row < 3; row++) for (let column = 0; column < 2; column++) {
+    const x = -1.14 + row * 0.063 + column * 0.14, y = 1.25 - row * 0.20;
+    const z = 0.343 + row * 0.007;
+    plate(`Neck imbricate scute ${row}-${column}`, [[x - 0.055, y + 0.065, z], [x + 0.065, y + 0.045, z], [x + 0.075, y - 0.015, z], [x, y - 0.085, z]], 0.023, column ? materials.litBlue : materials.body, 0.90);
+  }
+
+  // Follow the original tail centerline and cross-section radii rather than
+  // placing disconnected decorative scales beside its curved surface.
+  const tailCurve = new THREE.CatmullRomCurve3(tailControls.map(p => V(p.slice(0, 3))), false, 'catmullrom', 0.35);
+  for (let i = 0; i < 11; i++) {
+    const t = 0.17 + i * 0.058, center = tailCurve.getPoint(t), tangent = tailCurve.getTangent(t);
+    const along = new THREE.Vector3(tangent.x, tangent.y, 0).normalize();
+    const across = new THREE.Vector3(-along.y, along.x, 0);
+    const at = Math.min(tailControls.length - 2, Math.floor(t * (tailControls.length - 1)));
+    const f = t * (tailControls.length - 1) - at;
+    const radius = THREE.MathUtils.lerp(tailControls[at][4], tailControls[at + 1][4], f);
+    center.z += radius * 0.97;
+    const length = 0.045 + radius * 0.25, width = radius * 0.28;
+    const outline = [[-length, -width], [-length * 0.72, width], [length * 0.28, width * 0.80], [length, 0], [length * 0.28, -width * 0.80]]
+      .map(([a, b]) => center.clone().addScaledVector(along, a).addScaledVector(across, b).toArray());
+    plate(`Tail keeled scute ${i + 1}`, outline, Math.min(0.027, radius * 0.17), i % 4 === 0 ? materials.blueRidge : materials.litBlue, 0.87);
   }
 
   const crest = [

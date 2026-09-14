@@ -14,45 +14,74 @@ function meshFrom(positions, colors, indices, name) {
   return mesh;
 }
 
-/** An original faceted ribbon around a genuine (2,3) torus-knot centerline. */
+export const RESOLUTION_FLAG = Object.freeze({
+  width: 5.8,
+  height: 5.8 * 7.29508 / 15.6471,
+  thickness: 0.20,
+  segments: 120,
+  red: "#e53e51",
+  blue: "#202945",
+  source: "https://www.resolutionlife.com/media/pfglbg3u/logo.svg",
+});
+
+/**
+ * Original shallow 3D interpretation of Resolution Life's right-triangle flag.
+ * Its vertical hoist, horizontal upper edge and rising lower edge follow the
+ * official mark; the folded depth, blue reverse and narrow rim are authored.
+ */
 export function createResolution() {
   const root = new THREE.Group();
-  root.name = "trefoil-ribbon";
-  const positions = [], colors = [], indices = [];
-  const steps = 512, sides = 24;
-  const blue = new THREE.Color("#187fe8"), red = new THREE.Color("#f12f57");
-  const color = new THREE.Color(), rim = new THREE.Color("#f6ece5");
-  for (let i = 0; i < steps; i++) {
-    const t = i / steps * Math.PI * 2;
-    const c2 = Math.cos(2 * t), s2 = Math.sin(2 * t);
-    const c3 = Math.cos(3 * t), s3 = Math.sin(3 * t);
-    const radius = 1.48 + 0.52 * c3;
-    const center = new THREE.Vector3(radius * c2, radius * s2, 0.52 * s3);
-    const tangent = new THREE.Vector3(-1.56 * s3 * c2 - 2 * radius * s2,
-      -1.56 * s3 * s2 + 2 * radius * c2, 1.56 * c3).normalize();
-    const normal = new THREE.Vector3(c3 * c2, c3 * s2, s3);
-    const binormal = new THREE.Vector3().crossVectors(tangent, normal).normalize();
-    const warm = THREE.MathUtils.smoothstep(s3, -0.28, 0.28);
-    for (let j = 0; j < sides; j++) {
-      const theta = j / sides * Math.PI * 2;
-      const point = center.clone()
-        .addScaledVector(normal, 0.265 * Math.cos(theta))
-        .addScaledVector(binormal, 0.063 * Math.sin(theta));
-      positions.push(point.x, point.y, point.z);
-      color.copy(blue).lerp(red, warm);
-      color.lerp(rim, 0.12 * Math.abs(Math.sin(theta)) ** 8);
+  root.name = "resolution-life-folded-flag";
+  const positions = [], colors = [], indices = [], rows = [];
+  const { width, height, thickness, segments } = RESOLUTION_FLAG;
+  const red = new THREE.Color(RESOLUTION_FLAG.red), blue = new THREE.Color(RESOLUTION_FLAG.blue);
+  const color = new THREE.Color();
+  // A regular barycentric lattice covers the triangular domain exactly. The
+  // shallow crest adds physical depth without cutting holes or adding lobes.
+  for (let i = 0; i <= segments; i++) {
+    const row = [];
+    for (let j = 0; j <= segments - i; j++) {
+      const u = i / segments, v = j / segments, edge = Math.min(u, v, 1 - u - v);
+      const depth = 0.44 * Math.sin(Math.PI * u) + 0.12 * v
+        + 0.08 * Math.sin(Math.PI * v) * Math.sin(2 * Math.PI * u);
+      row.push(positions.length / 3);
+      positions.push(width * (u - .5), height * (.5 - v), depth + thickness / 2);
+      // A small blue reveal makes the reverse material legible from the front;
+      // the broad face remains red, as in the official flat symbol.
+      color.copy(blue).lerp(red, THREE.MathUtils.smoothstep(edge, .006, .026));
       colors.push(color.r, color.g, color.b);
-      const a = i * sides + j, b = ((i + 1) % steps) * sides + j;
-      const c = ((i + 1) % steps) * sides + (j + 1) % sides;
-      const d = i * sides + (j + 1) % sides;
-      indices.push(a, c, b, a, d, c);
+    }
+    rows.push(row);
+  }
+  const frontCount = positions.length / 3;
+  for (let i = 0; i < frontCount; i++) {
+    positions.push(positions[i * 3], positions[i * 3 + 1], positions[i * 3 + 2] - thickness);
+    colors.push(blue.r, blue.g, blue.b);
+  }
+  for (let i = 0; i < segments; i++) for (let j = 0; j < segments - i; j++) {
+    const a = rows[i][j], b = rows[i + 1][j], c = rows[i][j + 1];
+    indices.push(a, c, b, a + frontCount, b + frontCount, c + frontCount);
+    if (i + j < segments - 1) {
+      const d = rows[i + 1][j + 1];
+      indices.push(b, c, d, b + frontCount, d + frontCount, c + frontCount);
     }
   }
-  root.add(meshFrom(positions, colors, indices, "red-blue-trefoil-band"));
-  root.rotation.set(0.27, -0.34, 0.19);
+  const boundary = [];
+  for (let j = 0; j <= segments; j++) boundary.push(rows[0][j]);
+  for (let i = 1; i <= segments; i++) boundary.push(rows[i][segments - i]);
+  for (let i = segments - 1; i > 0; i--) boundary.push(rows[i][0]);
+  for (let i = 0; i < boundary.length; i++) {
+    const a = boundary[i], b = boundary[(i + 1) % boundary.length];
+    indices.push(a, a + frontCount, b, b, a + frontCount, b + frontCount);
+  }
+  root.add(meshFrom(positions, colors, indices, "red-flag-blue-reverse"));
+  root.rotation.set(-0.10, 0.35, 0);
   root.userData = {
-    identity: "resolution", equation: "C(t)=((1.48+0.52cos3t)cos2t,(1.48+0.52cos3t)sin2t,0.52sin3t)",
-    meaning: "Abstract mathematical interlude; not a company symbol or financial visualization",
+    identity: "resolution", source: RESOLUTION_FLAG.source,
+    meaning: "Original 3D interpretation of Resolution Life's triangular flag symbol",
+    reference: "Official header symbol: vertical left edge, horizontal top edge, red triangle above the blue wordmark",
+    authored: "Shallow fold, solid thickness, blue reverse and narrow blue rim; not official 3D brand artwork",
+    palette: { red: RESOLUTION_FLAG.red, blue: RESOLUTION_FLAG.blue },
   };
   return root;
 }

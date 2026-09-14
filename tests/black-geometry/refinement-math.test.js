@@ -137,11 +137,61 @@ test("notes triangulation is closed and nonorientable with finite ice-only color
   } finally { dispose(group); }
 });
 
-test("the trefoil ribbon closes both longitudinal and cross-section seams", () => {
+test("Resolution Life is a closed triangular flag solid with shallow authored depth", () => {
   const group = createResolution();
   try {
-    const mesh = group.children.find((object) => object.isMesh);
-    assert.deepEqual(topology(mesh.geometry), { components: 1, boundaryLoops: 0, euler: 0 },
-      "The prepared ribbon is a closed tube surface, not a set of disconnected strips");
+    const geometry = group.children.find(object => object.isMesh).geometry;
+    assert.deepEqual(topology(geometry), { components: 1, boundaryLoops: 0, euler: 2 },
+      "The flag is a solid triangular sheet, without the obsolete trefoil's handle");
+    assert.equal(isOrientable(geometry), true);
+    const p = geometry.attributes.position, indices = geometry.index.array;
+    const minimum = [Infinity, Infinity, Infinity], maximum = [-Infinity, -Infinity, -Infinity];
+    const point = i => [p.getX(i), p.getY(i), p.getZ(i)];
+    for (let i = 0; i < p.count; i++) for (let k = 0; k < 3; k++) {
+      const value = point(i)[k];
+      assert.ok(Number.isFinite(value));
+      minimum[k] = Math.min(minimum[k], value); maximum[k] = Math.max(maximum[k], value);
+    }
+    const width = maximum[0] - minimum[0], height = maximum[1] - minimum[1];
+    assert.ok(Math.abs(width / height - 15.6471 / 7.29508) < .000001,
+      "The official flag's width/height proportion must survive authoring");
+    assert.ok(maximum[2] - minimum[2] > .5 && maximum[2] - minimum[2] < 1,
+      "The flag has a shallow physical fold, rather than becoming a flat card or bulky volume");
+    for (let i = 0; i < p.count; i++) {
+      const u = (p.getX(i) - minimum[0]) / width, v = (maximum[1] - p.getY(i)) / height;
+      assert.ok(u >= -1e-7 && v >= -1e-7 && u + v <= 1 + 1e-7,
+        "Every vertex must project inside the right triangle with a horizontal top and ascending lower edge");
+    }
+    let signedVolume = 0, frontArea = 0;
+    for (let i = 0; i < indices.length; i += 3) {
+      const [a, b, c] = [0, 1, 2].map(j => point(indices[i + j]));
+      const cross = [b[1]*c[2]-b[2]*c[1], b[2]*c[0]-b[0]*c[2], b[0]*c[1]-b[1]*c[0]];
+      signedVolume += a.reduce((sum, value, k) => sum + value * cross[k], 0) / 6;
+      const areaZ = ((b[0]-a[0])*(c[1]-a[1])-(b[1]-a[1])*(c[0]-a[0])) / 2;
+      if (areaZ > 0) frontArea += areaZ;
+    }
+    assert.ok(Math.abs(frontArea - width * height / 2) < .00001,
+      "The actual front triangles cover the reference silhouette without gaps or overlaps");
+    assert.ok(Math.abs(signedVolume - width * height / 2 * .20) < .00001,
+      "The closed flag retains its authored solid thickness throughout the fold");
+    assert.ok(indices.length / 3 > 20000 && indices.length / 3 <= 65536);
+  } finally { dispose(group); }
+});
+
+test("Resolution Life keeps a predominantly red front and a distinctly blue reverse", () => {
+  const group = createResolution();
+  try {
+    const geometry = group.children.find(object => object.isMesh).geometry;
+    const { position: p, color } = geometry.attributes, indices = geometry.index.array;
+    let front = 0, red = 0, back = 0, blue = 0;
+    for (let i = 0; i < indices.length; i += 3) {
+      const [a, b, c] = [indices[i], indices[i+1], indices[i+2]];
+      const area = ((p.getX(b)-p.getX(a))*(p.getY(c)-p.getY(a))-(p.getY(b)-p.getY(a))*(p.getX(c)-p.getX(a))) / 2;
+      const rgb = [0,1,2].map(k => [a,b,c].reduce((sum, index) => sum + color.array[index*3+k], 0) / 3);
+      if (area > 0) { front += area; if (rgb[0] > 4 * rgb[2]) red += area; }
+      if (area < 0) { back -= area; if (rgb[2] > 2 * rgb[0]) blue -= area; }
+    }
+    assert.ok(red / front > .80, "The narrow blue reveal cannot overwhelm the official red flag face");
+    assert.ok(blue / back > .99, "The authored reverse must retain the companion blue color during orbit");
   } finally { dispose(group); }
 });

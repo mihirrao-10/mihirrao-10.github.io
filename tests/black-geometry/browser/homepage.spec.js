@@ -49,7 +49,7 @@ function assertActiveGeometry(state, target) {
   expect(state.profile).toBe('high');
   expect(state.world.quality).toBe('high');
   expect(state.world.opaque).toBe(false);
-  expect(state.world.opacity).toBeCloseTo(0.88, 3);
+  expect(state.world.opacity).toBeCloseTo(target === 'notes' ? 0.70 : 0.88, 3);
   expect(state.world.depthPrepass).toBe(true);
   expect(state.world.shading).toBe('tessellated');
   expect(state.world.presentationScale).toBeCloseTo(0.84, 3);
@@ -180,7 +180,7 @@ test('stopping at a former partial-scroll position finishes the selected sculptu
     expect(samples.every(sample => sample.target === sample.next && sample.desiredBlend === 0 && sample.decoded <= 2)).toBe(true);
     const moving = samples.filter(sample => sample.blend > 0 && sample.blend < 1);
     observedTransitions += moving.length;
-    expect(moving.every(sample => !sample.opaque && sample.opacity === 0.88 && sample.depthPrepass && sample.activeMeshes === 2 && sample.activeDepthMeshes === 2)).toBe(true);
+    expect(moving.every(sample => !sample.opaque && sample.opacity === (sample.worldTarget === 'notes' ? .70 : .88) && sample.depthPrepass && sample.activeMeshes === 2 && sample.activeDepthMeshes === 2)).toBe(true);
     const final = samples.at(-1);
     expect(final.blend).toBe(0);
     expect(final.worldTarget).toBe(final.target);
@@ -231,6 +231,78 @@ test('mouse dragging follows screen directions after prior rotations, with a pau
   await page.mouse.up();
   await expect.poll(async () => (await snapshot(page)).interaction.dragging).toBe(false);
   await expect.poll(async () => (await snapshot(page)).orbitTime).toBeGreaterThan(held.orbitTime);
+});
+
+test('MathWorks and Resolution start at their authored view on later visits without inherited drag', async ({ page }) => {
+  test.setTimeout(45000);
+  await ready(page);
+  await page.locator('.world').focus(); await page.keyboard.press('ArrowRight');
+  await page.waitForTimeout(1400);
+  for (const id of ['experience-mathworks', 'experience-resolution', 'experience-mathworks']) {
+    await jump(page, id);
+    const state = await snapshot(page);
+    expect(state.interaction.orientation).toEqual([0, 0, 0, 1]);
+    const effective = new THREE.Quaternion(...state.world.cameraOrientation).invert().multiply(new THREE.Quaternion(...state.world.orientation));
+    expect(effective.angleTo(new THREE.Quaternion())).toBeLessThan(.07);
+    expect(state.world.orbitAges[0]).toBeLessThan(1.6);
+    await page.locator('.world').focus(); await page.keyboard.press('ArrowRight');
+    expect((await snapshot(page)).interaction.orientation).not.toEqual([0, 0, 0, 1]);
+  }
+});
+
+test('a rapid sculpture reversal preserves the visible visit while a completed departure resets the next visit', async ({ page }) => {
+  test.setTimeout(45000);
+  await ready(page); await jump(page, 'experience-mathworks');
+  await page.locator('.world').focus(); await page.keyboard.press('ArrowRight');
+  const orientation = (await snapshot(page)).interaction.orientation;
+  await expect.poll(async () => (await snapshot(page)).world.userOrientation).toEqual(orientation);
+  await expect.poll(async () => (await snapshot(page)).world.orbitAges[0]).toBeGreaterThan(0.9);
+  const before = await snapshot(page);
+  const reversal = await page.evaluate(async () => {
+    const initial = window.__blackGeometry.snapshot();
+    const move = id => window.scrollTo({ top: initial.ranges.find(range => range.id === id).start, behavior: 'instant' });
+    const begin = performance.now(); let reversed = false, sawPair = false, allDepthPassesAligned = true;
+    move('experience-resolution');
+    return new Promise((resolve, reject) => {
+      function observe() {
+        const state = window.__blackGeometry.snapshot();
+        allDepthPassesAligned &&= state.world.depthPrepass;
+        if (!reversed && state.world.target === 'membrane' && state.world.nextTarget === 'resolution' && state.world.blend > 0 && state.world.blend < 0.5) {
+          sawPair = state.world.activeMeshes === 2 && state.world.activeDepthMeshes === 2;
+          reversed = true; move('experience-mathworks');
+        } else if (reversed && state.state.chapter === 'experience-mathworks' && state.world.target === 'membrane' && state.world.nextTarget === 'membrane' && state.world.blend === 0) {
+          resolve({ state, sawPair, allDepthPassesAligned }); return;
+        }
+        if (performance.now() - begin > 4000) { reject(new Error('The partial transition did not reverse and settle')); return; }
+        requestAnimationFrame(observe);
+      }
+      requestAnimationFrame(observe);
+    });
+  });
+  expect(reversal.sawPair).toBe(true);
+  expect(reversal.allDepthPassesAligned).toBe(true);
+  expect(reversal.state.interaction.orientation).toEqual(before.interaction.orientation);
+  expect(reversal.state.world.orbitAges[0]).toBeGreaterThanOrEqual(before.world.orbitAges[0]);
+  expect(reversal.state.world.decodedTargets).toBeLessThanOrEqual(2);
+  await jump(page, 'experience-resolution'); await jump(page, 'experience-mathworks');
+  const fresh = await snapshot(page);
+  expect(fresh.interaction.orientation).toEqual([0, 0, 0, 1]);
+  expect(fresh.world.orbitAges[0]).toBeLessThan(1.6);
+  expect(fresh.world.depthPrepass).toBe(true);
+  expect(fresh.world.decodedTargets).toBeLessThanOrEqual(2);
+});
+
+test('education entries are separate reading screens with native downward navigation', async ({ page }) => {
+  test.setTimeout(45000);
+  for (const width of [1440, 390]) {
+    await page.setViewportSize({ width, height: 900 }); await ready(page);
+    await jump(page, 'education-uchicago'); await scrollStopped(page);
+    const drexel = await page.locator('#education-drexel .entry-title').boundingBox();
+    expect(drexel.y).toBeGreaterThanOrEqual(900);
+    const next = page.locator('#education-uchicago .scene-next');
+    await next.click(); await scrollStopped(page); await settled(page, 'education-drexel');
+    expect(await page.evaluate(() => location.hash)).toBe('#education-drexel');
+  }
 });
 
 test('lightly translucent tessellated surfaces retain their shape while the color gradient continues under a held pointer', async ({ page }) => {
@@ -336,7 +408,7 @@ test('native touch swipes preserve vertical page scrolling and horizontal model 
   await touch('touchEnd'); await expect.poll(async () => (await snapshot(page)).interaction.dragging).toBe(false); await client.detach();
 });
 
-test('teaching lists and industry bullets remain complete, notes use warm links, and projects open separate tabs', async ({ page, context }) => {
+test('teaching and industry remain complete, section links use matching colors, and projects open separate tabs', async ({ page, context }) => {
   await ready(page);
   await expect(page.locator('.teaching-role, .teaching-dates, #research, #teaching')).toHaveCount(0);
   await expect(page.locator('#education-uchicago .course-list li')).toHaveCount(3);
@@ -346,7 +418,9 @@ test('teaching lists and industry bullets remain complete, notes use warm links,
   await expect(page.locator('#experience-resolution .experience-points > li')).toHaveCount(4);
   await expect(page.locator('#education-drexel .awards-list li')).toHaveText(['A* Award', 'Jeffrey L. Popyack Teaching Assistant Award', 'Student Teaching Excellence Award']);
   const colors = await page.locator('#notes .notes-list a').evaluateAll(links => links.map(link => getComputedStyle(link).color));
-  expect(colors.every(color => color === 'rgb(216, 198, 140)')).toBe(true);
+  expect(colors.every(color => color === 'rgb(216, 237, 243)')).toBe(true);
+  expect(await page.locator('.hero-link').evaluateAll(links => links.every(link => getComputedStyle(link).color === 'rgb(250, 250, 250)'))).toBe(true);
+  expect(await page.locator('.back-to-top, .open-project').evaluateAll(links => links.every(link => getComputedStyle(link).borderRadius === '0px'))).toBe(true);
   await expect(page.locator('#contact .back-to-top')).toHaveAttribute('href', '#top');
   for (const [id, link] of [['project-surface', baseline.sections[2].links[0]], ['project-congestion', baseline.sections[2].links[1]]]) {
     await jump(page, id); const open = page.locator(`#${id} .open-project`);
@@ -431,10 +505,12 @@ for (const [width, height] of [[1440, 900], [390, 844]]) test(`skip link, native
   await page.goto('/?bg-debug#notes'); await scrollStopped(page); await expect(page.locator('#notes h2')).toBeInViewport();
   await page.goto('/?bg-debug#personal-projects'); await scrollStopped(page); await expect(page.locator('#personal-projects h2')).toBeInViewport();
   await page.goBack(); await scrollStopped(page); await expect(page.locator('#notes h2')).toBeInViewport();
-  await jump(page, 'education-drexel'); await scrollStopped(page); const before = await page.evaluate(() => scrollY);
+  await jump(page, 'education-drexel'); await scrollStopped(page); const before = await page.evaluate(() => scrollY), beforeURL = page.url();
   await page.goto('/new-grad-job-tracker-2027/'); await page.goBack();
   await expect(page.locator('body')).toHaveAttribute('data-experience-state', 'ready'); await settled(page, 'education-drexel');
   expect(Math.abs((await page.evaluate(() => scrollY)) - before)).toBeLessThan(5);
+  expect(page.url()).toBe(beforeURL);
+  expect(await page.evaluate(() => history.state?.portfolioReading)).toEqual({ href: beforeURL, y: before });
 });
 
 test('without JavaScript all content, static sculptures, projects and PDFs stay native', async ({ browser }) => {

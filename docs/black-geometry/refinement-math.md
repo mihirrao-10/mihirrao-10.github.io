@@ -1,4 +1,4 @@
-> Historical authoring record. The opening height field and gradient trace described below have been replaced by the [Hanson quintic cross-section](calabi-yau.md). The square-root notes form and subsequent rainbow knot have been replaced by the [classical Klein bottle](klein-bottle.md). The current trefoil ribbon is sampled at 512 × 24, giving 24,576 faces. Current source factories use the 65,536-facet packet budget.
+> Historical authoring record. The opening height field and gradient trace described below have been replaced by the [Hanson quintic cross-section](calabi-yau.md). The square-root notes form and subsequent rainbow knot have been replaced by the [classical Klein bottle](klein-bottle.md). The trefoil interlude has now been replaced by the [Resolution Life flag sculpture](resolution-life.md). Current source factories use the 65,536-facet packet budget.
 
 # Mathematical sculpture refinement
 

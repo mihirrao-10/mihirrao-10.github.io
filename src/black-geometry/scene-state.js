@@ -54,13 +54,12 @@ export function advanceTransition(previous, target, delta) {
   return { ...state, elapsed, blend: ease(elapsed/TRANSITION_SECONDS) };
 }
 
-// Authored geometry carries its initial presentation angle. These small target
-// offsets preserve one continuous camera orbit across chapter boundaries.
+// Geometry carries its authored presentation; each visit starts its own orbit.
 const TARGET_POSES = {
   hero: [0.5, 0.5, 9, 0, 0, 0, 1],
   phoenix: [0.5, 0.5, 9, 0, 0, 0, 1],
   dragon: [0.5, 0.5, 9, 0, 0.015, 0, 1],
-  membrane: [0.5, 0.5, 9, 0, -0.025, 0, 1],
+  membrane: [0.5, 0.5, 9, 0, 0, 0, 1],
   resolution: [0.5, 0.5, 9, 0, 0, 0, 1],
   notes: [0.5, 0.5, 9, 0, 0, 0, 1],
   surface: [0.5, 0.5, 9, 0, 0, 0, 1],
@@ -72,8 +71,17 @@ export function cameraPose(state, { time = 0, pointer = [0, 0], fullMotion = tru
   const b = TARGET_POSES[state.nextTarget] || a;
   const pose = a.map((value, i) => mix(value, b[i], state.blend));
   if (fullMotion) {
+    if (state.target === 'membrane' || state.target === 'resolution') {
+      // Hold the recognizable authored symbol, then accelerate into its orbit.
+      const age = Math.max(0, time - .8);
+      const ramp = ease(age / 2);
+      pose[3] += Math.sin(age * .23) * .18 * ramp + clamp(pointer[1], -1, 1) * .025 * ramp;
+      pose[4] += age * .105 * ramp + clamp(pointer[0], -1, 1) * .04 * ramp;
+      pose[5] += Math.sin(age * .17) * .055 * ramp;
+      return pose;
+    }
     // Continuous orbit, with an elevated, gently tilting viewpoint. The shared
-    // clock pauses during a grab and stays continuous through every identity.
+    // clock pauses during a grab.
     pose[3] += 0.2 + Math.sin(time * 0.23) * 0.18 + clamp(pointer[1], -1, 1) * 0.025;
     pose[4] += 0.28 + time * 0.105 + clamp(pointer[0], -1, 1) * 0.04;
     pose[5] += Math.sin(time * 0.17) * 0.08;

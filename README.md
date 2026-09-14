@@ -80,17 +80,20 @@ The homepage remains real HTML with STIX Two Text and native links. Its minimal
 layout has no header, menu, audio or display controls. Teaching course codes,
 titles, specialization, honors and awards sit inside Education; industry bullets
 and project descriptions come from the local résumé.
-Note links and the boxed Open project links use warm yellow. Projects open in
-separate tabs. The footer contains only Back to top.
+Titles and links use colors coordinated with each sculpture; introductory links
+are white and note links are ice white. Project and Back to top controls have
+square corners. Projects open in separate tabs.
 
 Eight detailed sculptures follow the entries: Hanson's classic Calabi–Yau
 projection, a maroon-and-gray phoenix, navy-and-gold dragon, MATLAB membrane,
-red-and-blue trefoil, blue/teal two-handle surface, congestion potential landscape,
+Resolution Life flag, blue/teal two-handle surface, red/orange congestion landscape,
 and a crystalline white Klein bottle for notes. At least 65,536 prepared facets
 per target remain visible through luminous triangular edges and faceted shading.
 Sculptures are 16% smaller, gently translucent, and shimmer within their own
 palettes. A shared depth prepass prevents the rear surfaces from overwhelming
-their form.
+their form. The Klein bottle uses a more translucent 0.70 face alpha; other
+sculptures retain 0.88. The Calabi–Yau palette uses indigo, amethyst, rose and
+champagne. Dragon scales and phoenix feather relief add local detail.
 
 The two project sculptures preserve prepared numerical results from the actual
 studies. Their scientific geometry and paths remain authored data; no numerical
@@ -105,9 +108,13 @@ Native vertical scroll snapping settles between sections while allowing free
 reading within oversized education, industry and notes areas. The renderer independently
 completes a 380ms eased dissolve between two intact tessellated surfaces, so stopping
 scrolling cannot freeze a partially assembled mesh. Reversals and skipped entries
-resolve to the latest selected identity.
+resolve to the latest selected identity. Entries fill at least their viewport
+reading area; a small native downward link leads to the next entry.
 
-The camera orbits around the centered artwork. Mouse/pen dragging rotates around
+Each visit starts at its authored view and then orbits around the centered
+artwork. MathWorks and Resolution hold their recognizable opening view briefly
+before easing into motion. An outgoing endpoint retains its own orbit and drag
+state during the dissolve, including a quick reversal. Mouse/pen dragging rotates around
 screen axes using accumulated quaternions, including after prior turns, and
 pauses the orbit. Release adds brief inertia. Horizontal touch dragging rotates
 while native vertical scrolling and pinch zoom remain available. Focused arrow
@@ -153,8 +160,9 @@ For local diagnostics, append `?bg-debug` to the homepage. The read-only
 draw calls, material state, quality and interaction lifecycle. It does not change rendering or expose
 private data. Browser tests use this observation hook and real production code.
 
-See the [crystalline mesh report](docs/black-geometry/crystalline-report.md) for the
-current revision. The [minimal presentation report](docs/black-geometry/minimal-report.md),
+See the [section polish report](docs/black-geometry/section-polish-report.md) for the
+current revision. The [crystalline mesh report](docs/black-geometry/crystalline-report.md),
+[minimal presentation report](docs/black-geometry/minimal-report.md),
 [interaction report](docs/black-geometry/interactive-report.md)
 and [refinement report](docs/black-geometry/refinement-report.md) describe earlier revisions. The [implementation log](docs/black-geometry/implementation-log.md),
 [acceptance report](docs/black-geometry/acceptance-report.md), and

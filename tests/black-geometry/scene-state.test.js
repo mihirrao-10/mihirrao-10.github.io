@@ -46,13 +46,26 @@ test("timed transitions use smooth endpoints and have refresh-rate independent p
   assert.equal(advanceTransition(createTransition("hero"),"phoenix",0).blend,0);
   assert.ok(advanceTransition(createTransition("hero"),"phoenix",.001).blend<1e-6);
 });
-test("camera orbit remains continuous across complete identity changes with bounded elevation",()=>{
+test("each entry camera moves continuously with bounded elevation and an authored static pose",()=>{
   for(const range of ranges){const state=chapterState(range.start,ranges);
     for(let time=0;time<90;time+=.5){const p=cameraPose(state,{time}),next=cameraPose(state,{time:time+.5});
       assert.ok(p.every(Number.isFinite));assert.ok(Math.abs(p[3])<.45&&Math.abs(p[5])<=.08);
-      assert.ok(Math.abs(next[4]-p[4]-.0525)<1e-10);
+      assert.ok(Math.abs(next[4]-p[4])<.18);
     }
     assert.deepEqual(cameraPose(state,{time:20,fullMotion:false}),cameraPose(state,{fullMotion:false}));
+  }
+});
+test("MathWorks and Resolution open at the authored view before smoothly entering an orbit",()=>{
+  for(const target of ['membrane','resolution']){
+    const state={target,nextTarget:target,blend:0};
+    for(const time of [0,.2,.79,.8])assert.deepEqual(cameraPose(state,{time,pointer:[1,1]}).slice(3,6),[0,0,0]);
+    const first=cameraPose(state,{time:.801}), later=cameraPose(state,{time:4});
+    assert.ok(Math.hypot(...first.slice(3,6))<1e-8);
+    assert.ok(later[4]>.25);
+    for(const time of [.8,2.8]){
+      const a=cameraPose(state,{time:time-1e-5}),b=cameraPose(state,{time:time+1e-5});
+      assert.ok(Math.hypot(...a.slice(3,6).map((v,i)=>v-b[i+3]))<1e-4);
+    }
   }
 });
 test("procedural surface is deterministic, closed, finite, and free of zero-area triangles", () => {

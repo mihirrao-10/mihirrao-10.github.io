@@ -76,7 +76,10 @@ export function createPhoenix() {
       for (let j = 0; j < sides; j++) {
         const angle = j / sides * Math.PI * 2;
         const asymmetry = Math.cos(angle) > 0 ? 1 : 0.84;
-        positions.push(...center.clone().addScaledVector(side, Math.cos(angle) * w * asymmetry).addScaledVector(normal, Math.sin(angle) * d).toArray());
+        // Shallow oblique vane relief uses the existing surface samples. The
+        // tips and lateral silhouette stay fixed; both faces gain feather grain.
+        const vane = 1 + 0.14 * Math.sin((t * 4 - Math.abs(Math.cos(angle)) * 0.85) * Math.PI * 2) * Math.sin(Math.PI * t);
+        positions.push(...center.clone().addScaledVector(side, Math.cos(angle) * w * asymmetry).addScaledVector(normal, Math.sin(angle) * d * vane).toArray());
       }
     }
     for (let i = 0; i < segments; i++) for (let j = 0; j < sides; j++) {
@@ -95,7 +98,15 @@ export function createPhoenix() {
   const tailTips = [[-0.98, -2.12, -0.13], [-0.47, -2.58, 0.08], [0.02, -2.82, -0.26], [0.55, -2.56, -0.15], [1.02, -2.07, -0.27]];
   tailTips.forEach((tip, i) => {
     const spread = (i - 2) * 0.13;
-    feather(tail, `Tail plume ${i + 1}`, [[spread, -0.35, -0.16], [spread * 2.8, -1.12, -0.31], [tip[0] * 0.53, tip[1] * 0.78, tip[2] - 0.11], tip], i === 2 ? 0.22 : 0.19, i === 1 || i === 3 ? 'gray' : 'maroon', 0.070, 12);
+    const controls = [[spread, -0.35, -0.16], [spread * 2.8, -1.12, -0.31], [tip[0] * 0.53, tip[1] * 0.78, tip[2] - 0.11], tip];
+    feather(tail, `Tail plume ${i + 1}`, controls, i === 2 ? 0.22 : 0.19, i === 1 || i === 3 ? 'gray' : 'maroon', 0.070, 12);
+    const curve = new THREE.CatmullRomCurve3(controls.map(vector), false, 'catmullrom', 0.25);
+    const shaft = [0.10, 0.35, 0.60, 0.86].map((t, index) => {
+      const p = curve.getPoint(t);
+      p.z += 0.070 * Math.pow(Math.sin(Math.PI * t), 0.45);
+      return [...p.toArray(), 0.010 * (1 - index / 4)];
+    });
+    loft(tail, `Tail plume shaft ${i + 1}`, shaft, i === 1 || i === 3 ? 'lightGray' : 'darkGray', 6, 5);
   });
 
   const primaryTips = [[3.20, 1.84, -0.24], [3.25, 1.39, -0.09], [3.13, 0.92, 0.03], [2.96, 0.46, 0.14], [2.68, 0.02, 0.23], [2.36, -0.34, 0.29], [2.04, -0.55, 0.30], [1.69, -0.66, 0.28], [1.32, -0.61, 0.22]];
@@ -149,6 +160,9 @@ export function createPhoenix() {
   loft(head, 'Upper hooked silver beak', [[0, 0.30, 0.35, 0.13, 0.16], [0, 0.30, 0.52, 0.12, 0.14], [0, 0.24, 0.71, 0.085, 0.080], [0, 0.09, 0.75, 0.020, 0.012]], 'lightGray', 10, 6, [1, 0, 0]);
   loft(head, 'Lower beak with narrow mouth seam', [[0, 0.115, 0.36, 0.045, 0.12], [0, 0.10, 0.56, 0.040, 0.08], [0, 0.14, 0.66, 0.012, 0.015]], 'darkGray', 7, 6, [1, 0, 0]);
   for (const sign of [-1, 1]) {
+    const naris = new THREE.SphereGeometry(1, 10, 6);
+    naris.scale(0.010, 0.020, 0.040); naris.translate(sign * 0.142, 0.315, 0.485);
+    add(head, `Beak naris ${sign}`, naris, 'shadow');
     volume(head, 'Almond eye socket', [sign * 0.225, 0.36, 0.285], [0.018, 0.070, 0.095], 'shadow', 10);
     volume(head, 'Small pale eye', [sign * 0.244, 0.364, 0.302], [0.010, 0.025, 0.028], 'white', 8);
     loft(head, 'Sculpted brow ridge', [[sign * 0.235, 0.39, 0.37, 0.035], [sign * 0.262, 0.445, 0.24, 0.041], [sign * 0.20, 0.43, 0.12, 0.013]], 'maroon', 7, 6);

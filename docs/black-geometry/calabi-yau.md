@@ -39,7 +39,7 @@ Hanson's [2019 ICERM presentation, slides 41–47 and 52–53](https://homes.lud
 - Sampling concentrates near fractional-power branch points. The mesh is computed only during the site's build.
 - Shared seams are welded using all four real source coordinates, preserving distinct sheets that overlap only after projection.
 - Topology checks independently recover one connected component, five boundary loops, and Euler characteristic −15, consistent with genus six and five removed ends.
-- The yellow `#ffe978`, orange `#f47c38`, magenta `#ce4e9b`, and violet `#7142d2` stops are an authored visualization palette. Calabi–Yau manifolds have no intrinsic official colors. The patch palette evokes familiar mathematical illustrations and differentiates phase patches; it is not a physical measurement or an official standard.
+- The indigo `#5146c8`, amethyst `#a08af5`, rose `#df82a4`, and champagne `#ffe2bd` stops are an authored visualization palette. Calabi–Yau manifolds have no intrinsic official colors. The patch palette differentiates phase patches; it is not a physical measurement or an official standard.
 - The former height-field ascent trace has been removed because it has no mathematical interpretation on this replacement.
 
 All JavaScript and triangles are original. No reference image, third-party mesh, Mathematica implementation, or downloaded internal asset is included. The renderer handles the requested material, motion, glow and interaction separately from this source geometry.

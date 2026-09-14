@@ -52,7 +52,7 @@ export function contentContract(html) {
       ),
       links: all(
         section,
-        (n) => n.tagName === "a" && !hasClass(n, "open-project"),
+        (n) => n.tagName === "a" && !hasClass(n, "open-project") && !hasClass(n, "scene-next"),
       ).map(link),
     })),
   };

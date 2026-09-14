@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { SCULPTURE_STYLE } from "../../src/black-geometry/world.js";
+import { SCULPTURE_STYLE, sculptureOpacity } from "../../src/black-geometry/world.js";
 
 const n = value => value.toFixed(1);
 
@@ -7,7 +7,8 @@ const toHex = values => new THREE.Color().setRGB(...values,THREE.LinearSRGBColor
 
 /** Static views of the same authored meshes, including their material regions and depth. */
 export function sculpturePoster(model,{shortcut="open"}={}) {
-  const view = ([x,y,z]) => [x,y*Math.cos(.2)-z*Math.sin(.2),y*Math.sin(.2)+z*Math.cos(.2)];
+  const tilt = model.name === 'membrane' || model.name === 'resolution' ? 0 : .2;
+  const view = ([x,y,z]) => [x,y*Math.cos(tilt)-z*Math.sin(tilt),y*Math.sin(tilt)+z*Math.cos(tilt)];
   const rawProject = ([x,y,z]) => [x/(12-z),-y/(12-z),z];
   const projected = model.faces.flatMap(face=>[0,3,6].map(i=>rawProject(view(face.p.slice(i,i+3)))));
   const lower=[Infinity,Infinity],upper=[-Infinity,-Infinity];
@@ -34,10 +35,10 @@ export function sculpturePoster(model,{shortcut="open"}={}) {
   for(const path of model.paths){
     if(model.name==="congestion"&&path.kind!==shortcut&&path.kind!=="boundary")continue;
     const points=[];for(let i=0;i<path.points.length;i+=3)points.push(project(view(path.points.slice(i,i+3))));
-    const color=path.kind==="ascent"?"#ff404b":path.kind==="context"?"#e9d6d5":model.name==="surface"?"#b7fff0":"#ffeedf";
-    body+=`<path d="M${points.map(p=>`${n(p[0])} ${n(p[1])}`).join("L")}" fill="none" stroke="${color}" stroke-opacity="${path.kind==="context"?.38:1}" stroke-width="${path.kind==="ascent"?2.5:1.8}"/>`;
+    const color=path.kind==="ascent"?"#ff404b":path.kind==="context"?"#e9d6d5":model.name==="surface"?"#b7fff0":"#ffd18a";
+    body+=`<path d="M${points.map(p=>`${n(p[0])} ${n(p[1])}`).join("L")}" fill="none" stroke="${color}" stroke-opacity="${path.kind==="context"?.38:1}" stroke-width="${model.name==='congestion'?3.6:path.kind==="ascent"?2.5:1.8}"/>`;
   }
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" fill="none" aria-hidden="true"><defs><filter id="glow" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="4"/></filter></defs><use href="#surface" filter="url(#glow)" opacity=".42"/><g opacity="${SCULPTURE_STYLE.opacity}">${body}</g></svg>\n`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" fill="none" aria-hidden="true"><defs><filter id="glow" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="4"/></filter></defs><use href="#surface" filter="url(#glow)" opacity=".42"/><g opacity="${sculptureOpacity(model.name)}">${body}</g></svg>\n`;
 }
 
 export function posterOutputs(models) {

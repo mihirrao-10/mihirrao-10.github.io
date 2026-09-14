@@ -44,7 +44,7 @@ export function projectCalabiYau([real1, imaginary1, real2, imaginary2]) {
 export function createHero(neutral = false) {
   const positions = [], complex = [], colors = [], colorCounts = [], indices = [];
   const welded = new Map();
-  const palette = ["#7142d2", "#ce4e9b", "#f47c38", "#ffe978"].map(hex => new THREE.Color(hex));
+  const palette = ["#5146c8", "#a08af5", "#df82a4", "#ffe2bd"].map(hex => new THREE.Color(hex));
   const white = new THREE.Color("#eef1ed"), color = new THREE.Color();
   const { degree, thetaSegments, xiSegments, xiMax } = CALABI_YAU;
   for (let k1 = 0; k1 < degree; k1++) {
@@ -119,7 +119,7 @@ export function createHero(neutral = false) {
     phasePatches: degree * degree,
     openBoundary: true,
     xiMax,
-    palette: "Authored yellow, orange, magenta and violet; no intrinsic official colors",
+    palette: "Authored indigo, amethyst, rose and champagne; no intrinsic official colors",
     source: "https://homes.luddy.indiana.edu/hansona/papers/CP2-94.pdf",
     referenceView: "Hanson 1994 Table 1: alpha=pi/4, xiMax=1, ViewPoint={2.9,1.0,1.4}",
   };

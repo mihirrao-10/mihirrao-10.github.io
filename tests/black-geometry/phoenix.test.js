@@ -83,3 +83,22 @@ test('hooked avian head, front ruff and rear feather volumes remain spatially le
   });
   assert.ok(frontCoverts >= 20 && rearCoverts >= 20, 'Both sides need a layered physical wing covering for rotation');
 });
+
+test('feather relief and tail shafts retain the approved envelope and stay within their broad plumes', () => {
+  const model = createPhoenix(); model.updateMatrixWorld(true);
+  const size = sizeOf(model);
+  for (const [actual, previous] of [[size.x, 6.482104], [size.y, 4.731324], [size.z, 1.612172]])
+    assert.ok(Math.abs(actual - previous) < 0.02, 'Anatomical surface details must preserve the accepted silhouette and fit');
+  for (let i = 1; i <= 5; i++) {
+    const plume = model.getObjectByName(`Tail plume ${i}`), shaft = model.getObjectByName(`Tail plume shaft ${i}`);
+    const plumeBox = new THREE.Box3().setFromObject(plume), shaftBox = new THREE.Box3().setFromObject(shaft);
+    assert.ok(plumeBox.expandByScalar(0.035).containsBox(shaftBox), 'Each shaft follows its feather rather than becoming a separate appendage');
+    assert.ok(sizeOf(shaft).y > sizeOf(plume).y * 0.55, 'The physical feather shaft remains readable over most of its plume');
+  }
+  const beak = new THREE.Box3().setFromObject(model.getObjectByName('Upper hooked silver beak')).expandByScalar(0.02);
+  for (const sign of [-1, 1]) {
+    const naris = model.getObjectByName(`Beak naris ${sign}`), box = new THREE.Box3().setFromObject(naris);
+    assert.ok(beak.containsBox(box), 'Nostrils are small beak details, not additional floating eyes');
+    assert.ok(sizeOf(naris).length() < sizeOf(model.getObjectByName('Compact bird skull')).length() * 0.12);
+  }
+});

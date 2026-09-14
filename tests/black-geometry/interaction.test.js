@@ -83,6 +83,19 @@ test("inertial integration is independent of display refresh rate", () => {
   assert.deepEqual(a.snapshot(), before);
 });
 
+test("entering another sculpture releases a held drag and clears its inherited orientation and momentum", () => {
+  const { control, element, send } = setup();
+  control.setEnabled(true); send('pointerdown');
+  send('pointermove', { clientX: 330, clientY: 260, timeStamp: 40 });
+  assert.notDeepEqual(control.snapshot().orientation, [0, 0, 0, 1]);
+  control.reset(); control.step(1);
+  assert.deepEqual(control.snapshot().orientation, [0, 0, 0, 1]);
+  assert.deepEqual(control.snapshot().velocity, [0, 0]);
+  assert.equal(control.snapshot().dragging, false);
+  assert.equal(element.captures.size, 0);
+  assert.equal(control.snapshot().enabled, true);
+});
+
 test("touch reserves vertical gestures for page scrolling and captures horizontal rotation", () => {
   const { control, element, send } = setup();
   control.setEnabled(true);

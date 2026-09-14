@@ -152,7 +152,7 @@ export function createCongestion() {
   const positions = [], colors = [];
   // A brighter red interpretation of the source visualization's copper/red
   // potential scale; the exact height values and all state geometry stay put.
-  const low = new THREE.Color("#841d28"), mid = new THREE.Color("#e54338"), high = new THREE.Color("#ff735c");
+  const low = new THREE.Color("#a61929"), mid = new THREE.Color("#ed3d2f"), high = new THREE.Color("#ff9b3e");
   const color = new THREE.Color();
   let maxHeight = 0;
   for (const vertex of landscape.vertices) maxHeight = Math.max(maxHeight, vertex.displayHeightOriginal);
