@@ -221,6 +221,25 @@ on(window, 'pageshow', resume);
 measure();
 updateScene();
 settlePresentation();
+// WebKit can restore the saved reading position, then revisit an old URL
+// fragment before pageshow even with snapping and this renderer disabled.
+// Preserve that already-restored position only for this full-history case.
+const navigation = performance.getEntriesByType('navigation')[0];
+const returnAnchor = document.querySelector(':target')?.dataset.scene;
+if (navigation?.type === 'back_forward' && scrollY > 0 && returnAnchor && state.chapter !== returnAnchor) {
+  const restoredY = scrollY;
+  let interrupted = false;
+  for (const event of ['pointerdown', 'wheel', 'keydown'])
+    on(window, event, () => { interrupted = true; }, { once: true, passive: true });
+  on(window, 'pageshow', event => {
+    if (event.persisted || interrupted) return;
+    measure();
+    if (chapterState(window.scrollY, ranges).chapter !== returnAnchor) return;
+    window.scrollTo({ top: restoredY, behavior: 'instant' });
+    scrollY = window.scrollY;
+    invalidate();
+  }, { once: true });
+}
 if (debug) window.__blackGeometry = {
   snapshot: () => ({
     motion, preferences: { ...DEFAULTS }, profile, state: { ...state }, visualState: { ...visualState },

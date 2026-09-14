@@ -48,10 +48,13 @@ function assertActiveGeometry(state, target) {
   expect(state.world.finiteActiveBuffers).toBe(true);
   expect(state.profile).toBe('high');
   expect(state.world.quality).toBe('high');
-  expect(state.world.opaque).toBe(true);
-  expect(state.world.opacity).toBe(1);
-  expect(state.world.shading).toBe('smooth');
+  expect(state.world.opaque).toBe(false);
+  expect(state.world.opacity).toBeCloseTo(0.88, 3);
+  expect(state.world.depthPrepass).toBe(true);
+  expect(state.world.shading).toBe('tessellated');
+  expect(state.world.presentationScale).toBeCloseTo(0.84, 3);
   expect(state.world.activeMeshes).toBe(1);
+  expect(state.world.activeDepthMeshes).toBe(1);
 }
 async function content(page) {
   await expect(page.locator('h1')).toHaveText(baseline.name);
@@ -166,7 +169,7 @@ test('stopping at a former partial-scroll position finishes the selected sculptu
       await new Promise(resolve => {
         function collect() {
           const { state, world, transition } = window.__blackGeometry.snapshot();
-          samples.push({ at: performance.now() - begin, chapter: state.chapter, target: state.target, next: state.nextTarget, desiredBlend: state.blend, worldTarget: world.target, worldNext: world.nextTarget, blend: world.blend, decoded: world.decodedTargets, opaque: world.opaque, activeMeshes: world.activeMeshes, transition });
+          samples.push({ at: performance.now() - begin, chapter: state.chapter, target: state.target, next: state.nextTarget, desiredBlend: state.blend, worldTarget: world.target, worldNext: world.nextTarget, blend: world.blend, decoded: world.decodedTargets, opaque: world.opaque, opacity: world.opacity, depthPrepass: world.depthPrepass, activeDepthMeshes: world.activeDepthMeshes, activeMeshes: world.activeMeshes, transition });
           if (performance.now() - begin < 1500) requestAnimationFrame(collect); else resolve();
         }
         requestAnimationFrame(collect);
@@ -177,7 +180,7 @@ test('stopping at a former partial-scroll position finishes the selected sculptu
     expect(samples.every(sample => sample.target === sample.next && sample.desiredBlend === 0 && sample.decoded <= 2)).toBe(true);
     const moving = samples.filter(sample => sample.blend > 0 && sample.blend < 1);
     observedTransitions += moving.length;
-    expect(moving.every(sample => sample.opaque && sample.activeMeshes === 2)).toBe(true);
+    expect(moving.every(sample => !sample.opaque && sample.opacity === 0.88 && sample.depthPrepass && sample.activeMeshes === 2 && sample.activeDepthMeshes === 2)).toBe(true);
     const final = samples.at(-1);
     expect(final.blend).toBe(0);
     expect(final.worldTarget).toBe(final.target);
@@ -230,7 +233,7 @@ test('mouse dragging follows screen directions after prior rotations, with a pau
   await expect.poll(async () => (await snapshot(page)).orbitTime).toBeGreaterThan(held.orbitTime);
 });
 
-test('opaque smooth surfaces retain their shape while the color gradient continues under a held pointer', async ({ page }) => {
+test('lightly translucent tessellated surfaces retain their shape while the color gradient continues under a held pointer', async ({ page }) => {
   await ready(page); await jump(page, 'project-surface');
   const stage = page.locator('.world'), rect = await stage.boundingBox();
   await page.mouse.move(rect.x + rect.width / 2, rect.y + rect.height / 2); await page.mouse.down();
@@ -272,14 +275,20 @@ test('keyboard rotation and Home work without stealing page keys; hidden documen
   await expect(stage).toHaveAttribute('data-interactive', 'true');
 });
 
-test('native wheel snapping still permits reading the bottom of oversized education and notes areas', async ({ page }) => {
+test('native wheel snapping permits reading complete education, industry and notes entries', async ({ page }) => {
+  test.setTimeout(45000);
   await page.setViewportSize({ width: 390, height: 844 }); await ready(page);
   expect(await page.evaluate(() => getComputedStyle(document.documentElement).scrollSnapType)).toBe('y mandatory');
   await page.mouse.move(25, 720); await page.mouse.wheel(0, 640); await scrollStopped(page);
   const snapped = await page.evaluate(() => ({ y: scrollY, ranges: window.__blackGeometry.snapshot().ranges }));
   expect(snapped.y).toBeGreaterThan(100);
   expect(snapped.ranges.some(range => snapped.y >= range.start - 3 && snapped.y <= range.stop + 3)).toBe(true);
-  for (const [id, lastSelector] of [['education-drexel', '.awards-list li:last-child'], ['notes', '.notes-list:last-child li:last-child']]) {
+  for (const [id, lastSelector] of [
+    ['education-drexel', '.awards-list li:last-child'],
+    ['experience-mathworks', '.experience-points > li:last-child'],
+    ['experience-resolution', '.experience-points > li:last-child'],
+    ['notes', '.notes-list:last-child li:last-child'],
+  ]) {
     await jump(page, id);
     const range = (await snapshot(page)).ranges.find(range => range.id === id);
     expect(range.stop - range.start).toBeGreaterThan(100);
@@ -298,7 +307,7 @@ test('native wheel snapping still permits reading the bottom of oversized educat
     expect(lastBox.y).toBeGreaterThanOrEqual(artwork.y + artwork.height);
     // The footer and final notes share one sculpture; bringing the final notes
     // link into view may also select that adjacent footer snap area.
-    expect((await snapshot(page)).state.target).toBe(id === 'notes' ? 'notes' : 'dragon');
+    expect((await snapshot(page)).state.target).toBe(identities.find(([entry]) => entry === id)[1]);
   }
   await page.mouse.wheel(0, 2000); await scrollStopped(page);
   await expect(page.locator('#notes .notes-list:last-child li:last-child')).toBeInViewport();
@@ -327,11 +336,14 @@ test('native touch swipes preserve vertical page scrolling and horizontal model 
   await touch('touchEnd'); await expect.poll(async () => (await snapshot(page)).interaction.dragging).toBe(false); await client.detach();
 });
 
-test('teaching contains course titles, awards remain, notes use warm links, and projects open real separate tabs', async ({ page, context }) => {
+test('teaching lists and industry bullets remain complete, notes use warm links, and projects open separate tabs', async ({ page, context }) => {
   await ready(page);
-  await expect(page.locator('.teaching-role, .teaching-dates, .course-code, #research, #teaching')).toHaveCount(0);
-  await expect(page.locator('#education-uchicago .course-list li')).toHaveCount(2);
+  await expect(page.locator('.teaching-role, .teaching-dates, #research, #teaching')).toHaveCount(0);
+  await expect(page.locator('#education-uchicago .course-list li')).toHaveCount(3);
   await expect(page.locator('#education-drexel .course-list li')).toHaveCount(4);
+  await expect(page.locator('.course-code')).toHaveCount(7);
+  await expect(page.locator('#experience-mathworks .experience-points > li')).toHaveCount(4);
+  await expect(page.locator('#experience-resolution .experience-points > li')).toHaveCount(4);
   await expect(page.locator('#education-drexel .awards-list li')).toHaveText(['A* Award', 'Jeffrey L. Popyack Teaching Assistant Award', 'Student Teaching Excellence Award']);
   const colors = await page.locator('#notes .notes-list a').evaluateAll(links => links.map(link => getComputedStyle(link).color));
   expect(colors.every(color => color === 'rgb(216, 198, 140)')).toBe(true);
@@ -408,7 +420,8 @@ for (const mode of ['module', 'asset', 'renderer', 'shader', 'context']) test(`$
   await expect(page.locator('#project-congestion .open-project')).toHaveAttribute('target', '_blank');
 });
 
-test('skip link, native hashes/back, tracker restoration and page scrolling remain functional', async ({ page }, info) => {
+for (const [width, height] of [[1440, 900], [390, 844]]) test(`skip link, native hashes/back, tracker restoration and page scrolling remain functional at ${width}px`, async ({ page }, info) => {
+  await page.setViewportSize({ width, height });
   await ready(page); await page.keyboard.press(info.project.name === 'webkit' ? 'Alt+Tab' : 'Tab');
   await expect(page.getByRole('link', { name: 'Skip to content' })).toBeFocused(); await page.keyboard.press('Enter');
   expect(await page.evaluate(() => location.hash)).toBe('#main');

@@ -3,14 +3,15 @@ import { QUALITY } from "./preferences.js";
 
 export const SCULPTURE_PALETTES = Object.freeze({
   hero: ["#6c2de4", "#e4429c", "#ff7625", "#ffe85b"],
-  phoenix: ["#d62009", "#ff5415", "#ffab18", "#fff07b"],
+  phoenix: ["#580000", "#800000", "#767676", "#D6D6CE"],
   dragon: ["#063766", "#087fcc", "#f4b411", "#fff176"],
   membrane: ["#066ae2", "#31d3ef", "#ff6c18", "#ffcf4f"],
   resolution: ["#164ce6", "#2bafff", "#ed244a", "#ff6e88"],
   surface: ["#093fbc", "#126dff", "#08c7ba", "#69ffe1"],
   congestion: ["#7514bc", "#d73580", "#ff5035", "#ffd239"],
-  notes: ["#4020bd", "#9f38ef", "#12ddea", "#ffd753"],
+  notes: ["#bbcbdc", "#e2edfa", "#edf3fc", "#ffffff"],
 });
+export const SCULPTURE_STYLE = Object.freeze({ scale: .84, opacity: .88 });
 
 /** Smooth coincident corners without rounding genuine creases or changing data positions. */
 export function smoothSurfaceNormals(position, creaseCosine = 0.65) {
@@ -74,38 +75,53 @@ export function fitSurfaceDistance(bounds, cameraSpaceRotation, aspect, margin =
 const VERTEX = `
 attribute vec3 surfaceColor;
 attribute vec3 barycentric;
+attribute float facetSeed;
 varying vec3 vColor;
 varying vec3 vBarycentric;
+varying float vFacetSeed;
 varying vec3 vViewPosition;
 varying vec3 vNormal;
 varying vec3 vPosition;
 void main(){
-  vColor=surfaceColor;vBarycentric=barycentric;vPosition=position;
+  vColor=surfaceColor;vBarycentric=barycentric;vPosition=position;vFacetSeed=facetSeed;
   vNormal=normalize(normalMatrix*normal);
   vec4 viewPosition=modelViewMatrix*vec4(position,1.0);
   vViewPosition=viewPosition.xyz;gl_Position=projectionMatrix*viewPosition;
 }`;
+// Both passes use exactly the same endpoint mask, including during reversals.
+const DISSOLVE = `
+  float noise=fract(52.9829189*fract(dot(floor(gl_FragCoord.xy),vec2(.06711056,.00583715))));
+  if(endpoint<.5){if(noise<progress)discard;}else{if(noise>=progress)discard;}
+`;
+const DEPTH_FRAGMENT = `
+uniform float progress;
+uniform float endpoint;
+void main(){${DISSOLVE}gl_FragColor=vec4(0.0);}
+`;
 const FRAGMENT = `
 uniform float progress;
 uniform float endpoint;
 uniform float time;
+uniform float opacity;
 uniform vec3 palette0;
 uniform vec3 palette1;
 uniform vec3 palette2;
 uniform vec3 palette3;
 varying vec3 vColor;
 varying vec3 vBarycentric;
+varying float vFacetSeed;
 varying vec3 vViewPosition;
 varying vec3 vNormal;
 varying vec3 vPosition;
 void main(){
-  // Complementary screen pixels select one complete opaque surface. Geometry
-  // never travels through a broken intermediate cloud, and rear layers cannot
-  // show through a face. The stable pattern moves only as progress advances.
-  float noise=fract(52.9829189*fract(dot(floor(gl_FragCoord.xy),vec2(.06711056,.00583715))));
-  if(endpoint<.5){if(noise<progress)discard;}else{if(noise>=progress)discard;}
+  // Derivatives must be evaluated before the per-pixel dissolve discards lanes.
+  vec3 facetNormal=normalize(cross(dFdx(vViewPosition),dFdy(vViewPosition)));
+  vec3 width=max(fwidth(vBarycentric),vec3(.00001));
+  ${DISSOLVE}
   vec3 view=normalize(-vViewPosition), normal=normalize(vNormal);
   if(dot(normal,view)<0.0)normal=-normal;
+  if(dot(facetNormal,view)<0.0)facetNormal=-facetNormal;
+  normal=normalize(mix(normal,facetNormal,.55));
   float phase=dot(vPosition,vec3(.48,.66,.38))+time*.68;
   float gradient=.5+.5*sin(phase);
   // Animate within the nearest authored color family. Mixing opposing blue
@@ -128,18 +144,22 @@ void main(){
   float fill=max(dot(normal,normalize(vec3(.7,-.25,.65))),0.0);
   float rim=pow(1.0-max(dot(normal,view),0.0),2.2);
   vec3 light=normalize(vec3(-.5+.18*sin(time*.8),.7,1.0));
-  float specular=pow(max(dot(normal,normalize(light+view)),0.0),90.0);
+  float specular=pow(max(dot(normal,normalize(light+view)),0.0),110.0);
   float shimmer=pow(.5+.5*sin(phase*2.1+time*.9),10.0);
-  vec3 face=base*(.32+.92*key+.10*fill)+vec3(1.0,.94,.82)*specular*.55;
-  face+=mix(base,vec3(1.0),.08)*(rim*.33+shimmer*.12);
-  vec3 width=max(fwidth(vBarycentric),vec3(.00001));
-  vec3 lines=smoothstep(vec3(0.0),width*.58,vBarycentric);
+  float facetLight=.76+.28*vFacetSeed+.09*sin(phase*1.8+vFacetSeed*6.283);
+  vec3 face=base*(.38+.76*key+.12*fill)*facetLight+vec3(.88,.94,1.0)*specular*.30;
+  face+=base*(rim*.30+shimmer*.10);
+  vec3 lines=smoothstep(vec3(0.0),width*.72,vBarycentric);
   float edge=1.0-min(min(lines.x,lines.y),lines.z);
   float trianglePixels=1.0/max(max(width.x,width.y),width.z);
-  // Dense facets become a fine texture rather than an overpowering wire cage.
-  edge*=.13*smoothstep(2.0,9.0,trianglePixels);
-  face=mix(face,base*.55+vec3(.07),edge);
-  gl_FragColor=vec4(face,1.0);
+  // Fine luminous edges reveal the real tessellation; individually lit facets
+  // read as a crystalline mesh, while subpixel triangles stay antialiased.
+  edge*=smoothstep(.8,4.0,trianglePixels);
+  vec3 thread=base*1.85+vec3(.025,.035,.05);
+  face=mix(face,thread,edge*.66);
+  float spark=pow(max(vBarycentric.x,max(vBarycentric.y,vBarycentric.z)),35.0);
+  face+=mix(base,vec3(.8,.9,1.0),.28)*spark*shimmer*.48;
+  gl_FragColor=vec4(face,mix(opacity,.98,edge));
   #include <colorspace_fragment>
 }`;
 // TubeGeometry normally redistributes samples by arc length. These paths are
@@ -173,7 +193,7 @@ async function loadSculptures() {
 }
 
 
-/** At most two intact opaque sculptures share one renderer during a brief dissolve. */
+/** Mildly translucent, tessellated surfaces with a shared nearest-surface depth pass. */
 export async function createWorld({container,quality="high",onFailure}) {
   const packed=await loadSculptures();
   const renderer=new THREE.WebGLRenderer({alpha:true,antialias:true,powerPreference:"high-performance"});
@@ -185,14 +205,23 @@ export async function createWorld({container,quality="high",onFailure}) {
   const scene=new THREE.Scene(),pivot=new THREE.Group();scene.add(pivot);
   const camera=new THREE.PerspectiveCamera(35,1,.1,60),dragQuaternion=new THREE.Quaternion(),inverseView=new THREE.Quaternion(),fitRotation=new THREE.Quaternion();
   let userRotation=[0,0],userOrientation=[0,0,0,1],dragging=false;
-  const count=packed.manifest.count,bary=new Float32Array(count*9),decoded=new Map();
-  for(let i=0;i<count;i++){bary[i*9]=1;bary[i*9+4]=1;bary[i*9+8]=1;}
+  const count=packed.manifest.count,bary=new Float32Array(count*9),facetSeeds=new Float32Array(count*3),decoded=new Map();
+  for(let i=0;i<count;i++){
+    bary[i*9]=1;bary[i*9+4]=1;bary[i*9+8]=1;
+    let seed=Math.imul(i^0x9e3779b9,0x85ebca6b);seed=Math.imul(seed^(seed>>>13),0xc2b2ae35);seed^=seed>>>16;
+    facetSeeds.fill((seed>>>0)/4294967296,i*3,i*3+3);
+  }
   const makeMaterial=endpoint=>new THREE.ShaderMaterial({
-    vertexShader:VERTEX,fragmentShader:FRAGMENT,side:THREE.DoubleSide,transparent:false,depthWrite:true,forceSinglePass:true,
-    uniforms:{progress:{value:0},endpoint:{value:endpoint},time:{value:0},...Object.fromEntries([0,1,2,3].map(i=>[`palette${i}`,{value:new THREE.Color()}]))},
+    vertexShader:VERTEX,fragmentShader:FRAGMENT,side:THREE.DoubleSide,transparent:true,depthWrite:false,forceSinglePass:true,
+    uniforms:{progress:{value:0},endpoint:{value:endpoint},time:{value:0},opacity:{value:SCULPTURE_STYLE.opacity},...Object.fromEntries([0,1,2,3].map(i=>[`palette${i}`,{value:new THREE.Color()}]))},
   });
   const emptyGeometry=new THREE.BufferGeometry();
-  const meshes=[0,1].map(endpoint=>{const mesh=new THREE.Mesh(emptyGeometry,makeMaterial(endpoint));mesh.frustumCulled=false;pivot.add(mesh);return mesh;});
+  const meshes=[0,1].map(endpoint=>{const mesh=new THREE.Mesh(emptyGeometry,makeMaterial(endpoint));mesh.frustumCulled=false;mesh.renderOrder=1;pivot.add(mesh);return mesh;});
+  const depthMeshes=meshes.map(mesh=>{
+    const material=new THREE.ShaderMaterial({vertexShader:VERTEX,fragmentShader:DEPTH_FRAGMENT,uniforms:mesh.material.uniforms,
+      side:THREE.DoubleSide,colorWrite:false,depthWrite:true,transparent:false,forceSinglePass:true});
+    const depth=new THREE.Mesh(emptyGeometry,material);depth.frustumCulled=false;pivot.add(depth);return depth;
+  });
   let finiteActiveBuffers=true;
   function decode(name){
     if(decoded.has(name))return decoded.get(name);
@@ -206,6 +235,7 @@ export async function createWorld({container,quality="high",onFailure}) {
     }
     const bounds=packed.manifest.models[modelIndex].fitBounds,geometry=new THREE.BufferGeometry();
     for(const [attribute,array] of Object.entries({position,normal,surfaceColor:color,barycentric:bary}))geometry.setAttribute(attribute,new THREE.BufferAttribute(array,3));
+    geometry.setAttribute('facetSeed',new THREE.BufferAttribute(facetSeeds,1));
     const finite=position.every(Number.isFinite)&&normal.every(Number.isFinite);
     const result={position,color,normal,bounds,geometry,finite};decoded.set(name,result);return result;
   }
@@ -217,6 +247,7 @@ export async function createWorld({container,quality="high",onFailure}) {
       // A target owns its geometry across endpoint changes. Both settled
       // meshes can reference it safely; only one endpoint is visible.
       meshes[i].geometry=activeModels[i].geometry;
+      depthMeshes[i].geometry=activeModels[i].geometry;
       SCULPTURE_PALETTES[i?b:a].forEach((color,k)=>meshes[i].material.uniforms[`palette${k}`].value.set(color));
     }
     finiteActiveBuffers=activeModels.every(model=>model.finite);
@@ -242,7 +273,7 @@ export async function createWorld({container,quality="high",onFailure}) {
   function resize(_width,_height,dpr=lastDpr){
     width=Math.max(1,container.clientWidth);height=Math.max(1,container.clientHeight);lastDpr=dpr;
     renderer.setPixelRatio(Math.min(dpr,QUALITY[currentQuality].dpr));renderer.setSize(width,height,false);
-    canvas.style.filter=currentQuality==="low"?"none":"drop-shadow(0 0 10px rgb(118 176 255 / .38)) drop-shadow(0 0 3px rgb(239 220 255 / .32))";
+    canvas.style.filter="drop-shadow(0 0 12px rgb(153 190 240 / .46)) drop-shadow(0 0 3px rgb(229 239 255 / .38))";
     camera.aspect=width/height;camera.updateProjectionMatrix();
   }
   updatePair("hero","hero");resize(0,0,devicePixelRatio);
@@ -262,10 +293,11 @@ export async function createWorld({container,quality="high",onFailure}) {
       // Each identity owns its fit, independent of which other endpoint is
       // active. Uniform scaling is equivalent to moving its camera by 1/scale,
       // so perspective clearance is preserved without a pair-change zoom pop.
-      fitScales=activeModels.map(model=>orbitRadius/fitSurfaceDistance(model.bounds,fitRotation,camera.aspect));
-      meshes.forEach((mesh,index)=>mesh.scale.setScalar(fitScales[index]));
+      fitScales=activeModels.map(model=>SCULPTURE_STYLE.scale*orbitRadius/fitSurfaceDistance(model.bounds,fitRotation,camera.aspect));
+      meshes.forEach((mesh,index)=>{mesh.scale.setScalar(fitScales[index]);depthMeshes[index].scale.copy(mesh.scale);});
       camera.position.multiplyScalar(orbitRadius);
       meshes[0].visible=blend<1;meshes[1].visible=currentName!==nextName&&blend>0;
+      depthMeshes.forEach((mesh,index)=>{mesh.visible=meshes[index].visible;});
       for(const mesh of meshes){mesh.material.uniforms.progress.value=blend;mesh.material.uniforms.time.value=time;}
       for(const route of routes){
         const presence=currentName===route.model?1-blend:nextName===route.model?blend:0;
@@ -278,7 +310,7 @@ export async function createWorld({container,quality="high",onFailure}) {
       }
       renderer.render(scene,camera);if(shaderFailed)throw new Error("Sculpture shader initialization failed");frames++;
     },
-    snapshot:()=>({frames,drawCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles,quality:currentQuality,dpr:renderer.getPixelRatio(),geometries:renderer.info.memory.geometries,contextLost:renderer.getContext().isContextLost(),target:currentName,nextTarget:nextName,blend,opacity:1,opaque:meshes.every(m=>!m.material.transparent&&m.material.depthWrite),gradientTime,activeMeshes:meshes.filter(m=>m.visible).length,shading:"smooth",camera:camera.position.toArray(),cameraOrientation:camera.quaternion.toArray(),rotation:[...userRotation],userOrientation:[...userOrientation],orientation:pivot.quaternion.toArray(),dragging,facets:count,decodedTargets:decoded.size,finiteActiveBuffers,visibleRoutes:routes.filter(r=>r.line.visible).map(r=>r.kind),activePathPoints:routes.filter(r=>r.line.visible).map(r=>r.shown),width,height,orbitRadius,fitScales:[...fitScales]}),
-    dispose(){if(disposed)return;disposed=true;canvas.removeEventListener("webglcontextlost",contextLost);meshes.forEach(mesh=>mesh.material.dispose());for(const model of decoded.values())model.geometry.dispose();routes.forEach(({line})=>{line.geometry.dispose();line.material.dispose();});decoded.clear();renderer.dispose();canvas.remove();},
+    snapshot:()=>({frames,drawCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles,quality:currentQuality,dpr:renderer.getPixelRatio(),geometries:renderer.info.memory.geometries,contextLost:renderer.getContext().isContextLost(),target:currentName,nextTarget:nextName,blend,opacity:meshes[0].material.uniforms.opacity.value,opaque:meshes.every(mesh=>!mesh.material.transparent),depthPrepass:depthMeshes.every((depth,i)=>depth.geometry===meshes[i].geometry&&depth.material.uniforms===meshes[i].material.uniforms&&depth.material.depthWrite&&!depth.material.colorWrite&&depth.visible===meshes[i].visible&&depth.scale.equals(meshes[i].scale)),presentationScale:SCULPTURE_STYLE.scale,gradientTime,activeMeshes:meshes.filter(m=>m.visible).length,activeDepthMeshes:depthMeshes.filter(m=>m.visible).length,shading:"tessellated",camera:camera.position.toArray(),cameraOrientation:camera.quaternion.toArray(),rotation:[...userRotation],userOrientation:[...userOrientation],orientation:pivot.quaternion.toArray(),dragging,facets:count,decodedTargets:decoded.size,finiteActiveBuffers,visibleRoutes:routes.filter(r=>r.line.visible).map(r=>r.kind),activePathPoints:routes.filter(r=>r.line.visible).map(r=>r.shown),width,height,orbitRadius,fitScales:[...fitScales]}),
+    dispose(){if(disposed)return;disposed=true;canvas.removeEventListener("webglcontextlost",contextLost);[...meshes,...depthMeshes].forEach(mesh=>mesh.material.dispose());for(const model of decoded.values())model.geometry.dispose();routes.forEach(({line})=>{line.geometry.dispose();line.material.dispose();});decoded.clear();renderer.dispose();canvas.remove();},
   };
 }

@@ -1,3 +1,5 @@
+> Historical authoring record. The opening height field and gradient trace described below have been replaced by the [Hanson quintic cross-section](calabi-yau.md). The square-root notes form and subsequent rainbow knot have been replaced by the [classical Klein bottle](klein-bottle.md). The current trefoil ribbon is sampled at 512 × 24, giving 24,576 faces. Current source factories use the 65,536-facet packet budget.
+
 # Mathematical sculpture refinement
 
 The three new forms are original mathematical artwork, prepared locally when the sculpture assets are built. No external mesh, copyrighted implementation, runtime solver, or remote numerical service is used. These are not company logos or visualizations of financial results. None is described as a Calabi–Yau surface.

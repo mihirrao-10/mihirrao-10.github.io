@@ -2,10 +2,11 @@ import * as THREE from "three";
 
 export const CALABI_YAU = Object.freeze({
   degree: 5,
-  xiMax: 1.08,
+  xiMax: 1,
   thetaSegments: 36,
   xiSegments: 32,
   projectionAngle: Math.PI / 4,
+  viewPoint: Object.freeze([2.9, 1.0, 1.4]),
   equation: "z₁⁵ + z₂⁵ = 1",
 });
 
@@ -104,14 +105,9 @@ export function createHero(neutral = false) {
     color: 0xffffff, vertexColors: true, side: THREE.DoubleSide,
     roughness: 0.35, metalness: 0.13,
   })));
-  // Bring a three-quarter view of the complex projection to camera +Z;
-  // the renderer may then orbit freely around this actual 3D geometry.
-  const azimuth = 35 * Math.PI / 180, elevation = 25 * Math.PI / 180;
-  const view = new THREE.Vector3(
-    Math.cos(elevation) * Math.cos(azimuth),
-    Math.cos(elevation) * Math.sin(azimuth),
-    Math.sin(elevation),
-  );
+  // Hanson's published Table 1 uses this projection, cutoff and three-quarter
+  // ViewPoint. Bring that view to camera +Z without changing the actual surface.
+  const view = new THREE.Vector3(...CALABI_YAU.viewPoint);
   root.quaternion.setFromRotationMatrix(
     new THREE.Matrix4().lookAt(view, new THREE.Vector3(), new THREE.Vector3(0, 0, 1)),
   ).invert();
@@ -125,6 +121,7 @@ export function createHero(neutral = false) {
     xiMax,
     palette: "Authored yellow, orange, magenta and violet; no intrinsic official colors",
     source: "https://homes.luddy.indiana.edu/hansona/papers/CP2-94.pdf",
+    referenceView: "Hanson 1994 Table 1: alpha=pi/4, xiMax=1, ViewPoint={2.9,1.0,1.4}",
   };
   return root;
 }

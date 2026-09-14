@@ -77,17 +77,20 @@ missing or extra links.
 ## Black Geometry homepage
 
 The homepage remains real HTML with STIX Two Text and native links. Its minimal
-layout has no header, menu, audio or display controls. Teaching course titles
-and awards sit inside Education; industry summaries come from the local résumé.
+layout has no header, menu, audio or display controls. Teaching course codes,
+titles, specialization, honors and awards sit inside Education; industry bullets
+and project descriptions come from the local résumé.
 Note links and the boxed Open project links use warm yellow. Projects open in
 separate tabs. The footer contains only Back to top.
 
-Eight detailed sculptures follow the entries: the Calabi–Yau cross-section, a
-fiery phoenix, navy-and-gold dragon, MATLAB membrane, red-and-blue trefoil,
-blue/teal two-handle surface, congestion potential landscape, and a colorful
-(3,5) torus knot for notes. Authoring uses denser curve samples and at least
-65,536 prepared facets per target. Opaque depth-tested faces have smooth shading,
-subtle mesh lines, animated gradient colors, reflective highlights and glow.
+Eight detailed sculptures follow the entries: Hanson's classic Calabi–Yau
+projection, a maroon-and-gray phoenix, navy-and-gold dragon, MATLAB membrane,
+red-and-blue trefoil, blue/teal two-handle surface, congestion potential landscape,
+and a crystalline white Klein bottle for notes. At least 65,536 prepared facets
+per target remain visible through luminous triangular edges and faceted shading.
+Sculptures are 16% smaller, gently translucent, and shimmer within their own
+palettes. A shared depth prepass prevents the rear surfaces from overwhelming
+their form.
 
 The two project sculptures preserve prepared numerical results from the actual
 studies. Their scientific geometry and paths remain authored data; no numerical
@@ -99,8 +102,8 @@ uses contextual SVG artwork and stops animation. Failed imports, assets, shaders
 or context creation also retain the full readable page and static sculptures.
 
 Native vertical scroll snapping settles between sections while allowing free
-reading within oversized education and notes areas. The renderer independently
-completes a 380ms eased dissolve between two intact opaque surfaces, so stopping
+reading within oversized education, industry and notes areas. The renderer independently
+completes a 380ms eased dissolve between two intact tessellated surfaces, so stopping
 scrolling cannot freeze a partially assembled mesh. Reversals and skipped entries
 resolve to the latest selected identity.
 
@@ -150,8 +153,9 @@ For local diagnostics, append `?bg-debug` to the homepage. The read-only
 draw calls, material state, quality and interaction lifecycle. It does not change rendering or expose
 private data. Browser tests use this observation hook and real production code.
 
-See the [minimal presentation report](docs/black-geometry/minimal-report.md) for the
-current revision. The [interaction report](docs/black-geometry/interactive-report.md)
+See the [crystalline mesh report](docs/black-geometry/crystalline-report.md) for the
+current revision. The [minimal presentation report](docs/black-geometry/minimal-report.md),
+[interaction report](docs/black-geometry/interactive-report.md)
 and [refinement report](docs/black-geometry/refinement-report.md) describe earlier revisions. The [implementation log](docs/black-geometry/implementation-log.md),
 [acceptance report](docs/black-geometry/acceptance-report.md), and
 [revision report](docs/black-geometry/revision-report.md) retain historical evidence

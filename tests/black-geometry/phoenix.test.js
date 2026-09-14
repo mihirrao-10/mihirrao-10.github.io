@@ -37,9 +37,9 @@ test('phoenix retains a broad bird silhouette and real depth within the authorin
   assert.ok(size.x * fit > 5.5 && size.y * fit > 4, 'The sculpture must command the intended view after uniform fitting');
 });
 
-test('the requested fire colors occupy substantial actual surface regions', () => {
+test('official maroon dominates the phoenix with supporting gray and white regions', () => {
   assert.deepEqual(PHOENIX_PALETTE, {
-    maroon: '#f04414', lightGray: '#ffcc36', gray: '#ff8b18', darkGray: '#c5260b', white: '#fff3a0',
+    maroon: '#800000', lightGray: '#d6d6ce', gray: '#767676', darkGray: '#4d4d4d', white: '#ffffff',
   });
   const model = createPhoenix(), areas = new Map();
   model.updateMatrixWorld(true);
@@ -51,11 +51,11 @@ test('the requested fire colors occupy substantial actual surface regions', () =
     areas.set(color, area);
   });
   const total = [...areas.values()].reduce((a, b) => a + b, 0);
-  const gray = ['ffcc36', 'ff8b18', 'c5260b'].reduce((sum, color) => sum + (areas.get(color) ?? 0), 0);
-  assert.ok(areas.get('f04414') / total > 0.55, 'Orange-red feathers remain the dominant fire color');
-  assert.ok(gray / total > 0.20 && gray / total < 0.40, 'Gold and amber feathers form distinct substantial regions');
-  assert.ok(areas.get('fff3a0') / total > 0.01, 'The pale throat and small highlights must survive facet conversion');
-  assert.ok((areas.get('481005') ?? 0) / total < 0.01, 'Small eye shadows must not overwhelm the warm palette');
+  const gray = ['d6d6ce', '767676', '4d4d4d'].reduce((sum, color) => sum + (areas.get(color) ?? 0), 0);
+  assert.ok(areas.get('800000') / total > 0.55, 'Official UChicago maroon remains the dominant surface color');
+  assert.ok(gray / total > 0.20 && gray / total < 0.40, 'Gray feathers form distinct supporting regions');
+  assert.ok(areas.get('ffffff') / total > 0.01, 'The pale throat and small highlights must survive facet conversion');
+  assert.ok((areas.get('241b1b') ?? 0) / total < 0.01, 'Small eye shadows must not overwhelm the institutional palette');
 });
 
 test('hooked avian head, front ruff and rear feather volumes remain spatially legible', () => {

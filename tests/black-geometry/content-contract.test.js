@@ -24,9 +24,16 @@ test("teaching and awards belong to their education entries and removed sections
   const chicago = education("education-uchicago"), drexel = education("education-drexel");
   const courses = (entry) => all(entry, (node) => hasClass(node, "course-list"))
     .flatMap((list) => all(list, (node) => node.tagName === "li")).map((node) => normalize(text(node)));
-  assert.deepEqual(courses(chicago), ["Honors Theory of Algorithms", "Algorithms"]);
-  assert.deepEqual(courses(drexel), ["Data Structures", "Algorithms & Analysis", "Artificial Intelligence", "Deep Learning"]);
-  assert.equal(all(doc, (node) => ["teaching-role", "teaching-dates", "course-code"].some((name) => hasClass(node, name))).length, 0);
+  assert.deepEqual(courses(chicago), ["CMSC 27230 | Honors Theory of Algorithms", "MPCS 55001 | Algorithms", "MPCS 50103 | Mathematics for Computer Science: Discrete Mathematics"]);
+  assert.deepEqual(courses(drexel), ["CS 260 | Data Structures", "CS 277 | Algorithms & Analysis", "CS 380 | Artificial Intelligence", "CS 615 | Deep Learning"]);
+  assert.equal(all(doc, (node) => ["teaching-role", "teaching-dates"].some((name) => hasClass(node, name))).length, 0);
+  const honors = all(drexel, (node) => hasClass(node, "degree-honors"))[0];
+  assert.equal(normalize(text(honors)), "magna cum laude");
+  assert.equal(all(honors, (node) => node.tagName === "em").length, 1);
+  const degreeLines = honors.parentNode.childNodes.filter((node) => node.tagName);
+  assert.equal(hasClass(degreeLines[0], "entry-role"), true);
+  assert.equal(degreeLines[1], honors);
+  assert.equal(normalize(text(all(chicago, (node) => hasClass(node, "degree-specialization"))[0])), "Specialization | Artificial Intelligence Foundations");
   const awards = all(drexel, (node) => hasClass(node, "awards-list"))
     .flatMap((list) => all(list, (node) => node.tagName === "li")).map((node) => normalize(text(node)));
   assert.deepEqual(awards, ["A* Award", "Jeffrey L. Popyack Teaching Assistant Award", "Student Teaching Excellence Award"]);
@@ -53,16 +60,40 @@ test("minimal navigation retains a native return link and opens projects in sepa
   assert.equal(all(projects, (node) => hasClass(node, "open-project")).length, 2);
   assert.doesNotMatch(normalize(text(projects)), /Categories|Replay path|Shortcut open|Shortcut closed/);
 });
-test("industry roles are concise and their descriptions reflect the resume", async () => {
+test("industry roles remain concise while all eight resume bullets retain their metrics", async () => {
   const doc = parse(await fs.readFile(new URL("index.html", root), "utf8"));
   const experience = all(doc, (node) => attr(node, "id") === "experience")[0];
   const roles = all(experience, (node) => hasClass(node, "entry-role")).map((node) => normalize(text(node)));
   assert.deepEqual(roles, ["Software Engineering Intern", "Data Science Intern"]);
   assert.doesNotMatch(normalize(text(experience)), /Department/);
-  assert.match(normalize(text(experience)), /tetrahedral point-location/);
-  assert.match(normalize(text(experience)), /5\.64 times faster/);
-  assert.match(normalize(text(experience)), /54 dependent jobs/);
-  assert.match(normalize(text(experience)), /FinBERT/);
+  const entries = all(experience, (node) => hasClass(node, "entry"));
+  const bullets = entries.map((entry) => all(entry, (node) => hasClass(node, "experience-points"))
+    .flatMap((list) => all(list, (node) => node.tagName === "li")).map((node) => normalize(text(node))));
+  assert.deepEqual(bullets.map((points) => points.length), [4, 4]);
+  assert.match(bullets[0][0], /55\.1 s to 9\.77 s \(5\.64×\) across 570,603 queries/);
+  assert.match(bullets[0][0], /4\.6× fewer candidate checks and 138× fewer solves with 0 mismatches/);
+  assert.match(bullets[0][1], /79 MATLAB functions and found 110\+ error-message defects/);
+  assert.match(bullets[0][1], /100-run multi-agent repair evaluations with up to 4 attempts/);
+  assert.match(bullets[0][2], /8\+ coverage improvements and 3 evaluations/);
+  assert.match(bullets[0][2], /12 end-to-end workflows/);
+  assert.match(bullets[0][3], /2\.2× and added 4 performance benchmarks plus 28 correctness tests/);
+  assert.match(bullets[1][0], /\$380K\/year vendor Excel workflow/);
+  assert.match(bullets[1][0], /54 dependent jobs/);
+  assert.match(bullets[1][1], /8,314 × 63 production dataset matching vendor rates within 1e-3 absolute error/);
+  assert.match(bullets[1][2], /Fine-tuned FinBERT for fixed-income sentiment classification/);
+  assert.match(bullets[1][3], /saved 10\+ hours\/week of manual lookup/);
+});
+test("the two existing project descriptions use their complete resume bullets", async () => {
+  const doc = parse(await fs.readFile(new URL("index.html", root), "utf8"));
+  const projects = all(doc, (node) => hasClass(node, "project-feature"));
+  assert.equal(projects.length, 2);
+  const descriptions = projects.map((project) => normalize(text(all(project, (node) => hasClass(node, "entry-detail"))[0])));
+  assert.match(descriptions[0], /Built a deterministic C\+\+20 heat-method solver for genus 1–3/);
+  assert.match(descriptions[0], /45K vertices and 91K faces in 180 ms/);
+  assert.match(descriptions[0], /6\.15 ms with < 2e-13 relative residuals/);
+  assert.match(descriptions[1], /64 seeds and 5,000 episodes/);
+  assert.match(descriptions[1], /5\.0-billion-profile state space at 100K agents/);
+  assert.match(descriptions[1], /23\.7% inefficiency/);
 });
 test("notes remain unique real list links and the document has complete native landmarks", async () => {
   const doc = parse(await fs.readFile(new URL("index.html", root), "utf8"));

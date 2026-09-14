@@ -57,42 +57,77 @@ export function createResolution() {
   return root;
 }
 
-/** A genuine (3,5) torus-knot centerline, not the former square-root surface. */
-export function notesCurve(t) {
-  const radius = 1.35 + 0.58 * Math.cos(5 * t);
-  return [radius * Math.cos(3 * t), radius * Math.sin(3 * t), 0.58 * Math.sin(5 * t)];
+export const KLEIN_BOTTLE = Object.freeze({
+  longitudinalSegments: 256,
+  radialSegments: 80,
+  palette: Object.freeze(["#f7fbff", "#dceaf2", "#a3afb9"]),
+  source: "https://arxiv.org/abs/0909.5354",
+});
+
+/**
+ * Franzoni's classical bottle immersion: a tube around a half-dumbbell.
+ * u∈[0,π], v∈[0,2π]; identify (π,v) with (0,π-v).
+ * t=π(1-cos u)/2 removes the radius derivative's endpoint divergence.
+ */
+export function kleinBottlePoint(u, v) {
+  const t = Math.PI * (1 - Math.cos(u)) / 2;
+  const sine = Math.sin(t), cosine = Math.cos(t);
+  const tangentX = 5 * cosine;
+  const tangentY = 4 * sine * cosine * cosine - 2 * sine * sine * sine;
+  const length = Math.hypot(tangentX, tangentY);
+  // This is exactly 1/2-(2t-π)sqrt(2t(2π-2t))/30 on the domain.
+  const radius = 0.5 + Math.PI * Math.PI / 30 * Math.cos(u) * Math.sin(u);
+  return [
+    5 * sine - radius * Math.cos(v) * tangentY / length,
+    2 * sine * sine * cosine + radius * Math.cos(v) * tangentX / length,
+    radius * Math.sin(v),
+  ];
 }
 
-/** A rounded, high-resolution tube around the colorful (3,5) torus knot. */
+/** The classical self-penetrating bottle, in white, ice and silver. */
 export function createNotes() {
   const root = new THREE.Group();
-  root.name = "five-fold-torus-knot";
-  const positions = [], colors = [], indices = [];
-  const steps = 768, sides = 20;
-  const palette = ["#13d9ed", "#6530ec", "#e64db1", "#ffd143", "#13d9ed"].map(hex => new THREE.Color(hex));
+  root.name = "classical-immersed-klein-bottle";
+  const positions = [], colors = [], indices = [], parameters = [];
+  const { longitudinalSegments: steps, radialSegments: sides } = KLEIN_BOTTLE;
+  const [white, ice, silver] = KLEIN_BOTTLE.palette.map(hex => new THREE.Color(hex));
   const color = new THREE.Color();
   for (let i = 0; i < steps; i++) {
-    const t = i / steps * Math.PI * 2;
-    const c3 = Math.cos(3*t), s3 = Math.sin(3*t), c5 = Math.cos(5*t), s5 = Math.sin(5*t);
-    const radius = 1.35 + 0.58*c5, center = new THREE.Vector3(...notesCurve(t));
-    const tangent = new THREE.Vector3(-2.9*s5*c3-3*radius*s3, -2.9*s5*s3+3*radius*c3, 2.9*c5).normalize();
-    const normal = new THREE.Vector3(c5*c3,c5*s3,s5);
-    const binormal = new THREE.Vector3().crossVectors(tangent,normal).normalize();
-    const at = i / steps * 4, band = Math.floor(at);
-    color.copy(palette[band]).lerp(palette[band+1], at-band);
+    const u = i / steps * Math.PI;
     for (let j = 0; j < sides; j++) {
-      const angle = j / sides * Math.PI * 2;
-      positions.push(...center.clone().addScaledVector(normal,.145*Math.cos(angle)).addScaledVector(binormal,.145*Math.sin(angle)).toArray());
-      colors.push(color.r,color.g,color.b);
-      const a=i*sides+j,b=((i+1)%steps)*sides+j,c=((i+1)%steps)*sides+(j+1)%sides,d=i*sides+(j+1)%sides;
-      indices.push(a,c,b,a,d,c);
+      const v = j / sides * Math.PI * 2;
+      positions.push(...kleinBottlePoint(u, v));
+      parameters.push(u, v);
+      // Both terms respect the reversed seam; no rainbow or false data scale.
+      color.copy(white).lerp(ice, 0.18 + 0.28 * Math.sin(v) ** 2);
+      color.lerp(silver, 0.24 * Math.cos(v) ** 2 * Math.sin(u) ** 2);
+      colors.push(color.r, color.g, color.b);
+      const a = i * sides + j, d = i * sides + (j + 1) % sides;
+      const next = column => i + 1 < steps
+        ? (i + 1) * sides + column % sides
+        : (sides / 2 - column + sides) % sides;
+      // Reversing the final circular seam creates the Klein bottle quotient.
+      // Never weld spatial self-intersections: their two sheets stay distinct.
+      const b = next(j), c = next(j + 1);
+      indices.push(a, c, b, a, d, c);
     }
   }
-  root.add(meshFrom(positions,colors,indices,"cyan-violet-gold-knot"));
-  root.rotation.set(.63,-.39,.24);
+  const mesh = meshFrom(positions, colors, indices, "ice-silver-klein-bottle");
+  mesh.geometry.setAttribute("parameter", new THREE.Float32BufferAttribute(parameters, 2));
+  mesh.material.roughness = 0.24;
+  mesh.material.metalness = 0.33;
+  root.add(mesh);
+  // Stand the bottle upright, then expose its mouth, returning neck and loop.
+  root.rotation.set(0.32, 0.70, -Math.PI / 2);
   root.userData = {
-    identity: "notes", equation: "C(t)=((1.35+0.58cos5t)cos3t,(1.35+0.58cos5t)sin3t,0.58sin5t)",
-    meaning: "Original display tube around the (3,5) torus knot; cyan/violet/gold are artistic colors",
+    identity: "notes", source: KLEIN_BOTTLE.source,
+    equation: "Tube(t,v)=alpha(t)+r(t)(cos(v)J(T(t))+sin(v)(0,0,1))",
+    directrix: "alpha(t)=(5sin(t),2sin(t)^2cos(t),0)",
+    radius: "r(t)=1/2-(2t-pi)sqrt(2t(2pi-2t))/30",
+    parameterChange: "t=pi(1-cos(u))/2",
+    seam: "(pi,v)~(0,pi-v)",
+    meaning: "Classical closed nonorientable Klein bottle immersed in 3D; self-intersections are intentional",
+    palette: "Crystalline white, ice and silver; authored display colors",
   };
   return root;
 }

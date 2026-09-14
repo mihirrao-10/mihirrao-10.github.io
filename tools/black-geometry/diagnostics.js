@@ -1,7 +1,7 @@
 import fs from 'node:fs/promises';
 import { chromium } from 'playwright';
 import assert from 'node:assert/strict';
-const output = '.artifacts/black-geometry-minimal';
+const output = '.artifacts/crystalline-mesh';
 await fs.mkdir(output, { recursive: true });
 const browser = await chromium.launch();
 const report = { browser: browser.version(), mode: 'headless', performance: [] };
@@ -12,6 +12,10 @@ try {
     await client.send('Emulation.setCPUThrottlingRate', { rate });
     await page.goto(`${process.env.BG_BASE_URL || 'http://127.0.0.1:8000'}/?bg-debug`);
     await page.waitForFunction(() => document.body.dataset.experienceState === 'ready');
+    if (!report.graphics) report.graphics = await page.evaluate(() => {
+      const gl=document.querySelector('canvas').getContext('webgl2'), extension=gl.getExtension('WEBGL_debug_renderer_info');
+      return extension ? gl.getParameter(extension.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER);
+    });
     await page.evaluate(() => document.fonts.ready);
     await page.waitForTimeout(500);
     const result = await page.evaluate(async () => {
@@ -28,7 +32,8 @@ try {
       return { samples: samples.length, observedFps: samples.length / duration, medianMs: samples[Math.floor(samples.length * .5)], p95Ms: samples[Math.floor(samples.length * .95)], maximumMs: samples.at(-1), state: __blackGeometry.snapshot().world };
     });
     assert.equal(result.state.quality, 'high');assert.equal(result.state.dpr, 2);
-    assert.equal(result.state.opaque, true);assert.ok(result.state.decodedTargets <= 2);
+    assert.equal(result.state.opaque, false);assert.equal(result.state.opacity,.88);
+    assert.equal(result.state.depthPrepass,true);assert.ok(result.state.decodedTargets <= 2);
     report.performance.push({ label, width, height, cpuThrottle: rate, ...result });
     await context.close();
   }

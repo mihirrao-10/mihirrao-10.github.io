@@ -1,4 +1,6 @@
-> The latest user-requested fire palette and higher tessellation supersede the original maroon/gray presentation described below. See [opaque-quality.md](opaque-quality.md).
+> Current revision restores official UChicago maroon `#800000`, supported by the university's gray `#767676`, light gray `#D6D6CE` and white. The [university's published style guide](https://www.law.uchicago.edu/style-guide) confirms those primary colors. The darker neutral `#4D4D4D` and tiny eye shadow `#241B1B` are authored shading accents, not additional official brand colors. This supersedes the fire-palette revision below; all 61,752 source faces and anatomy are retained.
+
+> Historical revision: the fire palette and higher tessellation described in [opaque-quality.md](opaque-quality.md) preceded the current maroon restoration.
 
 # UChicago phoenix sculpture
 

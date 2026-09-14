@@ -1,16 +1,16 @@
 import * as THREE from 'three';
 
 // Original volumetric interpretation of UChicago's phoenix, not official logo
-// geometry. User-requested fire palette supersedes the institutional colors.
+// geometry. UChicago's primary maroon and grays are restored in this revision.
 export const PHOENIX_PALETTE = Object.freeze({
-  maroon: '#f04414', lightGray: '#ffcc36', gray: '#ff8b18', darkGray: '#c5260b', white: '#fff3a0',
+  maroon: '#800000', lightGray: '#d6d6ce', gray: '#767676', darkGray: '#4d4d4d', white: '#ffffff',
 });
 const vector = (point) => new THREE.Vector3(...point);
 
 export function createPhoenix() {
   const phoenix = new THREE.Group();
   phoenix.name = 'Original UChicago phoenix sculpture';
-  const materials = Object.fromEntries(Object.entries({ ...PHOENIX_PALETTE, shadow: '#481005' }).map(([name, color]) => [name,
+  const materials = Object.fromEntries(Object.entries({ ...PHOENIX_PALETTE, shadow: '#241b1b' }).map(([name, color]) => [name,
     new THREE.MeshStandardMaterial({ color, roughness: 0.59, metalness: 0.22, flatShading: false, side: THREE.DoubleSide }),
   ]));
   function add(parent, name, geometry, color = 'maroon', anatomy = name) {

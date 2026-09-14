@@ -20,7 +20,7 @@ z_1=e^{2\pi i k_1/5}\cos(w)^{2/5},\qquad
 z_2=e^{2\pi i k_2/5}\sin(w)^{2/5},
 \]
 
-with \(0\leq\theta\leq\pi/2\), \(-1.08\leq\xi\leq1.08\), and every \((k_1,k_2)\in\{0,1,2,3,4\}^2\). Taking fifth powers recovers \(\cos^2w+\sin^2w=1\). The powers use a continuous principal argument on each quadrant patch.
+with \(0\leq\theta\leq\pi/2\), \(-1\leq\xi\leq1\), and every \((k_1,k_2)\in\{0,1,2,3,4\}^2\). Taking fifth powers recovers \(\cos^2w+\sin^2w=1\). The powers use a continuous principal argument on each quadrant patch.
 
 The displayed map is the orthogonal projection
 
@@ -29,7 +29,7 @@ P(z_1,z_2)=\left(\Re z_1,\Re z_2,
 \frac{\Im z_1+\Im z_2}{\sqrt2}\right).
 \]
 
-It discards \((\Im z_2-\Im z_1)/\sqrt2\). Apparent intersections of different sheets in the picture are consequently expected. A rigid presentation rotation then brings a view at azimuth 35°, elevation 25° to the renderer's camera at +Z.
+It discards \((\Im z_2-\Im z_1)/\sqrt2\). Apparent intersections of different sheets in the picture are consequently expected. A rigid presentation rotation brings Hanson's published `ViewPoint -> {2.9, 1.0, 1.4}` to the renderer's camera at +Z. The projection angle π/4 and finite cutoff ξmax=1 also follow Table 1 of his 1994 paper. These are the published three-quarter viewing parameters, replacing the earlier arbitrary 35° azimuth and cutoff 1.08. The model retains its geometric proportions under uniform fitting; it does not reproduce Mathematica's `BoxRatios` display stretching.
 
 Hanson's [2019 ICERM presentation, slides 41–47 and 52–53](https://homes.luddy.indiana.edu/hansona/papers/Brown-IGT-Sep19.pdf) discusses the 25 fundamental patches and the compact curve's genus six. Our finite cutoff leaves five boundary loops. It does not include or artificially cap the points at projective infinity.
 
@@ -42,10 +42,14 @@ Hanson's [2019 ICERM presentation, slides 41–47 and 52–53](https://homes.lud
 - The yellow `#ffe978`, orange `#f47c38`, magenta `#ce4e9b`, and violet `#7142d2` stops are an authored visualization palette. Calabi–Yau manifolds have no intrinsic official colors. The patch palette evokes familiar mathematical illustrations and differentiates phase patches; it is not a physical measurement or an official standard.
 - The former height-field ascent trace has been removed because it has no mathematical interpretation on this replacement.
 
-All JavaScript and triangles are original. No reference image, third-party mesh, Mathematica implementation, or downloaded internal asset is included. The current renderer is opaque and handles motion, animated gradients, glow and interaction separately; see opaque-quality.md.
+All JavaScript and triangles are original. No reference image, third-party mesh, Mathematica implementation, or downloaded internal asset is included. The renderer handles the requested material, motion, glow and interaction separately from this source geometry.
 
 ## Verification
 
 `node --test tests/black-geometry/calabi-yau.test.js tests/black-geometry/refinement-math.test.js`
 
-All six tests pass. The new checks independently multiply complex numbers to verify both quintic equations across all 25 charts, test phase identifications at seams and the finite cutoff equation, check every stored mesh vertex against the equation and projection, recover the indexed topology, and verify the projection's discarded coordinate. Existing square-root and trefoil tests remain intact. Authoring previews at front and ±0.35-radian yaw show the folds and simultaneous warm/violet patches; final material and browser review belong to the integrated renderer.
+The focused checks independently multiply complex numbers to verify both quintic equations across all 25 charts, test phase identifications at seams and the finite cutoff equation, check every stored mesh vertex against the equation and projection, recover the indexed topology, and verify the projection's discarded coordinate. The current notes tests separately verify the classical Klein bottle; the trefoil tests remain intact. Authoring previews at front and ±0.35-radian yaw show the folds and simultaneous warm/violet patches; final material and browser review belong to the integrated renderer.
+
+## Classic reference review
+
+The revision inspected both images directly on [Hanson's own page](https://homes.luddy.indiana.edu/hansona/): the compact warm/violet [Mathematica rendering](https://homes.luddy.indiana.edu/hansona/smoothN5.jpg) and the [phase-colored MeshView rendering](https://homes.luddy.indiana.edu/hansona/web-CY-quintic.jpg). Hanson describes these as equivalent renderings of the same selected quintic cross-section. The site uses an original mesh, the published three-quarter parameters, and its authored warm/violet palette; neither reference bitmap is shipped. Exact color and lighting agreement with a particular historical raster is not claimed.

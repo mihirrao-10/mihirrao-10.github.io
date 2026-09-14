@@ -108,14 +108,19 @@ main > section { scroll-margin-top: 1.5rem; padding: 5.5rem 0 0; margin-top: 3re
 .entry-dates { color: var(--muted); font-size: 0.78rem; white-space: nowrap; }
 .entry-subheader { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.4rem 1.1rem; margin-bottom: 0.6rem; }
 .entry-role { font-size: 0.99rem; font-weight: 400; margin: 0; }
+.degree-specialization, .degree-honors { margin: 0.25rem 0 0; color: var(--muted); font-size: 0.84rem; line-height: 1.5; }
 .entry-location { color: var(--muted); font-size: 0.78rem; white-space: nowrap; }
 .entry-detail { margin: 0.8rem 0 0; font-size: 0.98rem; line-height: 1.65; }
 .entry-detail a { text-decoration: underline; text-decoration-color: #ffffff66; text-underline-offset: 0.2em; }
 .entry-detail strong { font-weight: 600; }
+.experience-points { margin: 1.2rem 0 0; padding-left: 1.1rem; font-size: 0.94rem; line-height: 1.65; }
+.experience-points li { padding-left: 0.15rem; margin: 0.9rem 0; }
+.experience-points li::marker { color: var(--muted); font-size: 0.75em; }
 .teaching-record, .awards-record { margin-top: 2.25rem; }
 .entry-subheading { margin: 0 0 0.9rem; font-size: 0.76rem; font-weight: 600; letter-spacing: 0.13em; text-transform: uppercase; color: var(--strong); }
 .course-list, .awards-list { list-style: none; padding: 0; margin: 0.9rem 0 0; }
 .course-list li { padding: 0.3rem 0; font-size: 0.91rem; }
+.course-code { white-space: nowrap; color: var(--muted); font-size: 0.82rem; }
 .awards-list li { position: relative; padding: 0.35rem 0 0.35rem 1rem; font-size: 0.92rem; line-height: 1.55; }
 .awards-list li::before { content: "·"; position: absolute; left: 0; color: var(--muted); }
 .project-feature { position: relative; min-height: 78svh; padding: 1rem 0 5rem; }
