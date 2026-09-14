@@ -25,41 +25,6 @@
     <p id="rotation-hint" class="rotation-hint" hidden>Drag to rotate</p>
     <span id="rotation-instructions" class="sr-only">Drag to rotate. Use arrow keys to rotate or Home to reset the view.</span>
   </div>
-  <header class="site-header">
-    <div class="header-inner">
-      <a class="home-link" href="#top">Mihir Rao</a>
-      <div class="header-controls">
-        <details id="section-index">
-          <summary>Menu</summary>
-          <div class="disclosure-panel">
-            <nav class="index-links" aria-label="Section index">
-              <a href="#education">Education</a>
-              <a href="#experience">Industry experience</a>
-              <a href="#personal-projects">Personal projects</a>
-              <a href="#notes">Personal notes</a>
-            </nav>
-            <div id="display-settings" class="display-panel" hidden>
-              <label for="motion-setting">Motion</label>
-              <select id="motion-setting">
-                <option value="system">System preference</option>
-                <option value="on">On</option>
-                <option value="off">Off</option>
-              </select>
-              <label for="quality-setting">Quality</label>
-              <select id="quality-setting">
-                <option value="auto">Auto</option>
-                <option value="low">Low</option>
-                <option value="high">High</option>
-              </select>
-              <p id="display-status" role="status">Motion follows your system preference.</p>
-            </div>
-          </div>
-        </details>
-        <button id="sound-toggle" type="button" aria-pressed="false" hidden><span class="sound-dot" aria-hidden="true"></span><span>Sound off</span></button>
-        <span id="sound-status" class="sr-only" role="status"></span>
-      </div>
-    </div>
-  </header>
   <section class="hero" id="top" data-scene="hero" data-target="hero" aria-label="Introduction">
     <img class="hero-art scene-fallback" src="assets/black-geometry/generated/sculpture-hero.svg" width="800" height="600" alt="" aria-hidden="true" />
     <h1 class="hero-name">Mihir Rao</h1>
@@ -75,7 +40,6 @@
         <i class="fa-solid fa-envelope" aria-hidden="true"></i><span>Email</span>
       </a>
     </nav>
-    <a class="scroll-cue" href="#education" aria-label="Scroll to education"><span aria-hidden="true">↓</span></a>
   </section>
 
   <main id="main" tabindex="-1">
@@ -93,15 +57,13 @@
           <span class="entry-location">Chicago, IL</span>
         </div>
         <p class="entry-detail">
-          Interests → Theoretical Computer Science, Machine Learning, Economics
+          Interests | Theoretical Computer Science, Machine Learning, Economics
         </p>
         <div class="teaching-record">
           <h4 class="entry-subheading">Teaching</h4>
-          <p class="teaching-role">Graduate Teaching Assistant &amp; Lecturer → Department of Computer Science</p>
-          <p class="teaching-dates">Jan 2026 – Mar 2026 · Chicago, IL</p>
           <ul class="course-list">
-            <li><span>Honors Theory of Algorithms</span> <span class="course-code">(CMSC 27230)</span></li>
-            <li><span>Algorithms</span> <span class="course-code">(MPCS 55001)</span></li>
+            <li>Honors Theory of Algorithms</li>
+            <li>Algorithms</li>
           </ul>
         </div>
       </div>
@@ -118,20 +80,18 @@
         </div>
         <div class="teaching-record">
           <h4 class="entry-subheading">Teaching</h4>
-          <p class="teaching-role">Undergraduate Teaching Assistant → Department of Computer Science</p>
-          <p class="teaching-dates">Jun 2022 – Jun 2024 · Philadelphia, PA</p>
           <ul class="course-list">
-            <li><span>Data Structures</span> <span class="course-code">(CS260)</span></li>
-            <li><span>Algorithms &amp; Analysis</span> <span class="course-code">(CS277)</span></li>
-            <li><span>Artificial Intelligence</span> <span class="course-code">(CS380)</span></li>
-            <li><span>Deep Learning</span> <span class="course-code">(CS615)</span></li>
+            <li>Data Structures</li>
+            <li>Algorithms &amp; Analysis</li>
+            <li>Artificial Intelligence</li>
+            <li>Deep Learning</li>
           </ul>
         </div>
         <div class="awards-record">
           <h4 class="entry-subheading">Awards</h4>
           <ul class="awards-list">
             <li>A* Award</li>
-            <li>Jeffrey L. Popyack Outstanding Undergraduate Teaching/Course Assistant Award</li>
+            <li>Jeffrey L. Popyack Teaching Assistant Award</li>
             <li>Student Teaching Excellence Award</li>
           </ul>
         </div>
@@ -148,9 +108,10 @@
           <span class="entry-dates">Jun 2026 – Sept 2026</span>
         </div>
         <div class="entry-subheader">
-          <p class="entry-role">Software Engineering Intern → Math &amp; Data Department</p>
+          <p class="entry-role">Software Engineering Intern</p>
           <span class="entry-location">Boston, MA</span>
         </div>
+        <p class="entry-detail">Optimized MATLAB geometry and data APIs in C++, including a tetrahedral point-location prototype that ran 5.64 times faster with no mismatches against the shipped engine. Built Claude skills for MATLAB workflows and error-message auditing, with automated evaluations and correctness benchmarks.</p>
       </div>
 
       <div class="entry" id="experience-resolution" data-scene="experience-resolution" data-target="resolution">
@@ -160,9 +121,10 @@
           <span class="entry-dates">Apr 2024 – Sept 2024</span>
         </div>
         <div class="entry-subheader">
-          <p class="entry-role">AI Data Science Intern → Investment Process Engineering Department</p>
+          <p class="entry-role">Data Science Intern</p>
           <span class="entry-location">Philadelphia, PA</span>
         </div>
+        <p class="entry-detail">Built an AWS ingestion pipeline that replaced a $380K-per-year vendor workflow and coordinated 54 dependent jobs. Recreated fixed-income rate calculations in PySpark, fine-tuned FinBERT for bond sentiment, and automated claims-interest lookups.</p>
       </div>
     </section>
 
@@ -174,49 +136,32 @@
       <div class="entry">
         <div class="entry-header">
           <h3 class="entry-title">
-            <a class="project-link" href="https://mihirrao-10.github.io/shortest-path-through-a-curved-world/">The Shortest Path Through a Curved World</a>
+            <a class="project-link" href="https://mihirrao-10.github.io/shortest-path-through-a-curved-world/" target="_blank" rel="noopener">The Shortest Path Through a Curved World</a>
           </h3>
         </div>
-        <p class="project-tags">Categories → Computational Geometry, Discrete Differential Geometry</p>
         <p class="entry-detail">
-          An interactive C++ exploration of how heat reconstructs geodesic distance and surface paths across triangulated surfaces with one to three handles.
+          A C++20 implementation of the Heat Method for finding approximate shortest paths across curved triangle meshes with one, two, or three handles. The solver builds discrete differential operators, reuses sparse factorizations, and traces paths through triangle interiors. An interactive Three.js narrative shows heat diffusion and compares the native paths with straight-line distance and edge-constrained Dijkstra routes.
         </p>
-        <p class="project-tags">C++20 · Eigen · Discrete Geometry · Three.js</p>
+        <p class="project-tags">C++20 | Eigen | Three.js</p>
       </div>
 
-        <figure class="project-visual">
-          <div class="project-controls">
-            <button id="replay-path" type="button" hidden>Replay path</button>
-            <a class="open-project" href="https://mihirrao-10.github.io/shortest-path-through-a-curved-world/" aria-label="Open The Shortest Path Through a Curved World">Open project</a>
-          </div>
-          <figcaption>Prepared Heat Method route on the project’s two-handle surface; no solver runs on this page.</figcaption>
-        </figure>
+        <a class="open-project" href="https://mihirrao-10.github.io/shortest-path-through-a-curved-world/" target="_blank" rel="noopener" aria-label="Open The Shortest Path Through a Curved World">Open project</a>
       </article>
       <article class="project-feature" id="project-congestion" data-scene="project-congestion" data-target="congestion">
       <img class="scene-fallback" src="assets/black-geometry/generated/sculpture-congestion.svg" width="1000" height="850" alt="" aria-hidden="true" loading="lazy" />
       <div class="entry">
         <div class="entry-header">
           <h3 class="entry-title">
-            <a class="project-link" href="https://mihirrao-10.github.io/multi-agent-reinforcement-learning-in-congestion-games/">When Every Agent Finds the Shortcut</a>
+            <a class="project-link" href="https://mihirrao-10.github.io/multi-agent-reinforcement-learning-in-congestion-games/" target="_blank" rel="noopener">When Every Agent Finds the Shortcut</a>
           </h3>
         </div>
-        <p class="project-tags">Categories → Reinforcement Learning, Algorithmic Game Theory</p>
         <p class="entry-detail">
-          An exact finite congestion game study where independent learners discover Braess's paradox, with reproducible experiments across several populations and an interactive potential landscape.
+          A reproducible Python study of how independent learners find inefficient equilibria in Braess’s routing game. Exact analysis identifies equilibria, social optima, and marginal-cost tolls for populations up to 100,000 agents. The interactive essay connects those results to Q-learning, Hedge, and best-response experiments, showing how individually sensible decisions can produce collective congestion.
         </p>
-        <p class="project-tags">Python · Multi-Agent Reinforcement Learning · Congestion Games · Three.js</p>
+        <p class="project-tags">Python | NumPy | Three.js</p>
       </div>
 
-        <figure class="project-visual">
-          <div class="project-controls">
-            <div id="shortcut-controls" role="group" aria-label="Shortcut availability" hidden>
-              <button type="button" data-shortcut="open" aria-pressed="true">Shortcut open</button>
-              <button type="button" data-shortcut="closed" aria-pressed="false">Shortcut closed</button>
-            </div>
-            <a class="open-project" href="https://mihirrao-10.github.io/multi-agent-reinforcement-learning-in-congestion-games/" aria-label="Open When Every Agent Finds the Shortcut">Open project</a>
-          </div>
-          <figcaption><span class="route-status" id="route-status" role="status">Shortcut open: an exact best-response trajectory is shown.</span>Rosenthal potential for the project’s 100-agent game. The closed-shortcut curve marks feasible two-route states.</figcaption>
-        </figure>
+        <a class="open-project" href="https://mihirrao-10.github.io/multi-agent-reinforcement-learning-in-congestion-games/" target="_blank" rel="noopener" aria-label="Open When Every Agent Finds the Shortcut">Open project</a>
       </article>
     </section>
 
@@ -227,62 +172,56 @@
         <h3 class="notes-category">Caltech</h3>
         <ul class="notes-list">
           <li>
-            <a href="notes/learning-from-data-caltech.pdf">Learning From Data → Caltech CS/CNS/EE 156</a>
+            <a href="notes/learning-from-data-caltech.pdf">Learning From Data</a>
           </li>
         </ul>
 
         <h3 class="notes-category">MIT</h3>
         <ul class="notes-list">
           <li>
-            <a href="notes/distributed-systems-mit.pdf">Distributed Systems → MIT 6.824</a>
+            <a href="notes/distributed-systems-mit.pdf">Distributed Systems</a>
           </li>
           <li>
-            <a href="notes/introduction-to-algorithms-mit.pdf">Introduction to Algorithms → MIT 6.006</a>
+            <a href="notes/introduction-to-algorithms-mit.pdf">Introduction to Algorithms</a>
           </li>
           <li>
-            <a href="notes/linear-algebra-mit.pdf">Linear Algebra → MIT 18.06SC</a>
+            <a href="notes/linear-algebra-mit.pdf">Linear Algebra</a>
           </li>
           <li>
-            <a href="notes/principles-discrete-applied-math-mit.pdf">Principles of Discrete Applied Mathematics → MIT 18.200</a>
+            <a href="notes/principles-discrete-applied-math-mit.pdf">Principles of Discrete Applied Mathematics</a>
           </li>
           <li>
-            <a href="notes/principles-macroeconomics-mit.pdf">Principles of Macroeconomics → MIT 14.02</a>
+            <a href="notes/principles-macroeconomics-mit.pdf">Principles of Macroeconomics</a>
           </li>
           <li>
-            <a href="notes/probabilistic-systems-analysis-mit.pdf">Probabilistic Systems Analysis and Applied Probability → MIT 6.041</a>
+            <a href="notes/probabilistic-systems-analysis-mit.pdf">Probabilistic Systems Analysis and Applied Probability</a>
           </li>
           <li>
-            <a href="notes/single-variable-calculus-mit.pdf">Single Variable Calculus → MIT 18.01</a>
+            <a href="notes/single-variable-calculus-mit.pdf">Single Variable Calculus</a>
           </li>
         </ul>
 
         <h3 class="notes-category">Carnegie Mellon</h3>
         <ul class="notes-list">
           <li>
-            <a href="notes/discrete-differential-geometry-cmu.pdf">Discrete Differential Geometry: An Applied Introduction → CMU 15-458/858</a>
+            <a href="notes/discrete-differential-geometry-cmu.pdf">Discrete Differential Geometry: An Applied Introduction</a>
           </li>
           <li>
-            <a href="notes/principles-functional-programming-cmu.pdf">Principles of Functional Programming → CMU 15-150</a>
+            <a href="notes/principles-functional-programming-cmu.pdf">Principles of Functional Programming</a>
           </li>
         </ul>
 
         <h3 class="notes-category">UC Irvine</h3>
         <ul class="notes-list">
           <li>
-            <a href="notes/high-dimensional-probability-uci.pdf">High-Dimensional Probability and Applications in Data Science → UCI Free Course</a>
+            <a href="notes/high-dimensional-probability-uci.pdf">High-Dimensional Probability and Applications in Data Science</a>
           </li>
         </ul>
       </div>
     </section>
   </main>
   <footer class="site-footer" id="contact" data-scene="contact" data-target="notes">
-    <p>Mihir Rao</p>
-    <nav class="footer-links" aria-label="Footer contact links">
-      <a href="mailto:raomihir.98@gmail.com">Email</a>
-      <a href="https://github.com/mihirrao-10">GitHub</a>
-      <a href="https://www.linkedin.com/in/mihir-rao-6242a8209/">LinkedIn</a>
-      <a href="#top">Back to top ↑</a>
-    </nav>
+    <a class="back-to-top" href="#top">Back to top</a>
   </footer>
   <script type="module" src="assets/black-geometry/generated/main.js"></script>
 </body>

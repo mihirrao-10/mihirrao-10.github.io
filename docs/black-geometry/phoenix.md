@@ -1,3 +1,5 @@
+> The latest user-requested fire palette and higher tessellation supersede the original maroon/gray presentation described below. See [opaque-quality.md](opaque-quality.md).
+
 # UChicago phoenix sculpture
 
 The University of Chicago's official athletics nickname is the Maroons. Its mascot is a phoenix, named **Phil the Phoenix**, rather than an eagle. The [official athletics mascot history](https://athletics.uchicago.edu/sports/2023/6/12/maroons-phoenix.aspx) establishes both names.

@@ -3,8 +3,8 @@ import * as THREE from "three";
 export const CALABI_YAU = Object.freeze({
   degree: 5,
   xiMax: 1.08,
-  thetaSegments: 18,
-  xiSegments: 16,
+  thetaSegments: 36,
+  xiSegments: 32,
   projectionAngle: Math.PI / 4,
   equation: "z₁⁵ + z₂⁵ = 1",
 });

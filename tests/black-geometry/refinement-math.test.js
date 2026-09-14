@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { createNotes, createResolution } from "../../src/black-geometry/sculptures/mathematical.js";
+import { createNotes, createResolution, notesCurve } from "../../src/black-geometry/sculptures/mathematical.js";
 
 function dispose(group) {
   group.traverse((object) => {
@@ -58,27 +58,23 @@ function topology(geometry) {
   };
 }
 
-test("notes vertices satisfy the square-root projection, retain both roots, and join the periodic seam", () => {
-  const group = createNotes();
+test("notes is a closed (3,5) torus knot with independently verified winding numbers", () => {
+  const group=createNotes();
   try {
-    const mesh = group.children.find((object) => object.isMesh);
-    const positions = mesh.geometry.attributes.position;
-    const key = (x, y, z) => [x, y, z].map((value) => Math.round(value * 100000)).join(",");
-    const points = new Set();
-    for (let i = 0; i < positions.count; i++) points.add(key(positions.getX(i), positions.getY(i), positions.getZ(i)));
-    for (let i = 0; i < positions.count; i++) {
-      const x = positions.getX(i), y = positions.getY(i), z = positions.getZ(i);
-      const realRoot = y / 1.35;
-      // Eliminate Im(w) from w²=z: Im(z)² = 4 Re(w)² (Re(w)² - Re(z)).
-      const imaginaryRootSquared = realRoot * realRoot - x;
-      assert.ok(imaginaryRootSquared >= -0.000001);
-      assert.ok(Math.abs(z * z - 4 * realRoot * realRoot * imaginaryRootSquared) < 0.000005,
-        "Every plotted vertex must lie on the stated algebraic projection");
-      assert.ok(points.has(key(x, -y, z)), "The opposite square root must occur over the same complex z");
+    const geometry=group.children.find(object=>object.isMesh).geometry;
+    assert.deepEqual(topology(geometry),{components:1,boundaryLoops:0,euler:0});
+    let major=0,minor=0,previous;
+    const difference=(a,b)=>Math.atan2(Math.sin(a-b),Math.cos(a-b));
+    for(let i=0;i<=1000;i++){
+      const point=notesCurve(i/1000*Math.PI*2), radial=Math.hypot(point[0],point[1]);
+      assert.ok(Math.abs((radial-1.35)**2+point[2]**2-.58**2)<1e-12);
+      const angles=[Math.atan2(point[1],point[0]),Math.atan2(point[2],radial-1.35)];
+      if(previous){major+=difference(angles[0],previous[0]);minor+=difference(angles[1],previous[1]);}
+      previous=angles;
     }
-    assert.deepEqual(topology(mesh.geometry), { components: 1, boundaryLoops: 2, euler: 0 },
-      "The punctured parameter disk must be one annulus, with no accidental branch-cut seam");
-  } finally { dispose(group); }
+    assert.ok(Math.abs(major/(2*Math.PI)-3)<1e-12);
+    assert.ok(Math.abs(minor/(2*Math.PI)-5)<1e-12);
+  }finally{dispose(group);}
 });
 
 test("the trefoil ribbon closes both longitudinal and cross-section seams", () => {

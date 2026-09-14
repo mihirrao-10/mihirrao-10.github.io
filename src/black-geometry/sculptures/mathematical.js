@@ -19,8 +19,8 @@ export function createResolution() {
   const root = new THREE.Group();
   root.name = "trefoil-ribbon";
   const positions = [], colors = [], indices = [];
-  const steps = 256, sides = 12;
-  const blue = new THREE.Color("#3577b8"), red = new THREE.Color("#db484f");
+  const steps = 512, sides = 24;
+  const blue = new THREE.Color("#187fe8"), red = new THREE.Color("#f12f57");
   const color = new THREE.Color(), rim = new THREE.Color("#f6ece5");
   for (let i = 0; i < steps; i++) {
     const t = i / steps * Math.PI * 2;
@@ -57,33 +57,42 @@ export function createResolution() {
   return root;
 }
 
-/** Three-dimensional projection (Re z, Re w, Im z) of w²=z over a punctured w-disk. */
+/** A genuine (3,5) torus-knot centerline, not the former square-root surface. */
+export function notesCurve(t) {
+  const radius = 1.35 + 0.58 * Math.cos(5 * t);
+  return [radius * Math.cos(3 * t), radius * Math.sin(3 * t), 0.58 * Math.sin(5 * t)];
+}
+
+/** A rounded, high-resolution tube around the colorful (3,5) torus knot. */
 export function createNotes() {
   const root = new THREE.Group();
-  root.name = "square-root-riemann-projection";
+  root.name = "five-fold-torus-knot";
   const positions = [], colors = [], indices = [];
-  const rings = 32, sectors = 112;
-  const white = new THREE.Color("#f1f5f2"), green = new THREE.Color("#83bd9c"), color = new THREE.Color();
-  for (let j = 0; j <= rings; j++) {
-    const radius = 0.065 + (j / rings) * 1.285;
-    for (let i = 0; i < sectors; i++) {
-      const angle = i / sectors * Math.PI * 2;
-      const a = radius * Math.cos(angle), b = radius * Math.sin(angle);
-      positions.push(a * a - b * b, 1.35 * a, 2 * a * b);
-      color.copy(white).lerp(green, 0.06 + 0.16 * (0.5 + 0.5 * Math.sin(angle)) * j / rings);
-      colors.push(color.r, color.g, color.b);
-      if (j) {
-        const here = j * sectors + i, next = j * sectors + (i + 1) % sectors;
-        const below = here - sectors, belowNext = next - sectors;
-        indices.push(below, belowNext, next, below, next, here);
-      }
+  const steps = 768, sides = 20;
+  const palette = ["#13d9ed", "#6530ec", "#e64db1", "#ffd143", "#13d9ed"].map(hex => new THREE.Color(hex));
+  const color = new THREE.Color();
+  for (let i = 0; i < steps; i++) {
+    const t = i / steps * Math.PI * 2;
+    const c3 = Math.cos(3*t), s3 = Math.sin(3*t), c5 = Math.cos(5*t), s5 = Math.sin(5*t);
+    const radius = 1.35 + 0.58*c5, center = new THREE.Vector3(...notesCurve(t));
+    const tangent = new THREE.Vector3(-2.9*s5*c3-3*radius*s3, -2.9*s5*s3+3*radius*c3, 2.9*c5).normalize();
+    const normal = new THREE.Vector3(c5*c3,c5*s3,s5);
+    const binormal = new THREE.Vector3().crossVectors(tangent,normal).normalize();
+    const at = i / steps * 4, band = Math.floor(at);
+    color.copy(palette[band]).lerp(palette[band+1], at-band);
+    for (let j = 0; j < sides; j++) {
+      const angle = j / sides * Math.PI * 2;
+      positions.push(...center.clone().addScaledVector(normal,.145*Math.cos(angle)).addScaledVector(binormal,.145*Math.sin(angle)).toArray());
+      colors.push(color.r,color.g,color.b);
+      const a=i*sides+j,b=((i+1)%steps)*sides+j,c=((i+1)%steps)*sides+(j+1)%sides,d=i*sides+(j+1)%sides;
+      indices.push(a,c,b,a,d,c);
     }
   }
-  root.add(meshFrom(positions, colors, indices, "two-sheet-square-root-projection"));
-  root.rotation.set(0.44, -0.58, -0.13);
+  root.add(meshFrom(positions,colors,indices,"cyan-violet-gold-knot"));
+  root.rotation.set(.63,-.39,.24);
   root.userData = {
-    identity: "notes", equation: "w=a+ib; z=w²=(a²−b²)+2iab; plotted (Re z,1.35 Re w,Im z)",
-    meaning: "Projection of a two-sheet square-root Riemann surface, with a small puncture around the branch point",
+    identity: "notes", equation: "C(t)=((1.35+0.58cos5t)cos3t,(1.35+0.58cos5t)sin3t,0.58sin5t)",
+    meaning: "Original display tube around the (3,5) torus knot; cyan/violet/gold are artistic colors",
   };
   return root;
 }

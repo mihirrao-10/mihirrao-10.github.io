@@ -76,53 +76,40 @@ missing or extra links.
 
 ## Black Geometry homepage
 
-The homepage remains real HTML with STIX Two Text, native anchor navigation, and
-all biography/project/note content available without JavaScript. Its central
-faceted sculpture changes with individual entries: a gold, orange and violet
-Calabi–Yau quintic cross-section, an original UChicago phoenix in official maroon
-and greystone, an original navy-and-gold dragon, an independently
-reconstructed MATLAB membrane, a red-and-blue trefoil ribbon for Resolution
-Life, and a square-root Riemann-surface projection for notes. The Calabi–Yau
-palette is an artistic choice; the manifold has no intrinsic official colors.
-A connected folded scaffold guides a continuous cubic morph between targets.
-Teaching courses and awards sit within the corresponding Education entries.
+The homepage remains real HTML with STIX Two Text and native links. Its minimal
+layout has no header, menu, audio or display controls. Teaching course titles
+and awards sit inside Education; industry summaries come from the local résumé.
+Note links and the boxed Open project links use warm yellow. Projects open in
+separate tabs. The footer contains only Back to top.
 
-The two project sculptures use prepared results from the actual studies: the
-complete genus-two mesh and computed Heat Method route, and the N=100 Rosenthal
-potential landscape. The homepage does not run either numerical solver. Project
-captions distinguish the computed route, exact best-response path, and feasible
-two-route boundary. See the provenance documents for licenses and extraction.
+Eight detailed sculptures follow the entries: the Calabi–Yau cross-section, a
+fiery phoenix, navy-and-gold dragon, MATLAB membrane, red-and-blue trefoil,
+blue/teal two-handle surface, congestion potential landscape, and a colorful
+(3,5) torus knot for notes. Authoring uses denser curve samples and at least
+65,536 prepared facets per target. Opaque depth-tested faces have smooth shading,
+subtle mesh lines, animated gradient colors, reflective highlights and glow.
 
-**Menu** combines native section navigation with Motion and Quality settings.
-System reduced motion and Motion off use contextual SVGs generated from the
-same target meshes and stop rendering. Explicit Motion on lasts for the visit;
-Off and quality choices may persist. Low preserves the same sculptures, caps
-DPR at 1 and targets 30 fps; other profiles cap DPR at 1.5 and target 60 fps. Auto
-can downgrade after sustained slow frames and never oscillates between profiles.
+The two project sculptures preserve prepared numerical results from the actual
+studies. Their scientific geometry and paths remain authored data; no numerical
+solver runs on the homepage. See the provenance documents for extraction details.
 
-**Sound off** is the fresh-load default. Only this control constructs/resumes an
-AudioContext, directly within its gesture. Enabling sound produces a short
-confirmation, then identity changes and project controls produce restrained
-synthesized cues. A compressor and bounded envelopes control output. Hidden
-pages are silent; suspended context state and the retained opt-in are reported
-separately, without queued transition bursts. Motion and sound are independent.
+Motion is on and rendering always uses High quality, targeting 60fps at up to
+2× device pixel ratio. Old stored display settings are ignored. OS reduced motion
+uses contextual SVG artwork and stops animation. Failed imports, assets, shaders
+or context creation also retain the full readable page and static sculptures.
 
-One Three.js context renders one transported mesh, plus the visible paths and
-context outlines. An elevated camera orbit takes about a minute per revolution,
-with gradual changes in elevation and roll. Dragging any sculpture pauses the
-orbit and rotates the artwork around the viewing axes, with brief inertia after
-release. Horizontal touch drags rotate while native vertical scrolling and pinch
-zoom remain available; focused arrow keys rotate and Home resets the drag angle.
-Translucent facets have reflective highlights, luminous edges and a restrained
-halo; Low quality omits the halo filter. Native scrolling stays immediate while
-the artwork follows with 140ms exponential damping. Quintic timing, continuous
-cubic geometry paths and gentle opacity fades work in both directions.
-Expensive target authoring, spatial correspondence and subdivision happen at
-build time. The browser fetches a prepared compressed packet and retains only
-the active source/destination and shared folded scaffold as geometry buffers.
-Native hashes, reverse scrolling, and restored positions use measured DOM
-anchors. Failed imports/assets/rendering and context loss retain complete HTML
-and context-specific artwork. Print uses dark text on white paper.
+Native vertical scroll snapping settles between sections while allowing free
+reading within oversized education and notes areas. The renderer independently
+completes a 380ms eased dissolve between two intact opaque surfaces, so stopping
+scrolling cannot freeze a partially assembled mesh. Reversals and skipped entries
+resolve to the latest selected identity.
+
+The camera orbits around the centered artwork. Mouse/pen dragging rotates around
+screen axes using accumulated quaternions, including after prior turns, and
+pauses the orbit. Release adds brief inertia. Horizontal touch dragging rotates
+while native vertical scrolling and pinch zoom remain available. Focused arrow
+keys rotate; Home resets the drag orientation. One graphics context renders one
+settled sculpture or two during a transition. Print uses dark text on white.
 
 ### Build and maintenance
 
@@ -134,7 +121,7 @@ Runtime source is in `src/black-geometry/`, styling in
 ```sh
 npm run build:experience      # update browser assets after editing the experience
 npm run verify:experience     # compare generated content without rewriting files
-npm run test:experience       # pure state, audio, content and build contracts
+npm run test:experience       # state, interaction, geometry, content and build contracts
 npm run check                # tracker validation + all unit tests + build + parity
 
 # Browser binaries are optional and are not needed by the scheduled job refresh.
@@ -160,12 +147,12 @@ deliberately no longer match that snapshot. Use `npm run check` for ongoing vali
 
 For local diagnostics, append `?bg-debug` to the homepage. The read-only
 `window.__blackGeometry.snapshot()` reports production scene state, frame counts,
-draw calls, quality and audio lifecycle. It does not change rendering or expose
+draw calls, material state, quality and interaction lifecycle. It does not change rendering or expose
 private data. Browser tests use this observation hook and real production code.
 
-See the [interaction and sculpture report](docs/black-geometry/interactive-report.md)
-for the current revision and the [refinement report](docs/black-geometry/refinement-report.md)
-for the preceding content changes. The [implementation log](docs/black-geometry/implementation-log.md),
+See the [minimal presentation report](docs/black-geometry/minimal-report.md) for the
+current revision. The [interaction report](docs/black-geometry/interactive-report.md)
+and [refinement report](docs/black-geometry/refinement-report.md) describe earlier revisions. The [implementation log](docs/black-geometry/implementation-log.md),
 [acceptance report](docs/black-geometry/acceptance-report.md), and
 [revision report](docs/black-geometry/revision-report.md) retain historical evidence
 from the earlier passes.

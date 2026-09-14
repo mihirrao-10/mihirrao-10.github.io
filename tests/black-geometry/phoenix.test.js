@@ -29,7 +29,7 @@ test('phoenix retains a broad bird silhouette and real depth within the authorin
       count++;
     }
   });
-  assert.ok(count > 8000 && count <= 18000, `Moderate detailed sculpture budget: ${count}`);
+  assert.ok(count > 50000 && count <= 65536, `High-resolution sculpture budget: ${count}`);
   const size = sizeOf(model);
   assert.ok(size.x / size.y > 1.25 && size.x / size.y < 1.6, 'Spread wings should dominate the upright bird without becoming a thin banner');
   assert.ok(size.z > 1.2, 'Quarter and side views must reveal a physical bird, not a flat emblem');
@@ -37,9 +37,9 @@ test('phoenix retains a broad bird silhouette and real depth within the authorin
   assert.ok(size.x * fit > 5.5 && size.y * fit > 4, 'The sculpture must command the intended view after uniform fitting');
 });
 
-test('official maroon and greystone colors occupy substantial actual surface regions', () => {
+test('the requested fire colors occupy substantial actual surface regions', () => {
   assert.deepEqual(PHOENIX_PALETTE, {
-    maroon: '#800000', lightGray: '#D9D9D9', gray: '#A6A6A6', darkGray: '#737373', white: '#FFFFFF',
+    maroon: '#f04414', lightGray: '#ffcc36', gray: '#ff8b18', darkGray: '#c5260b', white: '#fff3a0',
   });
   const model = createPhoenix(), areas = new Map();
   model.updateMatrixWorld(true);
@@ -51,11 +51,11 @@ test('official maroon and greystone colors occupy substantial actual surface reg
     areas.set(color, area);
   });
   const total = [...areas.values()].reduce((a, b) => a + b, 0);
-  const gray = ['d9d9d9', 'a6a6a6', '737373'].reduce((sum, color) => sum + (areas.get(color) ?? 0), 0);
-  assert.ok(areas.get('800000') / total > 0.55, 'Maroon remains the dominant institutional color');
-  assert.ok(gray / total > 0.20 && gray / total < 0.40, 'Gray feathers form clearly separate substantial regions');
-  assert.ok(areas.get('ffffff') / total > 0.01, 'The pale throat and small highlights must survive facet conversion');
-  assert.ok((areas.get('21080e') ?? 0) / total < 0.01, 'Eye shadows must not replace the official palette');
+  const gray = ['ffcc36', 'ff8b18', 'c5260b'].reduce((sum, color) => sum + (areas.get(color) ?? 0), 0);
+  assert.ok(areas.get('f04414') / total > 0.55, 'Orange-red feathers remain the dominant fire color');
+  assert.ok(gray / total > 0.20 && gray / total < 0.40, 'Gold and amber feathers form distinct substantial regions');
+  assert.ok(areas.get('fff3a0') / total > 0.01, 'The pale throat and small highlights must survive facet conversion');
+  assert.ok((areas.get('481005') ?? 0) / total < 0.01, 'Small eye shadows must not overwhelm the warm palette');
 });
 
 test('hooked avian head, front ruff and rear feather volumes remain spatially legible', () => {

@@ -7,7 +7,7 @@ import * as THREE from "three";
 const EIGENVALUE = 9.639723843543223;
 const SECOND_COEFFICIENT = 0.25615690714466466;
 const ORDER_GAMMA = [0.9027452929509336, 9.26052826812555];
-const GRID = 48;
+const GRID = 96;
 
 // The rapidly convergent defining series suffices for 0 <= z <= sqrt(2 lambda).
 // This only evaluates the already-authored shape when build tooling imports it.
@@ -103,10 +103,10 @@ export function createMembrane() {
   geometry.computeVertexNormals();
 
   const colors = [];
-  const blue = new THREE.Color("#317a99");
-  const blueRim = new THREE.Color("#80c4cd");
-  const copper = new THREE.Color("#a83a21");
-  const orange = new THREE.Color("#e86622");
+  const blue = new THREE.Color("#087ad8");
+  const blueRim = new THREE.Color("#4cdcf2");
+  const copper = new THREE.Color("#ce3516");
+  const orange = new THREE.Color("#ff7724");
   const gold = new THREE.Color("#ffad3d");
   const color = new THREE.Color();
   const cool = new THREE.Color();
@@ -144,7 +144,7 @@ export function createMembrane() {
     eigenvalue: EIGENVALUE,
     numericalMethod: "author-time sector-Bessel boundary collocation; two-term display truncation",
     authoredView: "MathWorks southwest three-quarter camera; +Y up, camera on +Z",
-    palette: { body: "#e86622", secondary: "#317a99", highlight: "#ffad3d" },
+    palette: { body: "#ff7724", secondary: "#087ad8", highlight: "#ffad3d" },
   };
   return root;
 }

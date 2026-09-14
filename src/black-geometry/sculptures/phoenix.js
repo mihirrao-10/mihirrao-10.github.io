@@ -1,17 +1,17 @@
 import * as THREE from 'three';
 
 // Original volumetric interpretation of UChicago's phoenix, not official logo
-// geometry. Reference study and verified palette: docs/black-geometry/phoenix.md.
+// geometry. User-requested fire palette supersedes the institutional colors.
 export const PHOENIX_PALETTE = Object.freeze({
-  maroon: '#800000', lightGray: '#D9D9D9', gray: '#A6A6A6', darkGray: '#737373', white: '#FFFFFF',
+  maroon: '#f04414', lightGray: '#ffcc36', gray: '#ff8b18', darkGray: '#c5260b', white: '#fff3a0',
 });
 const vector = (point) => new THREE.Vector3(...point);
 
 export function createPhoenix() {
   const phoenix = new THREE.Group();
   phoenix.name = 'Original UChicago phoenix sculpture';
-  const materials = Object.fromEntries(Object.entries({ ...PHOENIX_PALETTE, shadow: '#21080E' }).map(([name, color]) => [name,
-    new THREE.MeshStandardMaterial({ color, roughness: 0.59, metalness: 0.22, flatShading: true, side: THREE.DoubleSide }),
+  const materials = Object.fromEntries(Object.entries({ ...PHOENIX_PALETTE, shadow: '#481005' }).map(([name, color]) => [name,
+    new THREE.MeshStandardMaterial({ color, roughness: 0.59, metalness: 0.22, flatShading: false, side: THREE.DoubleSide }),
   ]));
   function add(parent, name, geometry, color = 'maroon', anatomy = name) {
     geometry.computeVertexNormals();
@@ -22,7 +22,7 @@ export function createPhoenix() {
     return mesh;
   }
   function volume(parent, name, center, radius, color = 'maroon', segments = 14) {
-    const geometry = new THREE.SphereGeometry(1, segments, 10);
+    const geometry = new THREE.SphereGeometry(1, segments * 2, 20);
     geometry.scale(...radius); geometry.translate(...center);
     return add(parent, name, geometry, color);
   }
@@ -30,6 +30,7 @@ export function createPhoenix() {
   // Closed anatomical lofts for wing bones, beak and talons. Each segment has
   // an elliptical cross-section, so the bird remains physical from the back.
   function loft(parent, name, controls, color, segments = 14, sides = 8, reference = [0, 0, 1]) {
+    segments *= 2; sides *= 2;
     const curve = new THREE.CatmullRomCurve3(controls.map(p => vector(p.slice(0, 3))), false, 'catmullrom', 0.25);
     const positions = [], indices = [];
     for (let i = 0; i <= segments; i++) {
@@ -63,8 +64,9 @@ export function createPhoenix() {
   // A feather is a closed, curved, lenticular solid with a raised central vane.
   // The layered pointed silhouettes do the work; there is no bat membrane.
   function feather(parent, name, controls, width, color = 'maroon', depth = 0.048, segments = 9) {
+    segments *= 2;
     const curve = new THREE.CatmullRomCurve3(controls.map(vector), false, 'catmullrom', 0.25);
-    const positions = [], indices = [], sides = 6;
+    const positions = [], indices = [], sides = 10;
     for (let i = 0; i <= segments; i++) {
       const t = i / segments, center = curve.getPoint(t), tangent = curve.getTangent(t).normalize();
       const side = new THREE.Vector3().crossVectors(new THREE.Vector3(0, 0, 1), tangent).normalize();

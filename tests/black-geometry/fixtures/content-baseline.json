@@ -20,8 +20,8 @@
       "id": "education",
       "heading": "education",
       "entries": [
-        "University of Chicago Sept 2025 – Dec 2026 M.S. in Computer Science Chicago, IL Interests → Theoretical Computer Science, Machine Learning, Economics Teaching Graduate Teaching Assistant & Lecturer → Department of Computer Science Jan 2026 – Mar 2026 · Chicago, IL Honors Theory of Algorithms (CMSC 27230) Algorithms (MPCS 55001)",
-        "Drexel University Sept 2020 – Jun 2025 B.S. in Computer Science & B.A. in Mathematics Philadelphia, PA Teaching Undergraduate Teaching Assistant → Department of Computer Science Jun 2022 – Jun 2024 · Philadelphia, PA Data Structures (CS260) Algorithms & Analysis (CS277) Artificial Intelligence (CS380) Deep Learning (CS615) Awards A* Award Jeffrey L. Popyack Outstanding Undergraduate Teaching/Course Assistant Award Student Teaching Excellence Award"
+        "University of Chicago Sept 2025 – Dec 2026 M.S. in Computer Science Chicago, IL Interests | Theoretical Computer Science, Machine Learning, Economics Teaching Honors Theory of Algorithms Algorithms",
+        "Drexel University Sept 2020 – Jun 2025 B.S. in Computer Science & B.A. in Mathematics Philadelphia, PA Teaching Data Structures Algorithms & Analysis Artificial Intelligence Deep Learning Awards A* Award Jeffrey L. Popyack Teaching Assistant Award Student Teaching Excellence Award"
       ],
       "links": []
     },
@@ -29,8 +29,8 @@
       "id": "experience",
       "heading": "industry experience",
       "entries": [
-        "MathWorks Jun 2026 – Sept 2026 Software Engineering Intern → Math & Data Department Boston, MA",
-        "Resolution Life US Apr 2024 – Sept 2024 AI Data Science Intern → Investment Process Engineering Department Philadelphia, PA"
+        "MathWorks Jun 2026 – Sept 2026 Software Engineering Intern Boston, MA Optimized MATLAB geometry and data APIs in C++, including a tetrahedral point-location prototype that ran 5.64 times faster with no mismatches against the shipped engine. Built Claude skills for MATLAB workflows and error-message auditing, with automated evaluations and correctness benchmarks.",
+        "Resolution Life US Apr 2024 – Sept 2024 Data Science Intern Philadelphia, PA Built an AWS ingestion pipeline that replaced a $380K-per-year vendor workflow and coordinated 54 dependent jobs. Recreated fixed-income rate calculations in PySpark, fine-tuned FinBERT for bond sentiment, and automated claims-interest lookups."
       ],
       "links": [
         {
@@ -49,8 +49,8 @@
       "id": "personal-projects",
       "heading": "personal projects",
       "entries": [
-        "The Shortest Path Through a Curved World Categories → Computational Geometry, Discrete Differential Geometry An interactive C++ exploration of how heat reconstructs geodesic distance and surface paths across triangulated surfaces with one to three handles. C++20 · Eigen · Discrete Geometry · Three.js",
-        "When Every Agent Finds the Shortcut Categories → Reinforcement Learning, Algorithmic Game Theory An exact finite congestion game study where independent learners discover Braess's paradox, with reproducible experiments across several populations and an interactive potential landscape. Python · Multi-Agent Reinforcement Learning · Congestion Games · Three.js"
+        "The Shortest Path Through a Curved World A C++20 implementation of the Heat Method for finding approximate shortest paths across curved triangle meshes with one, two, or three handles. The solver builds discrete differential operators, reuses sparse factorizations, and traces paths through triangle interiors. An interactive Three.js narrative shows heat diffusion and compares the native paths with straight-line distance and edge-constrained Dijkstra routes. C++20 | Eigen | Three.js",
+        "When Every Agent Finds the Shortcut A reproducible Python study of how independent learners find inefficient equilibria in Braess’s routing game. Exact analysis identifies equilibria, social optima, and marginal-cost tolls for populations up to 100,000 agents. The interactive essay connects those results to Q-learning, Hedge, and best-response experiments, showing how individually sensible decisions can produce collective congestion. Python | NumPy | Three.js"
       ],
       "links": [
         {
@@ -69,62 +69,62 @@
       "id": "notes",
       "heading": "personal notes",
       "entries": [
-        "Caltech Learning From Data → Caltech CS/CNS/EE 156 MIT Distributed Systems → MIT 6.824 Introduction to Algorithms → MIT 6.006 Linear Algebra → MIT 18.06SC Principles of Discrete Applied Mathematics → MIT 18.200 Principles of Macroeconomics → MIT 14.02 Probabilistic Systems Analysis and Applied Probability → MIT 6.041 Single Variable Calculus → MIT 18.01 Carnegie Mellon Discrete Differential Geometry: An Applied Introduction → CMU 15-458/858 Principles of Functional Programming → CMU 15-150 UC Irvine High-Dimensional Probability and Applications in Data Science → UCI Free Course"
+        "Caltech Learning From Data MIT Distributed Systems Introduction to Algorithms Linear Algebra Principles of Discrete Applied Mathematics Principles of Macroeconomics Probabilistic Systems Analysis and Applied Probability Single Variable Calculus Carnegie Mellon Discrete Differential Geometry: An Applied Introduction Principles of Functional Programming UC Irvine High-Dimensional Probability and Applications in Data Science"
       ],
       "links": [
         {
           "href": "notes/learning-from-data-caltech.pdf",
-          "text": "Learning From Data → Caltech CS/CNS/EE 156",
+          "text": "Learning From Data",
           "label": ""
         },
         {
           "href": "notes/distributed-systems-mit.pdf",
-          "text": "Distributed Systems → MIT 6.824",
+          "text": "Distributed Systems",
           "label": ""
         },
         {
           "href": "notes/introduction-to-algorithms-mit.pdf",
-          "text": "Introduction to Algorithms → MIT 6.006",
+          "text": "Introduction to Algorithms",
           "label": ""
         },
         {
           "href": "notes/linear-algebra-mit.pdf",
-          "text": "Linear Algebra → MIT 18.06SC",
+          "text": "Linear Algebra",
           "label": ""
         },
         {
           "href": "notes/principles-discrete-applied-math-mit.pdf",
-          "text": "Principles of Discrete Applied Mathematics → MIT 18.200",
+          "text": "Principles of Discrete Applied Mathematics",
           "label": ""
         },
         {
           "href": "notes/principles-macroeconomics-mit.pdf",
-          "text": "Principles of Macroeconomics → MIT 14.02",
+          "text": "Principles of Macroeconomics",
           "label": ""
         },
         {
           "href": "notes/probabilistic-systems-analysis-mit.pdf",
-          "text": "Probabilistic Systems Analysis and Applied Probability → MIT 6.041",
+          "text": "Probabilistic Systems Analysis and Applied Probability",
           "label": ""
         },
         {
           "href": "notes/single-variable-calculus-mit.pdf",
-          "text": "Single Variable Calculus → MIT 18.01",
+          "text": "Single Variable Calculus",
           "label": ""
         },
         {
           "href": "notes/discrete-differential-geometry-cmu.pdf",
-          "text": "Discrete Differential Geometry: An Applied Introduction → CMU 15-458/858",
+          "text": "Discrete Differential Geometry: An Applied Introduction",
           "label": ""
         },
         {
           "href": "notes/principles-functional-programming-cmu.pdf",
-          "text": "Principles of Functional Programming → CMU 15-150",
+          "text": "Principles of Functional Programming",
           "label": ""
         },
         {
           "href": "notes/high-dimensional-probability-uci.pdf",
-          "text": "High-Dimensional Probability and Applications in Data Science → UCI Free Course",
+          "text": "High-Dimensional Probability and Applications in Data Science",
           "label": ""
         }
       ]

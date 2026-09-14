@@ -9,13 +9,15 @@ test("prepared sculpture packet has eight complete finite identities and simulta
   const length=data.readUInt32LE(0), manifest=JSON.parse(data.subarray(4,length+4)), offset=length+4;
   assert.deepEqual(manifest.models.map(m=>m.name),["hero","phoenix","dragon","membrane","resolution","notes","surface","congestion"]);
   assert.equal(data.length,offset+manifest.models.length*manifest.count*manifest.stride);
-  assert.ok(manifest.count>=29584);
+  assert.ok(manifest.count>=65536);
+  assert.equal(manifest.version,2);assert.equal(manifest.stride,39);
   for(let i=0;i<manifest.models.length;i++){
     const colors=new Set();let min=Infinity,max=-Infinity;
     for(let j=0;j<manifest.count;j++){
-      const at=offset+(i*manifest.count+j)*21;
+      const at=offset+(i*manifest.count+j)*manifest.stride;
       for(let k=0;k<9;k++){const p=data.readInt16LE(at+k*2)/4096;min=Math.min(min,p);max=Math.max(max,p);assert.ok(Math.abs(p)<5);}
       colors.add(data.subarray(at+18,at+21).toString("hex"));
+      for(let corner=0;corner<3;corner++){const normal=[0,1,2].map(k=>data.readInt16LE(at+21+(corner*3+k)*2)/32767);assert.ok(Math.abs(Math.hypot(...normal)-1)<.00004,"Prepared normals stay normalized after quantization");}
     }
     assert.ok(max-min>2,manifest.models[i].name);
     assert.ok(colors.size>=2,manifest.models[i].name);

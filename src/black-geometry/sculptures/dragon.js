@@ -15,13 +15,13 @@ export function createDragon() {
   const dragon = new THREE.Group();
   dragon.name = 'Original Drexel-inspired dragon';
   const materials = {
-    body: new THREE.MeshStandardMaterial({ color: BLUE, roughness: 0.57, metalness: 0.35, flatShading: true, side: THREE.DoubleSide }),
-    litBlue: new THREE.MeshStandardMaterial({ color: '#124473', roughness: 0.57, metalness: 0.3, flatShading: true, side: THREE.DoubleSide }),
-    blueRidge: new THREE.MeshStandardMaterial({ color: '#1E547C', roughness: 0.57, metalness: 0.3, flatShading: true, side: THREE.DoubleSide }),
-    gold: new THREE.MeshStandardMaterial({ color: GOLD, roughness: 0.49, metalness: 0.48, flatShading: true, side: THREE.DoubleSide }),
-    oldGold: new THREE.MeshStandardMaterial({ color: '#B28A12', roughness: 0.55, metalness: 0.4, flatShading: true, side: THREE.DoubleSide }),
-    paleGold: new THREE.MeshStandardMaterial({ color: '#FAD774', roughness: 0.43, metalness: 0.4, flatShading: true, side: THREE.DoubleSide }),
-    dark: new THREE.MeshStandardMaterial({ color: '#020D1C', roughness: 0.8, metalness: 0.1, flatShading: true, side: THREE.DoubleSide }),
+    body: new THREE.MeshStandardMaterial({ color: BLUE, roughness: 0.57, metalness: 0.35, flatShading: false, side: THREE.DoubleSide }),
+    litBlue: new THREE.MeshStandardMaterial({ color: '#1165a5', roughness: 0.57, metalness: 0.3, flatShading: false, side: THREE.DoubleSide }),
+    blueRidge: new THREE.MeshStandardMaterial({ color: '#178ccc', roughness: 0.57, metalness: 0.3, flatShading: false, side: THREE.DoubleSide }),
+    gold: new THREE.MeshStandardMaterial({ color: GOLD, roughness: 0.49, metalness: 0.48, flatShading: false, side: THREE.DoubleSide }),
+    oldGold: new THREE.MeshStandardMaterial({ color: '#ed9e16', roughness: 0.55, metalness: 0.4, flatShading: false, side: THREE.DoubleSide }),
+    paleGold: new THREE.MeshStandardMaterial({ color: '#FAD774', roughness: 0.43, metalness: 0.4, flatShading: false, side: THREE.DoubleSide }),
+    dark: new THREE.MeshStandardMaterial({ color: '#020D1C', roughness: 0.8, metalness: 0.1, flatShading: false, side: THREE.DoubleSide }),
   };
 
   function add(name, geometry, material = materials.body) {
@@ -41,6 +41,7 @@ export function createDragon() {
   // Anatomical lofts use independently varying elliptical cross-sections. The
   // rings follow the centerline instead of piling spheres along a tube.
   function loft(name, controls, { rings = 20, sides = 12, material = materials.body, rib = 0 } = {}) {
+    rings *= 2; sides *= 2;
     const curve = new THREE.CatmullRomCurve3(controls.map((p) => V(p.slice(0, 3))), false, 'catmullrom', 0.35);
     const vertices = [];
     const indices = [];
@@ -114,8 +115,8 @@ export function createDragon() {
     for (let section = 0; section < rim.length - 1; section += 1) {
       const A = rim[section];
       const B = rim[section + 1];
-      const subdivisions = 7;
-      const rows = 7;
+      const subdivisions = 14;
+      const rows = 14;
       const pos = [];
       const colors = [];
       const indices = [];
@@ -146,7 +147,7 @@ export function createDragon() {
       geometry.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
       geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
       geometry.setIndex(indices);
-      add(`${name} tensioned membrane ${section + 1}`, geometry, new THREE.MeshStandardMaterial({ color: 0xffffff, vertexColors: true, roughness: 0.57, metalness: 0.32, side: THREE.DoubleSide, flatShading: true }));
+      add(`${name} tensioned membrane ${section + 1}`, geometry, new THREE.MeshStandardMaterial({ color: 0xffffff, vertexColors: true, roughness: 0.57, metalness: 0.32, side: THREE.DoubleSide, flatShading: false }));
       const middle = A.clone().lerp(B, 0.5).lerp(O, section === 0 ? 0.11 : 0.23);
       rib(`${name} scalloped edge ${section + 1}`, [A.toArray(), middle.toArray(), B.toArray()], 0.035, front ? materials.blueRidge : materials.oldGold, 9);
     }

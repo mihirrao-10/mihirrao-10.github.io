@@ -106,7 +106,7 @@ test("the displayed mesh retains the equation, its documented projection, and ge
       "The superseded height-field ascent does not belong on this complex slice");
     const geometry = group.children.find(object => object.isMesh).geometry;
     const p = geometry.attributes.position, c = geometry.attributes.complexPosition;
-    assert.ok(geometry.index.count / 3 <= 16000, "Authoring must respect the shared renderer budget");
+    assert.ok(geometry.index.count / 3 <= 65536, "Authoring must respect the shared renderer budget");
     for (let i = 0; i < p.count; i++) {
       const point = [...c.array.slice(i * 4, i * 4 + 4)];
       assert.ok(residual(point) < 0.000004, "Every retained Float32 vertex must satisfy the source equation");

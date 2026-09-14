@@ -19,53 +19,39 @@ export const ease = (t) => {
 };
 const entryFor = (id) => ENTRIES.find((entry) => entry.id === id) || ENTRIES[0];
 
-// Smooth only the artwork's sampled scroll position. Native scrolling, text and
-// anchors stay immediate. Exponential damping is independent of refresh rate;
-// long jumps and restored anchors resolve directly instead of touring the page.
-export function smoothScroll(current, target, delta, snapDistance = 700) {
-  if (!Number.isFinite(current) || Math.abs(target - current) > snapDistance) return target;
-  if (Math.abs(target - current) < 0.1) return target;
-  return mix(current, target, 1 - Math.exp(-Math.max(0, delta) / 0.14));
-}
-
-// These intervals are cached from DOM layout. The reading position stays fully
-// visible, with an arrival fade and a gentle departure in the inter-entry gap.
-export function entryReveal(y, range, next, viewportHeight) {
-  const arrival = ease((y - range.start + viewportHeight * 0.42) / (viewportHeight * 0.42));
-  const departure = next ? 1 - ease(((y - range.start) / Math.max(1, next.start - range.start) - 0.65) / 0.33) : 1;
-  return arrival * departure;
-}
-
-// Starts are measured from individual DOM entries relative to the reading focus.
-// Holding the first half gives every identity a readable settled interval. The
-// second half transports material toward the next entry; no scroll history is
-// involved, so reversals, interrupted transitions and restored positions agree.
+// Select the nearest valid native snap interval. Oversized reading areas keep
+// their identity while the visitor reads anywhere between start and stop.
 export function chapterState(scrollY, ranges) {
   const y = Math.max(0, Number.isFinite(scrollY) ? scrollY : 0);
-  if (!ranges.length) return {
-    chapter: "hero", section: "top", target: "hero", nextTarget: "hero",
-    index: 0, next: 0, progress: 0, blend: 0,
-  };
+  if (!ranges.length) return { chapter: "hero", section: "top", target: "hero", nextTarget: "hero", index: 0, next: 0, progress: 0, blend: 0 };
   let index = 0;
-  while (index < ranges.length - 1 && y >= ranges[index + 1].start) index++;
-  const range = ranges[index];
-  const next = Math.min(index + 1, ranges.length - 1);
-  const following = ranges[next];
-  const end = index === next ? range.end : following.start;
-  const progress = clamp((y - range.start) / Math.max(1, end - range.start));
-  const entry = entryFor(range.id);
+  while (index < ranges.length - 1) {
+    const current = ranges[index], following = ranges[index + 1];
+    const stop = Math.min(following.start, Math.max(current.start, current.stop ?? current.start));
+    if (y < (stop + following.start) / 2) break;
+    index++;
+  }
+  const range = ranges[index], entry = entryFor(range.id);
   const target = range.target || entry.target;
-  const nextTarget = following.target || entryFor(following.id).target;
-  return {
-    chapter: range.id,
-    section: range.section || entry.section,
-    target,
-    nextTarget,
-    index,
-    next,
-    progress,
-    blend: target === nextTarget ? 0 : ease((progress - 0.5) / 0.5),
-  };
+  const end = ranges[index + 1]?.start ?? range.end;
+  return { chapter: range.id, section: range.section || entry.section, target, nextTarget: target,
+    index, next: index, progress: clamp((y-range.start)/Math.max(1,end-range.start)), blend: 0 };
+}
+
+export const TRANSITION_SECONDS = 0.38;
+export const createTransition = (target = "hero") => ({ from: target, to: target, elapsed: 0, blend: 0 });
+// Eased elapsed time always finishes, independent of where scrolling stops.
+// Reversals reuse the same dissolve coverage; fast skips take the dominant mesh.
+export function advanceTransition(previous, target, delta) {
+  let state = previous;
+  if (target !== state.to) {
+    if (target === state.from) state = { from: state.to, to: state.from, elapsed: TRANSITION_SECONDS-state.elapsed };
+    else state = { from: state.blend < 0.5 ? state.from : state.to, to: target, elapsed: 0 };
+  }
+  if (state.from === state.to) return createTransition(target);
+  const elapsed = state.elapsed + (Number.isFinite(delta) ? Math.max(0,delta) : 0);
+  if (elapsed >= TRANSITION_SECONDS) return createTransition(target);
+  return { ...state, elapsed, blend: ease(elapsed/TRANSITION_SECONDS) };
 }
 
 // Authored geometry carries its initial presentation angle. These small target
@@ -93,18 +79,4 @@ export function cameraPose(state, { time = 0, pointer = [0, 0], fullMotion = tru
     pose[5] += Math.sin(time * 0.17) * 0.08;
   }
   return pose;
-}
-export function createProjectState() {
-  return { shortcut: "open", path: 1, replaying: false, deliberate: false, seen: false };
-}
-export function startReplay(state, motion, deliberate = true) {
-  return { ...state, path: motion === "full" ? 0 : 1, replaying: motion === "full", deliberate, seen: true };
-}
-export function advanceReplay(state, delta) {
-  if (!state.replaying) return state;
-  const path = clamp(state.path + clamp(delta, 0, 0.05) / 2.7);
-  return { ...state, path, replaying: path < 1 };
-}
-export function chooseShortcut(state, choice) {
-  return { ...state, shortcut: choice === "closed" ? "closed" : "open" };
 }

@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { surfaceFitBounds, smoothSurfaceNormals } from "../../src/black-geometry/world.js";
 import { createHero } from "../../src/black-geometry/sculptures/hero.js";
 import { createPhoenix } from "../../src/black-geometry/sculptures/phoenix.js";
 import { createDragon } from "../../src/black-geometry/sculptures/dragon.js";
@@ -91,58 +92,23 @@ export function correspond(original, count) {
   return order(faces);
 }
 
-const CORNER_PERMUTATIONS = [
-  [0, 1, 2], [0, 2, 1], [1, 0, 2],
-  [1, 2, 0], [2, 0, 1], [2, 1, 0],
-];
-
-/** Match local corners to the connected hero scaffold without moving a vertex.
- * Reversing winding is safe for the renderer's double-sided surface material.
- * The scaffold scale must match the global affine transform in world.js.
- */
-export function alignCorners(faces, scaffold, scale = [1.1, 0.7, 0.5]) {
-  if (faces.length !== scaffold.length) throw new Error("Scaffold face count mismatch");
-  return faces.map((face, index) => {
-    const target = scaffold[index];
-    const sourceCenter = face.center || center(face);
-    const targetCenter = target.center || center(target);
-    const sourceLocal = face.p.map((value, component) => value - sourceCenter[component % 3]);
-    const targetLocal = target.p.map((value, component) =>
-      (value - targetCenter[component % 3]) * scale[component % 3]);
-    let best = CORNER_PERMUTATIONS[0], bestCost = Infinity;
-    for (const permutation of CORNER_PERMUTATIONS) {
-      let cost = 0;
-      for (let corner = 0; corner < 3; corner++) {
-        for (let axis = 0; axis < 3; axis++) {
-          const difference = sourceLocal[permutation[corner] * 3 + axis]
-            - targetLocal[corner * 3 + axis];
-          cost += difference * difference;
-        }
-      }
-      if (cost < bestCost) { bestCost = cost; best = permutation; }
-    }
-    return { ...face, p: best.flatMap(corner => face.p.slice(corner * 3, corner * 3 + 3)) };
-  });
-}
-
 export async function sculptureOutputs() {
   const models = factories.map((factory,i)=>bake(factory(),COMPONENTS[i]));
   const {createSurface, createCongestion} = await import("../../src/black-geometry/sculptures/projects.js");
   models.push(bake(createSurface(),"surface"),bake(createCongestion(),"congestion"));
-  const count = 2 ** Math.ceil(Math.log2(Math.max(...models.map(m=>m.faces.length))));
-  const manifest = {version:1, count, stride:21, quantization:4096, models:[]};
+  const count = 2 ** Math.ceil(Math.log2(Math.max(65536, ...models.map(m=>m.faces.length))));
+  const manifest = {version:2, count, stride:39, quantization:4096, normalQuantization:32767, models:[]};
   const buffers=[];
-  // Reuse this exact ordered topology for every model's corner alignment.
-  // Positive diagonal scaling leaves the hero's own corner order unchanged.
-  const scaffold = correspond(models[0].faces, count);
   for(const model of models){
-    const ordered = model === models[0] ? scaffold : correspond(model.faces, count);
-    const faces=alignCorners(ordered,scaffold), data=Buffer.alloc(count*21);
+    const faces=correspond(model.faces,count), data=Buffer.alloc(count*manifest.stride);
+    const positions=new Float32Array(count*9);
     faces.forEach((face,i)=>{
-      face.p.forEach((v,j)=>data.writeInt16LE(Math.round(v*4096),i*21+j*2));
-      face.c.forEach((v,j)=>data[i*21+18+j]=Math.round(Math.min(1,Math.max(0,v))*255));
+      face.p.forEach((v,j)=>{const integer=Math.round(v*4096);data.writeInt16LE(integer,i*manifest.stride+j*2);positions[i*9+j]=integer/4096;});
+      face.c.forEach((v,j)=>data[i*manifest.stride+18+j]=Math.round(Math.min(1,Math.max(0,v))*255));
     });
-    manifest.models.push({name:model.name,originalFaces:model.faces.length,paths:model.paths});
+    const normals=smoothSurfaceNormals(positions);
+    for(let i=0;i<count;i++)for(let j=0;j<9;j++)data.writeInt16LE(Math.round(Math.max(-1,Math.min(1,normals[i*9+j]))*32767),i*manifest.stride+21+j*2);
+    manifest.models.push({name:model.name,originalFaces:model.faces.length,paths:model.paths,fitBounds:surfaceFitBounds(positions,model.paths.map(path=>path.points))});
     buffers.push(data);
   }
   const header=Buffer.from(JSON.stringify(manifest)), length=Buffer.alloc(4);length.writeUInt32LE(header.length);

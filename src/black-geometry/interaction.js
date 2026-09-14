@@ -1,5 +1,4 @@
 const TAU = Math.PI * 2;
-const MAX_PITCH = 1.15;
 const DRAG_DECAY = 7.5;
 const clamp = (value, lower, upper) => Math.max(lower, Math.min(upper, value));
 
@@ -10,8 +9,8 @@ export function createInteraction({ element, hint, onChange = () => {} }) {
   const on = (type, handler) => element.addEventListener(type, handler, { signal: listeners.signal });
   let enabled = false, disposed = false, dragging = false, pointerId = null;
   let touch = false, pending = false, origin = [0, 0], previous = [0, 0], lastMove = 0;
-  let rotation = [0, 0], velocity = [0, 0];
-  const snapshot = () => ({ enabled, dragging, pending, pointerId, rotation: [...rotation], velocity: [...velocity] });
+  let rotation = [0, 0], orientation = [0, 0, 0, 1], velocity = [0, 0];
+  const snapshot = () => ({ enabled, dragging, pending, pointerId, rotation: [...rotation], orientation: [...orientation], velocity: [...velocity] });
   const publish = () => {
     element.dataset.dragging = String(dragging);
     onChange(snapshot());
@@ -29,13 +28,20 @@ export function createInteraction({ element, hint, onChange = () => {} }) {
     publish();
   }
   function addRotation(pitch, yaw) {
-    const next = rotation[0] + pitch;
-    rotation[0] = clamp(next, -MAX_PITCH, MAX_PITCH);
-    if (rotation[0] !== next) velocity[0] = 0;
-    rotation[1] += yaw;
-    // Keep accumulated yaw numerically stable. Removing complete turns changes
-    // neither the rendered orientation nor the direction of the next movement.
-    if (Math.abs(rotation[1]) > TAU * 1000) rotation[1] %= TAU;
+    const angle = Math.hypot(pitch, yaw);
+    if (!angle) return;
+    // Apply the incremental rotation about the current screen axes, before the
+    // accumulated orientation. Euler reconstruction would tilt those axes after
+    // a prior turn, and a pitch clamp would prevent exploring the whole object.
+    const factor = Math.sin(angle / 2) / angle;
+    const ax = pitch * factor, ay = yaw * factor, aw = Math.cos(angle / 2);
+    const [bx, by, bz, bw] = orientation;
+    orientation = [aw * bx + ax * bw + ay * bz, aw * by + ay * bw - ax * bz,
+      aw * bz + ax * by - ay * bx, aw * bw - ax * bx - ay * by];
+    const length = Math.hypot(...orientation);
+    orientation = orientation.map((value) => value / length);
+    // These totals are diagnostics only; the quaternion is the rendered state.
+    rotation = [rotation[0] + pitch, rotation[1] + yaw].map((value) => Math.abs(value) > TAU * 1000 ? value % TAU : value);
   }
   function capture() {
     dragging = true;
@@ -66,8 +72,12 @@ export function createInteraction({ element, hint, onChange = () => {} }) {
     if (event.cancelable) event.preventDefault();
     const bounds = element.getBoundingClientRect();
     const dx = event.clientX - previous[0], dy = event.clientY - previous[1];
-    const pitch = touch ? 0 : dy * Math.PI / Math.max(200, bounds.height);
-    const yaw = dx * TAU / Math.max(240, bounds.width);
+    const radiansPerPixel = Math.PI / Math.max(200, Math.min(bounds.width, bounds.height));
+    // Positive X rotation moves the front (+Z) surface toward negative Y,
+    // following a downward drag. Both axes use the same pixel scale so a
+    // diagonal drag moves the surface along the same screen-space diagonal.
+    const pitch = touch ? 0 : dy * radiansPerPixel;
+    const yaw = dx * radiansPerPixel;
     const delta = clamp((event.timeStamp - lastMove) / 1000, 0.008, 0.08);
     velocity = [pitch, yaw].map((angle, index) => velocity[index] * 0.25 + clamp(angle / delta, -8, 8) * 0.75);
     addRotation(pitch, yaw);
@@ -92,7 +102,7 @@ export function createInteraction({ element, hint, onChange = () => {} }) {
     if (event.key !== "Home" && !directions[event.key]) return;
     event.preventDefault();
     cancel();
-    if (event.key === "Home") rotation = [0, 0];
+    if (event.key === "Home") { rotation = [0, 0]; orientation = [0, 0, 0, 1]; }
     else addRotation(...directions[event.key]);
     publish();
   });
