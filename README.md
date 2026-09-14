@@ -77,31 +77,39 @@ missing or extra links.
 ## Black Geometry homepage
 
 The homepage remains real HTML with STIX Two Text, native anchor navigation, and
-all biography/project/note content available without JavaScript. An original
-procedural folded surface and sparse geometric chapters enhance the reading
-experience. The two project stages use an illustrative surface path and a
-directed congestion schematic. Neither runs or reproduces the sibling studies.
+all biography/project/note content available without JavaScript. Its central
+faceted sculpture changes with individual entries: an original ivory Enneper
+surface, Harper Memorial Library in maroon, an original navy-and-gold dragon,
+and an independently reconstructed MATLAB membrane. A connected folded scaffold
+organizes the same mesh between the different target topologies.
 
-The header's **Index** links to all six sections. **Display** provides Motion
-(System preference, On, Off) and Quality (Auto, Low, High). System reduced motion
-and Motion off use static SVG artwork and stop rendering. An explicit On override
-lasts for the current visit; Off and quality preferences may persist. Denied or
-malformed storage falls back safely. Auto uses simpler geometry on narrow/modest
-devices and downgrades after sustained slow frames; it never oscillates between
-profiles. Low targets 30 fps with DPR capped at 1; other profiles cap DPR at 1.5.
+The two project sculptures use prepared results from the actual studies: the
+complete genus-two mesh and computed Heat Method route, and the N=100 Rosenthal
+potential landscape. The homepage does not run either numerical solver. Project
+captions distinguish the computed route, exact best-response path, and feasible
+two-route boundary. See the provenance documents for licenses and extraction.
 
-**Sound off** is the default on every load. Only that control initializes audio.
-Optional, short synthesized cues accompany explicit project controls and a
-deliberate path replay's completion. No music or ambient loop is downloaded.
-Mute and a hidden/navigated-away page suspend audio; returning stays silent until
-another explicit Sound gesture. Motion and sound are independent.
+**Menu** combines native section navigation with Motion and Quality settings.
+System reduced motion and Motion off use contextual SVGs generated from the
+same target meshes and stop rendering. Explicit Motion on lasts for the visit;
+Off and quality choices may persist. Low preserves the same sculptures, caps
+DPR at 1 and targets 30 fps; other profiles cap DPR at 1.5 and target 60 fps. Auto
+can downgrade after sustained slow frames and never oscillates between profiles.
 
-One Three.js renderer uses one background pass and at most one visible project
-pass. The scene derives from measured HTML positions, so native hashes, reverse
-scrolling and restored positions work. Renderer import/initialization/shader
-failure and context loss keep the complete static page; context loss deliberately
-does not attempt an automatic restart. Print removes controls/art and uses white
-paper with dark text.
+**Sound off** is the fresh-load default. Only this control constructs/resumes an
+AudioContext, directly within its gesture. Enabling sound produces a short
+confirmation, then identity changes and project controls produce restrained
+synthesized cues. A compressor and bounded envelopes control output. Hidden
+pages are silent; suspended context state and the retained opt-in are reported
+separately, without queued transition bursts. Motion and sound are independent.
+
+One Three.js context renders one transported mesh, plus the active project path.
+Expensive target authoring, spatial correspondence and subdivision happen at
+build time. The browser fetches a prepared compressed packet and retains only
+the active source/destination and shared folded scaffold as geometry buffers.
+Native hashes, reverse scrolling, and restored positions use measured DOM
+anchors. Failed imports/assets/rendering and context loss retain complete HTML
+and context-specific artwork. Print uses dark text on white paper.
 
 ### Build and maintenance
 
@@ -123,8 +131,8 @@ npm run test:browser          # serves root/dist on 8000/8001 if not already run
 
 `assets/black-geometry/generated/` must be included in an ordinary later user
 commit because Pages serves the repository root. esbuild emits a stable entry,
-hashed dynamic chunks, and license notices there; the procedural SVGs share the
-runtime surface definition. Builds write only changed files and delete stale
+hashed dynamic chunks, and license notices there; the static SVGs use the same
+authored target geometry as the runtime packet. Builds write only changed files and delete stale
 files only within that owned directory. `dist/` is produced afterwards by the
 existing static copy build and remains ignored, as do `node_modules/` and browser
 evidence under `.artifacts/`. The workflow's three-file tracker commit allowlist
@@ -143,5 +151,5 @@ draw calls, quality and audio lifecycle. It does not change rendering or expose
 private data. Browser tests use this observation hook and real production code.
 
 See [implementation log](docs/black-geometry/implementation-log.md) and
-[acceptance report](docs/black-geometry/acceptance-report.md) for evidence,
-screenshots, measured limits and the local-only handoff.
+[acceptance report](docs/black-geometry/acceptance-report.md) for historical first-pass evidence. The current [revision report](docs/black-geometry/revision-report.md)
+records the second-pass implementation, validation, limitations, and publication.

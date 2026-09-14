@@ -4,6 +4,7 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import { build } from "esbuild";
 import { gzipSync } from "node:zlib";
 import { posterOutputs } from "./posters.js";
+import { sculptureOutputs } from "./sculptures.js";
 
 export const ROOT = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
@@ -28,7 +29,10 @@ export async function expectedOutputs() {
   const files = new Map(
     result.outputFiles.map((file) => [path.basename(file.path), file.contents]),
   );
-  for (const [name, svg] of posterOutputs()) files.set(name, Buffer.from(svg));
+  const sculptures = await sculptureOutputs();
+  for (const [name, svg] of posterOutputs(sculptures.models)) files.set(name, Buffer.from(svg));
+  files.set("sculpture-data.bin", sculptures.binary);
+  files.set("sculpture-data.bin.gz", gzipSync(sculptures.binary, { level: 9 }));
   // esbuild preserves notices; include the complete third-party license as well.
   files.set(
     "THREE-LICENSE.txt",

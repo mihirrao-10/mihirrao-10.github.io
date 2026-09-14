@@ -13,28 +13,79 @@ const snapshot = (page) =>
   page.evaluate(() => window.__blackGeometry.snapshot());
 async function ready(page, url = "/?bg-debug") {
   await page.goto(url);
+  await page.evaluate(() => document.fonts?.ready);
   await expect(page.locator("body")).toHaveAttribute(
     "data-experience-state",
     "ready",
   );
   await expect
     .poll(() =>
-      page.locator(".hero-art").evaluate((el) => getComputedStyle(el).opacity),
+      page.locator("#sculpture-poster").evaluate((el) => getComputedStyle(el).opacity),
     )
     .toBe("0");
 }
+const identities = [
+  ["hero", "hero"], ["education-uchicago", "harper"],
+  ["education-drexel", "dragon"], ["experience-mathworks", "membrane"],
+  ["experience-resolution", "neutral"], ["research-drexel", "dragon"],
+  ["teaching-uchicago", "harper"], ["teaching-drexel", "dragon"],
+  ["project-surface", "surface"], ["project-congestion", "congestion"],
+  ["notes", "neutral"], ["contact", "neutral"],
+];
 async function jump(page, id) {
-  await page.evaluate(
-    (id) =>
-      window.scrollTo(
-        0,
-        document.getElementById(id).getBoundingClientRect().top + scrollY - 105,
-      ),
-    id,
-  );
+  const chapter = id === "top" ? "hero" : id;
+  await page.evaluate((chapter) => {
+    const { ranges } = window.__blackGeometry.snapshot();
+    const index = ranges.findIndex((range) => range.id === chapter);
+    if (index < 0) throw new Error(`Missing measured entry: ${chapter}`);
+    const range = ranges[index];
+    const interval = (ranges[index + 1]?.start ?? range.end) - range.start;
+    window.scrollTo(0, chapter === "hero" ? 0 : range.start + Math.min(8, interval * 0.1));
+  }, chapter);
+  await expect.poll(async () => (await snapshot(page)).state.chapter).toBe(chapter);
+  await expect.poll(async () => (await snapshot(page)).state.blend).toBe(0);
+}
+function assertActiveGeometry(state, expectedTarget) {
+  expect(state.world.target).toBe(expectedTarget);
+  expect(state.world.drawCalls).toBeGreaterThan(0);
+  expect(state.world.triangles).toBeGreaterThan(1000);
+  expect(state.world.decodedTargets).toBeLessThanOrEqual(2);
+  expect(state.world.finiteActiveBuffers).toBe(true);
+}
+async function audioContextCapture(page) {
+  await page.addInitScript(() => {
+    const NativeContext = window.AudioContext || window.webkitAudioContext;
+    const nativeCreateGain = NativeContext.prototype.createGain;
+    const nativeConnect = AudioNode.prototype.connect;
+    window.__audioContexts = [];
+    window.AudioContext = class extends NativeContext {
+      constructor(...args) {
+        super(...args);
+        window.__audioContexts.push(this);
+      }
+      createGain() {
+        const gain = nativeCreateGain.call(this);
+        const context = this;
+        gain.connect = function (destination, ...args) {
+          if (destination === context.destination && !context.__outputAnalyser) {
+            const analyser = context.createAnalyser();
+            analyser.fftSize = 1024;
+            const silentTap = nativeCreateGain.call(context);
+            silentTap.gain.value = 0;
+            nativeConnect.call(gain, analyser);
+            nativeConnect.call(analyser, silentTap);
+            nativeConnect.call(silentTap, context.destination);
+            context.__outputAnalyser = analyser;
+          }
+          return nativeConnect.call(gain, destination, ...args);
+        };
+        return gain;
+      }
+    };
+  });
 }
 async function display(page) {
-  const details = page.locator("#display-settings");
+  const details = page.locator("#section-index");
   if ((await details.getAttribute("open")) === null)
     await details.locator("summary").click();
 }
@@ -101,7 +152,8 @@ for (const port of [8000, 8001])
     await page.getByRole("button", { name: "Sound on", exact: true }).click();
     await expect
       .poll(async () => (await snapshot(page)).audio.state)
-      .toBe("suspended");
+      .toBe("off");
+    await expect.poll(async () => (await snapshot(page)).audio.contextState).toBe("suspended");
     await page.goto(`http://127.0.0.1:${port}/new-grad-job-tracker-2027/`);
     const jobsResponse = await request.get(
       `http://127.0.0.1:${port}/new-grad-job-tracker-2027/data/jobs.json`,
@@ -126,36 +178,86 @@ for (const port of [8000, 8001])
     expect(failures).toEqual([]);
   });
 
-test("scene changes across actual chapters, supports jumps/reverse scrolling and reaches the footer", async ({
-  page,
-}, info) => {
+test("individual entries settle correctly through forward and reverse scrolling", async ({ page }, info) => {
+  test.setTimeout(45000);
   await ready(page);
-  const images = [];
-  for (const id of [
-    "top",
-    "education",
-    "experience",
-    "research",
-    "teaching",
-    "project-surface",
-    "project-congestion",
-    "notes",
-    "contact",
-    "research",
-  ]) {
+  const hashes = new Map();
+  for (const [id, target] of [...identities, ...identities.slice(1, 8).reverse()]) {
     await jump(page, id);
-    await page.waitForTimeout(100);
     const state = await snapshot(page);
-    expect(state.state.chapter).toBe(id === "top" ? "hero" : id);
-    expect(state.world.drawCalls).toBeGreaterThan(0);
-    const buffer = await page.locator(".world canvas").screenshot();
-    images.push(createHash("sha256").update(buffer).digest("hex"));
-    await page.screenshot({
-      path: `${output}/${info.project.name}-desktop-${id}.png`,
-    });
+    assertActiveGeometry(state, target);
+    if (!hashes.has(target)) {
+      const canvas = await page.locator(".world canvas").screenshot();
+      hashes.set(target, createHash("sha256").update(canvas).digest("hex"));
+    }
+    await page.screenshot({ path: `${output}/${info.project.name}-desktop-${id}.png` });
   }
-  expect(new Set(images).size).toBe(images.length);
+  // Pixel changes establish distinct outputs, not institutional recognition;
+  // visual recognition is reviewed separately from these automated checks.
+  expect(new Set(hashes.values()).size).toBe(hashes.size);
 });
+
+test("entry positions follow DOM layout and core morphs are finite, reversible and interruptible", async ({ page }, info) => {
+  test.setTimeout(45000);
+  await ready(page);
+  const measured = await page.evaluate(() => {
+    const state = window.__blackGeometry.snapshot();
+    return state.ranges.slice(1, -1).map((range) => ({
+      actual: range.start,
+      expected: document.querySelector(`[data-scene="${range.id}"]`).getBoundingClientRect().top + scrollY - innerHeight * 0.34,
+    }));
+  });
+  for (const range of measured) expect(Math.abs(range.actual - range.expected)).toBeLessThan(3);
+  for (const [id, target, nextTarget] of [
+    ["hero", "hero", "harper"],
+    ["education-uchicago", "harper", "dragon"],
+    ["education-drexel", "dragon", "membrane"],
+  ]) {
+    let forward;
+    for (const progress of [0.64, 0.79, 0.92, 0.79, 0.64]) {
+      await page.evaluate(({ id, progress }) => {
+        const ranges = window.__blackGeometry.snapshot().ranges;
+        const index = ranges.findIndex((range) => range.id === id);
+        window.scrollTo(0, ranges[index].start + (ranges[index + 1].start - ranges[index].start) * progress);
+      }, { id, progress });
+      await expect.poll(async () => (await snapshot(page)).state.chapter).toBe(id);
+      await expect.poll(async () => Math.abs((await snapshot(page)).state.progress - progress)).toBeLessThan(0.002);
+      await expect.poll(async () => (await snapshot(page)).world.blend).toBeGreaterThan(0);
+      const current = await snapshot(page);
+      assertActiveGeometry(current, target);
+      expect(current.world.nextTarget).toBe(nextTarget);
+      expect(current.world.blend).toBeLessThan(1);
+      if (progress === 0.79) {
+        if (forward !== undefined) expect(current.state.blend).toBeCloseTo(forward, 4);
+        else forward = current.state.blend;
+        await page.screenshot({ path: `${output}/${info.project.name}-morph-${id}-${progress}.png` });
+      }
+    }
+  }
+  await jump(page, "experience-mathworks");
+  assertActiveGeometry(await snapshot(page), "membrane");
+  await jump(page, "education-uchicago");
+  assertActiveGeometry(await snapshot(page), "harper");
+});
+
+for (const width of [1440, 390])
+  test(`direct institutional hashes and resize select the correct entry at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 900 });
+    for (const [id, target] of identities.slice(1, 4)) {
+      await ready(page, `/?bg-debug#${id}`);
+      await expect.poll(async () => (await snapshot(page)).state.chapter).toBe(id);
+      await expect.poll(async () => (await snapshot(page)).world.target).toBe(target);
+      await expect.poll(async () => (await snapshot(page)).state.blend).toBe(0);
+      assertActiveGeometry(await snapshot(page), target);
+    }
+    await page.setViewportSize({ width: width === 390 ? 430 : 1280, height: 820 });
+    await jump(page, "experience-mathworks");
+    assertActiveGeometry(await snapshot(page), "membrane");
+    await page.reload();
+    await expect.poll(async () => (await snapshot(page)).state.chapter).toBe("experience-mathworks");
+    await expect.poll(async () => (await snapshot(page)).world?.target).toBe("membrane");
+    expect((await snapshot(page)).audio.initialized).toBe(false);
+  });
 
 test("surface replay and shortcut selection are keyboard operable with truthful static states", async ({
   page,
@@ -188,10 +290,8 @@ test("surface replay and shortcut selection are keyboard operable with truthful 
   await page
     .getByRole("button", { name: "Shortcut open", exact: true })
     .click();
-  await expect(page.locator("#network-poster")).toHaveAttribute(
-    "src",
-    /congestion-open.svg$/,
-  );
+  await expect(page.locator("#sculpture-poster")).toHaveAttribute("src", /sculpture-congestion.svg$/);
+  await expect(page.locator("#route-status")).toContainText("best-response");
   expect((await snapshot(page)).pendingFrame).toBe(false);
   await replay.focus();
   await replay.press("Enter");
@@ -221,10 +321,12 @@ test("sound stays uninitialized on load, scroll, hover and unrelated gestures; r
   await page.getByRole("button", { name: "Sound on", exact: true }).click();
   await expect
     .poll(async () => (await snapshot(page)).audio.state)
-    .toBe("suspended");
+    .toBe("off");
+  await expect.poll(async () => (await snapshot(page)).audio.contextState).toBe("suspended");
   const muted = (await snapshot(page)).audio;
   expect(muted.enabled).toBe(false);
-  expect(muted.state).toBe("suspended");
+  expect(muted.state).toBe("off");
+  expect(muted.wanted).toBe(false);
   expect(muted.voices).toBe(0);
   await page.reload();
   await expect(page.locator("body")).toHaveAttribute(
@@ -235,42 +337,92 @@ test("sound stays uninitialized on load, scroll, hover and unrelated gestures; r
   await expect(page.locator("#sound-toggle")).toHaveText("Sound off");
 });
 
-test("external audio suspension clears cues and one explicit click enables sound again", async ({
-  page,
-}) => {
+test("sound confirmation produces nonzero bounded output and suspension retains the opt-in", async ({ page }) => {
+  await audioContextCapture(page);
+  await ready(page);
+  await page.locator("#sound-toggle").click();
+  await expect(page.locator("#sound-toggle")).toHaveAttribute("aria-pressed", "true");
+  const peak = await page.evaluate(async () => {
+    const analyser = window.__audioContexts[0].__outputAnalyser;
+    if (!analyser) throw new Error("No output tap captured");
+    const samples = new Float32Array(analyser.fftSize);
+    let peak = 0;
+    const until = performance.now() + 450;
+    while (performance.now() < until) {
+      analyser.getFloatTimeDomainData(samples);
+      for (const sample of samples) peak = Math.max(peak, Math.abs(sample));
+      await new Promise(requestAnimationFrame);
+    }
+    return peak;
+  });
+  expect(peak).toBeGreaterThan(0.001);
+  expect(peak).toBeLessThan(0.9);
+  await page.evaluate(() => window.__audioContexts[0].suspend());
+  await expect(page.locator("#sound-toggle")).toHaveText("Sound paused");
+  await expect(page.locator("#sound-toggle")).toHaveAttribute("aria-pressed", "true");
+  const paused = (await snapshot(page)).audio;
+  expect(paused.wanted).toBe(true);
+  expect(paused.enabled).toBe(false);
+  expect(paused.voices).toBe(0);
+  // A paused toggle first switches the retained opt-in off, then re-enables it.
+  await page.locator("#sound-toggle").click();
+  await expect(page.locator("#sound-toggle")).toHaveAttribute("aria-pressed", "false");
+  await page.locator("#sound-toggle").click();
+  await expect.poll(async () => (await snapshot(page)).audio.state).toBe("running");
+  expect(await page.evaluate(() => window.__audioContexts.length)).toBe(1);
+});
+
+test("hidden lifecycle clears output and rapid traversal leaves no audio backlog", async ({ page }) => {
+  await ready(page);
+  await page.locator("#sound-toggle").click();
+  await expect.poll(async () => (await snapshot(page)).audio.state).toBe("running");
+  // Simulate the document visibility signal to exercise the same page handler
+  // deterministically in both headless engines; this is not an OS-tab claim.
+  await page.evaluate(() => {
+    Object.defineProperty(document, "hidden", { configurable: true, get: () => true });
+    document.dispatchEvent(new Event("visibilitychange"));
+  });
+  await expect.poll(async () => (await snapshot(page)).audio.contextState).toBe("suspended");
+  let state = await snapshot(page);
+  expect(state.audio.wanted).toBe(true);
+  expect(state.audio.voices).toBe(0);
+  expect(state.pendingFrame).toBe(false);
+  await page.evaluate(() => {
+    Object.defineProperty(document, "hidden", { configurable: true, get: () => false });
+    document.dispatchEvent(new Event("visibilitychange"));
+  });
+  await expect.poll(async () => (await snapshot(page)).pendingFrame).toBe(true);
+  for (const id of ["experience-mathworks", "education-uchicago", "project-congestion", "education-drexel"]) {
+    await jump(page, id);
+    expect((await snapshot(page)).audio.events).toBeLessThanOrEqual(3);
+  }
+  await expect.poll(async () => (await snapshot(page)).audio.voices).toBe(0);
+  state = await snapshot(page);
+  expect(state.audio.wanted).toBe(true);
+  expect(state.audio.events).toBe(0);
+  await page.locator("#sound-toggle").click();
+  await expect.poll(async () => (await snapshot(page)).audio.state).toBe("off");
+});
+
+test("failed audio initialization remains honest and can be retried", async ({ page }) => {
   await page.addInitScript(() => {
     const NativeContext = window.AudioContext || window.webkitAudioContext;
-    window.__audioContexts = [];
+    let attempts = 0;
     window.AudioContext = class extends NativeContext {
-      constructor(...args) {
-        super(...args);
-        window.__audioContexts.push(this);
+      resume() {
+        attempts++;
+        if (attempts === 1) return Promise.reject(new Error("Simulated gesture rejection"));
+        return super.resume();
       }
     };
   });
   await ready(page);
   await page.locator("#sound-toggle").click();
-  await expect(page.locator("#sound-toggle")).toHaveAttribute(
-    "aria-pressed",
-    "true",
-  );
-  await jump(page, "project-congestion");
-  await page
-    .getByRole("button", { name: "Shortcut closed", exact: true })
-    .click();
-  await page.evaluate(() => window.__audioContexts[0].suspend());
-  await expect(page.locator("#sound-toggle")).toHaveAttribute(
-    "aria-pressed",
-    "false",
-  );
-  expect((await snapshot(page)).audio.voices).toBe(0);
+  await expect(page.locator("#sound-toggle")).toHaveAttribute("aria-pressed", "false");
+  await expect(page.locator("#sound-status")).toContainText("unavailable");
+  expect((await snapshot(page)).audio.enabled).toBe(false);
   await page.locator("#sound-toggle").click();
-  await expect(page.locator("#sound-toggle")).toHaveAttribute(
-    "aria-pressed",
-    "true",
-  );
-  expect((await snapshot(page)).audio.state).toBe("running");
-  expect(await page.evaluate(() => window.__audioContexts.length)).toBe(1);
+  await expect.poll(async () => (await snapshot(page)).audio.state).toBe("running");
 });
 
 test("OS reduced motion skips heavy imports, reacts to OS changes, and Motion off stops an existing renderer", async ({
@@ -280,13 +432,18 @@ test("OS reduced motion skips heavy imports, reacts to OS changes, and Motion of
   page.on("request", (request) => requests.push(request.url()));
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/?bg-debug");
-  await expect(page.locator("#display-settings")).toBeVisible();
+  await expect(page.locator("#section-index")).toBeVisible();
   expect((await snapshot(page)).motion).toBe("reduced");
   await expect(page.locator("canvas")).toHaveCount(0);
   expect(requests.some((url) => /world-.*\.js/.test(url))).toBe(false);
   await page.screenshot({
     path: `${output}/${info.project.name}-reduced-hero.png`,
   });
+  for (const [id, target] of identities.slice(1, 4)) {
+    await jump(page, id);
+    await expect(page.locator("#sculpture-poster")).toHaveAttribute("src", new RegExp(`sculpture-${target}\\.svg$`));
+    await expect.poll(() => page.locator("#sculpture-poster").evaluate((image) => image.complete && image.naturalWidth > 0)).toBe(true);
+  }
   await jump(page, "project-surface");
   await page.getByRole("button", { name: "Replay path" }).click();
   expect((await snapshot(page)).project.path).toBe(1);
@@ -366,7 +523,7 @@ test("keyboard skip, index, Escape, native hashes/back and ordinary page scrolli
   await display(page);
   await page.getByLabel("Motion", { exact: true }).focus();
   await page.keyboard.press("Escape");
-  await expect(page.locator("#display-settings summary")).toBeFocused();
+  await expect(page.locator("#section-index summary")).toBeFocused();
   await page.screenshot({
     path: `${output}/${info.project.name}-keyboard-focus.png`,
   });
@@ -393,10 +550,14 @@ for (const [width, height] of [
   test(`responsive ${width}x${height}: hero, projects, notes and no overflow`, async ({
     page,
   }, info) => {
+    test.setTimeout(45000);
     await page.setViewportSize({ width, height });
     await ready(page);
     for (const id of [
       "top",
+      "education-uchicago",
+      "education-drexel",
+      "experience-mathworks",
       "project-surface",
       "project-congestion",
       "notes",
@@ -407,6 +568,15 @@ for (const [width, height] of [
         () => document.documentElement.scrollWidth > innerWidth,
       );
       expect(overflow).toBe(false);
+      const target = identities.find(([entry]) => entry === (id === "top" ? "hero" : id))[1];
+      assertActiveGeometry(await snapshot(page), target);
+      const stage = await page.locator(".world").boundingBox();
+      expect(stage.width).toBeGreaterThan(width < 800 ? width * 0.9 : width * 0.4);
+      expect(stage.height).toBeGreaterThan(width < 800 ? 150 : height * 0.75);
+      if (width < 800 && id !== "top" && id !== "notes") {
+        const title = await page.locator(`#${id} h3`).boundingBox();
+        expect(title.y).toBeGreaterThanOrEqual(stage.y + stage.height);
+      }
       await page.screenshot({
         path: `${output}/${info.project.name}-${width}-${id}.png`,
       });
@@ -415,17 +585,19 @@ for (const [width, height] of [
     await expect(page.getByLabel("Motion", { exact: true })).toBeVisible();
     expect(
       await page
-        .locator(".disclosure-panel.display-panel")
+        .locator(".disclosure-panel")
         .evaluate((el) => el.getBoundingClientRect().right <= innerWidth),
     ).toBe(true);
   });
 
-for (const mode of ["module", "renderer", "shader", "context"])
+for (const mode of ["module", "asset", "renderer", "shader", "context"])
   test(`${mode} failure keeps the complete portfolio and static artwork`, async ({
     page,
   }, info) => {
     if (mode === "module")
       await page.route("**/world-*.js", (route) => route.abort());
+    if (mode === "asset")
+      await page.route("**/sculpture-data.bin*", (route) => route.abort());
     if (mode === "renderer")
       await page.addInitScript(() => {
         const original = HTMLCanvasElement.prototype.getContext;
@@ -454,7 +626,7 @@ for (const mode of ["module", "renderer", "shader", "context"])
       "fallback",
     );
     await content(page);
-    await expect(page.locator(".hero-art")).toBeVisible();
+    await expect(page.locator("#sculpture-poster")).toBeVisible();
     expect((await snapshot(page)).pendingFrame).toBe(false);
     await page.screenshot({
       path: `${output}/${info.project.name}-failure-${mode}.png`,
@@ -463,19 +635,21 @@ for (const mode of ["module", "renderer", "shader", "context"])
     await page
       .getByRole("button", { name: "Shortcut closed", exact: true })
       .click();
-    await expect(page.locator("#network-poster")).toHaveAttribute(
-      "src",
-      /closed.svg$/,
-    );
+    await expect(page.locator("#sculpture-poster")).toHaveAttribute("src", /sculpture-congestion-closed.svg$/);
+    await expect(page.locator("#route-status")).toContainText("feasible");
     await page.getByRole("button", { name: "Replay path" }).click();
     expect((await snapshot(page)).project.path).toBe(1);
+    await page.locator("#sound-toggle").click();
+    await expect.poll(async () => (await snapshot(page)).audio.enabled).toBe(true);
+    await page.locator("#sound-toggle").click();
+    await expect.poll(async () => (await snapshot(page)).audio.state).toBe("off");
   });
 
-test("returning from the tracker reconstructs a mid-page position and keeps sound off", async ({
+test("returning from the tracker restores the entry without replaying queued sound", async ({
   page,
 }) => {
   await ready(page);
-  await jump(page, "teaching");
+  await jump(page, "teaching-uchicago");
   await page.waitForTimeout(100);
   const before = await page.evaluate(() => scrollY);
   await page.getByRole("button", { name: "Sound off", exact: true }).click();
@@ -491,14 +665,19 @@ test("returning from the tracker reconstructs a mid-page position and keeps soun
   );
   await expect
     .poll(async () => (await snapshot(page)).state.chapter)
-    .toBe("teaching");
+    .toBe("teaching-uchicago");
   expect(Math.abs((await page.evaluate(() => scrollY)) - before)).toBeLessThan(
     5,
   );
-  await expect(page.locator("#sound-toggle")).toHaveAttribute(
-    "aria-pressed",
-    "false",
-  );
+  await expect.poll(async () => (await snapshot(page)).audio.voices || 0).toBe(0);
+  const audio = (await snapshot(page)).audio;
+  if (!audio.initialized) {
+    expect(audio.enabled).toBe(false);
+    await expect(page.locator("#sound-toggle")).toHaveAttribute("aria-pressed", "false");
+  } else {
+    expect(audio.wanted).toBe(true);
+    expect(audio.events).toBe(0);
+  }
 });
 
 test("without JavaScript all sections, index, project links and PDFs remain native", async ({
@@ -511,6 +690,13 @@ test("without JavaScript all sections, index, project links and PDFs remain nati
     page = await context.newPage();
   await page.goto("http://127.0.0.1:8000/");
   await content(page);
+  for (const [id, target] of identities.slice(1, 4)) {
+    const art = page.locator(`#${id} .scene-fallback`);
+    await art.scrollIntoViewIfNeeded();
+    await expect(art).toBeVisible();
+    await expect(art).toHaveAttribute("src", new RegExp(`sculpture-${target}\\.svg$`));
+    await expect.poll(() => art.evaluate((image) => image.complete && image.naturalWidth > 0)).toBe(true);
+  }
   await page.locator("#section-index summary").click();
   await page.getByRole("link", { name: "Personal notes", exact: true }).click();
   await expect(page.locator("#notes h2")).toBeInViewport();

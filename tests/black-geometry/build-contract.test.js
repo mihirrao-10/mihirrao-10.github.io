@@ -11,7 +11,7 @@ test("generated assets are deterministic and every browser import resolves to a 
     b = await expectedOutputs();
   assert.deepEqual(outputDifferences(a, b), []);
   assert.ok(
-    a.has("main.js") && a.has("poster.svg") && a.has("THREE-LICENSE.txt"),
+    a.has("main.js") && a.has("sculpture-hero.svg") && a.has("sculpture-data.bin") && a.has("THREE-LICENSE.txt"),
   );
   for (const [name, contents] of a) {
     if (!name.endsWith(".js")) continue;
