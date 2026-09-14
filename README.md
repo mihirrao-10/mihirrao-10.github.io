@@ -78,12 +78,13 @@ missing or extra links.
 
 The homepage remains real HTML with STIX Two Text, native anchor navigation, and
 all biography/project/note content available without JavaScript. Its central
-faceted sculpture changes with individual entries: a white-and-green three-crest
-surface with a computed red gradient-ascent trace, wider translucent Harper
-Memorial Library in maroon, an original navy-and-gold dragon, an independently
+faceted sculpture changes with individual entries: a gold, orange and violet
+Calabi–Yau quintic cross-section, an original UChicago phoenix in official maroon
+and greystone, an original navy-and-gold dragon, an independently
 reconstructed MATLAB membrane, a red-and-blue trefoil ribbon for Resolution
-Life, and a square-root Riemann-surface projection for notes. A connected folded
-scaffold organizes the same mesh between the different target topologies.
+Life, and a square-root Riemann-surface projection for notes. The Calabi–Yau
+palette is an artistic choice; the manifold has no intrinsic official colors.
+A connected folded scaffold guides a continuous cubic morph between targets.
 Teaching courses and awards sit within the corresponding Education entries.
 
 The two project sculptures use prepared results from the actual studies: the
@@ -107,9 +108,15 @@ pages are silent; suspended context state and the retained opt-in are reported
 separately, without queued transition bursts. Motion and sound are independent.
 
 One Three.js context renders one transported mesh, plus the visible paths and
-context outlines. A slow camera ellipse keeps each sculpture centered. Native
-scrolling stays immediate while the artwork follows with 140ms exponential
-damping; quintic transitions and gentle opacity fades work in both directions.
+context outlines. An elevated camera orbit takes about a minute per revolution,
+with gradual changes in elevation and roll. Dragging any sculpture pauses the
+orbit and rotates the artwork around the viewing axes, with brief inertia after
+release. Horizontal touch drags rotate while native vertical scrolling and pinch
+zoom remain available; focused arrow keys rotate and Home resets the drag angle.
+Translucent facets have reflective highlights, luminous edges and a restrained
+halo; Low quality omits the halo filter. Native scrolling stays immediate while
+the artwork follows with 140ms exponential damping. Quintic timing, continuous
+cubic geometry paths and gentle opacity fades work in both directions.
 Expensive target authoring, spatial correspondence and subdivision happen at
 build time. The browser fetches a prepared compressed packet and retains only
 the active source/destination and shared folded scaffold as geometry buffers.
@@ -156,8 +163,9 @@ For local diagnostics, append `?bg-debug` to the homepage. The read-only
 draw calls, quality and audio lifecycle. It does not change rendering or expose
 private data. Browser tests use this observation hook and real production code.
 
-See the [refinement report](docs/black-geometry/refinement-report.md) for the current
-visual and content revision. The [implementation log](docs/black-geometry/implementation-log.md),
+See the [interaction and sculpture report](docs/black-geometry/interactive-report.md)
+for the current revision and the [refinement report](docs/black-geometry/refinement-report.md)
+for the preceding content changes. The [implementation log](docs/black-geometry/implementation-log.md),
 [acceptance report](docs/black-geometry/acceptance-report.md), and
 [revision report](docs/black-geometry/revision-report.md) retain historical evidence
 from the earlier passes.

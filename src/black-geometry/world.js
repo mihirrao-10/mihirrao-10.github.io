@@ -12,12 +12,19 @@ varying vec3 vColor;
 varying vec3 vBarycentric;
 varying vec3 vViewPosition;
 void main() {
-  // One connected folded sheet organizes the material between different topologies.
-  // All facets meet their true neighbors at the bridge.
-  float unfold = smoothstep(0.0, 0.48, progress);
-  float assemble = smoothstep(0.52, 1.0, progress);
-  vec3 transformed = mix(mix(position, scaffold, unfold), destination, assemble);
-  vColor = mix(mix(originColor, vec3(0.76,0.79,0.77), unfold), destinationColor, assemble);
+  // Two cubic segments meet at the connected scaffold with the same nonzero
+  // tangent. The middle stays recognizable without introducing a pause.
+  float t = progress;
+  float local = t < 0.5 ? t*2.0 : (t-0.5)*2.0;
+  float s = 1.0-local;
+  vec3 tangent = (destination-position)*0.06;
+  vec3 start = t < 0.5 ? position : scaffold;
+  vec3 finish = t < 0.5 ? scaffold : destination;
+  vec3 controlA = t < 0.5 ? mix(position,scaffold,0.55) : scaffold+tangent;
+  vec3 controlB = t < 0.5 ? scaffold-tangent : mix(destination,scaffold,0.55);
+  vec3 transformed = s*s*s*start + 3.0*s*s*local*controlA
+    + 3.0*s*local*local*controlB + local*local*local*finish;
+  vColor = mix(originColor, destinationColor, t);
   vBarycentric = barycentric;
   vec4 viewPosition = modelViewMatrix * vec4(transformed, 1.0);
   vViewPosition = viewPosition.xyz;
@@ -35,20 +42,26 @@ void main() {
   // Corner correspondence may reverse winding; it must not reverse the lighting.
   if(normal.z < 0.0) normal = -normal;
   float key = max(dot(normal, normalize(vec3(-0.45,0.7,1.0))), 0.0);
-  float rim = pow(1.0-abs(normal.z), 2.0);
-  float shade = 0.42 + 0.64 * key + 0.15 * rim;
-  vec3 face = vColor * shade;
+  vec3 view = normalize(-vViewPosition);
+  float rim = pow(1.0-max(dot(normal,view),0.0), 2.0);
+  vec3 halfLight = normalize(normalize(vec3(-0.55,0.65,1.0)) + view);
+  float specular = pow(max(dot(normal,halfLight),0.0), 44.0);
+  float broadSpecular = pow(max(dot(normal,halfLight),0.0), 10.0);
+  float shade = 0.54 + 0.58 * key + 0.3 * rim;
+  vec3 face = vColor * shade + vec3(0.54,0.58,0.62)*specular
+    + mix(vColor,vec3(0.9),0.25)*broadSpecular*0.12;
   vec3 width = fwidth(vBarycentric);
   vec3 line = smoothstep(vec3(0.0), width * 0.9, vBarycentric);
   float edge = (1.0 - min(min(line.x,line.y),line.z)) * 0.7;
-  edge *= 1.0 - 0.35 * sin(progress * 3.14159265);
+  edge *= 1.0 - 0.18 * sin(progress * 3.14159265);
   float presence = smoothstep(0.003,0.06,max(max(vColor.r,vColor.g),vColor.b));
   vec3 edgeColor = min(vec3(1.0),vColor * 1.25 + vec3(0.085)) * (0.78+0.22*key);
   float ivory = smoothstep(0.35,0.65,vColor.b) * (1.0-smoothstep(0.18,0.38,abs(vColor.r-vColor.b)));
-  edgeColor = mix(edgeColor, vColor * 0.34, ivory);
-  float fade = 1.0 - 0.22 * pow(sin(progress * 3.14159265), 2.0);
-  float alpha = mix(opacity, 0.97, edge) * fade;
-  gl_FragColor = vec4(mix(face, edgeColor, edge * presence), alpha);
+  edgeColor = mix(edgeColor, vColor * 0.44, ivory*0.75);
+  float fade = 1.0 - 0.12 * pow(sin(progress * 3.14159265), 2.0);
+  float alpha = mix(opacity, 0.9, max(edge,rim)) * fade;
+  vec3 glow = mix(vColor,vec3(1.0),0.25) * (rim*0.22 + edge*0.08);
+  gl_FragColor = vec4(mix(face, edgeColor, edge * presence) + glow, alpha);
   #include <colorspace_fragment>
 }`;
 
@@ -100,6 +113,8 @@ export async function createWorld({container, quality="medium", onFailure}) {
   canvas.addEventListener("webglcontextlost",contextLost);
   const scene=new THREE.Scene(), pivot=new THREE.Group();scene.add(pivot);
   const camera=new THREE.PerspectiveCamera(35,1,0.1,60);camera.position.set(0,0,12);
+  const dragEuler=new THREE.Euler(0,0,0,"YXZ"),dragQuaternion=new THREE.Quaternion(),inverseView=new THREE.Quaternion();
+  let userRotation=[0,0],dragging=false;
   const material=new THREE.ShaderMaterial({
     vertexShader:VERTEX,fragmentShader:FRAGMENT,side:THREE.DoubleSide,
     transparent:true,depthWrite:true,forceSinglePass:true,
@@ -165,25 +180,34 @@ export async function createWorld({container, quality="medium", onFailure}) {
   function resize(_width,_height,dpr=lastDpr){
     width=Math.max(1,container.clientWidth);height=Math.max(1,container.clientHeight);lastDpr=dpr;
     renderer.setPixelRatio(Math.min(dpr,QUALITY[currentQuality].dpr));renderer.setSize(width,height,false);
+    canvas.style.filter=currentQuality==="low" ? "none" : "drop-shadow(0 0 7px rgb(214 226 255 / 0.2))";
     camera.aspect=width/height;
     // Fit both axes with enough depth clearance for the membrane and wing tips.
-    orbitRadius=Math.max(11.9,11.0/camera.aspect);
+    // Diagonal views and user rotation need space on both axes.
+    orbitRadius=Math.max(13.2,12.5/camera.aspect);
+    camera.far=Math.max(60,orbitRadius+8);
     camera.updateProjectionMatrix();
   }
   updatePair("hero","hero");resize(0,0,devicePixelRatio);
   return {
     resize,
     setQuality(next){currentQuality=next;resize();},
-    render({state,pose,time,project}){
+    render({state,pose,time,project,interaction}){
       if(disposed)return;
       currentName=state.target||"hero";nextName=state.nextTarget||currentName;
       updatePair(currentName,nextName);
       material.uniforms.progress.value=currentName===nextName?0:state.blend;
-      const alpha = name => name === "harper" ? 0.72 : name === "hero" || name === "notes" ? 0.87 : 0.94;
+      const alpha = name => name === "hero" || name === "notes" ? 0.56 : name === "phoenix" ? 0.64 : 0.61;
       material.uniforms.opacity.value=alpha(currentName)*(1-state.blend)+alpha(nextName)*state.blend;
       const elevation=pose?.[3]||0,azimuth=pose?.[4]||0;
       camera.position.set(orbitRadius*Math.cos(elevation)*Math.sin(azimuth),orbitRadius*Math.sin(elevation),orbitRadius*Math.cos(elevation)*Math.cos(azimuth));
       camera.lookAt(0,0,0);
+      camera.rotateZ(pose?.[5]||0);
+      userRotation=interaction?.rotation||[0,0];dragging=!!interaction?.dragging;
+      dragEuler.set(userRotation[0],userRotation[1],0,"YXZ");
+      dragQuaternion.setFromEuler(dragEuler);
+      inverseView.copy(camera.quaternion).invert();
+      pivot.quaternion.copy(camera.quaternion).multiply(dragQuaternion).multiply(inverseView);
       for(const route of routes){
         const smooth = value => {const x=Math.max(0,Math.min(1,value));return x*x*(3-2*x);};
         const presence=currentName===route.model ? 1-smooth(state.blend/.2) : nextName===route.model ? smooth((state.blend-.8)/.2) : 0;
@@ -207,7 +231,7 @@ export async function createWorld({container, quality="medium", onFailure}) {
       if(shaderFailed)throw new Error("Sculpture shader initialization failed");
       frames++;
     },
-    snapshot:()=>({frames,drawCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles,quality:currentQuality,dpr:renderer.getPixelRatio(),geometries:renderer.info.memory.geometries,contextLost:renderer.getContext().isContextLost(),target:currentName,nextTarget:nextName,blend:material.uniforms.progress.value,opacity:material.uniforms.opacity.value,camera:camera.position.toArray(),facets:count,decodedTargets:decoded.size,finiteActiveBuffers,visibleRoutes:routes.filter(r=>r.line.visible).map(r=>r.kind),activePathPoints:routes.filter(r=>r.line.visible).map(r=>r.shown),width,height}),
+    snapshot:()=>({frames,drawCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles,quality:currentQuality,dpr:renderer.getPixelRatio(),geometries:renderer.info.memory.geometries,contextLost:renderer.getContext().isContextLost(),target:currentName,nextTarget:nextName,blend:material.uniforms.progress.value,opacity:material.uniforms.opacity.value,camera:camera.position.toArray(),rotation:[...userRotation],orientation:pivot.quaternion.toArray(),dragging,facets:count,decodedTargets:decoded.size,finiteActiveBuffers,visibleRoutes:routes.filter(r=>r.line.visible).map(r=>r.kind),activePathPoints:routes.filter(r=>r.line.visible).map(r=>r.shown),width,height}),
     dispose(){
       if(disposed)return;disposed=true;canvas.removeEventListener("webglcontextlost",contextLost);
       mesh.geometry.dispose();material.dispose();routes.forEach(({line,marker})=>{line.geometry.dispose();line.material.dispose();marker?.geometry.dispose();marker?.material.dispose();});

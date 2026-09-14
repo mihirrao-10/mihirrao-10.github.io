@@ -20,7 +20,11 @@
 </head>
 <body data-experience-state="static">
   <a class="skip-link" href="#main">Skip to content</a>
-  <div class="world" aria-hidden="true"><img id="sculpture-poster" src="assets/black-geometry/generated/sculpture-hero.svg" width="1000" height="850" alt="" /></div>
+  <div class="world" role="group" aria-label="Interactive sculpture" aria-describedby="rotation-instructions" aria-keyshortcuts="ArrowUp ArrowDown ArrowLeft ArrowRight Home" aria-hidden="true">
+    <img id="sculpture-poster" src="assets/black-geometry/generated/sculpture-hero.svg" width="1000" height="850" alt="" />
+    <p id="rotation-hint" class="rotation-hint" hidden>Drag to rotate</p>
+    <span id="rotation-instructions" class="sr-only">Drag to rotate. Use arrow keys to rotate or Home to reset the view.</span>
+  </div>
   <header class="site-header">
     <div class="header-inner">
       <a class="home-link" href="#top">Mihir Rao</a>
@@ -78,8 +82,8 @@
     <section id="education" class="reading">
       <h2 class="section-heading">education</h2>
 
-      <div class="entry" id="education-uchicago" data-scene="education-uchicago" data-target="harper">
-        <img class="scene-fallback" src="assets/black-geometry/generated/sculpture-harper.svg" width="1000" height="850" alt="" aria-hidden="true" loading="lazy" />
+      <div class="entry" id="education-uchicago" data-scene="education-uchicago" data-target="phoenix">
+        <img class="scene-fallback" src="assets/black-geometry/generated/sculpture-phoenix.svg" width="1000" height="850" alt="" aria-hidden="true" loading="lazy" />
         <div class="entry-header">
           <h3 class="entry-title">University of Chicago</h3>
           <span class="entry-dates">Sept 2025 – Dec 2026</span>

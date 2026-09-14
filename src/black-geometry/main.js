@@ -5,6 +5,7 @@ import {
   chapterState, cameraPose, smoothScroll, entryReveal, createProjectState, startReplay, advanceReplay, chooseShortcut,
 } from "./scene-state.js";
 import { createAudio } from "./audio.js";
+import { createInteraction } from "./interaction.js";
 
 const body = document.body;
 const container = document.querySelector(".world");
@@ -27,7 +28,7 @@ const debug = new URLSearchParams(location.search).has("bg-debug");
 let motion = motionPolicy(preferences.motion, system.matches);
 let world, worldImport, enhancementPending, audio;
 let failed = false, disposed = false, active = !document.hidden;
-let frame = 0, syncFrame = 0, lastFrame = 0, time = 0, lastDelta = 0;
+let frame = 0, syncFrame = 0, lastFrame = 0, time = 0, orbitTime = 0, lastDelta = 0;
 let scrollY = window.scrollY, width = innerWidth, height = innerHeight, layoutDirty = true;
 let ranges = [], pointer = [0, 0], pointerTarget = [0, 0];
 let state = chapterState(0, []), project = createProjectState();
@@ -37,6 +38,11 @@ let lastChapter, lastPoster, lastAudioTarget, settledAudioTarget, settledSince =
 let suppressNextAudio = true;
 let downgraded = false, samples = [], slowWindows = 0, warmup = 0;
 let profile = qualityPolicy(preferences.quality, { width, cores: navigator.hardwareConcurrency });
+const interaction = createInteraction({
+  element: container,
+  hint: document.querySelector("#rotation-hint"),
+  onChange: ({ dragging }) => { if (dragging) pointerTarget = [...pointer]; },
+});
 body.dataset.enhanced = "true";
 
 function updateDisplay() {
@@ -58,9 +64,10 @@ function soundChanged(result) {
     : wanted && !starting && !enabled ? "Sound is paused." : "";
 }
 function identity(target) {
-  return ({ harper: "uchicago", dragon: "drexel", membrane: "mathworks" })[target] || target;
+  return ({ phoenix: "uchicago", dragon: "drexel", membrane: "mathworks" })[target] || target;
 }
 function showStatic(reason = "static") {
+  interaction.setEnabled(false);
   cancelAnimationFrame(frame);
   frame = 0;
   lastFrame = 0;
@@ -116,6 +123,7 @@ function updateScene() {
     }
   });
   if (lastChapter !== state.chapter) {
+    if (lastChapter) interaction.cancel();
     lastChapter = state.chapter;
     body.dataset.chapter = state.chapter;
     document.querySelectorAll(".index-links a").forEach((link) => {
@@ -166,6 +174,9 @@ function draw(now) {
   lastDelta = delta;
   lastFrame = now;
   time += delta;
+  interaction.step(delta);
+  const userRotation = interaction.snapshot();
+  if (!userRotation.dragging) orbitTime += delta;
   pointer = pointer.map((value, i) => value + (pointerTarget[i] - value) * (1 - Math.exp(-delta * 5)));
   updateScene();
   visualScrollY = smoothScroll(visualScrollY, scrollY, delta, Math.max(650, height * 0.85));
@@ -178,8 +189,14 @@ function draw(now) {
     if (wasReplaying && !project.replaying && project.deliberate) audio?.cue("settle", "surface");
   }
   try {
-    world.render({ state: visualState, pose: cameraPose(visualState, { time, pointer, fullMotion: true }), time, project });
+    world.render({
+      state: visualState,
+      pose: cameraPose(visualState, { time: orbitTime, pointer, fullMotion: true }),
+      time, project,
+      interaction: { rotation: userRotation.rotation, dragging: userRotation.dragging },
+    });
     body.dataset.experienceState = "ready";
+    interaction.setEnabled(true);
     if (preferences.quality === "auto" && profile !== "low" && elapsed > 0 && elapsed < 150) {
       warmup++;
       if (warmup > 60) samples.push(elapsed);
@@ -266,9 +283,9 @@ on(window, "scroll", () => {
 on(window, "resize", invalidate, { passive: true });
 on(window, "hashchange", () => { scrollY = window.scrollY; invalidate(); });
 on(document, "pointermove", (event) => {
-  if (motion === "full" && finePointer.matches && event.pointerType !== "touch") pointerTarget = [(event.clientX / width) * 2 - 1, (event.clientY / height) * 2 - 1];
+  if (motion === "full" && finePointer.matches && event.pointerType !== "touch" && !interaction.snapshot().dragging) pointerTarget = [(event.clientX / width) * 2 - 1, (event.clientY / height) * 2 - 1];
 }, { passive: true });
-on(document.documentElement, "pointerleave", () => { pointerTarget = [0, 0]; });
+on(document.documentElement, "pointerleave", () => { if (!interaction.snapshot().dragging) pointerTarget = [0, 0]; });
 const observer = new ResizeObserver(invalidate);
 observer.observe(document.querySelector("main"));
 observer.observe(document.querySelector("#top"));
@@ -300,6 +317,7 @@ on(soundControl, "click", () => {
 });
 function suspend() {
   active = false;
+  interaction.setEnabled(false);
   void audio?.suspend();
   cancelAnimationFrame(frame);
   cancelAnimationFrame(syncFrame);
@@ -322,6 +340,7 @@ on(window, "pagehide", (event) => {
     disposed = true;
     observer.disconnect();
     listeners.abort();
+    interaction.dispose();
     world?.dispose();
     void audio?.dispose();
   }
@@ -334,7 +353,7 @@ updateDisplay();
 if (debug) window.__blackGeometry = {
   snapshot: () => ({
     motion, preferences: { ...preferences }, profile, state: { ...state }, visualState: { ...visualState }, visualScrollY, project: { ...project },
-    time, lastDelta, active, pendingFrame: !!frame, world: world?.snapshot() || null,
+    time, orbitTime, interaction: interaction.snapshot(), lastDelta, active, pendingFrame: !!frame, world: world?.snapshot() || null,
     audio: audio?.snapshot() || { initialized: false, enabled: false, wanted: false, state: "uninitialized" },
     ranges: structuredClone(ranges),
   }),

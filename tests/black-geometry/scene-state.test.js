@@ -22,7 +22,7 @@ import {
 const starts = [0, 910, 1895, 3010, 3850, 4675, 5320, 6100, 7490];
 const ranges = CHAPTERS.map((id, index) => ({ id, start: starts[index], end: 7650 }));
 test("individual entries resolve the correct institution, project and recurring identity", () => {
-  const targets = ["hero", "harper", "dragon", "membrane", "resolution", "surface", "congestion", "notes", "notes"];
+  const targets = ["hero", "phoenix", "dragon", "membrane", "resolution", "surface", "congestion", "notes", "notes"];
   assert.equal(chapterState(-100, ranges).chapter, "hero");
   for (let index = 0; index < ranges.length; index++) {
     const state = chapterState(starts[index], ranges);
@@ -100,15 +100,18 @@ test("entry fades arrive at full reading opacity and retrace on upward scrolling
   assert.equal(entryReveal(a.start-900,a,b,900),0);
   assert.equal(entryReveal(9000,ranges.at(-1),undefined,900),1);
 });
-test("every full-motion sculpture follows a bounded, continuous camera ellipse", () => {
+test("every full-motion sculpture turns continuously with bounded elevation and roll", () => {
   for (const range of ranges) {
     const state=chapterState(range.start,ranges);
-    const a=cameraPose(state,{time:0}),b=cameraPose(state,{time:12*Math.PI/2});
-    assert.ok(Math.abs(a[4]-b[4])>.25);
+    const a=cameraPose(state,{time:0}),b=cameraPose(state,{time:15});
+    assert.ok(Math.abs(a[4]-b[4])>1.5);
     assert.ok(Math.abs(a[3]-b[3])>.05);
     for(let time=0;time<90;time+=.5){
       const p=cameraPose(state,{time});
-      assert.ok(Math.abs(p[3])<.8 && Math.abs(p[4])<.34);
+      assert.ok(Math.abs(p[3])<.45 && Math.abs(p[5])<=.08);
+      const next=cameraPose(state,{time:time+.5});
+      assert.ok(next[4]>p[4]);
+      assert.ok(Math.abs(next[4]-p[4]-.0525)<1e-10);
     }
   }
 });

@@ -25,7 +25,7 @@ async function ready(page, url = "/?bg-debug") {
     .toBe("0");
 }
 const identities = [
-  ["hero", "hero"], ["education-uchicago", "harper"],
+  ["hero", "hero"], ["education-uchicago", "phoenix"],
   ["education-drexel", "dragon"], ["experience-mathworks", "membrane"],
   ["experience-resolution", "resolution"],
   ["project-surface", "surface"], ["project-congestion", "congestion"],
@@ -220,6 +220,126 @@ test("individual entries settle correctly through forward and reverse scrolling"
   expect(new Set(hashes.values()).size).toBe(hashes.size);
 });
 
+test("every sculpture responds to captured dragging while the camera pauses and animation continues", async ({ page }) => {
+  test.setTimeout(45000);
+  await ready(page);
+  const stage = page.locator(".world");
+  await expect(stage).toHaveAttribute("tabindex", "0");
+  await expect(page.locator("#rotation-hint")).toBeVisible();
+  for (const [id, target] of identities) {
+    await jump(page, id);
+    await stage.focus();
+    await page.keyboard.press("Home");
+    await expect.poll(async () => (await snapshot(page)).world.rotation).toEqual([0, 0]);
+    const rect = await stage.boundingBox();
+    await page.mouse.move(rect.x + rect.width * 0.4, rect.y + rect.height * 0.5);
+    await page.mouse.down();
+    await expect.poll(async () => (await snapshot(page)).world.dragging).toBe(true);
+    expect(await stage.evaluate((element) => element.hasPointerCapture(window.__blackGeometry.snapshot().interaction.pointerId))).toBe(true);
+    const before = await snapshot(page);
+    await page.mouse.move(rect.x + rect.width * 0.65, rect.y + rect.height * 0.42, { steps: 8 });
+    await expect.poll(async () => (await snapshot(page)).world.rotation[1]).toBeGreaterThan(1);
+    const held = await snapshot(page);
+    assertActiveGeometry(held, target);
+    expect(held.world.orientation.some((value, index) => Math.abs(value - before.world.orientation[index]) > 0.1)).toBe(true);
+    await page.waitForTimeout(100);
+    const paused = await snapshot(page);
+    expect(paused.orbitTime).toBe(held.orbitTime);
+    expect(paused.time).toBeGreaterThan(held.time);
+    await page.mouse.up();
+    await expect.poll(async () => (await snapshot(page)).interaction.dragging).toBe(false);
+    await expect.poll(async () => (await snapshot(page)).orbitTime).toBeGreaterThan(paused.orbitTime);
+  }
+});
+
+test("stage keyboard controls reset the view, preserve page arrows elsewhere and release interrupted drags", async ({ page }) => {
+  await ready(page);
+  const stage = page.locator(".world");
+  await stage.focus();
+  const scroll = await page.evaluate(() => scrollY);
+  await page.keyboard.press("ArrowRight");
+  await page.keyboard.press("ArrowUp");
+  await expect.poll(async () => (await snapshot(page)).world.rotation).toEqual([-0.12, 0.12]);
+  expect(await page.evaluate(() => scrollY)).toBe(scroll);
+  await page.keyboard.press("Home");
+  await expect.poll(async () => (await snapshot(page)).world.rotation).toEqual([0, 0]);
+  await page.locator(".hero-links a").first().focus();
+  await page.evaluate(() => document.addEventListener("keydown", (event) => {
+    window.__outsideArrowPrevented = event.defaultPrevented;
+  }, { once: true }));
+  await page.keyboard.press("ArrowDown");
+  expect(await page.evaluate(() => window.__outsideArrowPrevented)).toBe(false);
+  expect((await snapshot(page)).interaction.rotation).toEqual([0, 0]);
+  // WebKit does not scroll a focused link on ArrowDown; PageDown verifies the
+  // native page behavior independently of that engine-specific key binding.
+  await page.keyboard.press("PageDown");
+  await expect.poll(() => page.evaluate(() => scrollY)).toBeGreaterThan(scroll);
+  await jump(page, "hero");
+  const rect = await stage.boundingBox();
+  await page.mouse.move(rect.x + rect.width / 2, rect.y + rect.height / 2);
+  await page.mouse.down();
+  await expect.poll(async () => (await snapshot(page)).interaction.dragging).toBe(true);
+  const pointerId = (await snapshot(page)).interaction.pointerId;
+  await page.evaluate(() => {
+    Object.defineProperty(document, "hidden", { configurable: true, get: () => true });
+    document.dispatchEvent(new Event("visibilitychange"));
+  });
+  expect((await snapshot(page)).interaction).toMatchObject({ enabled: false, dragging: false, pointerId: null, velocity: [0, 0] });
+  expect(await stage.evaluate((element, id) => element.hasPointerCapture(id), pointerId)).toBe(false);
+  await expect(stage).not.toHaveAttribute("tabindex");
+  await page.mouse.up();
+  await page.evaluate(() => {
+    Object.defineProperty(document, "hidden", { configurable: true, get: () => false });
+    document.dispatchEvent(new Event("visibilitychange"));
+  });
+  await expect(stage).toHaveAttribute("data-interactive", "true");
+  await page.mouse.move(rect.x + rect.width / 2, rect.y + rect.height / 2);
+  await page.mouse.down();
+  await expect.poll(async () => (await snapshot(page)).interaction.dragging).toBe(true);
+  await page.evaluate(() => {
+    document.querySelector("#motion-setting").value = "off";
+    document.querySelector("#motion-setting").dispatchEvent(new Event("change"));
+  });
+  expect((await snapshot(page)).interaction).toMatchObject({ enabled: false, dragging: false, pointerId: null });
+  await expect(stage).not.toHaveAttribute("tabindex");
+  await expect(page.locator("#rotation-hint")).toBeHidden();
+  await page.mouse.up();
+});
+
+test("native touch swipes scroll vertically over the sculpture and rotate horizontally", async ({ page }, info) => {
+  test.skip(info.project.name !== "chromium", "Native touch injection uses the Chromium protocol; gesture arbitration also has engine-independent unit coverage.");
+  await page.setViewportSize({ width: 390, height: 844 });
+  const client = await page.context().newCDPSession(page);
+  await client.send("Emulation.setTouchEmulationEnabled", { enabled: true, maxTouchPoints: 1 });
+  await ready(page);
+  expect(await page.locator(".world").evaluate((element) => getComputedStyle(element).touchAction)).toBe("pan-y pinch-zoom");
+  const touch = (type, x, y) => client.send("Input.dispatchTouchEvent", { type, touchPoints: type === "touchEnd" ? [] : [{ x, y }] });
+  await touch("touchStart", 190, 310);
+  for (let y = 285; y >= 135; y -= 25) {
+    await touch("touchMove", 191, y);
+    await page.waitForTimeout(20);
+  }
+  await touch("touchEnd");
+  await expect.poll(() => page.evaluate(() => scrollY)).toBeGreaterThan(50);
+  expect((await snapshot(page)).interaction.rotation).toEqual([0, 0]);
+  await page.waitForTimeout(350);
+  await jump(page, "hero");
+  const before = await page.evaluate(() => scrollY);
+  await touch("touchStart", 90, 210);
+  for (let x = 120; x <= 270; x += 30) {
+    await touch("touchMove", x, 212);
+    await page.waitForTimeout(20);
+  }
+  await expect.poll(async () => (await snapshot(page)).world.rotation[1]).toBeGreaterThan(1);
+  expect((await snapshot(page)).interaction.dragging).toBe(true);
+  // Allow the injected finger's two-pixel vertical jitter before horizontal
+  // gesture arbitration; the page must otherwise remain stationary.
+  expect(Math.abs((await page.evaluate(() => scrollY)) - before)).toBeLessThanOrEqual(3);
+  await touch("touchEnd");
+  await expect.poll(async () => (await snapshot(page)).interaction.dragging).toBe(false);
+  await client.detach();
+});
+
 
 test("education consolidates teaching and awards with clear sections, neutral text and reversible content fading", async ({ page }) => {
   await ready(page);
@@ -276,8 +396,8 @@ test("entry positions follow DOM layout and core morphs are finite, reversible a
   });
   for (const range of measured) expect(Math.abs(range.actual - range.expected)).toBeLessThan(3);
   for (const [id, target, nextTarget] of [
-    ["hero", "hero", "harper"],
-    ["education-uchicago", "harper", "dragon"],
+    ["hero", "hero", "phoenix"],
+    ["education-uchicago", "phoenix", "dragon"],
     ["education-drexel", "dragon", "membrane"],
   ]) {
     let forward;
@@ -310,7 +430,7 @@ test("entry positions follow DOM layout and core morphs are finite, reversible a
   await jump(page, "experience-mathworks");
   assertActiveGeometry(await snapshot(page), "membrane");
   await jump(page, "education-uchicago");
-  assertActiveGeometry(await snapshot(page), "harper");
+  assertActiveGeometry(await snapshot(page), "phoenix");
 });
 
 for (const width of [1440, 390])
@@ -498,6 +618,9 @@ test("OS reduced motion skips heavy imports, reacts to OS changes, and Motion of
   await page.goto("/?bg-debug");
   await expect(page.locator("#section-index")).toBeVisible();
   expect((await snapshot(page)).motion).toBe("reduced");
+  await expect(page.locator(".world")).not.toHaveAttribute("tabindex");
+  await expect(page.locator("#rotation-hint")).toBeHidden();
+  expect((await snapshot(page)).interaction.enabled).toBe(false);
   await expect(page.locator("canvas")).toHaveCount(0);
   expect(requests.some((url) => /world-.*\.js/.test(url))).toBe(false);
   await page.screenshot({
@@ -527,6 +650,8 @@ test("OS reduced motion skips heavy imports, reacts to OS changes, and Motion of
   const after = await snapshot(page);
   expect(after.world.frames).toBe(before.world.frames);
   expect(after.pendingFrame).toBe(false);
+  await expect(page.locator(".world")).not.toHaveAttribute("tabindex");
+  expect(after.interaction.enabled).toBe(false);
 });
 
 test("quality and rapid display/audio changes reuse one renderer and do not leak geometries", async ({
@@ -693,6 +818,9 @@ for (const mode of ["module", "asset", "renderer", "shader", "context"])
     );
     await content(page);
     await expect(page.locator("#sculpture-poster")).toBeVisible();
+    await expect(page.locator(".world")).not.toHaveAttribute("tabindex");
+    await expect(page.locator("#rotation-hint")).toBeHidden();
+    expect((await snapshot(page)).interaction.enabled).toBe(false);
     expect((await snapshot(page)).pendingFrame).toBe(false);
     await page.screenshot({
       path: `${output}/${info.project.name}-failure-${mode}.png`,

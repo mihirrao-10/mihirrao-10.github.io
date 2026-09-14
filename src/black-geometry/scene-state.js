@@ -1,6 +1,6 @@
 export const ENTRIES = Object.freeze([
   { id: "hero", target: "hero", section: "top" },
-  { id: "education-uchicago", target: "harper", section: "education" },
+  { id: "education-uchicago", target: "phoenix", section: "education" },
   { id: "education-drexel", target: "dragon", section: "education" },
   { id: "experience-mathworks", target: "membrane", section: "experience" },
   { id: "experience-resolution", target: "resolution", section: "experience" },
@@ -68,11 +68,11 @@ export function chapterState(scrollY, ranges) {
   };
 }
 
-// The authored geometry already carries its recognition-preserving viewpoint.
-// These are small camera changes around that view, not a second model rotation.
+// Authored geometry carries its initial presentation angle. These small target
+// offsets preserve one continuous camera orbit across chapter boundaries.
 const TARGET_POSES = {
-  hero: [0.5, 0.5, 9, 0.7, 0, 0, 1],
-  harper: [0.5, 0.5, 9, 0, 0, 0, 1],
+  hero: [0.5, 0.5, 9, 0, 0, 0, 1],
+  phoenix: [0.5, 0.5, 9, 0, 0, 0, 1],
   dragon: [0.5, 0.5, 9, 0, 0.015, 0, 1],
   membrane: [0.5, 0.5, 9, 0, -0.025, 0, 1],
   resolution: [0.5, 0.5, 9, 0, 0, 0, 1],
@@ -86,12 +86,11 @@ export function cameraPose(state, { time = 0, pointer = [0, 0], fullMotion = tru
   const b = TARGET_POSES[state.nextTarget] || a;
   const pose = a.map((value, i) => mix(value, b[i], state.blend));
   if (fullMotion) {
-    // A slow ellipse in azimuth/elevation moves the camera around a fixed
-    // center. Shared phase keeps the orbit continuous through every identity.
-    const phase = time / 12;
-    const elevationRange = mix(state.target === "hero" ? 0.06 : 0.12, state.nextTarget === "hero" ? 0.06 : 0.12, state.blend);
-    pose[3] += Math.sin(phase) * elevationRange + clamp(pointer[1], -1, 1) * 0.025;
-    pose[4] += Math.cos(phase) * 0.3 + clamp(pointer[0], -1, 1) * 0.04;
+    // Continuous orbit, with an elevated, gently tilting viewpoint. The shared
+    // clock pauses during a grab and stays continuous through every identity.
+    pose[3] += 0.2 + Math.sin(time * 0.23) * 0.18 + clamp(pointer[1], -1, 1) * 0.025;
+    pose[4] += 0.28 + time * 0.105 + clamp(pointer[0], -1, 1) * 0.04;
+    pose[5] += Math.sin(time * 0.17) * 0.08;
   }
   return pose;
 }

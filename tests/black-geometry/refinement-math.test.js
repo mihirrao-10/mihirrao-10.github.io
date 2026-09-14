@@ -1,9 +1,5 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import * as THREE from "three";
-import {
-  heroHeight, heroDerivatives, computeHeroAscent, createHero,
-} from "../../src/black-geometry/sculptures/hero.js";
 import { createNotes, createResolution } from "../../src/black-geometry/sculptures/mathematical.js";
 
 function dispose(group) {
@@ -61,80 +57,6 @@ function topology(geometry) {
     euler: adjacency.size - edges.size + indices.length / 3,
   };
 }
-
-test("hero analytic gradient matches numerical derivatives and its three crests are stationary maxima", () => {
-  const step = 0.00001;
-  for (const u of [-1.2, -0.63, -0.1, 0.37, 1.12]) {
-    for (const v of [-1.04, -0.38, 0.07, 0.53, 1.21]) {
-      const numeric = [
-        (heroHeight(u + step, v) - heroHeight(u - step, v)) / (2 * step),
-        (heroHeight(u, v + step) - heroHeight(u, v - step)) / (2 * step),
-      ];
-      const analytic = heroDerivatives(u, v);
-      analytic.forEach((value, axis) => assert.ok(
-        Math.abs(value - numeric[axis]) < 0.0000001,
-        `Derivative ${axis} must describe the actual height field at (${u}, ${v})`,
-      ));
-    }
-  }
-  // The radial factor r^3 exp(-r^2) peaks at sqrt(3/2), independently of RK4.
-  const radius = Math.sqrt(3 / 2);
-  for (let crest = 0; crest < 3; crest++) {
-    const theta = crest * 2 * Math.PI / 3;
-    const u = radius * Math.cos(theta), v = radius * Math.sin(theta);
-    assert.ok(Math.hypot(...heroDerivatives(u, v)) < 1e-12);
-    const maximum = heroHeight(u, v);
-    for (const [du, dv] of [[0.01, 0], [-0.01, 0], [0, 0.01], [0, -0.01]]) {
-      assert.ok(heroHeight(u + du, v + dv) < maximum, "Each crest must be a local maximum, not a labeled arbitrary endpoint");
-    }
-  }
-});
-
-test("prepared ascent follows the actual gradient uphill and reaches the independently known crest", () => {
-  const samples = computeHeroAscent();
-  assert.ok(samples.length > 10, "The trajectory must contain resolved integration steps");
-  for (let i = 0; i < samples.length; i++) {
-    const sample = samples[i];
-    assert.ok(Math.abs(sample.height - heroHeight(...sample.uv)) < 1e-12);
-    if (!i) continue;
-    const previous = samples[i - 1];
-    assert.ok(sample.height > previous.height, "Every saved point must ascend the displayed field");
-    const delta = sample.uv.map((value, axis) => value - previous.uv[axis]);
-    const middle = sample.uv.map((value, axis) => (value + previous.uv[axis]) / 2);
-    const gradient = heroDerivatives(...middle);
-    const product = Math.hypot(...delta) * Math.hypot(...gradient);
-    assert.ok(delta[0] * gradient[0] + delta[1] * gradient[1] > 0);
-    assert.ok(Math.abs(delta[0] * gradient[1] - delta[1] * gradient[0]) / product < 0.003,
-      "A step must follow the gradient direction, not merely happen to gain height");
-  }
-  assert.ok(samples.at(-1).height - samples[0].height > 2);
-  assert.ok(Math.hypot(samples.at(-1).uv[0] - Math.sqrt(3 / 2), samples.at(-1).uv[1]) < 0.00003);
-  const trueMaximum = 3.15 * (3 / 2) ** 1.5 * Math.exp(-3 / 2);
-  assert.ok(Math.abs(samples.at(-1).height - trueMaximum) < 1e-8);
-});
-
-test("the red ascent remains above the actual connected mesh after its presentation transform", () => {
-  const group = createHero();
-  try {
-    group.updateMatrixWorld(true);
-    const mesh = group.children.find((object) => object.isMesh);
-    const line = group.children.find((object) => object.isLine && object.userData.kind === "ascent");
-    assert.ok(line, "The renderer needs a prepared ascent line");
-    assert.deepEqual(topology(mesh.geometry), { components: 1, boundaryLoops: 1, euler: 1 });
-    const upward = new THREE.Vector3(0, 1, 0).transformDirection(mesh.matrixWorld);
-    const ray = new THREE.Raycaster(), point = new THREE.Vector3();
-    const positions = line.geometry.attributes.position;
-    for (let i = 0; i < positions.count; i++) {
-      point.fromBufferAttribute(positions, i).applyMatrix4(line.matrixWorld);
-      ray.set(point.clone().addScaledVector(upward, 10), upward.clone().negate());
-      const intersections = ray.intersectObject(mesh, false);
-      assert.ok(intersections.length, "Every trace point must remain over the triangulated domain");
-      const clearance = point.clone().sub(intersections[0].point).dot(upward);
-      assert.ok(clearance > 0.001 && clearance < 0.08,
-        `Trace clearance ${clearance} must be positive and small, rather than detached or buried`);
-    }
-  } finally { dispose(group); }
-});
 
 test("notes vertices satisfy the square-root projection, retain both roots, and join the periodic seam", () => {
   const group = createNotes();

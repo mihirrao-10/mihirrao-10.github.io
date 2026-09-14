@@ -1,12 +1,12 @@
 import * as THREE from "three";
 import { createHero } from "../../src/black-geometry/sculptures/hero.js";
-import { createHarper } from "../../src/black-geometry/sculptures/harper.js";
+import { createPhoenix } from "../../src/black-geometry/sculptures/phoenix.js";
 import { createDragon } from "../../src/black-geometry/sculptures/dragon.js";
 import { createMembrane } from "../../src/black-geometry/sculptures/membrane.js";
 import { createResolution, createNotes } from "../../src/black-geometry/sculptures/mathematical.js";
 
-const COMPONENTS = ["hero", "harper", "dragon", "membrane", "resolution", "notes"];
-const factories = [createHero, createHarper, createDragon, createMembrane, createResolution, createNotes];
+const COMPONENTS = ["hero", "phoenix", "dragon", "membrane", "resolution", "notes"];
+const factories = [createHero, createPhoenix, createDragon, createMembrane, createResolution, createNotes];
 const xyz = new THREE.Vector3();
 const center = (face) => [0, 1, 2].map(k => (face.p[k] + face.p[k + 3] + face.p[k + 6]) / 3);
 const area = (face) => {
@@ -17,7 +17,7 @@ const area = (face) => {
 /** Bake original volumes, material colors and transforms; no browser authoring work. */
 export function bake(group, name) {
   group.updateMatrixWorld(true);
-  const box = new THREE.Box3().setFromObject(group), size = box.getSize(new THREE.Vector3());
+  const box = new THREE.Box3().setFromObject(group, true), size = box.getSize(new THREE.Vector3());
   const middle = box.getCenter(new THREE.Vector3());
   const scale = Math.min(5.9 / size.x, 4.65 / size.y, 5.6 / size.z) * (name === "hero" ? 1.14 : 1);
   const faces = [], paths = [];

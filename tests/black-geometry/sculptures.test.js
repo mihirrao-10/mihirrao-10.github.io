@@ -7,7 +7,7 @@ import { createSurface, createCongestion, SURFACE_INFO, CONGESTION_INFO } from "
 test("prepared sculpture packet has eight complete finite identities and simultaneous institutional colors", async () => {
   const data=await fs.readFile(new URL("../../assets/black-geometry/generated/sculpture-data.bin",import.meta.url));
   const length=data.readUInt32LE(0), manifest=JSON.parse(data.subarray(4,length+4)), offset=length+4;
-  assert.deepEqual(manifest.models.map(m=>m.name),["hero","harper","dragon","membrane","resolution","notes","surface","congestion"]);
+  assert.deepEqual(manifest.models.map(m=>m.name),["hero","phoenix","dragon","membrane","resolution","notes","surface","congestion"]);
   assert.equal(data.length,offset+manifest.models.length*manifest.count*manifest.stride);
   assert.ok(manifest.count>=29584);
   for(let i=0;i<manifest.models.length;i++){
