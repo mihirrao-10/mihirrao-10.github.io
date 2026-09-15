@@ -184,16 +184,7 @@ li::marker { color: var(--strong); }
 .notes-list { list-style: none; margin: 0.65rem 0 0; padding: 0; font-size: 0.95rem; }
 .notes-list a, .notes-list a:visited { display: flex; align-items: center; min-height: 44px; padding: 0.5rem 0; line-height: 1.5; color: var(--scene-accent); text-decoration: underline; text-decoration-color: #d8edf355; text-decoration-thickness: 1px; text-underline-offset: 0.2em; }
 .notes-list a:hover { color: var(--scene-hover); text-decoration-color: currentColor; }
-.notes-category { margin: 1.9rem 0 0; color: var(--university-color, var(--scene-title)); font-size: 0.72rem; }
-/* Official palette colors with enough contrast for small text on black:
-   Caltech Orange: https://identity.caltech.edu/colors
-   MIT Bright Red: https://brand.mit.edu/color
-   CMU Scots Rose: https://brand.cmu.edu/visual-identity/colors
-   UCI Gold: https://www.brand.uci.edu/identity/colors.php/ */
-.notes-category[data-university="caltech"] { --university-color: #ff6c0c; }
-.notes-category[data-university="mit"] { --university-color: #ff1423; }
-.notes-category[data-university="cmu"] { --university-color: #ef3a47; }
-.notes-category[data-university="uci"] { --university-color: #fecc07; }
+.notes-category { margin: 1.9rem 0 0; color: var(--strong); font-size: 0.72rem; }
 .notes-category:first-child { margin-top: 0; }
 #notes { scroll-margin-bottom: var(--notes-tail); }
 #notes > .section-heading { color: var(--scene-title); }

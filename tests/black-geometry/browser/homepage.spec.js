@@ -535,8 +535,8 @@ for (const [width, height] of [[1440, 900], [390, 844]]) test(`each entry opens 
   }
   await jump(page, 'education-uchicago');
   const entries = [
-    ['education-uchicago', 'education'], ['education-drexel', 'education'],
-    ['experience-mathworks', 'industry experience'], ['experience-resolution', 'industry experience'],
+    ['education-uchicago', 'Education · 1/2'], ['education-drexel', 'Education · 2/2'],
+    ['experience-mathworks', 'Industry Experience · 1/2'], ['experience-resolution', 'Industry Experience · 2/2'],
     ['project-surface', 'personal projects'], ['project-congestion', 'personal projects'], ['notes', 'personal notes'],
   ];
   for (const [index, [id, label]] of entries.entries()) {
@@ -730,11 +730,8 @@ test('teaching and industry remain complete, section links use matching colors, 
   }
   const colors = await page.locator('#notes .notes-list a').evaluateAll(links => links.map(link => getComputedStyle(link).color));
   expect(colors.every(color => color === 'rgb(216, 237, 243)')).toBe(true);
-  const universityColors = await page.locator('#notes .notes-category').evaluateAll(headings => headings.map(el => [el.dataset.university, getComputedStyle(el).color]));
-  expect(universityColors).toEqual([
-    ['caltech', 'rgb(255, 108, 12)'], ['mit', 'rgb(255, 20, 35)'],
-    ['cmu', 'rgb(239, 58, 71)'], ['uci', 'rgb(254, 204, 7)'],
-  ]);
+  const universityColors = await page.locator('#notes .notes-category').evaluateAll(headings => headings.map(el => getComputedStyle(el).color));
+  expect(universityColors).toEqual(Array(4).fill('rgb(250, 250, 250)'));
   const underlines = await page.locator('#notes .notes-list a').evaluateAll(links => links.map(link => {
     const style = getComputedStyle(link);
     return { line: style.textDecorationLine, thickness: style.textDecorationThickness, color: style.textDecorationColor, textColor: style.color };
