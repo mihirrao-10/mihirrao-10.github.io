@@ -711,7 +711,7 @@ test('teaching and industry remain complete, section links use matching colors, 
   await expect(page.locator('#experience-mathworks .experience-points > li')).toHaveCount(4);
   await expect(page.locator('#experience-resolution .experience-points > li')).toHaveCount(4);
   await expect(page.locator('#education-drexel .awards-list li')).toHaveText(['A* Award', 'Jeffrey L. Popyack Teaching Assistant Award', 'Student Teaching Excellence Award']);
-  await expect(page.locator('#education-uchicago .entry-title')).toHaveText('the University of Chicago');
+  await expect(page.locator('#education-uchicago .entry-title')).toHaveText('University of Chicago');
   await expect(page.locator('#education-uchicago .degree-specialization')).toHaveText('Concentration | Artificial Intelligence - Foundations');
   await expect(page.locator('#education-drexel .degree-specialization')).toHaveText('Concentrations | Algorithms & Data Structures, Artificial Intelligence');
   await expect(page.locator('#education-drexel .degree-honors em')).toHaveText('Magna Cum Laude');
