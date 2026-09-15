@@ -120,7 +120,7 @@ main > section { scroll-margin-top: 1.5rem; padding: 5.5rem 0 0; margin-top: 3re
 #experience-mathworks { --scene-title: #75bce8; --scene-accent: #efb36b; --scene-hover: #f8d9b4; }
 #experience-resolution { --scene-title: #ed7c8b; --scene-accent: #91b6ee; --scene-hover: #c9defb; }
 #project-surface { --scene-title: #83c6ec; --scene-accent: #79d4cf; --detail-accent: #83c6ec; --scene-hover: #bcece8; }
-#project-congestion { --scene-title: #ef816c; --scene-accent: #f0aa70; --detail-accent: #83c6ec; --scene-hover: #ffd6a9; }
+#project-congestion { --scene-title: #ef816c; --scene-accent: #f0aa70; --detail-accent: var(--scene-title); --scene-hover: #ffd6a9; }
 #notes, #contact { --scene-title: #d8edf3; --scene-accent: #d8edf3; --scene-hover: #ffffff; }
 .scene-next, .scene-next:visited {
   position: absolute; bottom: 1.8rem; left: 0; display: inline-flex;

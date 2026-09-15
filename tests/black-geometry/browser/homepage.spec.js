@@ -568,7 +568,7 @@ test('teaching and industry remain complete, section links use matching colors, 
   expect(await page.locator('.entry-subheading').evaluateAll(headings => headings.every(el => getComputedStyle(el).color === 'rgb(250, 250, 250)'))).toBe(true);
   expect(await page.locator('.experience-points > li').evaluateAll(items => items.every(el => getComputedStyle(el, '::marker').color === 'rgb(250, 250, 250)'))).toBe(true);
   expect(await page.locator('.awards-list > li').evaluateAll(items => items.every(el => getComputedStyle(el, '::before').color === 'rgb(250, 250, 250)'))).toBe(true);
-  for (const [id, accent] of [['experience-mathworks', 'rgb(239, 179, 107)'], ['experience-resolution', 'rgb(145, 182, 238)'], ['project-surface', 'rgb(131, 198, 236)'], ['project-congestion', 'rgb(131, 198, 236)']]) {
+  for (const [id, accent] of [['experience-mathworks', 'rgb(239, 179, 107)'], ['experience-resolution', 'rgb(145, 182, 238)'], ['project-surface', 'rgb(131, 198, 236)'], ['project-congestion', 'rgb(239, 129, 108)']]) {
     if (id.startsWith('experience-')) expect(await page.locator(`#${id} .entry-role`).evaluate(el => getComputedStyle(el).color)).toBe(accent);
     for (const selector of ['.metric', '.technical-highlight']) {
       const highlights = await page.locator(`#${id} ${selector}`).evaluateAll(elements => elements.map(el => ({ color: getComputedStyle(el).color, parentColor: getComputedStyle(el.parentElement).color })));
