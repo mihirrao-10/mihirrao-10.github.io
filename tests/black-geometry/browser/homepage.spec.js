@@ -162,6 +162,9 @@ test('delayed sculpture data keeps a black loader until the first live frame, th
         box: [box.x, box.y, box.width, box.height], viewport: [innerWidth, innerHeight],
         protectedOpacity: [...document.querySelectorAll('.hero, main, .site-footer, .world')].map(el => getComputedStyle(el).opacity),
         retainedLayout: document.documentElement.scrollHeight > innerHeight,
+        typeMatchesNotes: ['fontFamily', 'fontWeight', 'letterSpacing', 'textTransform'].every(property =>
+          style[property] === getComputedStyle(document.querySelector('.notes-category'))[property] ||
+          property === 'letterSpacing' && Math.abs(parseFloat(style[property]) / parseFloat(style.fontSize) - 0.14) < 0.001),
         state: window.__blackGeometry.snapshot() };
     });
     expect(loading.background).toBe('rgb(8, 8, 8)');
@@ -169,6 +172,7 @@ test('delayed sculpture data keeps a black loader until the first live frame, th
     expect(loading.box).toEqual([0, 0, ...loading.viewport]);
     expect(loading.protectedOpacity).toEqual(['0', '0', '0', '0']);
     expect(loading.retainedLayout).toBe(true);
+    expect(loading.typeMatchesNotes).toBe(true);
     expect(loading.state.world).toBe(null);
     expect(loading.state.interaction.enabled).toBe(false);
     await expect(page.getByRole('status')).toHaveAttribute('aria-atomic', 'true');
@@ -519,8 +523,13 @@ for (const [width, height] of [[1440, 900], [390, 844]]) test(`each entry opens 
   await page.setViewportSize({ width, height });
   await ready(page);
   await page.screenshot({ path: `.artifacts/entry-pages/${info.project.name}-${width}-hero.png` });
-  expect(await page.locator('.hero-name').evaluate(el => getComputedStyle(el).fontVariantCaps)).toBe('small-caps');
-  expect(await page.locator('.hero-title').evaluate(el => getComputedStyle(el).fontVariantCaps)).toBe('all-small-caps');
+  const typography = await page.locator('.hero-name, .hero-title, .hero-link, .section-heading, .notes-category').evaluateAll(elements => elements.map(el => {
+    const style = getComputedStyle(el);
+    return { family: style.fontFamily, weight: style.fontWeight, transform: style.textTransform,
+      tracking: Number((parseFloat(style.letterSpacing) / parseFloat(style.fontSize)).toFixed(3)) };
+  }));
+  expect(typography.every(style => JSON.stringify(style) === JSON.stringify(typography.at(-1)))).toBe(true);
+  expect(typography[0]).toMatchObject({ weight: '500', transform: 'uppercase', tracking: 0.14 });
   await jump(page, 'education-uchicago');
   const entries = [
     ['education-uchicago', 'education'], ['education-drexel', 'education'],
@@ -540,9 +549,9 @@ for (const [width, height] of [[1440, 900], [390, 844]]) test(`each entry opens 
     const readingTop = width < 800 ? layout.artworkBottom : 0;
     expect(Math.abs(layout.top)).toBeLessThan(2);
     expect(layout.height).toBeGreaterThanOrEqual(height - 1);
-    expect(layout.labelTop - readingTop).toBeGreaterThan(width < 800 ? 15 : 45);
-    expect(layout.labelTop - readingTop).toBeLessThan(width < 800 ? 30 : 60);
-    expect(layout.border).toBe('0px'); expect(layout.caps).toBe('all-small-caps');
+    expect(layout.labelTop - readingTop).toBeGreaterThan(width < 800 ? 15 : 20);
+    expect(layout.labelTop - readingTop).toBeLessThan(width < 800 ? 30 : 32);
+    expect(layout.border).toBe('0px'); expect(layout.caps).toBe('normal');
     if (index) expect(await page.locator(`#${entries[index - 1][0]}`).evaluate(el => el.getBoundingClientRect().bottom)).toBeLessThanOrEqual(1);
     assertActiveGeometry(await snapshot(page), identities.find(([entry]) => entry === id)[1]);
     await page.screenshot({ path: `.artifacts/entry-pages/${info.project.name}-${width}-${id}.png` });
@@ -561,6 +570,31 @@ for (const [width, height] of [[1440, 900], [390, 844]]) test(`each entry opens 
     expect(box.y + box.height).toBeLessThanOrEqual(height);
     if (id === 'education-drexel') await page.screenshot({ path: `.artifacts/entry-pages/${info.project.name}-${width}-drexel-arrow.png` });
     await arrow.click();
+  }
+});
+
+for (const [width, height] of [[1280, 720], [1024, 768]]) test(`industry entries fit one complete reading page at ${width}x${height}`, async ({ page }, info) => {
+  await page.setViewportSize({ width, height }); await ready(page);
+  for (const id of ['experience-mathworks', 'experience-resolution']) {
+    await jump(page, id); await scrollStopped(page);
+    const layout = await page.locator(`#${id}`).evaluate(el => ({
+      top: el.getBoundingClientRect().top, height: el.getBoundingClientRect().height,
+      labelTop: el.querySelector('.section-heading').getBoundingClientRect().top,
+      lastBottom: el.querySelector('.experience-points > li:last-child').getBoundingClientRect().bottom,
+      arrowTop: el.querySelector('.scene-next').getBoundingClientRect().top,
+      arrowBottom: el.querySelector('.scene-next').getBoundingClientRect().bottom,
+      border: getComputedStyle(el).borderTopWidth,
+      groupBorder: getComputedStyle(el.parentElement).borderTopWidth,
+      bodySize: parseFloat(getComputedStyle(el.querySelector('.experience-points')).fontSize),
+    }));
+    expect(Math.abs(layout.top)).toBeLessThan(2);
+    expect(Math.abs(layout.height - height)).toBeLessThan(2);
+    expect(layout.labelTop).toBeGreaterThan(20); expect(layout.labelTop).toBeLessThan(32);
+    expect(layout.lastBottom).toBeLessThan(layout.arrowTop);
+    expect(layout.arrowBottom).toBeLessThanOrEqual(height);
+    expect(layout.border).toBe('0px'); expect(layout.groupBorder).toBe('0px');
+    expect(layout.bodySize).toBeGreaterThan(15.5);
+    await page.screenshot({ path: `.artifacts/type-and-fit/${info.project.name}-${width}-${id}.png` });
   }
 });
 
@@ -594,8 +628,8 @@ for (const [width, height] of [[1440, 900], [390, 844], [740, 390]]) test(`Notes
   }));
   const stacked = width < 600;
   const readingTop = stacked ? landing.artworkBottom : 0;
-  expect(landing.heading - readingTop).toBeGreaterThan(stacked ? 15 : 45);
-  expect(landing.heading - readingTop).toBeLessThan(stacked ? 30 : 60);
+  expect(landing.heading - readingTop).toBeGreaterThan(stacked ? 15 : 20);
+  expect(landing.heading - readingTop).toBeLessThan(stacked ? 30 : 32);
   // Native scroll positions round to pixels while layout keeps subpixels.
   expect(landing.previousBottom).toBeLessThanOrEqual(readingTop + 1);
   expect(landing.border).toBe('0px');
@@ -747,7 +781,7 @@ test('OS reduced motion skips heavy imports, renders fallback identities, and st
   expect(after.interaction.enabled).toBe(false); await expect(page.locator('.world')).not.toHaveAttribute('tabindex');
 });
 
-for (const [width, height] of [[320, 740], [390, 844], [768, 1024], [740, 390], [1440, 900], [1920, 1080]]) test(`responsive ${width}x${height}: content and high-quality artwork fit without horizontal overflow`, async ({ page }, info) => {
+for (const [width, height] of [[320, 740], [390, 844], [768, 1024], [600, 390], [740, 390], [1440, 900], [1920, 1080]]) test(`responsive ${width}x${height}: content and high-quality artwork fit without horizontal overflow`, async ({ page }, info) => {
   test.setTimeout(45000); await page.setViewportSize({ width, height }); await ready(page);
   for (const id of ['hero', 'education-drexel', 'project-surface', 'notes']) {
     await jump(page, id);
@@ -756,7 +790,14 @@ for (const [width, height] of [[320, 740], [390, 844], [768, 1024], [740, 390], 
     const stage = await page.locator('.world').boundingBox(), stacked = width < 800 && !(width >= 600 && height <= 500);
     expect(stage.width).toBeGreaterThan(stacked ? width * 0.9 : width * 0.4);
     expect(stage.height).toBeGreaterThan(stacked ? 150 : height * 0.75);
-    if (id === 'hero' && [320, 740].includes(width)) await page.screenshot({ path: `.artifacts/entry-pages/${info.project.name}-${width}-hero.png` });
+    if (id === 'hero') {
+      const nameRight = await page.locator('.hero-name').evaluate(el => {
+        const range = document.createRange(); range.selectNodeContents(el);
+        return range.getBoundingClientRect().right;
+      });
+      expect(nameRight).toBeLessThanOrEqual(stacked ? width : stage.x);
+    }
+    if (id === 'hero' && [320, 600, 740].includes(width)) await page.screenshot({ path: `.artifacts/entry-pages/${info.project.name}-${width}-hero.png` });
   }
   if ([390, 1440].includes(width)) await page.screenshot({ path: `${output}/${info.project.name}-${width}-notes.png` });
 });

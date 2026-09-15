@@ -142,8 +142,11 @@ npm run test:browser          # serves root/dist on 8000/8001 if not already run
 `assets/black-geometry/generated/` must be included in an ordinary later user
 commit because Pages serves the repository root. esbuild emits a stable entry,
 hashed dynamic chunks, and license notices there; the static SVGs use the same
-authored target geometry as the runtime packet. Builds write only changed files and delete stale
-files only within that owned directory. `dist/` is produced afterwards by the
+authored target geometry as the runtime packet. The build also copies the stylesheet
+to a filename containing its content hash and updates its link in `index.html`, so
+returning visitors receive the current styles. Run the build after CSS edits and
+commit the generated stylesheet and updated HTML together. Builds write only
+changed files and delete stale files only within that owned directory. `dist/` is produced afterwards by the
 existing static copy build and remains ignored, as do `node_modules/` and browser
 evidence under `.artifacts/`. The workflow's three-file tracker commit allowlist
 is unchanged. A build alone does not publish homepage changes.
