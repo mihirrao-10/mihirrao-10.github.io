@@ -86,8 +86,11 @@ function assertActiveGeometry(state, target) {
   expect(state.profile).toBe('high');
   expect(state.world.quality).toBe('high');
   expect(state.world.opaque).toBe(false);
-  expect(state.world.opacity).toBeCloseTo(target === 'notes' ? 0.52 : 0.88, 3);
+  expect(state.world.opacity).toBeCloseTo(target === 'notes' ? 0.32 : 0.88, 3);
   expect(state.world.depthPrepass).toBe(true);
+  expect(state.world.interiorContoursAligned).toBe(true);
+  expect(state.world.activeInteriorMeshes).toBe(target === 'notes' ? 1 : 0);
+  expect(state.world.interiorTargets).toEqual(target === 'notes' ? ['notes'] : []);
   expect(state.world.shading).toBe('tessellated');
   expect(state.world.presentationScale).toBeCloseTo(0.84, 3);
   expect(state.world.activeMeshes).toBe(1);
@@ -291,7 +294,7 @@ test('all nine entries resolve to complete distinct sculptures forward and backw
 test('stopping at a former partial-scroll position finishes the selected sculpture automatically', async ({ page }) => {
   await ready(page);
   let observedTransitions = 0;
-  for (const id of ['hero', 'education-uchicago', 'education-drexel']) {
+  for (const id of ['hero', 'education-uchicago', 'education-drexel', 'project-congestion']) {
     await jump(page, id);
     const samples = await page.evaluate(async id => {
       const ranges = window.__blackGeometry.snapshot().ranges, index = ranges.findIndex(range => range.id === id);
@@ -301,7 +304,7 @@ test('stopping at a former partial-scroll position finishes the selected sculptu
       await new Promise(resolve => {
         function collect() {
           const { state, world, transition } = window.__blackGeometry.snapshot();
-          samples.push({ at: performance.now() - begin, chapter: state.chapter, target: state.target, next: state.nextTarget, desiredBlend: state.blend, worldTarget: world.target, worldNext: world.nextTarget, blend: world.blend, decoded: world.decodedTargets, opaque: world.opaque, opacity: world.opacity, depthPrepass: world.depthPrepass, activeDepthMeshes: world.activeDepthMeshes, activeMeshes: world.activeMeshes, transition });
+          samples.push({ at: performance.now() - begin, chapter: state.chapter, target: state.target, next: state.nextTarget, desiredBlend: state.blend, worldTarget: world.target, worldNext: world.nextTarget, blend: world.blend, decoded: world.decodedTargets, opaque: world.opaque, opacity: world.opacity, depthPrepass: world.depthPrepass, activeDepthMeshes: world.activeDepthMeshes, activeMeshes: world.activeMeshes, interiorContoursAligned: world.interiorContoursAligned, activeInteriorMeshes: world.activeInteriorMeshes, interiorTargets: world.interiorTargets, transition });
           if (performance.now() - begin < 1500) requestAnimationFrame(collect); else resolve();
         }
         requestAnimationFrame(collect);
@@ -309,10 +312,15 @@ test('stopping at a former partial-scroll position finishes the selected sculptu
       return samples;
     }, id);
     expect(samples.length).toBeGreaterThan(3);
-    expect(samples.every(sample => sample.target === sample.next && sample.desiredBlend === 0 && sample.decoded <= 2)).toBe(true);
+    expect(samples.every(sample => sample.target === sample.next && sample.desiredBlend === 0 && sample.decoded <= 2 && sample.interiorContoursAligned)).toBe(true);
     const moving = samples.filter(sample => sample.blend > 0 && sample.blend < 1);
     observedTransitions += moving.length;
-    expect(moving.every(sample => !sample.opaque && sample.opacity === (sample.worldTarget === 'notes' ? .52 : .88) && sample.depthPrepass && sample.activeMeshes === 2 && sample.activeDepthMeshes === 2)).toBe(true);
+    expect(moving.every(sample => !sample.opaque && sample.opacity === (sample.worldTarget === 'notes' ? .32 : .88) && sample.depthPrepass && sample.activeMeshes === 2 && sample.activeDepthMeshes === 2)).toBe(true);
+    for (const sample of moving) {
+      const hasNotes = [sample.worldTarget, sample.worldNext].includes('notes');
+      expect(sample.activeInteriorMeshes).toBe(hasNotes ? 1 : 0);
+      expect(sample.interiorTargets).toEqual(hasNotes ? ['notes'] : []);
+    }
     const final = samples.at(-1);
     expect(final.blend).toBe(0);
     expect(final.worldTarget).toBe(final.target);
@@ -382,27 +390,30 @@ test('MathWorks and Resolution start at their authored view on later visits with
   }
 });
 
-test('a rapid sculpture reversal preserves the visible visit while a completed departure resets the next visit', async ({ page }) => {
+for (const [start, next, startTarget, nextTarget] of [
+  ['experience-mathworks', 'experience-resolution', 'membrane', 'resolution'],
+  ['notes', 'project-congestion', 'notes', 'congestion'],
+]) test(`a rapid sculpture reversal preserves the ${startTarget} visit while a completed departure resets the next visit`, async ({ page }) => {
   test.setTimeout(45000);
-  await ready(page); await jump(page, 'experience-mathworks');
+  await ready(page); await jump(page, start);
   await page.locator('.world').focus(); await page.keyboard.press('ArrowRight');
   const orientation = (await snapshot(page)).interaction.orientation;
   await expect.poll(async () => (await snapshot(page)).world.userOrientation).toEqual(orientation);
   await expect.poll(async () => (await snapshot(page)).world.orbitAges[0]).toBeGreaterThan(0.9);
   const before = await snapshot(page);
-  const reversal = await page.evaluate(async () => {
+  const reversal = await page.evaluate(async ({ start, next, startTarget, nextTarget }) => {
     const initial = window.__blackGeometry.snapshot();
     const move = id => window.scrollTo({ top: initial.ranges.find(range => range.id === id).start, behavior: 'instant' });
     const begin = performance.now(); let reversed = false, sawPair = false, allDepthPassesAligned = true;
-    move('experience-resolution');
+    move(next);
     return new Promise((resolve, reject) => {
       function observe() {
         const state = window.__blackGeometry.snapshot();
-        allDepthPassesAligned &&= state.world.depthPrepass;
-        if (!reversed && state.world.target === 'membrane' && state.world.nextTarget === 'resolution' && state.world.blend > 0 && state.world.blend < 0.5) {
+        allDepthPassesAligned &&= state.world.depthPrepass && state.world.interiorContoursAligned;
+        if (!reversed && state.world.target === startTarget && state.world.nextTarget === nextTarget && state.world.blend > 0 && state.world.blend < 0.5) {
           sawPair = state.world.activeMeshes === 2 && state.world.activeDepthMeshes === 2;
-          reversed = true; move('experience-mathworks');
-        } else if (reversed && state.state.chapter === 'experience-mathworks' && state.world.target === 'membrane' && state.world.nextTarget === 'membrane' && state.world.blend === 0) {
+          reversed = true; move(start);
+        } else if (reversed && state.state.chapter === start && state.world.target === startTarget && state.world.nextTarget === startTarget && state.world.blend === 0) {
           resolve({ state, sawPair, allDepthPassesAligned }); return;
         }
         if (performance.now() - begin > 4000) { reject(new Error('The partial transition did not reverse and settle')); return; }
@@ -410,13 +421,13 @@ test('a rapid sculpture reversal preserves the visible visit while a completed d
       }
       requestAnimationFrame(observe);
     });
-  });
+  }, { start, next, startTarget, nextTarget });
   expect(reversal.sawPair).toBe(true);
   expect(reversal.allDepthPassesAligned).toBe(true);
   expect(reversal.state.interaction.orientation).toEqual(before.interaction.orientation);
   expect(reversal.state.world.orbitAges[0]).toBeGreaterThanOrEqual(before.world.orbitAges[0]);
   expect(reversal.state.world.decodedTargets).toBeLessThanOrEqual(2);
-  await jump(page, 'experience-resolution'); await jump(page, 'experience-mathworks');
+  await jump(page, next); await jump(page, start);
   const fresh = await snapshot(page);
   expect(fresh.interaction.orientation).toEqual([0, 0, 0, 1]);
   expect(fresh.world.orbitAges[0]).toBeLessThan(1.6);
@@ -549,15 +560,21 @@ test('teaching and industry remain complete, section links use matching colors, 
   await expect(page.locator('#experience-mathworks .experience-points > li')).toHaveCount(4);
   await expect(page.locator('#experience-resolution .experience-points > li')).toHaveCount(4);
   await expect(page.locator('#education-drexel .awards-list li')).toHaveText(['A* Award', 'Jeffrey L. Popyack Teaching Assistant Award', 'Student Teaching Excellence Award']);
+  await expect(page.locator('#education-uchicago .degree-specialization')).toHaveText('Concentration | Artificial Intelligence - Foundations');
+  await expect(page.locator('#education-drexel .degree-specialization')).toHaveText('Concentrations | Algorithms & Data Structures, Artificial Intelligence');
   await expect(page.locator('#education-drexel .degree-honors em')).toHaveText('Magna Cum Laude');
+  expect(await page.locator('#education-drexel .degree-specialization').evaluate(el => el.getBoundingClientRect().bottom <= el.parentElement.querySelector('.degree-honors').getBoundingClientRect().top)).toBe(true);
   await expect(page.locator('.entry-subheading')).toHaveText(['Teaching', 'Teaching', 'Awards']);
   expect(await page.locator('.entry-subheading').evaluateAll(headings => headings.every(el => getComputedStyle(el).color === 'rgb(250, 250, 250)'))).toBe(true);
   expect(await page.locator('.experience-points > li').evaluateAll(items => items.every(el => getComputedStyle(el, '::marker').color === 'rgb(250, 250, 250)'))).toBe(true);
   expect(await page.locator('.awards-list > li').evaluateAll(items => items.every(el => getComputedStyle(el, '::before').color === 'rgb(250, 250, 250)'))).toBe(true);
-  for (const [id, accent] of [['experience-mathworks', 'rgb(239, 179, 107)'], ['experience-resolution', 'rgb(145, 182, 238)'], ['project-surface', 'rgb(121, 212, 207)'], ['project-congestion', 'rgb(240, 170, 112)']]) {
-    const metrics = await page.locator(`#${id} .metric`).evaluateAll(elements => elements.map(el => ({ color: getComputedStyle(el).color, parentColor: getComputedStyle(el.parentElement).color })));
-    expect(metrics.length).toBeGreaterThan(0);
-    expect(metrics.every(metric => metric.color === accent && metric.parentColor !== accent)).toBe(true);
+  for (const [id, accent] of [['experience-mathworks', 'rgb(239, 179, 107)'], ['experience-resolution', 'rgb(145, 182, 238)'], ['project-surface', 'rgb(131, 198, 236)'], ['project-congestion', 'rgb(131, 198, 236)']]) {
+    if (id.startsWith('experience-')) expect(await page.locator(`#${id} .entry-role`).evaluate(el => getComputedStyle(el).color)).toBe(accent);
+    for (const selector of ['.metric', '.technical-highlight']) {
+      const highlights = await page.locator(`#${id} ${selector}`).evaluateAll(elements => elements.map(el => ({ color: getComputedStyle(el).color, parentColor: getComputedStyle(el.parentElement).color })));
+      expect(highlights.length).toBeGreaterThan(0);
+      expect(highlights.every(highlight => highlight.color === accent && highlight.parentColor !== accent)).toBe(true);
+    }
   }
   const colors = await page.locator('#notes .notes-list a').evaluateAll(links => links.map(link => getComputedStyle(link).color));
   expect(colors.every(color => color === 'rgb(216, 237, 243)')).toBe(true);
@@ -571,6 +588,7 @@ test('teaching and industry remain complete, section links use matching colors, 
   await expect(page.locator('#contact .back-to-top')).toHaveAttribute('href', '#top');
   for (const [id, link] of [['project-surface', baseline.sections[2].links[0]], ['project-congestion', baseline.sections[2].links[1]]]) {
     await jump(page, id); const open = page.locator(`#${id} .open-project`);
+    if (id === 'project-surface') expect(await open.evaluate(el => getComputedStyle(el).color)).toBe('rgb(121, 212, 207)');
     await expect(open).toHaveText('Open project'); await expect(open).toHaveAttribute('href', link.href);
     await expect(open).toHaveAttribute('target', '_blank'); await expect(open).toHaveAttribute('rel', /noopener/);
     // Fulfill the destination only; the real anchor must still create a popup.

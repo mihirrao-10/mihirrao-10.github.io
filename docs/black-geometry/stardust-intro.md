@@ -1,5 +1,9 @@
 # Pearl finish and opening sequence
 
+> Historical record of the opening-sequence revision. The loading behavior is
+> retained; the notes sculpture now uses the [twisted figure-eight Klein form
+> and more translucent material](klein-bottle.md).
+
 The notes sculpture keeps the classical Klein bottle's verified geometry and
 65,536-facet presentation. Its face alpha is now 0.52, with a mostly pearl
 palette, faint lavender and ice blue, and a small peach accent. Sparse moving

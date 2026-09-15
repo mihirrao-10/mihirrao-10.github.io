@@ -32,8 +32,9 @@ test("teaching and awards belong to their education entries and removed sections
   assert.equal(all(honors, (node) => node.tagName === "em").length, 1);
   const degreeLines = honors.parentNode.childNodes.filter((node) => node.tagName);
   assert.equal(hasClass(degreeLines[0], "entry-role"), true);
-  assert.equal(degreeLines[1], honors);
-  assert.equal(normalize(text(all(chicago, (node) => hasClass(node, "degree-specialization"))[0])), "Specialization | Artificial Intelligence Foundations");
+  assert.equal(normalize(text(degreeLines[1])), "Concentrations | Algorithms & Data Structures, Artificial Intelligence");
+  assert.equal(degreeLines[2], honors);
+  assert.equal(normalize(text(all(chicago, (node) => hasClass(node, "degree-specialization"))[0])), "Concentration | Artificial Intelligence - Foundations");
   assert.doesNotMatch(normalize(text(chicago)), /Interests\s*\|/);
   const awards = all(drexel, (node) => hasClass(node, "awards-list"))
     .flatMap((list) => all(list, (node) => node.tagName === "li")).map((node) => normalize(text(node)));

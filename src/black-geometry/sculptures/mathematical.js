@@ -87,42 +87,43 @@ export function createResolution() {
 }
 
 export const KLEIN_BOTTLE = Object.freeze({
-  longitudinalSegments: 256,
-  radialSegments: 80,
+  longitudinalSegments: 288,
+  radialSegments: 96,
+  sweepRadius: 2.3,
+  halfTwists: 3,
   palette: Object.freeze(["#fafaff", "#e8e2f7", "#ddeef9", "#ffe4d4"]),
   source: "https://arxiv.org/abs/0909.5354",
 });
 
 /**
- * Franzoni's classical bottle immersion: a tube around a half-dumbbell.
- * u∈[0,π], v∈[0,2π]; identify (π,v) with (0,π-v).
- * t=π(1-cos u)/2 removes the radius derivative's endpoint divergence.
+ * Figure-eight Klein immersion, extending Franzoni's equation (1) from one
+ * to three half-twists. The extra odd twists are an authored variation.
+ * u,v∈[0,2π]; identify (2π,v) with (0,-v). R>1.25 keeps the sweep radius
+ * positive, and the figure-eight cross-section has no vanishing tangent.
  */
 export function kleinBottlePoint(u, v) {
-  const t = Math.PI * (1 - Math.cos(u)) / 2;
-  const sine = Math.sin(t), cosine = Math.cos(t);
-  const tangentX = 5 * cosine;
-  const tangentY = 4 * sine * cosine * cosine - 2 * sine * sine * sine;
-  const length = Math.hypot(tangentX, tangentY);
-  // This is exactly 1/2-(2t-π)sqrt(2t(2π-2t))/30 on the domain.
-  const radius = 0.5 + Math.PI * Math.PI / 30 * Math.cos(u) * Math.sin(u);
+  const twist = KLEIN_BOTTLE.halfTwists * u / 2;
+  const a = Math.sin(v), b = Math.sin(2 * v);
+  const radial = Math.cos(twist) * a - Math.sin(twist) * b;
+  const height = Math.sin(twist) * a + Math.cos(twist) * b;
+  const radius = KLEIN_BOTTLE.sweepRadius + radial;
   return [
-    5 * sine - radius * Math.cos(v) * tangentY / length,
-    2 * sine * sine * cosine + radius * Math.cos(v) * tangentX / length,
-    radius * Math.sin(v),
+    radius * Math.cos(u),
+    radius * Math.sin(u),
+    height,
   ];
 }
 
-/** The classical self-penetrating bottle, in pearl with faint opalescent tints. */
+/** A three-half-twist figure-eight Klein immersion in faint opalescent pearl. */
 export function createNotes() {
   const root = new THREE.Group();
-  root.name = "classical-immersed-klein-bottle";
+  root.name = "three-half-twist-figure-eight-klein-bottle";
   const positions = [], colors = [], indices = [], parameters = [];
   const { longitudinalSegments: steps, radialSegments: sides } = KLEIN_BOTTLE;
   const [pearl, lavender, ice, peach] = KLEIN_BOTTLE.palette.map(hex => new THREE.Color(hex));
   const color = new THREE.Color();
   for (let i = 0; i < steps; i++) {
-    const u = i / steps * Math.PI;
+    const u = i / steps * Math.PI * 2;
     for (let j = 0; j < sides; j++) {
       const v = j / sides * Math.PI * 2;
       positions.push(...kleinBottlePoint(u, v));
@@ -137,7 +138,7 @@ export function createNotes() {
       const a = i * sides + j, d = i * sides + (j + 1) % sides;
       const next = column => i + 1 < steps
         ? (i + 1) * sides + column % sides
-        : (sides / 2 - column + sides) % sides;
+        : (sides - column) % sides;
       // Reversing the final circular seam creates the Klein bottle quotient.
       // Never weld spatial self-intersections: their two sheets stay distinct.
       const b = next(j), c = next(j + 1);
@@ -149,16 +150,15 @@ export function createNotes() {
   mesh.material.roughness = 0.24;
   mesh.material.metalness = 0.33;
   root.add(mesh);
-  // Stand the bottle upright, then expose its mouth, returning neck and loop.
-  root.rotation.set(0.32, 0.70, -Math.PI / 2);
+  // Expose the central opening and the three folded figure-eight returns.
+  root.rotation.set(0.52, 0.24, -0.16);
   root.userData = {
     identity: "notes", source: KLEIN_BOTTLE.source,
-    equation: "Tube(t,v)=alpha(t)+r(t)(cos(v)J(T(t))+sin(v)(0,0,1))",
-    directrix: "alpha(t)=(5sin(t),2sin(t)^2cos(t),0)",
-    radius: "r(t)=1/2-(2t-pi)sqrt(2t(2pi-2t))/30",
-    parameterChange: "t=pi(1-cos(u))/2",
-    seam: "(pi,v)~(0,pi-v)",
-    meaning: "Classical closed nonorientable Klein bottle immersed in 3D; self-intersections are intentional",
+    equation: "P(u,v)=((R+A)cos(u),(R+A)sin(u),B), (A,B)=Rot(3u/2)(sin(v),sin(2v))",
+    sweepRadius: KLEIN_BOTTLE.sweepRadius,
+    halfTwists: KLEIN_BOTTLE.halfTwists,
+    seam: "(2pi,v)~(0,-v)",
+    meaning: "Closed nonorientable figure-eight Klein immersion in 3D; three half-twists are an authored extension of the published one-half-twist construction",
     palette: "Mostly pearl with faint lavender, ice blue and a small peach glint; authored display colors",
   };
   return root;

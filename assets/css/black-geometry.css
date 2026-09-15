@@ -119,8 +119,8 @@ main > section { scroll-margin-top: 1.5rem; padding: 5.5rem 0 0; margin-top: 3re
 #education-drexel { --scene-title: #81b8ef; --scene-accent: #e7c565; --scene-hover: #f7e3a5; }
 #experience-mathworks { --scene-title: #75bce8; --scene-accent: #efb36b; --scene-hover: #f8d9b4; }
 #experience-resolution { --scene-title: #ed7c8b; --scene-accent: #91b6ee; --scene-hover: #c9defb; }
-#project-surface { --scene-title: #83c6ec; --scene-accent: #79d4cf; --scene-hover: #bcece8; }
-#project-congestion { --scene-title: #ef816c; --scene-accent: #f0aa70; --scene-hover: #ffd6a9; }
+#project-surface { --scene-title: #83c6ec; --scene-accent: #79d4cf; --detail-accent: #83c6ec; --scene-hover: #bcece8; }
+#project-congestion { --scene-title: #ef816c; --scene-accent: #f0aa70; --detail-accent: #83c6ec; --scene-hover: #ffd6a9; }
 #notes, #contact { --scene-title: #d8edf3; --scene-accent: #d8edf3; --scene-hover: #ffffff; }
 .scene-next, .scene-next:visited {
   position: absolute; bottom: 1.8rem; left: 0; display: inline-flex;
@@ -145,12 +145,13 @@ main > section { scroll-margin-top: 1.5rem; padding: 5.5rem 0 0; margin-top: 3re
 .entry-dates { color: var(--muted); font-size: 0.78rem; white-space: nowrap; }
 .entry-subheader { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.4rem 1.1rem; margin-bottom: 0.6rem; }
 .entry-role { font-size: 0.99rem; font-weight: 400; margin: 0; }
+#experience .entry-role { color: var(--scene-accent); }
 .degree-specialization, .degree-honors { margin: 0.25rem 0 0; color: var(--muted); font-size: 0.84rem; line-height: 1.5; }
 .entry-location { color: var(--muted); font-size: 0.78rem; white-space: nowrap; }
 .entry-detail { margin: 0.8rem 0 0; font-size: 0.98rem; line-height: 1.65; }
 .entry-detail a { text-decoration: underline; text-decoration-color: #ffffff66; text-underline-offset: 0.2em; }
 .entry-detail strong { font-weight: 600; }
-.metric { color: var(--scene-accent); font-weight: 600; }
+.metric, .technical-highlight { color: var(--detail-accent, var(--scene-accent)); font-weight: 600; }
 li::marker { color: var(--strong); }
 .experience-points { margin: 1.2rem 0 0; padding-left: 1.1rem; font-size: 0.94rem; line-height: 1.65; }
 .experience-points li { padding-left: 0.15rem; margin: 0.9rem 0; }
@@ -272,7 +273,7 @@ li::marker { color: var(--strong); }
   .site-loader { display: none !important; }
   [data-boot="loading"] .hero, [data-boot="loading"] main, [data-boot="loading"] .site-footer { opacity: 1 !important; }
   :root { color-scheme: light; --bg: white; --text: #222; --strong: #111; --muted: #444; --accent: #222; --divider: #ccc; }
-  body, [data-scene] { --scene-title: #111 !important; --scene-accent: #222 !important; --scene-hover: #111 !important; }
+  body, [data-scene] { --scene-title: #111 !important; --scene-accent: #222 !important; --detail-accent: #222 !important; --scene-hover: #111 !important; }
   html { font-size: 11pt; scroll-snap-type: none; scroll-behavior: auto; }
   .world, .scene-fallback, .open-project, .skip-link, .scene-next, .site-footer { display: none !important; }
   .hero { min-height: 0; padding: 1rem 0 2rem; }

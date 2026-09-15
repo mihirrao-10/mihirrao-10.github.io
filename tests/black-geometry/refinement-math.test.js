@@ -92,28 +92,55 @@ function isOrientable(geometry) {
 }
 
 const distance = (a, b) => Math.hypot(...a.map((value, i) => value - b[i]));
-test("the classical bottle obeys its published tube equation and reversed seam", () => {
-  for (let i = 0; i <= 32; i++) {
-    const u = i / 32 * Math.PI, t = Math.PI * (1 - Math.cos(u)) / 2;
-    const center = [5 * Math.sin(t), 2 * Math.sin(t) ** 2 * Math.cos(t), 0];
-    const derivative = [5 * Math.cos(t), 4 * Math.sin(t) * Math.cos(t) ** 2 - 2 * Math.sin(t) ** 3, 0];
-    const radius = .5 - (2 * t - Math.PI) * Math.sqrt(2 * t * (2 * Math.PI - 2 * t)) / 30;
-    for (let j = 0; j < 24; j++) {
-      const v = j / 24 * Math.PI * 2, p = kleinBottlePoint(u, v);
-      const offset = p.map((value, k) => value - center[k]);
-      assert.ok(Math.abs(Math.hypot(...offset) - radius) < 1e-12);
-      assert.ok(Math.abs(offset.reduce((sum, value, k) => sum + value * derivative[k], 0)) < 1e-12,
-        "Every cross-section must lie in the normal plane of the directrix");
-      assert.ok(distance(p, kleinBottlePoint(u, v + 2 * Math.PI)) < 1e-12);
+test("the Klein immersion has genuine figure-eight sections and three half-twists", () => {
+  const radius = KLEIN_BOTTLE.sweepRadius;
+  let phase = 0, previous;
+  for (let i = 0; i <= 128; i++) {
+    const u = i / 128 * Math.PI * 2;
+    for (let j = 0; j < 32; j++) {
+      const v = j / 32 * Math.PI * 2, p = kleinBottlePoint(u, v);
+      const radial = Math.hypot(p[0], p[1]) - radius;
+      const angle = 3 * u / 2;
+      const a = radial * Math.cos(angle) + p[2] * Math.sin(angle);
+      const b = -radial * Math.sin(angle) + p[2] * Math.cos(angle);
+      assert.ok(Math.hypot(p[0], p[1]) >= radius - 1.25 - 1e-12,
+        "A positive sweep radius makes the circular parameter unambiguous");
+      assert.ok(Math.abs(a - Math.sin(v)) < 1e-12);
+      assert.ok(Math.abs(b * b - 4 * a * a * (1 - a * a)) < 1e-12,
+        "Untwisting the actual cross-section must recover the lemniscate equation");
     }
+    const p = kleinBottlePoint(u, Math.PI / 2);
+    const current = Math.atan2(p[2], Math.hypot(p[0], p[1]) - radius);
+    if (previous !== undefined) phase += Math.atan2(Math.sin(current - previous), Math.cos(current - previous));
+    previous = current;
+    assert.ok(distance(kleinBottlePoint(u, 0), kleinBottlePoint(u, Math.PI)) < 1e-12,
+      "The two figure-eight branches intentionally meet along the sweep circle");
   }
-  const h = 1e-6;
-  for (let j = 0; j < 24; j++) {
-    const v = j / 24 * Math.PI * 2, reversed = Math.PI - v;
-    assert.ok(distance(kleinBottlePoint(Math.PI, v), kleinBottlePoint(0, reversed)) < 1e-12);
-    const atStart = kleinBottlePoint(h, reversed).map((x, k) => (x - kleinBottlePoint(0, reversed)[k]) / h);
-    const atEnd = kleinBottlePoint(Math.PI, v).map((x, k) => (x - kleinBottlePoint(Math.PI - h, v)[k]) / h);
-    assert.ok(distance(atStart, atEnd) < 0.0001, "The glued seam must meet tangentwise");
+  assert.ok(Math.abs(phase / Math.PI - 3) < 1e-12,
+    "The displayed cross-section must make three actual half-twists");
+});
+
+test("the twisted Klein quotient closes smoothly and remains a regular immersion", () => {
+  const tau = 2 * Math.PI, h = 1e-5;
+  const derivative = (u, v, alongU) => {
+    const a = kleinBottlePoint(u + (alongU ? h : 0), v + (alongU ? 0 : h));
+    const b = kleinBottlePoint(u - (alongU ? h : 0), v - (alongU ? 0 : h));
+    return a.map((value, k) => (value - b[k]) / (2 * h));
+  };
+  for (let j = 0; j < 32; j++) {
+    const v = j / 32 * tau;
+    assert.ok(distance(kleinBottlePoint(tau, v), kleinBottlePoint(0, -v)) < 1e-12);
+    assert.ok(distance(derivative(tau, v, true), derivative(0, -v, true)) < 1e-8);
+    assert.ok(distance(derivative(tau, v, false), derivative(0, -v, false).map(value => -value)) < 1e-8,
+      "The quotient reverses the circular tangent, not the longitudinal tangent");
+  }
+  for (let i = 0; i < 48; i++) for (let j = 0; j < 48; j++) {
+    const u = i / 48 * tau, v = j / 48 * tau;
+    assert.ok(distance(kleinBottlePoint(u, v), kleinBottlePoint(u, v + tau)) < 1e-12);
+    assert.ok(distance(kleinBottlePoint(u + tau, v), kleinBottlePoint(u, -v)) < 1e-12);
+    const a = derivative(u, v, true), b = derivative(u, v, false);
+    const area = Math.hypot(a[1]*b[2]-a[2]*b[1], a[2]*b[0]-a[0]*b[2], a[0]*b[1]-a[1]*b[0]);
+    assert.ok(area > .70, "Neither a lobe nor the self-intersection may introduce a singular patch");
   }
 });
 
@@ -141,7 +168,7 @@ test("notes triangulation is closed and nonorientable with restrained pearl tint
       "Both faint cool tints must survive in the prepared vertex colors");
     assert.ok(tints.peach / position.count > .005 && tints.peach / position.count < .10,
       "The slightly orange glint must occupy only a small part of the pearl surface");
-    assert.equal(KLEIN_BOTTLE.radialSegments % 2, 0, "The reflected seam needs an exact half-circle vertex");
+    assert.equal(KLEIN_BOTTLE.radialSegments % 2, 0, "The self-intersection circle must retain both exact figure-eight branches");
   } finally { dispose(group); }
 });
 

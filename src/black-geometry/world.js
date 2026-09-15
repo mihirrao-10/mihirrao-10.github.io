@@ -13,7 +13,7 @@ export const SCULPTURE_PALETTES = Object.freeze({
   notes: ["#e8e2f7", "#ddeef9", "#ffe4d4", "#fafaff"],
 });
 export const SCULPTURE_STYLE = Object.freeze({ scale: .84, opacity: .88 });
-export const sculptureOpacity = name => name === 'notes' ? .52 : SCULPTURE_STYLE.opacity;
+export const sculptureOpacity = name => name === 'notes' ? .32 : SCULPTURE_STYLE.opacity;
 
 /** Smooth coincident corners without rounding genuine creases or changing data positions. */
 export function smoothSurfaceNormals(position, creaseCosine = 0.65) {
@@ -100,6 +100,20 @@ uniform float progress;
 uniform float endpoint;
 void main(){${DISSOLVE}gl_FragColor=vec4(0.0);}
 `;
+// A Klein bottle has no globally consistent front/back orientation. Depth,
+// rather than face culling, selects the faint contours behind its front sheet.
+const INTERIOR_FRAGMENT = `
+uniform float progress;
+uniform float endpoint;
+varying vec3 vViewPosition;
+varying vec3 vNormal;
+void main(){
+  ${DISSOLVE}
+  float rim=pow(1.0-abs(dot(normalize(vNormal),normalize(-vViewPosition))),4.0);
+  if(rim<.035)discard;
+  gl_FragColor=vec4(.80,.87,1.0,.14*rim);
+  #include <colorspace_fragment>
+}`;
 const FRAGMENT = `
 uniform float progress;
 uniform float endpoint;
@@ -167,7 +181,7 @@ void main(){
   float twinkle=pow(.5+.5*sin(time*1.35+vFacetSeed*91.7),24.0);
   float star=step(.975,vFacetSeed)*twinkle;
   face+=mix(vec3(.86,.91,1.0),vec3(1.0,.92,.85),vFacetSeed)*stardust*star*(.22+spark*1.65);
-  gl_FragColor=vec4(face,mix(opacity,min(.98,opacity+.18),edge));
+  gl_FragColor=vec4(face,mix(opacity+stardust*rim*.12,min(.98,opacity+.18+stardust*.18),edge));
   #include <colorspace_fragment>
 }`;
 // TubeGeometry normally redistributes samples by arc length. These paths are
@@ -231,6 +245,11 @@ export async function createWorld({container,quality="high",onFailure}) {
       side:THREE.DoubleSide,colorWrite:false,depthWrite:true,transparent:false,forceSinglePass:true});
     const depth=new THREE.Mesh(emptyGeometry,material);depth.frustumCulled=false;pivot.add(depth);return depth;
   });
+  const interiorMeshes=meshes.map(mesh=>{
+    const material=new THREE.ShaderMaterial({vertexShader:VERTEX,fragmentShader:INTERIOR_FRAGMENT,uniforms:mesh.material.uniforms,
+      side:THREE.DoubleSide,transparent:true,depthTest:true,depthFunc:THREE.GreaterDepth,depthWrite:false,forceSinglePass:true});
+    const interior=new THREE.Mesh(emptyGeometry,material);interior.frustumCulled=false;interior.renderOrder=0;interior.visible=false;pivot.add(interior);return interior;
+  });
   let finiteActiveBuffers=true;
   function decode(name){
     if(decoded.has(name))return decoded.get(name);
@@ -257,6 +276,7 @@ export async function createWorld({container,quality="high",onFailure}) {
       // meshes can reference it safely; only one endpoint is visible.
       meshes[i].geometry=activeModels[i].geometry;
       depthMeshes[i].geometry=activeModels[i].geometry;
+      interiorMeshes[i].geometry=activeModels[i].geometry;
       meshes[i].material.uniforms.opacity.value=sculptureOpacity(i?b:a);
       meshes[i].material.uniforms.stardust.value=(i?b:a)==='notes'?1:0;
       SCULPTURE_PALETTES[i?b:a].forEach((color,k)=>meshes[i].material.uniforms[`palette${k}`].value.set(color));
@@ -318,12 +338,14 @@ export async function createWorld({container,quality="high",onFailure}) {
         fitRotation.copy(dragQuaternion).multiply(inverseView);
         meshes[index].quaternion.copy(camera.quaternion).multiply(fitRotation);
         depthMeshes[index].quaternion.copy(meshes[index].quaternion);
+        interiorMeshes[index].quaternion.copy(meshes[index].quaternion);
         return entranceScale*SCULPTURE_STYLE.scale*orbitRadius/fitSurfaceDistance(model.bounds,fitRotation,camera.aspect);
       });
-      meshes.forEach((mesh,index)=>{mesh.scale.setScalar(fitScales[index]);depthMeshes[index].scale.copy(mesh.scale);});
+      meshes.forEach((mesh,index)=>{mesh.scale.setScalar(fitScales[index]);depthMeshes[index].scale.copy(mesh.scale);interiorMeshes[index].scale.copy(mesh.scale);});
       camera.position.multiplyScalar(orbitRadius);
       meshes[0].visible=blend<1;meshes[1].visible=currentName!==nextName&&blend>0;
       depthMeshes.forEach((mesh,index)=>{mesh.visible=meshes[index].visible;});
+      interiorMeshes.forEach((mesh,index)=>{mesh.visible=activeModels[index].name==='notes'&&meshes[index].visible;});
       for(const mesh of meshes){mesh.material.uniforms.progress.value=blend;mesh.material.uniforms.time.value=time;}
       for(const route of routes){
         const presence=currentName===route.model?1-blend:nextName===route.model?blend:0;
@@ -335,9 +357,12 @@ export async function createWorld({container,quality="high",onFailure}) {
         route.shown=Math.max(2,Math.floor(route.count*(route.model==="surface"?project.path:1)));
         route.line.geometry.setDrawRange(0,route.unitsPerPoint===1?route.shown:(route.shown-1)*route.unitsPerPoint);
       }
+      // Prepare the hidden-contour shader during the existing loading screen,
+      // so its first appearance in Notes does not interrupt a section change.
+      if(frames===0)renderer.compile(scene,camera);
       renderer.render(scene,camera);if(shaderFailed)throw new Error("Sculpture shader initialization failed");frames++;
     },
-    snapshot:()=>({frames,drawCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles,quality:currentQuality,dpr:renderer.getPixelRatio(),geometries:renderer.info.memory.geometries,contextLost:renderer.getContext().isContextLost(),target:currentName,nextTarget:nextName,blend,opacity:meshes[0].material.uniforms.opacity.value,opaque:meshes.every(mesh=>!mesh.material.transparent),depthPrepass:depthMeshes.every((depth,i)=>depth.geometry===meshes[i].geometry&&depth.material.uniforms===meshes[i].material.uniforms&&depth.material.depthWrite&&!depth.material.colorWrite&&depth.visible===meshes[i].visible&&depth.scale.equals(meshes[i].scale)&&depth.quaternion.equals(meshes[i].quaternion)),presentationScale:SCULPTURE_STYLE.scale,entranceProgress,entranceScale,gradientTime,orbitAges:activeModels.map(model=>Math.max(0,orbitClock-model.orbitStart)),endpointOpacities:meshes.map(mesh=>mesh.material.uniforms.opacity.value),activeMeshes:meshes.filter(m=>m.visible).length,activeDepthMeshes:depthMeshes.filter(m=>m.visible).length,shading:"tessellated",camera:camera.position.toArray(),cameraOrientation:camera.quaternion.toArray(),rotation:[...userRotation],userOrientation:[...userOrientation],orientation:meshes[0].quaternion.toArray(),dragging,facets:count,decodedTargets:decoded.size,finiteActiveBuffers,visibleRoutes:routes.filter(r=>r.line.visible).map(r=>r.kind),activePathPoints:routes.filter(r=>r.line.visible).map(r=>r.shown),width,height,orbitRadius,fitScales:[...fitScales]}),
-    dispose(){if(disposed)return;disposed=true;canvas.removeEventListener("webglcontextlost",contextLost);[...meshes,...depthMeshes].forEach(mesh=>mesh.material.dispose());for(const model of decoded.values())model.geometry.dispose();routes.forEach(({line})=>{line.geometry.dispose();line.material.dispose();});decoded.clear();renderer.dispose();canvas.remove();},
+    snapshot:()=>({frames,drawCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles,quality:currentQuality,dpr:renderer.getPixelRatio(),geometries:renderer.info.memory.geometries,contextLost:renderer.getContext().isContextLost(),target:currentName,nextTarget:nextName,blend,opacity:meshes[0].material.uniforms.opacity.value,opaque:meshes.every(mesh=>!mesh.material.transparent),depthPrepass:depthMeshes.every((depth,i)=>depth.geometry===meshes[i].geometry&&depth.material.uniforms===meshes[i].material.uniforms&&depth.material.depthWrite&&!depth.material.colorWrite&&depth.visible===meshes[i].visible&&depth.scale.equals(meshes[i].scale)&&depth.quaternion.equals(meshes[i].quaternion)),presentationScale:SCULPTURE_STYLE.scale,entranceProgress,entranceScale,gradientTime,orbitAges:activeModels.map(model=>Math.max(0,orbitClock-model.orbitStart)),endpointOpacities:meshes.map(mesh=>mesh.material.uniforms.opacity.value),activeMeshes:meshes.filter(m=>m.visible).length,activeDepthMeshes:depthMeshes.filter(m=>m.visible).length,activeInteriorMeshes:interiorMeshes.filter(m=>m.visible).length,interiorTargets:interiorMeshes.flatMap((mesh,i)=>mesh.visible?[activeModels[i].name]:[]),interiorContoursAligned:interiorMeshes.every((mesh,i)=>mesh.geometry===meshes[i].geometry&&mesh.material.uniforms===meshes[i].material.uniforms&&mesh.material.depthFunc===THREE.GreaterDepth&&!mesh.material.depthWrite&&mesh.scale.equals(meshes[i].scale)&&mesh.quaternion.equals(meshes[i].quaternion)&&mesh.visible===(activeModels[i].name==='notes'&&meshes[i].visible)),shading:"tessellated",camera:camera.position.toArray(),cameraOrientation:camera.quaternion.toArray(),rotation:[...userRotation],userOrientation:[...userOrientation],orientation:meshes[0].quaternion.toArray(),dragging,facets:count,decodedTargets:decoded.size,finiteActiveBuffers,visibleRoutes:routes.filter(r=>r.line.visible).map(r=>r.kind),activePathPoints:routes.filter(r=>r.line.visible).map(r=>r.shown),width,height,orbitRadius,fitScales:[...fitScales]}),
+    dispose(){if(disposed)return;disposed=true;canvas.removeEventListener("webglcontextlost",contextLost);[...meshes,...depthMeshes,...interiorMeshes].forEach(mesh=>mesh.material.dispose());for(const model of decoded.values())model.geometry.dispose();routes.forEach(({line})=>{line.geometry.dispose();line.material.dispose();});decoded.clear();renderer.dispose();canvas.remove();},
   };
 }
