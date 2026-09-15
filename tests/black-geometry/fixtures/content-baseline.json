@@ -47,7 +47,7 @@
     },
     {
       "id": "personal-projects",
-      "heading": "personal projects",
+      "heading": "Personal Projects · 1/2",
       "entries": [
         "The Shortest Path Through a Curved World Built a deterministic C++20 heat-method solver for genus 1–3 triangle meshes, assembling cotangent-Laplacian and lumped-mass operators and factoring heat and pinned-Poisson systems with Eigen; preprocessed 45K vertices and 91K faces in 180 ms, then answered queries in 6.15 ms with < 2e-13 relative residuals and exported native paths to Three.js. C++20 | Eigen | Three.js",
         "When Every Agent Finds the Shortcut Built a Python study of Q-learning and Hedge in atomic Braess routing across 64 seeds and 5,000 episodes; solved equilibrium and welfare over a 5.0-billion-profile state space at 100K agents via an exact constant-size discrete-convex reduction, measured 23.7% inefficiency, and derived marginal-cost tolls restoring the social optimum. Python | NumPy | Three.js"

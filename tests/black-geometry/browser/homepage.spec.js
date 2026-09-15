@@ -537,7 +537,7 @@ for (const [width, height] of [[1440, 900], [390, 844]]) test(`each entry opens 
   const entries = [
     ['education-uchicago', 'Education · 1/2'], ['education-drexel', 'Education · 2/2'],
     ['experience-mathworks', 'Industry Experience · 1/2'], ['experience-resolution', 'Industry Experience · 2/2'],
-    ['project-surface', 'personal projects'], ['project-congestion', 'personal projects'], ['notes', 'personal notes'],
+    ['project-surface', 'Personal Projects · 1/2'], ['project-congestion', 'Personal Projects · 2/2'], ['notes', 'personal notes'],
   ];
   for (const [index, [id, label]] of entries.entries()) {
     await scrollStopped(page); await settled(page, id);
