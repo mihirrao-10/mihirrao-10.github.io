@@ -525,11 +525,14 @@ for (const [width, height] of [[1440, 900], [390, 844]]) test(`each entry opens 
   await page.screenshot({ path: `.artifacts/entry-pages/${info.project.name}-${width}-hero.png` });
   const typography = await page.locator('.hero-name, .hero-title, .hero-link, .section-heading, .notes-category').evaluateAll(elements => elements.map(el => {
     const style = getComputedStyle(el);
-    return { family: style.fontFamily, weight: style.fontWeight, transform: style.textTransform,
+    return { family: style.fontFamily, weight: style.fontWeight, transform: style.textTransform, caps: style.fontVariantCaps,
+      intro: el.matches('.hero-name, .hero-title, .hero-link'),
       tracking: Number((parseFloat(style.letterSpacing) / parseFloat(style.fontSize)).toFixed(3)) };
   }));
-  expect(typography.every(style => JSON.stringify(style) === JSON.stringify(typography.at(-1)))).toBe(true);
-  expect(typography[0]).toMatchObject({ weight: '500', transform: 'uppercase', tracking: 0.14 });
+  for (const style of typography) {
+    expect(style).toMatchObject({ family: typography.at(-1).family, weight: '500', tracking: 0.14,
+      transform: style.intro ? 'none' : 'uppercase', caps: style.intro ? 'small-caps' : 'normal' });
+  }
   await jump(page, 'education-uchicago');
   const entries = [
     ['education-uchicago', 'education'], ['education-drexel', 'education'],
@@ -544,6 +547,7 @@ for (const [width, height] of [[1440, 900], [390, 844]]) test(`each entry opens 
       const label = el.querySelector('.section-heading'), box = el.getBoundingClientRect();
       return { top: box.top, height: box.height, labelTop: label.getBoundingClientRect().top,
         border: getComputedStyle(el).borderTopWidth, caps: getComputedStyle(label).fontVariantCaps,
+        labelBorder: getComputedStyle(label).borderTopWidth, labelRadius: getComputedStyle(label).borderRadius,
         artworkBottom: document.querySelector('.world').getBoundingClientRect().bottom };
     });
     const readingTop = width < 800 ? layout.artworkBottom : 0;
@@ -552,6 +556,7 @@ for (const [width, height] of [[1440, 900], [390, 844]]) test(`each entry opens 
     expect(layout.labelTop - readingTop).toBeGreaterThan(width < 800 ? 15 : 20);
     expect(layout.labelTop - readingTop).toBeLessThan(width < 800 ? 30 : 32);
     expect(layout.border).toBe('0px'); expect(layout.caps).toBe('normal');
+    expect(layout.labelBorder).toBe('1px'); expect(layout.labelRadius).toBe('0px');
     if (index) expect(await page.locator(`#${entries[index - 1][0]}`).evaluate(el => el.getBoundingClientRect().bottom)).toBeLessThanOrEqual(1);
     assertActiveGeometry(await snapshot(page), identities.find(([entry]) => entry === id)[1]);
     await page.screenshot({ path: `.artifacts/entry-pages/${info.project.name}-${width}-${id}.png` });
@@ -706,6 +711,7 @@ test('teaching and industry remain complete, section links use matching colors, 
   await expect(page.locator('#experience-mathworks .experience-points > li')).toHaveCount(4);
   await expect(page.locator('#experience-resolution .experience-points > li')).toHaveCount(4);
   await expect(page.locator('#education-drexel .awards-list li')).toHaveText(['A* Award', 'Jeffrey L. Popyack Teaching Assistant Award', 'Student Teaching Excellence Award']);
+  await expect(page.locator('#education-uchicago .entry-title')).toHaveText('the University of Chicago');
   await expect(page.locator('#education-uchicago .degree-specialization')).toHaveText('Concentration | Artificial Intelligence - Foundations');
   await expect(page.locator('#education-drexel .degree-specialization')).toHaveText('Concentrations | Algorithms & Data Structures, Artificial Intelligence');
   await expect(page.locator('#education-drexel .degree-honors em')).toHaveText('Magna Cum Laude');
@@ -724,6 +730,11 @@ test('teaching and industry remain complete, section links use matching colors, 
   }
   const colors = await page.locator('#notes .notes-list a').evaluateAll(links => links.map(link => getComputedStyle(link).color));
   expect(colors.every(color => color === 'rgb(216, 237, 243)')).toBe(true);
+  const universityColors = await page.locator('#notes .notes-category').evaluateAll(headings => headings.map(el => [el.dataset.university, getComputedStyle(el).color]));
+  expect(universityColors).toEqual([
+    ['caltech', 'rgb(255, 108, 12)'], ['mit', 'rgb(255, 20, 35)'],
+    ['cmu', 'rgb(239, 58, 71)'], ['uci', 'rgb(254, 204, 7)'],
+  ]);
   const underlines = await page.locator('#notes .notes-list a').evaluateAll(links => links.map(link => {
     const style = getComputedStyle(link);
     return { line: style.textDecorationLine, thickness: style.textDecorationThickness, color: style.textDecorationColor, textColor: style.color };

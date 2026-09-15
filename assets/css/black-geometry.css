@@ -76,9 +76,9 @@ body:not([data-enhanced]) .world { display: none; }
   margin: 0; max-width: 47%; font-size: clamp(2.6rem, 5.2vw, 5.75rem);
   line-height: 1.14; color: var(--strong);
 }
-.hero-title { margin: 1.35rem 0 0; max-width: 46%; font-size: 0.82rem; }
+.hero-title { margin: 1.35rem 0 0; max-width: 46%; font-size: 0.95rem; }
 .hero-links { display: flex; align-items: center; flex-wrap: wrap; gap: 1.5rem; margin-top: 1.35rem; max-width: 46%; }
-.hero-link { display: inline-flex; align-items: center; gap: 0.45rem; min-height: 44px; font-size: 0.72rem; }
+.hero-link { display: inline-flex; align-items: center; gap: 0.45rem; min-height: 44px; font-size: 0.82rem; }
 .hero-link, .hero-link:visited { color: var(--strong); }
 .hero-link:hover { color: var(--bright); }
 .hero-link i { font-size: 0.83rem; letter-spacing: 0; }
@@ -106,13 +106,16 @@ main > section { margin: 0; padding: 0; position: relative; border: 0; }
   padding: var(--page-top) 0 6rem;
 }
 .section-heading {
-  margin: 0 0 1.35rem; color: var(--strong); font-size: 0.72rem; line-height: 1.55;
+  width: fit-content; max-width: 100%; padding: 0.25rem 0.6rem;
+  margin: 0 0 1.35rem; border: 1px solid #ffffff55; border-radius: 0;
+  color: var(--strong); font-size: 0.72rem; line-height: 1.55;
 }
-/* Use the same spaced capital lettering as the university labels in Notes. */
+/* Preserve the introductory initials while rendering lowercase letters as small caps. */
 .hero-name, .hero-title, .hero-link, .section-heading, .notes-category {
   font-weight: 500; letter-spacing: 0.14em;
-  text-transform: uppercase; font-variant-caps: normal;
 }
+.hero-name, .hero-title, .hero-link { text-transform: none; font-variant-caps: small-caps; }
+.section-heading, .notes-category { text-transform: uppercase; font-variant-caps: normal; }
 .entry { margin: 0 0 2.5rem; }
 .entry.scene-page { margin: 0; }
 .entry:last-child { margin-bottom: 0; }
@@ -181,7 +184,16 @@ li::marker { color: var(--strong); }
 .notes-list { list-style: none; margin: 0.65rem 0 0; padding: 0; font-size: 0.95rem; }
 .notes-list a, .notes-list a:visited { display: flex; align-items: center; min-height: 44px; padding: 0.5rem 0; line-height: 1.5; color: var(--scene-accent); text-decoration: underline; text-decoration-color: #d8edf355; text-decoration-thickness: 1px; text-underline-offset: 0.2em; }
 .notes-list a:hover { color: var(--scene-hover); text-decoration-color: currentColor; }
-.notes-category { margin: 1.9rem 0 0; color: var(--scene-title); font-size: 0.72rem; }
+.notes-category { margin: 1.9rem 0 0; color: var(--university-color, var(--scene-title)); font-size: 0.72rem; }
+/* Official palette colors with enough contrast for small text on black:
+   Caltech Orange: https://identity.caltech.edu/colors
+   MIT Bright Red: https://brand.mit.edu/color
+   CMU Scots Rose: https://brand.cmu.edu/visual-identity/colors
+   UCI Gold: https://www.brand.uci.edu/identity/colors.php/ */
+.notes-category[data-university="caltech"] { --university-color: #ff6c0c; }
+.notes-category[data-university="mit"] { --university-color: #ff1423; }
+.notes-category[data-university="cmu"] { --university-color: #ef3a47; }
+.notes-category[data-university="uci"] { --university-color: #fecc07; }
 .notes-category:first-child { margin-top: 0; }
 #notes { scroll-margin-bottom: var(--notes-tail); }
 #notes > .section-heading { color: var(--scene-title); }
@@ -255,7 +267,7 @@ li::marker { color: var(--strong); }
   .hero { padding: 3rem 52% 3rem 1.5rem; justify-content: center; }
   .hero-name { font-size: clamp(2.2rem, 6.5vw, 2.5rem); white-space: nowrap; }
   .hero-links { gap: 0.8rem; margin-top: 0.7rem; }
-  .hero-link { font-size: 0.72rem; }
+  .hero-link { font-size: 0.82rem; }
   main { width: 50%; }
   .site-footer { width: calc(50% - 3rem); }
 }
@@ -281,7 +293,8 @@ li::marker { color: var(--strong); }
   .hero-title, .hero-links { max-width: none; }
   main { padding: 0; width: 100%; }
   main > section, #notes { padding: 1.5rem 0; margin-top: 0; }
-  .section-heading { margin-bottom: 1rem; }
+  .section-heading { margin-bottom: 1rem; border-color: #777; }
+  #notes .notes-category { color: var(--scene-title); }
   .scene-page, #experience .scene-page, body:not([data-enhanced]) .scene-page { min-height: 0; padding: 1rem 0; }
   .scene-page + .scene-page { margin-top: 0.5rem; }
   p.section-heading { display: none; }
