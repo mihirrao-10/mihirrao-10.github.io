@@ -19,6 +19,12 @@ export const normalize = (value) => value.replace(/\s+/g, " ").trim();
 export function contentContract(html) {
   const doc = parse(html);
   const first = (predicate) => all(doc, predicate)[0];
+  // Section labels may sit inside an entry without becoming résumé content.
+  const entryText = (node) => hasClass(node, "section-heading")
+    ? ""
+    : node.nodeName === "#text"
+      ? node.value
+      : (node.childNodes || []).map(entryText).join("");
   const link = (node) => ({
     href: attr(node, "href"),
     text: normalize(text(node)),
@@ -48,7 +54,7 @@ export function contentContract(html) {
       heading: normalize(text(all(section, (n) => n.tagName === "h2")[0])),
       // Every original entry is preserved as one semantic block. New project visuals live outside it.
       entries: all(section, (n) => hasClass(n, "entry")).map((n) =>
-        normalize(text(n)),
+        normalize(entryText(n)),
       ),
       links: all(
         section,

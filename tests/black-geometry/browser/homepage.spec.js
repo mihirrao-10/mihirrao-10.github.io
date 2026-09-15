@@ -102,7 +102,11 @@ async function content(page) {
   await expect(page.locator('main > section')).toHaveCount(4);
   for (const section of baseline.sections) {
     await expect(page.locator(`#${section.id} h2`)).toHaveText(section.heading);
-    const entries = await page.locator(`#${section.id} .entry`).allTextContents();
+    const entries = await page.locator(`#${section.id} .entry`).evaluateAll(elements => elements.map(element => {
+      const copy = element.cloneNode(true);
+      copy.querySelectorAll('.section-heading').forEach(heading => heading.remove());
+      return copy.textContent;
+    }));
     expect(entries.map(value => value.replace(/\s+/g, ' ').trim())).toEqual(section.entries);
     for (const link of section.links) await expect(page.locator(`#${section.id} a`).filter({ hasText: link.text }).first()).toHaveAttribute('href', link.href);
   }
@@ -510,6 +514,56 @@ test('keyboard rotation and Home work without stealing page keys; hidden documen
   await expect(stage).toHaveAttribute('data-interactive', 'true');
 });
 
+for (const [width, height] of [[1440, 900], [390, 844]]) test(`each entry opens a labeled page with a complete next arrow at ${width}px`, async ({ page }, info) => {
+  test.setTimeout(90000);
+  await page.setViewportSize({ width, height });
+  await ready(page);
+  await page.screenshot({ path: `.artifacts/entry-pages/${info.project.name}-${width}-hero.png` });
+  expect(await page.locator('.hero-name').evaluate(el => getComputedStyle(el).fontVariantCaps)).toBe('small-caps');
+  expect(await page.locator('.hero-title').evaluate(el => getComputedStyle(el).fontVariantCaps)).toBe('all-small-caps');
+  await jump(page, 'education-uchicago');
+  const entries = [
+    ['education-uchicago', 'education'], ['education-drexel', 'education'],
+    ['experience-mathworks', 'industry experience'], ['experience-resolution', 'industry experience'],
+    ['project-surface', 'personal projects'], ['project-congestion', 'personal projects'], ['notes', 'personal notes'],
+  ];
+  for (const [index, [id, label]] of entries.entries()) {
+    await scrollStopped(page); await settled(page, id);
+    const chapter = page.locator(`#${id}`);
+    await expect(chapter.locator(':scope > .section-heading')).toHaveText(label);
+    const layout = await chapter.evaluate(el => {
+      const label = el.querySelector('.section-heading'), box = el.getBoundingClientRect();
+      return { top: box.top, height: box.height, labelTop: label.getBoundingClientRect().top,
+        border: getComputedStyle(el).borderTopWidth, caps: getComputedStyle(label).fontVariantCaps,
+        artworkBottom: document.querySelector('.world').getBoundingClientRect().bottom };
+    });
+    const readingTop = width < 800 ? layout.artworkBottom : 0;
+    expect(Math.abs(layout.top)).toBeLessThan(2);
+    expect(layout.height).toBeGreaterThanOrEqual(height - 1);
+    expect(layout.labelTop - readingTop).toBeGreaterThan(width < 800 ? 15 : 45);
+    expect(layout.labelTop - readingTop).toBeLessThan(width < 800 ? 30 : 60);
+    expect(layout.border).toBe('0px'); expect(layout.caps).toBe('all-small-caps');
+    if (index) expect(await page.locator(`#${entries[index - 1][0]}`).evaluate(el => el.getBoundingClientRect().bottom)).toBeLessThanOrEqual(1);
+    assertActiveGeometry(await snapshot(page), identities.find(([entry]) => entry === id)[1]);
+    await page.screenshot({ path: `.artifacts/entry-pages/${info.project.name}-${width}-${id}.png` });
+    if (id === 'notes') break;
+    const range = (await snapshot(page)).ranges.find(range => range.id === id);
+    if (range.stop > range.start + 3) {
+      await page.mouse.move(25, height - 80);
+      await page.mouse.wheel(0, range.stop - range.start - 2);
+      await scrollStopped(page);
+    }
+    await settled(page, id);
+    const arrow = chapter.locator(':scope > .scene-next');
+    await expect(arrow).toBeVisible();
+    const box = await arrow.boundingBox();
+    expect(box.y).toBeGreaterThanOrEqual(readingTop);
+    expect(box.y + box.height).toBeLessThanOrEqual(height);
+    if (id === 'education-drexel') await page.screenshot({ path: `.artifacts/entry-pages/${info.project.name}-${width}-drexel-arrow.png` });
+    await arrow.click();
+  }
+});
+
 for (const [width, height] of [[1440, 900], [390, 844], [740, 390]]) test(`Notes opens as a new section after the project at ${width}px`, async ({ page }) => {
   await page.setViewportSize({ width, height });
   await ready(page);
@@ -542,7 +596,8 @@ for (const [width, height] of [[1440, 900], [390, 844], [740, 390]]) test(`Notes
   const readingTop = stacked ? landing.artworkBottom : 0;
   expect(landing.heading - readingTop).toBeGreaterThan(stacked ? 15 : 45);
   expect(landing.heading - readingTop).toBeLessThan(stacked ? 30 : 60);
-  expect(landing.previousBottom).toBeLessThanOrEqual(readingTop);
+  // Native scroll positions round to pixels while layout keeps subpixels.
+  expect(landing.previousBottom).toBeLessThanOrEqual(readingTop + 1);
   expect(landing.border).toBe('0px');
   assertActiveGeometry(await snapshot(page), 'notes');
 });
@@ -701,6 +756,7 @@ for (const [width, height] of [[320, 740], [390, 844], [768, 1024], [740, 390], 
     const stage = await page.locator('.world').boundingBox(), stacked = width < 800 && !(width >= 600 && height <= 500);
     expect(stage.width).toBeGreaterThan(stacked ? width * 0.9 : width * 0.4);
     expect(stage.height).toBeGreaterThan(stacked ? 150 : height * 0.75);
+    if (id === 'hero' && [320, 740].includes(width)) await page.screenshot({ path: `.artifacts/entry-pages/${info.project.name}-${width}-hero.png` });
   }
   if ([390, 1440].includes(width)) await page.screenshot({ path: `${output}/${info.project.name}-${width}-notes.png` });
 });

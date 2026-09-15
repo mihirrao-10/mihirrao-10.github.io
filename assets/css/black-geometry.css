@@ -9,27 +9,17 @@
   --scene-title: #fafafa;
   --scene-accent: #d8edf3;
   --scene-hover: #ffffff;
-  --divider: #ffffff42;
   --content-left: clamp(2rem, 5.6vw, 8rem);
-  --snap-offset: 18svh;
-  --reading-height: calc(100svh - var(--snap-offset));
+  --page-top: 3rem;
   --notes-tail: calc(6rem + 3rem);
 }
 * { box-sizing: border-box; }
 html {
-  background: var(--bg); font-size: 17px; scroll-padding-top: var(--snap-offset);
+  background: var(--bg); font-size: 17px; scroll-padding-top: 0;
   scroll-snap-type: y mandatory; scroll-behavior: auto;
 }
 /* Whole entries remain native snap areas, including their readable overflow. */
 [data-scene] { scroll-snap-align: start; scroll-snap-stop: normal; scroll-margin-block: 0; }
-/* WebKit measures oversized snap areas against the full viewport rather than
-   the padded reading area. Its equivalent margin extends the area physically;
-   Chromium needs the padding form to preserve native interior wheel movement. */
-@supports (background-image: -webkit-named-image(i)) {
-  html { scroll-padding-top: 0; }
-  [data-scene], #main { scroll-margin-top: var(--snap-offset); }
-  main > section:not([data-scene]) { scroll-margin-top: calc(var(--snap-offset) + 1.5rem); }
-}
 body {
   margin: 0;
   color: var(--text);
@@ -83,10 +73,11 @@ body:not([data-enhanced]) .world { display: none; }
 }
 .hero-art { position: absolute; pointer-events: none; width: 53%; height: 90%; inset: 6% 0 auto auto; }
 .hero-name {
-  margin: 0; max-width: 47%; font-size: clamp(4.2rem, 7.7vw, 7.5rem); font-weight: 500;
-  letter-spacing: -0.055em; line-height: 1.04; color: var(--strong);
+  margin: 0; max-width: 47%; font-size: clamp(4.2rem, 7.7vw, 7.5rem);
+  letter-spacing: 0.015em; line-height: 1.04; color: var(--strong);
+  font-weight: 400; font-variant-caps: small-caps;
 }
-.hero-title { margin: 1.35rem 0 0; max-width: 46%; font-size: clamp(1rem, 1.5vw, 1.2rem); font-weight: 400; letter-spacing: 0.012em; }
+.hero-title { margin: 1.35rem 0 0; max-width: 46%; font-size: clamp(1rem, 1.5vw, 1.2rem); font-weight: 400; letter-spacing: 0.09em; font-variant-caps: all-small-caps; }
 .hero-links { display: flex; align-items: center; flex-wrap: wrap; gap: 1.5rem; margin-top: 1.35rem; max-width: 46%; }
 .hero-link { display: inline-flex; align-items: center; gap: 0.45rem; min-height: 44px; font-size: 0.82rem; }
 .hero-link, .hero-link:visited { color: var(--strong); }
@@ -107,11 +98,21 @@ body:not([data-enhanced]) .world { display: none; }
 }
 @keyframes sculpture-arrive { from { opacity: 0; } to { opacity: 1; } }
 main { width: 47%; margin: 0; padding: 0 0 0 var(--content-left); }
-main > section { scroll-margin-top: 1.5rem; padding: 5.5rem 0 0; margin-top: 3rem; position: relative; border-top: 1px solid var(--divider); }
-.section-heading { margin: 0 0 3.8rem; color: var(--strong); font-size: clamp(1.55rem, 2.1vw, 2rem); font-weight: 500; letter-spacing: -0.02em; text-transform: capitalize; }
+main > section { margin: 0; padding: 0; position: relative; }
+/* Every entry is a complete physical snap area. Real top padding keeps the
+   section label below the mobile artwork, while long entries remain readable
+   in both browser engines without artificial scroll margins. */
+.scene-page {
+  position: relative; min-height: 100svh; margin: 0;
+  padding: var(--page-top) 0 6rem;
+}
+.section-heading {
+  margin: 0 0 2rem; color: var(--strong); font-size: 1.05rem;
+  font-weight: 400; line-height: 1.4; letter-spacing: 0.09em;
+  font-variant-caps: all-small-caps;
+}
 .entry { margin: 0 0 2.5rem; }
-.entry[data-scene] { position: relative; min-height: max(500px, var(--reading-height)); margin: 0; padding: 0.8rem 0 6rem; }
-.entry[data-scene] + .entry[data-scene] { margin-top: 2rem; padding-top: 4.5rem; border-top: 1px solid #ffffff26; }
+.entry.scene-page { margin: 0; }
 .entry:last-child { margin-bottom: 0; }
 /* Titles identify each sculpture; secondary accents carry through links,
    course codes and key measurements without recoloring the reading text. */
@@ -165,8 +166,6 @@ li::marker { color: var(--strong); }
 .awards-list li { position: relative; padding: 0.35rem 0 0.35rem 1rem; font-size: 0.92rem; line-height: 1.55; }
 .awards-list li::before { content: "·"; position: absolute; left: 0; color: var(--strong); }
 #education-drexel .awards-list { color: var(--scene-accent); }
-.project-feature { position: relative; min-height: var(--reading-height); padding: 1rem 0 6rem; }
-.project-feature + .project-feature { border-top: 1px solid var(--divider); padding-top: 3.5rem; }
 .project-feature .entry { margin: 0; }
 .project-feature .entry-title { font-size: clamp(1.9rem, 2.7vw, 2.9rem); line-height: 1.12; letter-spacing: -0.025em; }
 .project-feature .entry-detail { margin-top: 1.3rem; font-size: 1rem; }
@@ -182,17 +181,7 @@ li::marker { color: var(--strong); }
 .notes-list a:hover { color: var(--scene-hover); text-decoration-color: currentColor; }
 .notes-category { margin: 1.9rem 0 0; color: var(--scene-title); font-size: 0.72rem; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; }
 .notes-category:first-child { margin-top: 0; }
-/* Notes opens with its heading, without a divider or the previous project in
-   view. Keep the same document spacing, moving the old top padding outside
-   the snap area so its long list and footer still scroll continuously. */
-#notes {
-  min-height: var(--reading-height); border-top: 0; margin-top: 8.5rem;
-  padding-top: 0; padding-bottom: 5rem;
-  scroll-margin-top: calc(3rem - var(--snap-offset)); scroll-margin-bottom: var(--notes-tail);
-}
-@supports (background-image: -webkit-named-image(i)) {
-  #notes { scroll-margin-top: 3rem; }
-}
+#notes { scroll-margin-bottom: var(--notes-tail); }
 #notes > .section-heading { color: var(--scene-title); }
 /* Notes and the short footer share one sculpture and one continuous snap area.
    Include the footer padding and its link so End can still reach Back to top. */
@@ -207,7 +196,7 @@ li::marker { color: var(--strong); }
 @media (min-width: 800px) {
   body:not([data-enhanced]) .entry[data-scene] > .scene-fallback,
   body:not([data-enhanced]) .project-feature > .scene-fallback {
-    position: absolute; left: calc(100% + 1.5rem); top: -3rem; width: 49vw; height: 440px;
+    position: absolute; left: calc(100% + 1.5rem); top: var(--page-top); width: 49vw; height: 440px;
   }
 }
 @media (max-width: 1100px) and (min-width: 800px) {
@@ -217,7 +206,7 @@ li::marker { color: var(--strong); }
   .hero-links { gap: 1rem; }
 }
 @media (max-width: 799px) {
-  :root { --content-left: 1.5rem; --art-height: clamp(285px, 43svh, 430px); --snap-offset: calc(var(--art-height) + 1.2rem); --notes-tail: calc(4.3rem + 3rem); }
+  :root { --content-left: 1.5rem; --art-height: clamp(285px, 43svh, 430px); --page-top: calc(var(--art-height) + 1.2rem); --notes-tail: calc(4.3rem + 3rem); }
   .world {
     top: 0; right: 0; bottom: auto; left: 0; height: var(--art-height);
     z-index: 3; background: var(--bg);
@@ -227,33 +216,22 @@ li::marker { color: var(--strong); }
     justify-content: flex-start;
   }
   .hero-name { font-size: clamp(3.2rem, 11vw, 5.3rem); max-width: none; }
-  .hero-title { font-size: 1rem; max-width: none; margin-top: 0.9rem; }
+  .hero-title { font-size: 1rem; max-width: none; margin-top: 0.9rem; letter-spacing: 0.065em; }
   .hero-links { max-width: none; gap: 1.3rem; margin-top: 1rem; }
   .hero-art { position: static; height: var(--art-height); width: 100%; order: -1; margin: -1rem 0 1.5rem; }
   body:not([data-enhanced]) .hero { padding-top: 2rem; }
+  body:not([data-enhanced]) .scene-page { padding-top: 3rem; }
   main { width: 100%; padding: 0 var(--content-left); }
-  main > section { padding-top: 3.5rem; margin-top: 2.5rem; scroll-margin-top: 1.5rem; }
-  .section-heading { margin-bottom: 2.8rem; font-size: 1.65rem; }
-  .entry[data-scene] {
-    min-height: max(440px, var(--reading-height)); padding: 0.8rem 0 6rem;
-  }
-  .entry[data-scene] + .entry[data-scene] { margin-top: 2rem; padding-top: 3.5rem; }
   .entry-title { font-size: 1.65rem; }
   .entry-header, .entry-subheader { flex-direction: column; gap: 0.4rem; }
   .entry-subheader { margin-top: 0.7rem; }
   .entry-dates, .entry-location { white-space: normal; }
   .entry-role, .entry-detail { font-size: 0.97rem; }
-  .project-feature { min-height: var(--reading-height); padding: 0.7rem 0 6rem; }
-  .project-feature + .project-feature { padding-top: 2.8rem; }
   .project-feature .entry-title { font-size: clamp(2rem, 7.5vw, 2.9rem); max-width: 30rem; }
   .project-feature .entry-detail { max-width: 38rem; }
   .scene-fallback { max-height: 320px; margin-bottom: 2rem; }
   .site-footer { width: auto; margin: 0 var(--content-left); padding: 1.8rem 0 2.5rem; }
   .notes-list { font-size: 0.94rem; }
-  #notes { margin-top: 6rem; padding-bottom: 3.5rem; scroll-margin-top: 0; }
-  @supports (background-image: -webkit-named-image(i)) {
-    #notes { scroll-margin-top: var(--snap-offset); }
-  }
 }
 @media (max-width: 799px) and (max-height: 650px) {
   :root { --art-height: clamp(195px, 40svh, 260px); }
@@ -261,7 +239,7 @@ li::marker { color: var(--strong); }
   .hero-name { font-size: clamp(2.8rem, 9vw, 4rem); }
 }
 @media (min-width: 600px) and (max-width: 799px) and (max-height: 500px) {
-  :root { --snap-offset: 18svh; }
+  :root { --page-top: 3rem; }
   .world { left: 50%; top: 0; bottom: 0; height: auto; z-index: 2; }
   .hero { padding: 3rem 52% 3rem 1.5rem; justify-content: center; }
   .hero-name { font-size: 3.1rem; white-space: nowrap; }
@@ -269,12 +247,7 @@ li::marker { color: var(--strong); }
   .hero-links { gap: 0.8rem; margin-top: 0.7rem; }
   .hero-link { font-size: 0.76rem; }
   main { width: 50%; }
-  .entry[data-scene] { min-height: max(400px, var(--reading-height)); }
   .site-footer { width: calc(50% - 3rem); }
-  #notes { scroll-margin-top: calc(3rem - var(--snap-offset)); }
-  @supports (background-image: -webkit-named-image(i)) {
-    #notes { scroll-margin-top: 3rem; }
-  }
 }
 @media (max-width: 359px) {
   :root { --content-left: 1rem; }
@@ -289,7 +262,7 @@ li::marker { color: var(--strong); }
 @media print {
   .site-loader { display: none !important; }
   [data-boot="loading"] .hero, [data-boot="loading"] main, [data-boot="loading"] .site-footer { opacity: 1 !important; }
-  :root { color-scheme: light; --bg: white; --text: #222; --strong: #111; --muted: #444; --accent: #222; --divider: #ccc; }
+  :root { color-scheme: light; --bg: white; --text: #222; --strong: #111; --muted: #444; --accent: #222; }
   body, [data-scene] { --scene-title: #111 !important; --scene-accent: #222 !important; --detail-accent: #222 !important; --scene-hover: #111 !important; }
   html { font-size: 11pt; scroll-snap-type: none; scroll-behavior: auto; }
   .world, .scene-fallback, .open-project, .skip-link, .scene-next, .site-footer { display: none !important; }
@@ -299,8 +272,9 @@ li::marker { color: var(--strong); }
   main { padding: 0; width: 100%; }
   main > section, #notes { padding: 1.5rem 0; margin-top: 0; }
   .section-heading { margin-bottom: 1rem; }
-  .project-feature, .entry[data-scene], #notes { min-height: 0; padding: 1rem 0; }
-  .entry[data-scene] + .entry[data-scene] { margin-top: 0.5rem; padding-top: 1rem; }
+  .scene-page, body:not([data-enhanced]) .scene-page { min-height: 0; padding: 1rem 0; }
+  .scene-page + .scene-page { margin-top: 0.5rem; }
+  p.section-heading { display: none; }
   [data-enhanced][data-motion="full"][data-experience-state="ready"] [data-scene] { opacity: 1; transform: none; transition: none; }
   .entry, .project-feature { break-inside: avoid; }
   .notes-list a { min-height: 0; padding: 0.2rem 0; }
