@@ -716,7 +716,7 @@ test('teaching and industry remain complete, section links use matching colors, 
   await expect(page.locator('#education-drexel .degree-specialization')).toHaveText('Concentrations | Algorithms & Data Structures, Artificial Intelligence');
   await expect(page.locator('#education-drexel .degree-honors em')).toHaveText('Magna Cum Laude');
   expect(await page.locator('#education-drexel .degree-specialization').evaluate(el => el.getBoundingClientRect().bottom <= el.parentElement.querySelector('.degree-honors').getBoundingClientRect().top)).toBe(true);
-  await expect(page.locator('.entry-subheading')).toHaveText(['Teaching', 'Teaching', 'Awards']);
+  await expect(page.locator('.entry-subheading')).toHaveText(['Teaching Assistant Experience', 'Teaching Assistant Experience', 'Academic Awards']);
   expect(await page.locator('.entry-subheading').evaluateAll(headings => headings.every(el => getComputedStyle(el).color === 'rgb(250, 250, 250)'))).toBe(true);
   expect(await page.locator('.experience-points > li').evaluateAll(items => items.every(el => getComputedStyle(el, '::marker').color === 'rgb(250, 250, 250)'))).toBe(true);
   expect(await page.locator('.awards-list > li').evaluateAll(items => items.every(el => getComputedStyle(el, '::before').color === 'rgb(250, 250, 250)'))).toBe(true);
