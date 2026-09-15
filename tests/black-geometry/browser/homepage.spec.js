@@ -167,6 +167,26 @@ test('delayed sculpture data keeps a black loader until the first live frame, th
     expect(loading.retainedLayout).toBe(true);
     expect(loading.state.world).toBe(null);
     expect(loading.state.interaction.enabled).toBe(false);
+    await expect(page.getByRole('status')).toHaveAttribute('aria-atomic', 'true');
+    const dots = await page.locator('.loader-dots > span').evaluateAll(async elements => {
+      const animations = elements.map(el => el.getAnimations()[0]);
+      const running = animations.every(animation => animation?.playState === 'running');
+      const delays = animations.map(animation => animation.effect.getTiming().delay);
+      // Sample a full cycle while the data is delayed: every dot must lift
+      // and return, independently of the WebGL startup or network request.
+      const samples = [];
+      const start = performance.now();
+      while (performance.now() - start < 1300) {
+        samples.push(elements.map(el => new DOMMatrixReadOnly(getComputedStyle(el).transform).m42));
+        await new Promise(requestAnimationFrame);
+      }
+      return { running, delays, excursions: elements.map((_, i) => Math.max(...samples.map(s => s[i])) - Math.min(...samples.map(s => s[i]))) };
+    });
+    expect(dots.running).toBe(true);
+    expect(dots.delays).toHaveLength(3);
+    expect(dots.delays[0]).toBeLessThan(dots.delays[1]);
+    expect(dots.delays[1]).toBeLessThan(dots.delays[2]);
+    expect(dots.excursions.every(distance => distance > 3)).toBe(true);
   } finally { gate.release(); }
   await expect(page.locator('html')).toHaveAttribute('data-boot', 'complete');
   await expect(page.locator('.site-loader')).toBeHidden();
@@ -488,6 +508,43 @@ test('keyboard rotation and Home work without stealing page keys; hidden documen
   await expect(stage).not.toHaveAttribute('tabindex'); await page.mouse.up();
   await page.evaluate(() => { Object.defineProperty(document, 'hidden', { configurable: true, get: () => false }); document.dispatchEvent(new Event('visibilitychange')); });
   await expect(stage).toHaveAttribute('data-interactive', 'true');
+});
+
+for (const [width, height] of [[1440, 900], [390, 844], [740, 390]]) test(`Notes opens as a new section after the project at ${width}px`, async ({ page }) => {
+  await page.setViewportSize({ width, height });
+  await ready(page);
+  await jump(page, 'project-congestion');
+  const ranges = (await snapshot(page)).ranges;
+  const project = ranges.find(range => range.id === 'project-congestion');
+  if (width === 390) {
+    // On the stacked layout, exercise the scroll gesture that brings Notes
+    // below the fixed artwork, including WebKit's native snap selection.
+    await page.mouse.move(25, height - 80);
+    await page.mouse.wheel(0, ranges.find(range => range.id === 'notes').start - project.start);
+  } else {
+    // Read to the project's end before clicking an offscreen arrow.
+    if (project.stop > project.start) {
+      await page.mouse.move(25, height - 80);
+      await page.mouse.wheel(0, project.stop - project.start - 2);
+      await scrollStopped(page);
+    }
+    await page.locator('#project-congestion .scene-next').click();
+  }
+  await scrollStopped(page);
+  await settled(page, 'notes');
+  const landing = await page.evaluate(() => ({
+    heading: document.querySelector('#notes h2').getBoundingClientRect().top,
+    previousBottom: document.querySelector('#project-congestion').getBoundingClientRect().bottom,
+    artworkBottom: document.querySelector('.world').getBoundingClientRect().bottom,
+    border: getComputedStyle(document.querySelector('#notes')).borderTopWidth,
+  }));
+  const stacked = width < 600;
+  const readingTop = stacked ? landing.artworkBottom : 0;
+  expect(landing.heading - readingTop).toBeGreaterThan(stacked ? 15 : 45);
+  expect(landing.heading - readingTop).toBeLessThan(stacked ? 30 : 60);
+  expect(landing.previousBottom).toBeLessThanOrEqual(readingTop);
+  expect(landing.border).toBe('0px');
+  assertActiveGeometry(await snapshot(page), 'notes');
 });
 
 test('native wheel snapping permits reading complete education, industry and notes entries', async ({ page }) => {

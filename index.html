@@ -14,6 +14,16 @@
       margin: 0; background: #080808; color: #e5e5e5; font: 14px Georgia, serif;
       letter-spacing: .04em; pointer-events: none;
     }
+    .loader-dots > span { display: inline-block; animation: loading-dot 1.2s ease-in-out infinite; }
+    .loader-dots > span:nth-child(2) { animation-delay: .16s; }
+    .loader-dots > span:nth-child(3) { animation-delay: .32s; }
+    @keyframes loading-dot {
+      0%, 40%, 100% { transform: translateY(0); }
+      20% { transform: translateY(-.3em); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .loader-dots > span { animation: none; }
+    }
   </style>
   <script>
     (() => {
@@ -62,7 +72,7 @@
   <meta name="description" content="Mihir Rao — Theoretical Computer Scientist. Education, teaching, industry, mathematical projects, and personal notes." />
 </head>
 <body data-experience-state="static">
-  <p class="site-loader" role="status" aria-live="polite">Loading...</p>
+  <p class="site-loader" role="status" aria-live="polite" aria-atomic="true"><span>Loading<span class="loader-dots" aria-hidden="true"><span>.</span><span>.</span><span>.</span></span></span></p>
   <a class="skip-link" href="#main">Skip to content</a>
   <div class="world" role="group" aria-label="Interactive sculpture" aria-describedby="rotation-instructions" aria-keyshortcuts="ArrowUp ArrowDown ArrowLeft ArrowRight Home" aria-hidden="true">
     <img id="sculpture-poster" src="assets/black-geometry/generated/sculpture-hero.svg" width="1000" height="850" alt="" />

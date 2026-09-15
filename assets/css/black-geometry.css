@@ -182,7 +182,17 @@ li::marker { color: var(--strong); }
 .notes-list a:hover { color: var(--scene-hover); text-decoration-color: currentColor; }
 .notes-category { margin: 1.9rem 0 0; color: var(--scene-title); font-size: 0.72rem; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; }
 .notes-category:first-child { margin-top: 0; }
-#notes { min-height: var(--reading-height); padding-bottom: 5rem; scroll-margin-bottom: var(--notes-tail); }
+/* Notes opens with its heading, without a divider or the previous project in
+   view. Keep the same document spacing, moving the old top padding outside
+   the snap area so its long list and footer still scroll continuously. */
+#notes {
+  min-height: var(--reading-height); border-top: 0; margin-top: 8.5rem;
+  padding-top: 0; padding-bottom: 5rem;
+  scroll-margin-top: calc(3rem - var(--snap-offset)); scroll-margin-bottom: var(--notes-tail);
+}
+@supports (background-image: -webkit-named-image(i)) {
+  #notes { scroll-margin-top: 3rem; }
+}
 #notes > .section-heading { color: var(--scene-title); }
 /* Notes and the short footer share one sculpture and one continuous snap area.
    Include the footer padding and its link so End can still reach Back to top. */
@@ -240,7 +250,10 @@ li::marker { color: var(--strong); }
   .scene-fallback { max-height: 320px; margin-bottom: 2rem; }
   .site-footer { width: auto; margin: 0 var(--content-left); padding: 1.8rem 0 2.5rem; }
   .notes-list { font-size: 0.94rem; }
-  #notes { padding-bottom: 3.5rem; }
+  #notes { margin-top: 6rem; padding-bottom: 3.5rem; scroll-margin-top: 0; }
+  @supports (background-image: -webkit-named-image(i)) {
+    #notes { scroll-margin-top: var(--snap-offset); }
+  }
 }
 @media (max-width: 799px) and (max-height: 650px) {
   :root { --art-height: clamp(195px, 40svh, 260px); }
@@ -258,6 +271,10 @@ li::marker { color: var(--strong); }
   main { width: 50%; }
   .entry[data-scene] { min-height: max(400px, var(--reading-height)); }
   .site-footer { width: calc(50% - 3rem); }
+  #notes { scroll-margin-top: calc(3rem - var(--snap-offset)); }
+  @supports (background-image: -webkit-named-image(i)) {
+    #notes { scroll-margin-top: 3rem; }
+  }
 }
 @media (max-width: 359px) {
   :root { --content-left: 1rem; }
