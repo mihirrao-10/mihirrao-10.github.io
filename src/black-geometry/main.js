@@ -233,10 +233,15 @@ const sectionScroll = createSectionScroll({
   move: (top, behavior) => window.scrollTo({ top, behavior }),
   isReduced: () => motion !== 'full',
   isLoading: () => root.dataset.boot === 'loading',
+  afterInput: callback => requestAnimationFrame(callback),
 });
 on(window, 'wheel', sectionScroll, { passive: false });
 on(window, 'scrollend', sectionScroll.finish);
-for (const event of ['pointerdown', 'touchstart', 'keydown', 'resize', 'hashchange'])
+on(window, 'touchstart', sectionScroll.touchStart, { passive: true });
+on(window, 'touchmove', sectionScroll.touchMove, { passive: true });
+on(window, 'touchend', sectionScroll.touchEnd, { passive: true });
+on(window, 'touchcancel', sectionScroll.reset, { passive: true });
+for (const event of ['pointerdown', 'keydown', 'resize', 'hashchange'])
   on(window, event, sectionScroll.reset, { passive: true });
 on(window, 'resize', invalidate, { passive: true });
 on(window, 'hashchange', invalidate);

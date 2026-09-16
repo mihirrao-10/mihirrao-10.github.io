@@ -118,9 +118,12 @@ does not decode or upload a new mesh. Returning visitors receive an entry-script
 URL versioned from its contents, as well as the fingerprinted stylesheet.
 
 Mandatory vertical scroll snapping stops at each section, including with reduced
-motion. Wheel gestures advance one entry and absorb trackpad momentum; oversized
-entries retain normal reading until their boundary. Touch scrolling, pinch zoom,
-keyboard navigation, hashes and scrollbars remain native. The renderer independently
+motion. Even small wheel gestures advance one entry and absorb fading trackpad
+momentum. Continuing to turn the wheel advances again after the entry settles,
+without requiring a pause or an arrow click. Oversized entries retain normal
+reading until their boundary. Vertical touch swipes settle on the adjacent entry
+at those boundaries; reading within an entry, pinch zoom, keyboard navigation,
+hashes and scrollbars remain native. The renderer independently
 completes a 380ms eased dissolve between two intact tessellated surfaces, so stopping
 scrolling cannot freeze a partially assembled mesh. Reversals and skipped entries
 resolve to the latest selected identity. Entries fill at least their viewport

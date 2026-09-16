@@ -684,9 +684,9 @@ test('native wheel snapping permits reading complete education, industry and not
   await back.click(); await settled(page, 'hero');
 });
 
-test('native touch swipes preserve vertical page scrolling and horizontal model rotation', async ({ page }, info) => {
+for (const [width, height] of [[390, 844], [768, 1024]]) test(`native touch swipes preserve vertical page scrolling and horizontal model rotation at ${width}px`, async ({ page }, info) => {
   test.skip(info.project.name !== 'chromium', 'Native touch injection uses Chromium protocol; gesture arbitration also has engine-independent unit coverage.');
-  await page.setViewportSize({ width: 390, height: 844 });
+  await page.setViewportSize({ width, height });
   const client = await page.context().newCDPSession(page);
   await client.send('Emulation.setTouchEmulationEnabled', { enabled: true, maxTouchPoints: 1 }); await ready(page);
   expect(await page.locator('.world').evaluate(element => getComputedStyle(element).touchAction)).toBe('pan-y pinch-zoom');
@@ -695,7 +695,17 @@ test('native touch swipes preserve vertical page scrolling and horizontal model 
   for (let y = 285; y >= 135; y -= 25) { await touch('touchMove', 191, y); await page.waitForTimeout(20); }
   await touch('touchEnd'); await expect.poll(() => page.evaluate(() => scrollY)).toBeGreaterThan(50);
   expect((await snapshot(page)).interaction.orientation).toEqual([0, 0, 0, 1]);
-  await scrollStopped(page); await jump(page, 'hero');
+  await scrollStopped(page);
+  const swipe = await snapshot(page), swipeY = await page.evaluate(() => scrollY);
+  expect(swipe.state.chapter).toBe('education-uchicago');
+  expect(swipeY).toBeGreaterThanOrEqual(swipe.ranges[1].start - 2);
+  expect(swipeY).toBeLessThanOrEqual(swipe.ranges[1].stop + 2);
+  await touch('touchStart', 190, 140);
+  for (let y = 165; y <= 315; y += 25) { await touch('touchMove', 191, y); await page.waitForTimeout(20); }
+  await touch('touchEnd'); await scrollStopped(page);
+  expect((await snapshot(page)).state.chapter).toBe('hero');
+  expect(await page.evaluate(() => scrollY)).toBeLessThanOrEqual(2);
+  await jump(page, 'hero');
   const before = await page.evaluate(() => scrollY);
   await touch('touchStart', 90, 210);
   for (let x = 120; x <= 270; x += 30) { await touch('touchMove', x, 212); await page.waitForTimeout(20); }

@@ -17,12 +17,12 @@ async function stopped(page) {
 }
 
 for (const width of [390, 1366]) test(`wheel gestures stop at the adjacent entry at ${width}px`, async ({ page }) => {
-  test.setTimeout(45000);
+  test.setTimeout(60000);
   await page.setViewportSize({ width, height: 768 });
   await ready(page);
   await page.mouse.move(30, 700);
   // Test Windows-style wheel notches as well as a large touchpad fling.
-  for (const delta of [120, 5000]) {
+  for (const delta of [3, 120, 5000]) {
     await page.evaluate(() => scrollTo({ top: 0, behavior: 'instant' }));
     await stopped(page);
     await page.mouse.wheel(0, delta);
@@ -42,6 +42,27 @@ for (const width of [390, 1366]) test(`wheel gestures stop at the adjacent entry
   await page.mouse.wheel(0, -120);
   await stopped(page);
   expect(await page.evaluate(() => scrollY)).toBeLessThan(bottom - 20);
+});
+
+test('continued mouse-wheel scrolling keeps advancing and settles on an entry without arrow clicks', async ({ page }) => {
+  test.setTimeout(45000);
+  await ready(page);
+  // Scroll over the live sculpture as well as over the text column.
+  await page.mouse.move(1100, 450);
+  for (let notch = 0; notch < 32; notch++) {
+    await page.mouse.wheel(0, 120);
+    await page.waitForTimeout(60);
+  }
+  await stopped(page);
+  const state = await snapshot(page), y = await page.evaluate(() => scrollY);
+  expect(y).toBeGreaterThanOrEqual(state.ranges[2].start - 2);
+  expect(state.ranges.some(range => y >= range.start - 2 && y <= range.stop + 2)).toBe(true);
+  await page.mouse.move(30, 700);
+  await page.mouse.wheel(0, -120);
+  await stopped(page);
+  const reversed = await page.evaluate(() => scrollY);
+  expect(reversed).toBeLessThan(y - 20);
+  expect(state.ranges.some(range => reversed >= range.start - 2 && reversed <= range.stop + 2)).toBe(true);
 });
 
 test('reduced-motion visitors can explicitly enable prepared, moving sculptures', async ({ page }) => {
