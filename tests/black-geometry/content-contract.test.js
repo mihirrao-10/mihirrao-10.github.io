@@ -44,7 +44,12 @@ test("teaching and awards belong to their education entries and removed sections
 test("minimal navigation retains a native return link and opens projects in separate tabs", async () => {
   const html = await fs.readFile(new URL("index.html", root), "utf8");
   const doc = parse(html);
-  assert.equal(all(doc, (node) => ["header", "button", "select", "figcaption"].includes(node.tagName)).length, 0);
+  assert.equal(all(doc, (node) => ["header", "select", "figcaption"].includes(node.tagName)).length, 0);
+  const buttons = all(doc, node => node.tagName === 'button');
+  assert.equal(buttons.length, 1);
+  assert.equal(hasClass(buttons[0], 'animation-action'), true);
+  assert.equal(attr(buttons[0], 'hidden'), '');
+  assert.equal(normalize(text(buttons[0])), 'Enable animation');
   assert.equal(all(doc, (node) => ["section-index", "sound-toggle", "motion-setting", "quality-setting", "replay-path", "shortcut-controls", "route-status"].includes(attr(node, "id"))).length, 0);
   assert.doesNotMatch(html, /[\u2190-\u21ff\u27f0-\u27ff]/u);
   const footer = all(doc, (node) => node.tagName === "footer")[0];

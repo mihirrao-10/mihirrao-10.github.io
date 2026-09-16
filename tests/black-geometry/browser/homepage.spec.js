@@ -81,7 +81,8 @@ function assertActiveGeometry(state, target) {
   expect(state.world.drawCalls).toBeGreaterThan(0);
   expect(state.world.facets).toBeGreaterThanOrEqual(65536);
   expect(state.world.triangles).toBeGreaterThanOrEqual(65536);
-  expect(state.world.decodedTargets).toBeLessThanOrEqual(2);
+  expect(state.world.decodedTargets).toBe(8);
+  expect(state.world.warmedTargets).toBe(8);
   expect(state.world.finiteActiveBuffers).toBe(true);
   expect(state.profile).toBe('high');
   expect(state.world.quality).toBe('high');
@@ -209,7 +210,9 @@ test('delayed sculpture data keeps a black loader until the first live frame, th
   for (const opacity of ['nameOpacity', 'titleOpacity', 'linksOpacity']) expect(firstFrame[opacity]).toBeLessThan(1);
   const growing = samples.filter(sample => sample.progress > 0 && sample.progress < 1);
   expect(growing.length).toBeGreaterThan(0);
-  expect(growing.every(sample => sample.scale > 0.08 && sample.scale < 1 && !sample.enabled)).toBe(true);
+  // Quartic easing can round to scale 1 before progress reaches exactly 1.
+  expect(growing.every(sample => sample.scale > 0.08 && sample.scale <= 1 && !sample.enabled)).toBe(true);
+  expect(growing.some(sample => sample.scale < .95)).toBe(true);
   // A newly constructed, still-hidden world has not received its first
   // entrance scale. Compare only frames that were actually rendered.
   const scales = samples.filter(sample => sample.frames > 0).map(sample => sample.scale);
@@ -223,35 +226,31 @@ test('delayed sculpture data keeps a black loader until the first live frame, th
   await expect.poll(async () => (await snapshot(page)).world.frames).toBeGreaterThan(final.world.frames);
 });
 
-test('keyboard intent bypasses delayed loading for immediate native navigation without replaying the entrance', async ({ page }, info) => {
-  await observeBoot(page);
+test('slow loading stays locked beyond the former deadline despite wheel, touch and keyboard input', async ({ page }) => {
+  test.setTimeout(45000);
   const gate = await gateSculptureData(page);
   try {
     await page.goto('/?bg-debug', { waitUntil: 'domcontentloaded' });
     await expect.poll(gate.requested).toBe(true);
+    await page.mouse.wheel(0, 2000);
+    await page.keyboard.press('Tab');
+    await page.keyboard.press('PageDown');
+    await page.dispatchEvent('body', 'touchmove', { cancelable: true });
+    await page.waitForTimeout(12500);
     await expect(page.locator('html')).toHaveAttribute('data-boot', 'loading');
-    await page.keyboard.press(info.project.name === 'webkit' ? 'Alt+Tab' : 'Tab');
-    const skip = page.getByRole('link', { name: 'Skip to content' });
-    await expect(skip).toBeFocused();
-    await expect(skip).toBeVisible();
-    await expect(skip).toBeInViewport();
-    await expect(page.locator('html')).toHaveAttribute('data-boot', 'bypassed');
-    await expect(page.locator('.site-loader')).toBeHidden();
-    expect(await page.locator('main').evaluate(el => getComputedStyle(el).opacity)).toBe('1');
-    expect(await page.locator('.world').evaluate(el => getComputedStyle(el).opacity)).toBe('0');
-    expect(await page.locator('.scene-fallback').evaluateAll(images => images.every(el => getComputedStyle(el).opacity === '0'))).toBe(true);
-    expect((await snapshot(page)).entrance.progress).toBe(1);
+    await expect(page.locator('.site-loader')).toBeVisible();
+    expect(await page.evaluate(() => scrollY)).toBe(0);
+    expect((await snapshot(page)).world).toBe(null);
   } finally { gate.release(); }
+  await expect(page.locator('body')).toHaveAttribute('data-experience-state', 'ready');
   await expect(page.locator('html')).toHaveAttribute('data-boot', 'complete');
-  const final = await snapshot(page);
-  expect(final.entrance).toEqual({ started: true, progress: 1 });
-  expect(final.world.entranceScale).toBe(1);
-  expect(final.interaction.enabled).toBe(true);
-  expect(await page.evaluate(() => window.__bootSamples.some(sample => sample.boot === 'revealing'))).toBe(false);
+  const before = await snapshot(page);
+  expect(before.world.warmedTargets).toBe(8);
+  await expect.poll(async () => (await snapshot(page)).orbitTime).toBeGreaterThan(before.orbitTime + .15);
 });
 
 test('entry module failure releases the loader and retains the unenhanced native portfolio', async ({ page }) => {
-  await page.route('**/assets/black-geometry/generated/main.js', route => route.abort());
+  await page.route('**/assets/black-geometry/generated/main.js*', route => route.abort());
   await page.goto('/?bg-debug');
   await expect(page.locator('html')).toHaveAttribute('data-boot', 'fallback');
   await expect(page.locator('.site-loader')).toBeHidden();
@@ -340,7 +339,7 @@ test('stopping at a former partial-scroll position finishes the selected sculptu
       return samples;
     }, id);
     expect(samples.length).toBeGreaterThan(3);
-    expect(samples.every(sample => sample.target === sample.next && sample.desiredBlend === 0 && sample.decoded <= 2 && sample.interiorContoursAligned)).toBe(true);
+    expect(samples.every(sample => sample.target === sample.next && sample.desiredBlend === 0 && sample.decoded === 8 && sample.interiorContoursAligned)).toBe(true);
     const moving = samples.filter(sample => sample.blend > 0 && sample.blend < 1);
     observedTransitions += moving.length;
     expect(moving.every(sample => !sample.opaque && sample.opacity === (sample.worldTarget === 'notes' ? .32 : .88) && sample.depthPrepass && sample.activeMeshes === 2 && sample.activeDepthMeshes === 2)).toBe(true);
@@ -454,13 +453,13 @@ for (const [start, next, startTarget, nextTarget] of [
   expect(reversal.allDepthPassesAligned).toBe(true);
   expect(reversal.state.interaction.orientation).toEqual(before.interaction.orientation);
   expect(reversal.state.world.orbitAges[0]).toBeGreaterThanOrEqual(before.world.orbitAges[0]);
-  expect(reversal.state.world.decodedTargets).toBeLessThanOrEqual(2);
+  expect(reversal.state.world.decodedTargets).toBe(8);
   await jump(page, next); await jump(page, start);
   const fresh = await snapshot(page);
   expect(fresh.interaction.orientation).toEqual([0, 0, 0, 1]);
   expect(fresh.world.orbitAges[0]).toBeLessThan(1.6);
   expect(fresh.world.depthPrepass).toBe(true);
-  expect(fresh.world.decodedTargets).toBeLessThanOrEqual(2);
+  expect(fresh.world.decodedTargets).toBe(8);
 });
 
 test('education entries are separate reading screens with native downward navigation', async ({ page }) => {
@@ -610,10 +609,14 @@ for (const [width, height] of [[1440, 900], [390, 844], [740, 390]]) test(`Notes
   const ranges = (await snapshot(page)).ranges;
   const project = ranges.find(range => range.id === 'project-congestion');
   if (width === 390) {
-    // On the stacked layout, exercise the scroll gesture that brings Notes
-    // below the fixed artwork, including WebKit's native snap selection.
+    // Read the long project's remaining text first. The next gesture advances
+    // to Notes; a single fling must not skip the project's reading area.
     await page.mouse.move(25, height - 80);
-    await page.mouse.wheel(0, ranges.find(range => range.id === 'notes').start - project.start);
+    if (project.stop > project.start) {
+      await page.mouse.wheel(0, project.stop - project.start);
+      await scrollStopped(page);
+    }
+    await page.mouse.wheel(0, 640);
   } else {
     // Read to the project's end before clicking an offscreen arrow.
     if (project.stop > project.start) {
@@ -789,12 +792,37 @@ test('OS reduced motion skips heavy imports, renders fallback identities, and st
   expect(after.interaction.enabled).toBe(false); await expect(page.locator('.world')).not.toHaveAttribute('tabindex');
 });
 
-for (const [width, height] of [[320, 740], [390, 844], [768, 1024], [600, 390], [740, 390], [1440, 900], [1920, 1080]]) test(`responsive ${width}x${height}: content and high-quality artwork fit without horizontal overflow`, async ({ page }, info) => {
+for (const [width, height] of [[320, 568], [320, 740], [360, 640], [390, 844], [768, 1024], [600, 390], [740, 390], [800, 600], [1024, 768], [1280, 720], [1440, 900], [1920, 1080], [2560, 1440]]) test(`responsive ${width}x${height}: content and high-quality artwork fit without horizontal overflow`, async ({ page }, info) => {
   test.setTimeout(45000); await page.setViewportSize({ width, height }); await ready(page);
-  for (const id of ['hero', 'education-drexel', 'project-surface', 'notes']) {
+  for (const [id] of identities.slice(0, -1)) {
     await jump(page, id);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
     assertActiveGeometry(await snapshot(page), identities.find(([entry]) => entry === id)[1]);
+    // Check actual text fragments; scrollWidth alone misses words hidden by the
+    // fixed artwork and arrows overlapping the final line of an entry.
+    const overflow = await page.locator(`[data-scene="${id}"]`).evaluate(entry => {
+      const art = document.querySelector('.world').getBoundingClientRect();
+      const stacked = art.left < 1;
+      const right = stacked ? document.documentElement.clientWidth : art.left;
+      const walker = document.createTreeWalker(entry, NodeFilter.SHOW_TEXT);
+      const issues = [];
+      while (walker.nextNode()) {
+        const text = walker.currentNode;
+        if (!text.textContent.trim()) continue;
+        const range = document.createRange(); range.selectNodeContents(text);
+        for (const rect of range.getClientRects()) {
+          if (rect.width && (rect.left < -1 || rect.right > right + 1)) issues.push(text.textContent.trim());
+        }
+      }
+      const arrow = entry.querySelector(':scope > .scene-next');
+      if (arrow) {
+        const arrowBox = arrow.getBoundingClientRect();
+        const previous = arrow.previousElementSibling.getBoundingClientRect();
+        if (previous.bottom > arrowBox.top + 1) issues.push('Arrow overlaps content');
+      }
+      return issues;
+    });
+    expect(overflow).toEqual([]);
     const stage = await page.locator('.world').boundingBox(), stacked = width < 800 && !(width >= 600 && height <= 500);
     expect(stage.width).toBeGreaterThan(stacked ? width * 0.9 : width * 0.4);
     expect(stage.height).toBeGreaterThan(stacked ? 150 : height * 0.75);

@@ -39,6 +39,15 @@ export function withStylesheetReference(html, name) {
   return updated;
 }
 
+export function withEntryReference(html, contents) {
+  const version = createHash('sha256').update(contents).digest('hex').slice(0, 12);
+  let references = 0;
+  const updated = html.replace(/(<script\b[^>]*\bdata-experience-entry\b[^>]*\bsrc=")assets\/black-geometry\/generated\/main\.js(?:\?[^"\s]*)?(")/g,
+    (_, before, after) => { references++; return `${before}assets/black-geometry/generated/main.js?v=${version}${after}`; });
+  if (references !== 1) throw new Error(`Expected exactly one experience entry script; found ${references}.`);
+  return updated;
+}
+
 export async function expectedOutputs() {
   const result = await build({
     absWorkingDir: ROOT,
@@ -93,9 +102,9 @@ export async function buildExperience({ check = false } = {}) {
   const indexPath = path.join(ROOT, "index.html");
   const html = await fs.readFile(indexPath, "utf8");
   const stylesheetName = [...expected.keys()].find(name => STYLESHEET_NAME.test(name));
-  const updatedHTML = withStylesheetReference(html, stylesheetName);
+  const updatedHTML = withEntryReference(withStylesheetReference(html, stylesheetName), expected.get('main.js'));
   const stylesheetChanged = updatedHTML !== html;
-  const stale = [...differences, ...(stylesheetChanged ? ["index.html stylesheet reference"] : [])];
+  const stale = [...differences, ...(stylesheetChanged ? ["index.html asset references"] : [])];
   if (check && stale.length)
     throw new Error(
       `Generated assets or stylesheet reference are stale or missing: ${stale.join(", ")}. Run npm run build:experience.`,

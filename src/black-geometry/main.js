@@ -1,11 +1,13 @@
 import { DEFAULTS, motionPolicy, QUALITY } from './preferences.js';
 import { chapterState, cameraPose, createTransition, advanceTransition } from './scene-state.js';
 import { createInteraction } from './interaction.js';
+import { createSectionScroll } from './section-scroll.js';
 
 const body = document.body;
 const root = document.documentElement;
 const container = document.querySelector('.world');
 const poster = document.querySelector('#sculpture-poster');
+const animationAction = document.querySelector('.animation-action');
 const system = matchMedia('(prefers-reduced-motion: reduce)');
 const finePointer = matchMedia('(pointer: fine)');
 const sceneElements = [...document.querySelectorAll('[data-scene]')];
@@ -16,6 +18,7 @@ const profile = 'high';
 const project = { shortcut: 'open', path: 1 };
 const navigation = performance.getEntriesByType('navigation')[0];
 let motion = motionPolicy(system.matches);
+let motionOverride = false;
 let world, worldImport, enhancementPending;
 let failed = root.dataset.boot === 'fallback', disposed = false, active = !document.hidden;
 const introVisit = root.dataset.boot === 'loading' && navigation?.type !== 'back_forward' && (!location.hash || location.hash === '#top');
@@ -32,6 +35,8 @@ const interaction = createInteraction({
 });
 body.dataset.enhanced = 'true';
 body.dataset.motion = motion;
+animationAction.hidden = motion === 'full';
+animationAction.title = 'Your device requests reduced motion. Enable the rotating sculptures for this visit.';
 
 function finishBoot(status = 'complete') {
   root.dataset.boot = status;
@@ -65,7 +70,7 @@ function measure() {
     previous = start;
     // Long native snap areas allow scrolling freely throughout this interval.
     const stop = Math.min(end, Math.max(start, rect.bottom + scrollY + marginBottom - height + bottom));
-    return { id: element.dataset.scene, target: element.dataset.target, start, stop, end };
+    return { id: element.dataset.scene, target: element.dataset.target, start, stop, end, snap: style.scrollSnapAlign !== 'none' };
   });
   world?.resize(width, height, devicePixelRatio);
   layoutDirty = false;
@@ -111,6 +116,9 @@ function fail(error) {
   showStatic('fallback');
   world?.dispose();
   world = undefined;
+  animationAction.textContent = 'Retry animation';
+  animationAction.title = 'The animation could not load. Try again.';
+  animationAction.hidden = false;
   if (debug) console.warn('Sculpture fallback:', error?.message || error);
 }
 function draw(now) {
@@ -136,8 +144,9 @@ function draw(now) {
   // Only the opening hero grows into view. A deep link or an early scroll
   // always gets its complete sculpture, and returning never replays the intro.
   if (state.target !== 'hero') entrance.progress = 1;
-  else if (entrance.started) entrance.progress = Math.min(1, entrance.progress + elapsed / 1100);
+  else if (entrance.started) entrance.progress = Math.min(1, entrance.progress + delta / 1.1);
   try {
+    world.recordFrame(elapsed);
     world.render({ state: visualState,
       pose: cameraPose(visualState, { time: orbitTime, pointer, fullMotion: true }),
       time, orbitTime, pointer, project, interactionTarget: state.target,
@@ -151,7 +160,7 @@ function draw(now) {
       // that first successful frame, not while it is still being prepared.
       lastFrame = performance.now();
       finishBoot(entrance.progress < 1 ? 'revealing' : 'complete');
-    } else if (entrance.progress === 1 && root.dataset.boot === 'revealing') finishBoot();
+    } else if (entrance.progress === 1 && ['revealing', 'loading'].includes(root.dataset.boot)) finishBoot();
     interaction.setEnabled(entrance.progress === 1);
   } catch (error) { fail(error); return; }
   frame = requestAnimationFrame(draw);
@@ -166,11 +175,12 @@ async function enhance() {
   enhancementPending = (async () => {
     try {
       worldImport ||= import('./world.js');
-      const module = await worldImport;
+      const [module] = await Promise.all([worldImport, document.fonts?.ready]);
       if (disposed || failed || motion !== 'full') return;
       const created = await module.createWorld({ container, quality: profile, onFailure: fail });
       if (disposed || failed) { created?.dispose(); return; }
       world = created;
+      if (motion !== 'full') { showStatic(); return; }
       measure();
       updateScene();
       settlePresentation();
@@ -194,18 +204,40 @@ function invalidate() {
   if (motion !== 'full' || !world || failed) syncStatic();
 }
 on(system, 'change', () => {
+  motionOverride = false;
   motion = motionPolicy(system.matches);
   body.dataset.motion = motion;
+  animationAction.hidden = motion === 'full';
   invalidate();
   if (motion !== 'full') showStatic();
   else enhance();
 });
-on(window, 'portfolio:boot-fallback', () => fail(new Error('Sculpture startup timed out')));
-on(window, 'portfolio:boot-bypass', () => { entrance.progress = 1; });
+on(animationAction, 'click', () => {
+  if (failed) { location.reload(); return; }
+  motionOverride = true;
+  motion = 'full';
+  body.dataset.motion = motion;
+  animationAction.hidden = true;
+  root.dataset.boot = 'loading';
+  enhance();
+});
+on(window, 'portfolio:boot-fallback', () => fail(new Error('Sculpture entry module failed')));
 on(window, 'scroll', () => {
   scrollY = window.scrollY;
   if (motion !== 'full' || !world || failed) syncStatic();
 }, { passive: true });
+const sectionScroll = createSectionScroll({
+  getRanges: () => { if (layoutDirty) measure(); return ranges.filter(range => range.snap); },
+  getY: () => window.scrollY,
+  getHeight: () => innerHeight,
+  move: (top, behavior) => window.scrollTo({ top, behavior }),
+  isReduced: () => motion !== 'full',
+  isLoading: () => root.dataset.boot === 'loading',
+});
+on(window, 'wheel', sectionScroll, { passive: false });
+on(window, 'scrollend', sectionScroll.finish);
+for (const event of ['pointerdown', 'touchstart', 'keydown', 'resize', 'hashchange'])
+  on(window, event, sectionScroll.reset, { passive: true });
 on(window, 'resize', invalidate, { passive: true });
 on(window, 'hashchange', invalidate);
 on(document, 'click', event => {
@@ -284,11 +316,10 @@ if (navigation?.type === 'back_forward' && returnAnchor && reading?.href === loc
 }
 if (debug) window.__blackGeometry = {
   snapshot: () => ({
-    motion, preferences: { ...DEFAULTS }, profile, state: { ...state }, visualState: { ...visualState },
+    motion, motionOverride, preferences: { ...DEFAULTS }, profile, state: { ...state }, visualState: { ...visualState },
     transition: { ...transition }, project: { ...project }, time, orbitTime,
     interaction: interaction.snapshot(), active, pendingFrame: !!frame, world: world?.snapshot() || null,
     ranges: structuredClone(ranges), entrance: { ...entrance },
   }),
 };
-if ('requestIdleCallback' in window) requestIdleCallback(() => enhance(), { timeout: 400 });
-else setTimeout(() => enhance(), 0);
+enhance();

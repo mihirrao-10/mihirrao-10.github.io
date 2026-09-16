@@ -25,7 +25,7 @@ for (const file of publicFiles) {
 }
 const html = await fs.readFile(path.join(ROOT, "index.html"), "utf8");
 const refs = [...html.matchAll(/(?:src|href)="([^"#]+)"/g)]
-  .map((match) => match[1])
+  .map((match) => match[1].split(/[?#]/)[0])
   .filter((value) => !value.includes(":"));
 for (const reference of refs)
   await fs.access(path.join(ROOT, "dist", reference));

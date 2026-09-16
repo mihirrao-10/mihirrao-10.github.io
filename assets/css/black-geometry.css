@@ -16,10 +16,10 @@
 * { box-sizing: border-box; }
 html {
   background: var(--bg); font-size: 17px; scroll-padding-top: 0;
-  scroll-snap-type: y mandatory; scroll-behavior: auto;
+  scroll-snap-type: y mandatory; scroll-behavior: auto; scrollbar-gutter: stable;
 }
 /* Whole entries remain native snap areas, including their readable overflow. */
-[data-scene] { scroll-snap-align: start; scroll-snap-stop: normal; scroll-margin-block: 0; }
+[data-scene] { scroll-snap-align: start; scroll-snap-stop: always; scroll-margin-block: 0; }
 body {
   margin: 0;
   color: var(--text);
@@ -49,6 +49,8 @@ button:disabled { cursor: default; color: var(--muted); opacity: 0.65; }
 }
 .skip-link { position: fixed; top: -100px; left: 1rem; z-index: 40; padding: 0.6rem 1rem; background: #111; }
 .skip-link:focus { top: 0.5rem; }
+.animation-action { position: fixed; top: max(1rem, env(safe-area-inset-top)); right: max(1rem, env(safe-area-inset-right)); z-index: 5; background: var(--bg); font-size: .8rem; }
+[data-boot="loading"] .animation-action { visibility: hidden; }
 .world {
   position: fixed; top: 0; right: 0; bottom: 0; left: 47%;
   z-index: 2; pointer-events: none; overflow: hidden; background: var(--bg);
@@ -67,8 +69,10 @@ body:not([data-enhanced]) .world { display: none; }
 .scene-fallback { display: block; width: 100%; height: auto; object-fit: contain; }
 [data-enhanced] .scene-fallback { display: none; opacity: 0; }
 .hero, main, .site-footer { position: relative; z-index: 1; }
+.hero, main, .site-footer { overflow-wrap: anywhere; }
+.entry-header > *, .entry-subheader > * { min-width: 0; max-width: 100%; }
 .hero {
-  min-height: 100vh; min-height: 100svh; padding: 6rem var(--content-left);
+  min-height: 100vh; min-height: 100svh; min-height: 100dvh; padding: 6rem var(--content-left);
   display: flex; flex-direction: column; justify-content: center;
 }
 .hero-art { position: absolute; pointer-events: none; width: 53%; height: 90%; inset: 6% 0 auto auto; }
@@ -96,13 +100,13 @@ body:not([data-enhanced]) .world { display: none; }
   to { opacity: 1; transform: translateY(0); }
 }
 @keyframes sculpture-arrive { from { opacity: 0; } to { opacity: 1; } }
-main { width: 47%; margin: 0; padding: 0 0 0 var(--content-left); }
+main { width: 47%; margin: 0; padding: 0 1.5rem 0 var(--content-left); }
 main > section { margin: 0; padding: 0; position: relative; border: 0; }
 /* Every entry is a complete physical snap area. Real top padding keeps the
    section label below the mobile artwork, while long entries remain readable
    in both browser engines without artificial scroll margins. */
 .scene-page {
-  position: relative; min-height: 100svh; margin: 0; border: 0;
+  position: relative; min-height: 100svh; min-height: 100dvh; margin: 0; border: 0;
   padding: var(--page-top) 0 6rem;
 }
 .section-heading {
@@ -219,6 +223,11 @@ li::marker { color: var(--strong); }
     flex-direction: row; align-items: baseline; gap: 0.3rem 0.7rem;
   }
 }
+@media (min-width: 1000px) and (max-width: 1100px) {
+  #experience .scene-page { padding-bottom: 4.5rem; }
+  #experience .experience-points { font-size: .92rem; line-height: 1.45; }
+  #experience .experience-points li { margin: .55rem 0; }
+}
 @media (max-width: 799px) {
   :root { --content-left: 1.5rem; --art-height: clamp(285px, 43svh, 430px); --page-top: calc(var(--art-height) + 1.2rem); --notes-tail: calc(4.3rem + 3rem); }
   .world {
@@ -226,7 +235,7 @@ li::marker { color: var(--strong); }
     z-index: 3; background: var(--bg);
   }
   .hero {
-    min-height: 100svh; padding: calc(var(--art-height) + 2rem) var(--content-left) 5rem;
+    min-height: 100svh; min-height: 100dvh; padding: calc(var(--art-height) + 2rem) var(--content-left) 5rem;
     justify-content: flex-start;
   }
   .hero-name { font-size: clamp(2.2rem, 9.8vw, 4rem); max-width: none; }
@@ -268,12 +277,12 @@ li::marker { color: var(--strong); }
   .hero-title { max-width: 250px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  html { scroll-snap-type: none; scroll-behavior: auto; }
+  html { scroll-behavior: auto; }
   *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; animation: none !important; }
 }
 [data-motion="off"] *, [data-motion="reduced"] * { transition: none !important; animation: none !important; }
 @media print {
-  .site-loader { display: none !important; }
+  .site-loader, .animation-action { display: none !important; }
   [data-boot="loading"] .hero, [data-boot="loading"] main, [data-boot="loading"] .site-footer { opacity: 1 !important; }
   :root { color-scheme: light; --bg: white; --text: #222; --strong: #111; --muted: #444; --accent: #222; }
   body, [data-scene] { --scene-title: #111 !important; --scene-accent: #222 !important; --detail-accent: #222 !important; --scene-hover: #111 !important; }

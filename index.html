@@ -5,14 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     .site-loader { display: none; }
-    html[data-boot="loading"] { background: #080808; }
+    html[data-boot="loading"] { background: #080808; overflow: hidden; }
     [data-boot="loading"] .hero, [data-boot="loading"] main,
     [data-boot="loading"] .site-footer, [data-boot="loading"] .world { opacity: 0 !important; pointer-events: none !important; }
-    [data-boot="bypassed"] .world, [data-boot="bypassed"] .scene-fallback { opacity: 0 !important; pointer-events: none !important; }
     [data-boot="loading"] .site-loader {
       position: fixed; inset: 0; z-index: 30; display: grid; place-items: center;
       margin: 0; background: #080808; color: #e5e5e5; font: 500 12px/1.55 "STIX Two Text", "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
-      letter-spacing: .14em; text-transform: uppercase; pointer-events: none;
+      letter-spacing: .14em; text-transform: uppercase; pointer-events: auto;
     }
     .loader-dots > span { display: inline-block; animation: loading-dot 1.2s ease-in-out infinite; }
     .loader-dots > span:nth-child(2) { animation-delay: .16s; }
@@ -27,32 +26,24 @@
   </style>
   <script>
     (() => {
-      if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
       const root = document.documentElement;
-      root.dataset.boot = 'loading';
+      if (!matchMedia('(prefers-reduced-motion: reduce)').matches) root.dataset.boot = 'loading';
       const fallback = () => {
-        if (!['loading', 'bypassed'].includes(root.dataset.boot)) return;
+        if (root.dataset.boot !== 'loading') return;
         root.dataset.boot = 'fallback';
         window.dispatchEvent(new Event('portfolio:boot-fallback'));
       };
-      // The static document remains available even if the entry module fails
-      // to execute or its download never finishes.
-      const deadline = setTimeout(fallback, 12000);
-      window.addEventListener('portfolio:boot-complete', () => clearTimeout(deadline), { once: true });
-      // Reading and keyboard navigation can begin immediately on intent;
-      // the sculpture continues loading against its black background.
-      const bypass = () => {
-        if (root.dataset.boot !== 'loading') return;
-        root.dataset.boot = 'bypassed';
-        window.dispatchEvent(new Event('portfolio:boot-bypass'));
-      };
-      for (const event of ['pointerdown', 'wheel', 'touchstart', 'focusin'])
-        window.addEventListener(event, bypass, { once: true, passive: true });
+      // A slow download is still loading. Only an actual failure may fall back;
+      // input must never reveal an unprepared scene or move hidden content.
+      for (const event of ['wheel', 'touchmove'])
+        window.addEventListener(event, event => {
+          if (root.dataset.boot === 'loading' && !event.ctrlKey) event.preventDefault();
+        }, { passive: false });
       window.addEventListener('keydown', event => {
-        if (event.key === 'Tab' || event.key === 'Escape') bypass();
+        if (root.dataset.boot === 'loading' && ['Tab', ' ', 'PageDown', 'PageUp', 'Home', 'End', 'ArrowDown', 'ArrowUp'].includes(event.key)) event.preventDefault();
       });
       document.addEventListener('error', event => {
-        if (event.target.matches?.('script[data-experience-entry]')) { clearTimeout(deadline); fallback(); }
+        if (event.target.matches?.('script[data-experience-entry]')) fallback();
       }, true);
     })();
   </script>
@@ -68,11 +59,12 @@
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
     rel="stylesheet"
   />
-  <link rel="stylesheet" href="assets/black-geometry/generated/black-geometry-91a6a73d9a0c.css" />
+  <link rel="stylesheet" href="assets/black-geometry/generated/black-geometry-a1ade441fcb3.css" />
   <meta name="description" content="Mihir Rao — Theoretical Computer Scientist. Education, teaching, industry, mathematical projects, and personal notes." />
 </head>
 <body data-experience-state="static">
   <p class="site-loader" role="status" aria-live="polite" aria-atomic="true"><span>Loading<span class="loader-dots" aria-hidden="true"><span>.</span><span>.</span><span>.</span></span></span></p>
+  <button class="animation-action" hidden type="button">Enable animation</button>
   <a class="skip-link" href="#main">Skip to content</a>
   <div class="world" role="group" aria-label="Interactive sculpture" aria-describedby="rotation-instructions" aria-keyshortcuts="ArrowUp ArrowDown ArrowLeft ArrowRight Home" aria-hidden="true">
     <img id="sculpture-poster" src="assets/black-geometry/generated/sculpture-hero.svg" width="1000" height="850" alt="" />
@@ -313,6 +305,6 @@
   <footer class="site-footer" id="contact" data-scene="contact" data-target="notes">
     <a class="back-to-top" href="#top">Back to top</a>
   </footer>
-  <script type="module" data-experience-entry src="assets/black-geometry/generated/main.js"></script>
+  <script type="module" data-experience-entry src="assets/black-geometry/generated/main.js?v=f06b09c2a326"></script>
 </body>
 </html>

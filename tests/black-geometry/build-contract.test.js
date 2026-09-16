@@ -7,6 +7,7 @@ import {
   outputDifferences,
   fingerprintedStylesheet,
   withStylesheetReference,
+  withEntryReference,
   ROOT,
   OUTPUT,
 } from "../../tools/black-geometry/build.js";
@@ -23,6 +24,8 @@ test("generated assets are deterministic and every browser import resolves to a 
   const html = await fs.readFile(`${ROOT}/index.html`, "utf8");
   assert.equal(withStylesheetReference(html, stylesheetName), html,
     "The homepage must reference the current generated stylesheet; run build:experience after CSS edits");
+  assert.equal(withEntryReference(html, a.get('main.js')), html,
+    'Returning visitors must fetch the current entry module rather than stale chunk references');
   for (const [name, contents] of a) {
     if (!name.endsWith(".js")) continue;
     for (const match of Buffer.from(contents)
@@ -38,6 +41,14 @@ test("generated assets are deterministic and every browser import resolves to a 
     [],
     "Run build:experience after source edits; checks never silently regenerate runtime assets.",
   );
+});
+
+test('entry module versions change with runtime bytes and preserve the surrounding page', () => {
+  const html = '<p>Keep me</p><script type="module" data-experience-entry src="assets/black-geometry/generated/main.js"></script>';
+  const updated = withEntryReference(html, Buffer.from('abc'));
+  assert.equal(updated, html.replace('main.js', 'main.js?v=ba7816bf8f01'));
+  assert.equal(withEntryReference(updated, Buffer.from('abc')), updated);
+  assert.notEqual(withEntryReference(updated, Buffer.from('changed')), updated);
 });
 test("verification detects a missing, stale or extra asset without overwriting it", () => {
   const expected = new Map([

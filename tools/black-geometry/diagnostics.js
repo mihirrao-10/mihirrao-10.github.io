@@ -33,7 +33,7 @@ try {
     });
     assert.equal(result.state.quality, 'high');assert.equal(result.state.dpr, 2);
     assert.equal(result.state.opaque, false);assert.equal(result.state.opacity,.88);
-    assert.equal(result.state.depthPrepass,true);assert.ok(result.state.decodedTargets <= 2);
+    assert.equal(result.state.depthPrepass,true);assert.equal(result.state.decodedTargets,8);assert.equal(result.state.warmedTargets,8);
     report.performance.push({ label, width, height, cpuThrottle: rate, ...result });
     await context.close();
   }

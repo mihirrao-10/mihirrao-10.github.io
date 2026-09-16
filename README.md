@@ -77,7 +77,8 @@ missing or extra links.
 ## Black Geometry homepage
 
 The homepage remains real HTML with STIX Two Text and native links. Its minimal
-layout has no header, menu, audio or display controls. Teaching course codes,
+layout has no header, menu or audio. An animation button appears only when the
+device requests reduced motion or graphics need a retry. Teaching course codes,
 titles, specialization, honors and awards sit inside Education; industry bullets
 and project descriptions come from the local résumé.
 Titles and links use colors coordinated with each sculpture; introductory links
@@ -99,13 +100,27 @@ The two project sculptures preserve prepared numerical results from the actual
 studies. Their scientific geometry and paths remain authored data; no numerical
 solver runs on the homepage. See the provenance documents for extraction details.
 
-Motion is on and rendering always uses High quality, targeting 60fps at up to
-2× device pixel ratio. Old stored display settings are ignored. OS reduced motion
-uses contextual SVG artwork and stops animation. Failed imports, assets, shaders
-or context creation also retain the full readable page and static sculptures.
+Motion is on with all authored facets, targeting 60fps. Render resolution starts
+at up to 2× device pixel ratio within a 1.5-million-pixel budget. When sustained
+frame times exceed 25ms, the compositor glow is removed first, then resolution
+steps down if needed. Geometry detail is unchanged. Shared
+topology attributes and normalized packed colors/normals reduce buffer memory.
+Old stored display settings are ignored. OS reduced motion uses contextual SVG
+artwork; visitors can explicitly enable animation for their visit. Failed imports,
+assets, shaders or context creation retain the readable page, static sculptures
+and a retry button.
 
-Native vertical scroll snapping settles between sections while allowing free
-reading within oversized education, industry and notes areas. The renderer independently
+The loading screen remains until fonts, all eight decoded sculptures, shaders,
+GPU buffer uploads and warm-up draws are ready. A GPU fence confirms completion.
+There is no elapsed-time fallback, and wheel, keyboard or touch input cannot
+dismiss the loader. Prepared geometries remain resident, so changing sections
+does not decode or upload a new mesh. Returning visitors receive an entry-script
+URL versioned from its contents, as well as the fingerprinted stylesheet.
+
+Mandatory vertical scroll snapping stops at each section, including with reduced
+motion. Wheel gestures advance one entry and absorb trackpad momentum; oversized
+entries retain normal reading until their boundary. Touch scrolling, pinch zoom,
+keyboard navigation, hashes and scrollbars remain native. The renderer independently
 completes a 380ms eased dissolve between two intact tessellated surfaces, so stopping
 scrolling cannot freeze a partially assembled mesh. Reversals and skipped entries
 resolve to the latest selected identity. Entries fill at least their viewport

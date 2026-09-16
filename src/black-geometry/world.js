@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { QUALITY } from "./preferences.js";
+import { QUALITY, renderingDpr } from "./preferences.js";
 import { cameraPose } from "./scene-state.js";
 
 export const SCULPTURE_PALETTES = Object.freeze({
@@ -234,6 +234,7 @@ export async function createWorld({container,quality="high",onFailure}) {
     let seed=Math.imul(i^0x9e3779b9,0x85ebca6b);seed=Math.imul(seed^(seed>>>13),0xc2b2ae35);seed^=seed>>>16;
     facetSeeds.fill((seed>>>0)/4294967296,i*3,i*3+3);
   }
+  const baryAttribute=new THREE.BufferAttribute(bary,3),seedAttribute=new THREE.BufferAttribute(facetSeeds,1);
   const makeMaterial=endpoint=>new THREE.ShaderMaterial({
     vertexShader:VERTEX,fragmentShader:FRAGMENT,side:THREE.DoubleSide,transparent:true,depthWrite:false,forceSinglePass:true,
     uniforms:{progress:{value:0},endpoint:{value:endpoint},time:{value:0},opacity:{value:SCULPTURE_STYLE.opacity},stardust:{value:0},...Object.fromEntries([0,1,2,3].map(i=>[`palette${i}`,{value:new THREE.Color()}]))},
@@ -255,22 +256,31 @@ export async function createWorld({container,quality="high",onFailure}) {
     if(decoded.has(name))return decoded.get(name);
     const modelIndex=packed.manifest.models.findIndex(m=>m.name===name);
     if(modelIndex<0)throw new Error(`Unknown sculpture ${name}`);
-    const position=new Float32Array(count*9),color=new Float32Array(count*9),normal=new Float32Array(count*9),stride=packed.manifest.stride,offset=packed.offset+modelIndex*count*stride;
+    const position=new Float32Array(count*9),color=new Uint8Array(count*9),normal=new Int16Array(count*9),stride=packed.manifest.stride,offset=packed.offset+modelIndex*count*stride;
     for(let i=0;i<count;i++){
       const at=offset+i*stride;
-      for(let j=0;j<9;j++){position[i*9+j]=packed.view.getInt16(at+j*2,true)/4096;normal[i*9+j]=packed.view.getInt16(at+21+j*2,true)/32767;}
-      for(let k=0;k<3;k++)for(let j=0;j<3;j++)color[i*9+j*3+k]=packed.view.getUint8(at+18+k)/255;
+      for(let j=0;j<9;j++){position[i*9+j]=packed.view.getInt16(at+j*2,true)/4096;normal[i*9+j]=packed.view.getInt16(at+21+j*2,true);}
+      for(let k=0;k<3;k++)for(let j=0;j<3;j++)color[i*9+j*3+k]=packed.view.getUint8(at+18+k);
     }
     const bounds=packed.manifest.models[modelIndex].fitBounds,geometry=new THREE.BufferGeometry();
-    for(const [attribute,array] of Object.entries({position,normal,surfaceColor:color,barycentric:bary}))geometry.setAttribute(attribute,new THREE.BufferAttribute(array,3));
-    geometry.setAttribute('facetSeed',new THREE.BufferAttribute(facetSeeds,1));
+    geometry.setAttribute('position',new THREE.BufferAttribute(position,3));
+    // Preserve the packet's exact quantized values with normalized GPU inputs;
+    // share topology attributes across all eight retained geometries.
+    geometry.setAttribute('normal',new THREE.BufferAttribute(normal,3,true));
+    geometry.setAttribute('surfaceColor',new THREE.BufferAttribute(color,3,true));
+    geometry.setAttribute('barycentric',baryAttribute);
+    geometry.setAttribute('facetSeed',seedAttribute);
     const finite=position.every(Number.isFinite)&&normal.every(Number.isFinite);
     const result={name,position,color,normal,bounds,geometry,finite,orbitStart:orbitClock,orientation:[0,0,0,1]};decoded.set(name,result);return result;
   }
   let activeModels=[];
   function updatePair(a,b){
     const key=`${a}/${b}`;if(key===pair)return;
+    const previousNames=new Set(activeModels.map(model=>model.name));
     activeModels=[decode(a),decode(b)];
+    for(const model of activeModels)if(!previousNames.has(model.name)){
+      model.orbitStart=orbitClock;model.orientation=[0,0,0,1];
+    }
     for(let i=0;i<2;i++){
       // A target owns its geometry across endpoint changes. Both settled
       // meshes can reference it safely; only one endpoint is visible.
@@ -283,7 +293,7 @@ export async function createWorld({container,quality="high",onFailure}) {
     }
     finiteActiveBuffers=activeModels.every(model=>model.finite);
     if(!pair)emptyGeometry.dispose();
-    pair=key;for(const [name,model] of decoded)if(name!==a&&name!==b){model.geometry.dispose();decoded.delete(name);}
+    pair=key;
   }
   const routes=[];
   for(const model of packed.manifest.models)for(const path of model.paths){
@@ -299,21 +309,32 @@ export async function createWorld({container,quality="high",onFailure}) {
     }
     line.renderOrder=2;line.visible=false;pivot.add(line);routes.push({line,model:model.name,kind:path.kind,count,unitsPerPoint,shown:count});
   }
-  let width=1,height=1,lastDpr=1;
+  let width=1,height=1,lastDpr=1,dprCeiling=QUALITY[currentQuality].dpr;
+  let frameSamples=0,frameTotal=0,warmedTargets=0,effectsEnabled=true;
   const orbitRadius=12;
   let fitScales=[1,1];
   function resize(_width,_height,dpr=lastDpr){
     width=Math.max(1,container.clientWidth);height=Math.max(1,container.clientHeight);lastDpr=dpr;
-    renderer.setPixelRatio(Math.min(dpr,QUALITY[currentQuality].dpr));renderer.setSize(width,height,false);
-    canvas.style.filter="drop-shadow(0 0 12px rgb(153 190 240 / .46)) drop-shadow(0 0 3px rgb(229 239 255 / .38))";
+    renderer.setPixelRatio(renderingDpr(width,height,dpr,dprCeiling));renderer.setSize(width,height,false);
+    canvas.style.filter=effectsEnabled?"drop-shadow(0 0 12px rgb(153 190 240 / .46)) drop-shadow(0 0 3px rgb(229 239 255 / .38))":"none";
     camera.aspect=width/height;camera.updateProjectionMatrix();
   }
   updatePair("hero","hero");resize(0,0,devicePixelRatio);
-  return {
+  const world = {
     resize,setQuality(next){currentQuality=next;resize();},
-    // Reversing a still-visible transition resumes that visit; a target evicted
-    // from the two-entry cache starts fresh the next time it is decoded.
-    entryOrientation:name=>decoded.get(name)?.orientation.slice(),
+    recordFrame(milliseconds){
+      if(milliseconds<=0)return;
+      frameTotal+=Math.min(milliseconds,250);frameSamples++;
+      if(frameSamples<12||frameTotal<1500)return;
+      if(frameTotal/frameSamples>25){
+        // Shed the compositor glow before reducing artwork resolution.
+        if(effectsEnabled){effectsEnabled=false;resize();}
+        else if(renderer.getPixelRatio()>.75){dprCeiling=Math.max(.75,renderer.getPixelRatio()*.8);resize();}
+      }
+      frameTotal=frameSamples=0;
+    },
+    // Geometry stays prepared, but a completed visit resets its orbit and drag.
+    entryOrientation:name=>activeModels.find(model=>model.name===name)?.orientation.slice(),
     render({state,pose,time,orbitTime=time,pointer=[0,0],project,interaction,interactionTarget=state.nextTarget||state.target,entrance=1}){
       if(disposed)return;
       entranceProgress=THREE.MathUtils.clamp(entrance,0,1);
@@ -365,10 +386,39 @@ export async function createWorld({container,quality="high",onFailure}) {
       }
       // Prepare the hidden-contour shader during the existing loading screen,
       // so its first appearance in Notes does not interrupt a section change.
-      if(frames===0)renderer.compile(scene,camera);
       renderer.render(scene,camera);if(shaderFailed)throw new Error("Sculpture shader initialization failed");frames++;
     },
-    snapshot:()=>({frames,drawCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles,quality:currentQuality,dpr:renderer.getPixelRatio(),geometries:renderer.info.memory.geometries,contextLost:renderer.getContext().isContextLost(),target:currentName,nextTarget:nextName,blend,opacity:meshes[0].material.uniforms.opacity.value,opaque:meshes.every(mesh=>!mesh.material.transparent),depthPrepass:depthMeshes.every((depth,i)=>depth.geometry===meshes[i].geometry&&depth.material.uniforms===meshes[i].material.uniforms&&depth.material.depthWrite&&!depth.material.colorWrite&&depth.visible===meshes[i].visible&&depth.scale.equals(meshes[i].scale)&&depth.quaternion.equals(meshes[i].quaternion)&&depth.position.equals(meshes[i].position)),presentationScale:SCULPTURE_STYLE.scale,entranceProgress,entranceScale,gradientTime,orbitAges:activeModels.map(model=>Math.max(0,orbitClock-model.orbitStart)),endpointOpacities:meshes.map(mesh=>mesh.material.uniforms.opacity.value),activeMeshes:meshes.filter(m=>m.visible).length,activeDepthMeshes:depthMeshes.filter(m=>m.visible).length,activeInteriorMeshes:interiorMeshes.filter(m=>m.visible).length,interiorTargets:interiorMeshes.flatMap((mesh,i)=>mesh.visible?[activeModels[i].name]:[]),interiorContoursAligned:interiorMeshes.every((mesh,i)=>mesh.geometry===meshes[i].geometry&&mesh.material.uniforms===meshes[i].material.uniforms&&mesh.material.depthFunc===THREE.GreaterDepth&&!mesh.material.depthWrite&&mesh.scale.equals(meshes[i].scale)&&mesh.quaternion.equals(meshes[i].quaternion)&&mesh.position.equals(meshes[i].position)&&mesh.visible===(activeModels[i].name==='notes'&&meshes[i].visible)),shading:"tessellated",camera:camera.position.toArray(),cameraOrientation:camera.quaternion.toArray(),rotation:[...userRotation],userOrientation:[...userOrientation],orientation:meshes[0].quaternion.toArray(),dragging,facets:count,decodedTargets:decoded.size,finiteActiveBuffers,visibleRoutes:routes.filter(r=>r.line.visible).map(r=>r.kind),activePathPoints:routes.filter(r=>r.line.visible).map(r=>r.shown),width,height,orbitRadius,fitScales:[...fitScales]}),
+    snapshot:()=>({frames,warmedTargets,drawCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles,quality:currentQuality,dpr:renderer.getPixelRatio(),geometries:renderer.info.memory.geometries,contextLost:renderer.getContext().isContextLost(),target:currentName,nextTarget:nextName,blend,opacity:meshes[0].material.uniforms.opacity.value,opaque:meshes.every(mesh=>!mesh.material.transparent),depthPrepass:depthMeshes.every((depth,i)=>depth.geometry===meshes[i].geometry&&depth.material.uniforms===meshes[i].material.uniforms&&depth.material.depthWrite&&!depth.material.colorWrite&&depth.visible===meshes[i].visible&&depth.scale.equals(meshes[i].scale)&&depth.quaternion.equals(meshes[i].quaternion)&&depth.position.equals(meshes[i].position)),presentationScale:SCULPTURE_STYLE.scale,entranceProgress,entranceScale,gradientTime,orbitAges:activeModels.map(model=>Math.max(0,orbitClock-model.orbitStart)),endpointOpacities:meshes.map(mesh=>mesh.material.uniforms.opacity.value),activeMeshes:meshes.filter(m=>m.visible).length,activeDepthMeshes:depthMeshes.filter(m=>m.visible).length,activeInteriorMeshes:interiorMeshes.filter(m=>m.visible).length,interiorTargets:interiorMeshes.flatMap((mesh,i)=>mesh.visible?[activeModels[i].name]:[]),interiorContoursAligned:interiorMeshes.every((mesh,i)=>mesh.geometry===meshes[i].geometry&&mesh.material.uniforms===meshes[i].material.uniforms&&mesh.material.depthFunc===THREE.GreaterDepth&&!mesh.material.depthWrite&&mesh.scale.equals(meshes[i].scale)&&mesh.quaternion.equals(meshes[i].quaternion)&&mesh.position.equals(meshes[i].position)&&mesh.visible===(activeModels[i].name==='notes'&&meshes[i].visible)),shading:"tessellated",camera:camera.position.toArray(),cameraOrientation:camera.quaternion.toArray(),rotation:[...userRotation],userOrientation:[...userOrientation],orientation:meshes[0].quaternion.toArray(),dragging,facets:count,decodedTargets:decoded.size,finiteActiveBuffers,visibleRoutes:routes.filter(r=>r.line.visible).map(r=>r.kind),activePathPoints:routes.filter(r=>r.line.visible).map(r=>r.shown),width,height,orbitRadius,fitScales:[...fitScales]}),
     dispose(){if(disposed)return;disposed=true;canvas.removeEventListener("webglcontextlost",contextLost);[...meshes,...depthMeshes,...interiorMeshes].forEach(mesh=>mesh.material.dispose());for(const model of decoded.values())model.geometry.dispose();routes.forEach(({line})=>{line.geometry.dispose();line.material.dispose();});decoded.clear();renderer.dispose();canvas.remove();},
   };
+  try {
+    // Compile every material, decode every sculpture and upload every buffer
+    // while the loader covers the page. Yield between targets to keep it alive.
+    await renderer.compileAsync(scene,camera);
+    for(const {name} of packed.manifest.models){
+      if(disposed||renderer.getContext().isContextLost())throw new Error('Graphics preparation interrupted');
+      world.render({state:{target:name,nextTarget:name,blend:0},time:0,project:{shortcut:'open',path:1}});
+      warmedTargets++;
+      await new Promise(resolve=>setTimeout(resolve,0));
+    }
+    world.render({state:{target:'hero',nextTarget:'hero',blend:0},time:0,entrance:0,project:{shortcut:'open',path:1}});
+    // GPU submission is asynchronous: wait for the actual warm-up work before
+    // reporting readiness, including on integrated Windows laptop graphics.
+    const gl=renderer.getContext(),fence=gl.fenceSync(gl.SYNC_GPU_COMMANDS_COMPLETE,0);
+    if(!fence)throw new Error('Graphics preparation could not be synchronized');
+    gl.flush();
+    try {
+      await new Promise((resolve,reject)=>{
+        const poll=()=>{
+          if(disposed||gl.isContextLost()){reject(new Error('Graphics context lost during preparation'));return;}
+          const status=gl.clientWaitSync(fence,0,0);
+          if(status===gl.WAIT_FAILED)reject(new Error('Graphics preparation failed'));
+          else if(status===gl.TIMEOUT_EXPIRED)setTimeout(poll,16);
+          else resolve();
+        };poll();
+      });
+    } finally {gl.deleteSync(fence);}
+    frames=0;
+    return world;
+  } catch(error){world.dispose();throw error;}
 }
