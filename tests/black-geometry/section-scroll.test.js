@@ -16,10 +16,11 @@ function setup(t, { longEntry = false, reduced = false } = {}) {
   });
   return {
     moves, handle,
+    position(value) { y = value; },
     land() { y = moves.at(-1).top; handle.finish(); },
     wheel(deltaY, at, options = {}) {
-      time = at;
-      const event = { deltaY, deltaX: 0, deltaMode: 0, ...options, preventDefault() { this.defaultPrevented = true; } };
+      time = options.receivedAt ?? at;
+      const event = { deltaY, deltaX: 0, deltaMode: 0, timeStamp: at, ...options, preventDefault() { this.defaultPrevented = true; } };
       handle(event);
       return event;
     },
@@ -30,6 +31,19 @@ test('small mouse and trackpad movements advance without using an arrow', t => {
   const scroll = setup(t);
   scroll.wheel(3, 0);
   assert.deepEqual(scroll.moves, [{ top: 1000, behavior: 'smooth' }]);
+});
+
+test('continued input recovers a stalled transition instead of being swallowed', t => {
+  const scroll = setup(t);
+  scroll.wheel(120, 0);
+  // No frame has moved the viewport despite continued wheel input.
+  scroll.wheel(120, 80);
+  scroll.wheel(120, 160);
+  scroll.wheel(120, 240);
+  assert.deepEqual(scroll.moves.at(-1), { top: 1000, behavior: 'instant' });
+  scroll.land();
+  scroll.wheel(120, 500);
+  assert.equal(scroll.moves.at(-1).top, 2000);
 });
 
 test('continuous wheel notches keep advancing after each page settles', t => {
@@ -54,6 +68,30 @@ test('a decaying trackpad fling settles on one whole entry', t => {
   assert.equal(scroll.moves.at(-1).top, 2000);
 });
 
+test('a new trackpad swipe is accepted during the previous swipe cooldown', t => {
+  const scroll = setup(t);
+  scroll.wheel(120, 0); scroll.land();
+  scroll.wheel(60, 100);
+  scroll.wheel(20, 200);
+  scroll.wheel(5, 300);
+  scroll.wheel(20, 400);
+  assert.equal(scroll.moves.at(-1).top, 2000);
+});
+
+test('a trackpad swipe begun during a transition advances as soon as it lands', t => {
+  const scroll = setup(t);
+  scroll.wheel(120, 0);
+  scroll.position(300); scroll.wheel(60, 80);
+  scroll.position(600); scroll.wheel(12, 160);
+  scroll.position(800); scroll.wheel(3, 240);
+  scroll.position(950); scroll.wheel(20, 320);
+  assert.equal(scroll.moves.length, 1);
+  scroll.land();
+  assert.equal(scroll.moves.at(-1).top, 2000);
+  scroll.wheel(30, 440);
+  assert.equal(scroll.moves.at(-1).top, 2000);
+});
+
 test('slowing the wheel and continuing at that speed does not leave it locked', t => {
   const scroll = setup(t);
   for (let time = 0; time <= 2400; time += 80) {
@@ -67,6 +105,15 @@ test('gradual high-frequency trackpad momentum does not skip another entry', t =
   const scroll = setup(t);
   for (let time = 0; time <= 2000; time += 16) {
     scroll.wheel(80 * Math.exp(-time / 800), time);
+    scroll.land();
+  }
+  assert.equal(scroll.moves.length, 1);
+});
+
+test('delayed wheel delivery does not split one physical swipe into multiple gestures', t => {
+  const scroll = setup(t);
+  for (let time = 0; time <= 1000; time += 40) {
+    scroll.wheel(200 * Math.exp(-time / 400), time, { receivedAt: time * 10 });
     scroll.land();
   }
   assert.equal(scroll.moves.length, 1);

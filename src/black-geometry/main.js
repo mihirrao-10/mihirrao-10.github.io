@@ -2,6 +2,7 @@ import { DEFAULTS, motionPolicy, QUALITY } from './preferences.js';
 import { chapterState, cameraPose, createTransition, advanceTransition } from './scene-state.js';
 import { createInteraction } from './interaction.js';
 import { createSectionScroll } from './section-scroll.js';
+import { createScrollMotion } from './scroll-motion.js';
 
 const body = document.body;
 const root = document.documentElement;
@@ -226,23 +227,33 @@ on(window, 'scroll', () => {
   scrollY = window.scrollY;
   if (motion !== 'full' || !world || failed) syncStatic();
 }, { passive: true });
+const scrollMotion = createScrollMotion({
+  read: () => window.scrollY,
+  write: top => window.scrollTo({ top, behavior: 'instant' }),
+  setSnapping: enabled => {
+    if (enabled) root.style.removeProperty('scroll-snap-type');
+    else root.style.scrollSnapType = 'none';
+  },
+  requestFrame: callback => requestAnimationFrame(callback),
+  cancelFrame: id => cancelAnimationFrame(id),
+  onComplete: () => sectionScroll.finish(),
+});
 const sectionScroll = createSectionScroll({
   getRanges: () => { if (layoutDirty) measure(); return ranges.filter(range => range.snap); },
   getY: () => window.scrollY,
   getHeight: () => innerHeight,
-  move: (top, behavior) => window.scrollTo({ top, behavior }),
+  move: (top, behavior) => scrollMotion.move(top, behavior),
   isReduced: () => motion !== 'full',
   isLoading: () => root.dataset.boot === 'loading',
   afterInput: callback => requestAnimationFrame(callback),
 });
 on(window, 'wheel', sectionScroll, { passive: false });
-on(window, 'scrollend', sectionScroll.finish);
 on(window, 'touchstart', sectionScroll.touchStart, { passive: true });
 on(window, 'touchmove', sectionScroll.touchMove, { passive: true });
 on(window, 'touchend', sectionScroll.touchEnd, { passive: true });
 on(window, 'touchcancel', sectionScroll.reset, { passive: true });
 for (const event of ['pointerdown', 'keydown', 'resize', 'hashchange'])
-  on(window, event, sectionScroll.reset, { passive: true });
+  on(window, event, () => { sectionScroll.reset(); scrollMotion.cancel(); }, { passive: true });
 on(window, 'resize', invalidate, { passive: true });
 on(window, 'hashchange', invalidate);
 on(document, 'click', event => {
@@ -261,6 +272,8 @@ const observer = new ResizeObserver(invalidate);
 for (const element of [document.querySelector('main'), document.querySelector('#top'), container]) observer.observe(element);
 document.fonts?.ready.then(() => { if (!disposed) invalidate(); });
 function suspend() {
+  sectionScroll.reset();
+  scrollMotion.cancel();
   active = false;
   interaction.setEnabled(false);
   cancelAnimationFrame(frame);

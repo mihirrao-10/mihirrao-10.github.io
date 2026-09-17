@@ -118,9 +118,16 @@ does not decode or upload a new mesh. Returning visitors receive an entry-script
 URL versioned from its contents, as well as the fingerprinted stylesheet.
 
 Mandatory vertical scroll snapping stops at each section, including with reduced
-motion. Even small wheel gestures advance one entry and absorb fading trackpad
+motion. Wheel and swipe transitions use a 420ms frame-driven scroll instead of
+browser smooth scrolling, with native snapping suspended during the transition.
+An independent 700ms timer completes the move if animation frames stall;
+continued input also finishes a move that has made no progress for 240ms. These
+navigation deadlines do not affect the mesh loading screen. Even small wheel
+gestures advance one entry and absorb fading trackpad
 momentum. Continuing to turn the wheel advances again after the entry settles,
-without requiring a pause or an arrow click. Oversized entries retain normal
+without requiring a pause or an arrow click. A renewed trackpad stroke is accepted
+as soon as the current transition finishes, even while the previous stroke's
+momentum is fading. Oversized entries retain normal
 reading until their boundary. Vertical touch swipes settle on the adjacent entry
 at those boundaries; reading within an entry, pinch zoom, keyboard navigation,
 hashes and scrollbars remain native. The renderer independently
