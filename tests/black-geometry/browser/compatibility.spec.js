@@ -21,8 +21,8 @@ for (const width of [390, 1366]) test(`wheel gestures stop at the adjacent entry
   await page.setViewportSize({ width, height: 768 });
   await ready(page);
   await page.mouse.move(30, 700);
-  // Test Windows-style wheel notches as well as a large touchpad fling.
-  for (const delta of [3, 120, 5000]) {
+  // Small trackpad movements and Windows-style wheel notches both move natively.
+  for (const delta of [3, 120]) {
     await page.evaluate(() => scrollTo({ top: 0, behavior: 'instant' }));
     await stopped(page);
     await page.mouse.wheel(0, delta);
@@ -70,7 +70,7 @@ test('reduced-motion visitors can explicitly enable prepared, moving sculptures'
   await page.goto('/?bg-debug');
   const enable = page.getByRole('button', { name: 'Enable animation' });
   await expect(enable).toBeVisible();
-  expect(await page.evaluate(() => getComputedStyle(document.documentElement).scrollSnapType)).toBe('y mandatory');
+  expect(await page.evaluate(() => getComputedStyle(document.documentElement).scrollSnapType)).toBe('none');
   await enable.click();
   await expect(page.locator('html')).toHaveAttribute('data-boot', 'complete', { timeout: 20000 });
   await expect(enable).toBeHidden();

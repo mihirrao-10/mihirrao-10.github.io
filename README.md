@@ -117,20 +117,14 @@ dismiss the loader. Prepared geometries remain resident, so changing sections
 does not decode or upload a new mesh. Returning visitors receive an entry-script
 URL versioned from its contents, as well as the fingerprinted stylesheet.
 
-Mandatory vertical scroll snapping stops at each section, including with reduced
-motion. Wheel and swipe transitions use a 420ms frame-driven scroll instead of
-browser smooth scrolling, with native snapping suspended during the transition.
-An independent 700ms timer completes the move if animation frames stall;
-continued input also finishes a move that has made no progress for 240ms. These
-navigation deadlines do not affect the mesh loading screen. Even small wheel
-gestures advance one entry and absorb fading trackpad
-momentum. Continuing to turn the wheel advances again after the entry settles,
-without requiring a pause or an arrow click. A renewed trackpad stroke is accepted
-as soon as the current transition finishes, even while the previous stroke's
-momentum is fading. Oversized entries retain normal
-reading until their boundary. Vertical touch swipes settle on the adjacent entry
-at those boundaries; reading within an entry, pinch zoom, keyboard navigation,
-hashes and scrollbars remain native. The renderer independently
+Scrolling belongs to the browser. Wheel, touch and keyboard observers are passive;
+there are no wheel cancellations, gesture cooldowns, input queues, custom scroll
+animation loops, or competing CSS snap rules. The loading screen locks the viewport
+with CSS. The fixed artwork uses `overflow: clip` so it is not a nested scroll container.
+After native scrolling and momentum stop, a small position-based helper aligns a
+partial entry in the direction of travel. New input immediately interrupts that
+alignment. Long entries retain normal reading throughout their content. Pinch zoom,
+hashes, scrollbars and focus navigation remain native. The renderer independently
 completes a 380ms eased dissolve between two intact tessellated surfaces, so stopping
 scrolling cannot freeze a partially assembled mesh. Reversals and skipped entries
 resolve to the latest selected identity. Entries fill at least their viewport

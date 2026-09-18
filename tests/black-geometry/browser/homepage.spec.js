@@ -226,7 +226,7 @@ test('delayed sculpture data keeps a black loader until the first live frame, th
   await expect.poll(async () => (await snapshot(page)).world.frames).toBeGreaterThan(final.world.frames);
 });
 
-test('slow loading stays locked beyond the former deadline despite wheel, touch and keyboard input', async ({ page }) => {
+test('slow loading stays locked beyond the former deadline despite wheel, touch and keyboard input', async ({ page }, info) => {
   test.setTimeout(45000);
   const gate = await gateSculptureData(page);
   try {
@@ -235,7 +235,17 @@ test('slow loading stays locked beyond the former deadline despite wheel, touch 
     await page.mouse.wheel(0, 2000);
     await page.keyboard.press('Tab');
     await page.keyboard.press('PageDown');
-    await page.dispatchEvent('body', 'touchmove', { cancelable: true });
+    if (info.project.name === 'chromium') {
+      const client = await page.context().newCDPSession(page);
+      await client.send('Emulation.setTouchEmulationEnabled', { enabled: true });
+      await client.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x: 200, y: 600 }] });
+      for (let y = 560; y >= 200; y -= 40) {
+        await client.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: 200, y }] });
+        await page.waitForTimeout(20);
+      }
+      await client.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+      await client.detach();
+    }
     await page.waitForTimeout(12500);
     await expect(page.locator('html')).toHaveAttribute('data-boot', 'loading');
     await expect(page.locator('.site-loader')).toBeVisible();
@@ -647,7 +657,7 @@ for (const [width, height] of [[1440, 900], [390, 844], [740, 390]]) test(`Notes
 test('native wheel snapping permits reading complete education, industry and notes entries', async ({ page }) => {
   test.setTimeout(45000);
   await page.setViewportSize({ width: 390, height: 844 }); await ready(page);
-  expect(await page.evaluate(() => getComputedStyle(document.documentElement).scrollSnapType)).toBe('y mandatory');
+  expect(await page.evaluate(() => getComputedStyle(document.documentElement).scrollSnapType)).toBe('none');
   await page.mouse.move(25, 720); await page.mouse.wheel(0, 640); await scrollStopped(page);
   const snapped = await page.evaluate(() => ({ y: scrollY, ranges: window.__blackGeometry.snapshot().ranges }));
   expect(snapped.y).toBeGreaterThan(100);

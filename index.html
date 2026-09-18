@@ -33,12 +33,8 @@
         root.dataset.boot = 'fallback';
         window.dispatchEvent(new Event('portfolio:boot-fallback'));
       };
-      // A slow download is still loading. Only an actual failure may fall back;
-      // input must never reveal an unprepared scene or move hidden content.
-      for (const event of ['wheel', 'touchmove'])
-        window.addEventListener(event, event => {
-          if (root.dataset.boot === 'loading' && !event.ctrlKey) event.preventDefault();
-        }, { passive: false });
+      // CSS locks the viewport while loading. Do not install blocking wheel or
+      // touch listeners: they would delay native scrolling even after loading.
       window.addEventListener('keydown', event => {
         if (root.dataset.boot === 'loading' && ['Tab', ' ', 'PageDown', 'PageUp', 'Home', 'End', 'ArrowDown', 'ArrowUp'].includes(event.key)) event.preventDefault();
       });
@@ -59,7 +55,7 @@
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
     rel="stylesheet"
   />
-  <link rel="stylesheet" href="assets/black-geometry/generated/black-geometry-a1ade441fcb3.css" />
+  <link rel="stylesheet" href="assets/black-geometry/generated/black-geometry-20ffce1de7af.css" />
   <meta name="description" content="Mihir Rao — Theoretical Computer Scientist. Education, teaching, industry, mathematical projects, and personal notes." />
 </head>
 <body data-experience-state="static">
@@ -302,9 +298,9 @@
       </div>
     </section>
   </main>
-  <footer class="site-footer" id="contact" data-scene="contact" data-target="notes">
+  <footer class="site-footer" id="contact" data-scene="contact" data-target="notes" data-snap="none">
     <a class="back-to-top" href="#top">Back to top</a>
   </footer>
-  <script type="module" data-experience-entry src="assets/black-geometry/generated/main.js?v=248bdbafa2f6"></script>
+  <script type="module" data-experience-entry src="assets/black-geometry/generated/main.js?v=7011655a5946"></script>
 </body>
 </html>

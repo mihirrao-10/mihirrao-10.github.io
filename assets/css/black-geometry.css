@@ -16,10 +16,8 @@
 * { box-sizing: border-box; }
 html {
   background: var(--bg); font-size: 17px; scroll-padding-top: 0;
-  scroll-snap-type: y mandatory; scroll-behavior: auto; scrollbar-gutter: stable;
+  scroll-behavior: auto; scrollbar-gutter: stable;
 }
-/* Whole entries remain native snap areas, including their readable overflow. */
-[data-scene] { scroll-snap-align: start; scroll-snap-stop: always; scroll-margin-block: 0; }
 body {
   margin: 0;
   color: var(--text);
@@ -53,7 +51,7 @@ button:disabled { cursor: default; color: var(--muted); opacity: 0.65; }
 [data-boot="loading"] .animation-action { visibility: hidden; }
 .world {
   position: fixed; top: 0; right: 0; bottom: 0; left: 47%;
-  z-index: 2; pointer-events: none; overflow: hidden; background: var(--bg);
+  z-index: 2; pointer-events: none; overflow: clip; background: var(--bg);
 }
 .world[data-interactive="true"] { pointer-events: auto; cursor: grab; touch-action: pan-y pinch-zoom; user-select: none; -webkit-user-select: none; }
 .world[data-interactive="true"][data-dragging="true"] { cursor: grabbing; }
@@ -102,7 +100,7 @@ body:not([data-enhanced]) .world { display: none; }
 @keyframes sculpture-arrive { from { opacity: 0; } to { opacity: 1; } }
 main { width: 47%; margin: 0; padding: 0 1.5rem 0 var(--content-left); }
 main > section { margin: 0; padding: 0; position: relative; border: 0; }
-/* Every entry is a complete physical snap area. Real top padding keeps the
+/* Every entry fills a complete page. Real top padding keeps the
    section label below the mobile artwork, while long entries remain readable
    in both browser engines without artificial scroll margins. */
 .scene-page {
@@ -192,9 +190,8 @@ li::marker { color: var(--strong); }
 .notes-category:first-child { margin-top: 0; }
 #notes { scroll-margin-bottom: var(--notes-tail); }
 #notes > .section-heading { color: var(--scene-title); }
-/* Notes and the short footer share one sculpture and one continuous snap area.
+/* Notes and the short footer share one sculpture and one continuous reading area.
    Include the footer padding and its link so End can still reach Back to top. */
-#contact { scroll-snap-align: none; }
 .site-footer { width: calc(47% - var(--content-left)); margin: 0 0 0 var(--content-left); padding: 1.5rem 0 4.5rem; }
 .back-to-top, .back-to-top:visited {
   display: inline-flex; align-items: center; justify-content: center; min-height: 46px;
@@ -286,7 +283,7 @@ li::marker { color: var(--strong); }
   [data-boot="loading"] .hero, [data-boot="loading"] main, [data-boot="loading"] .site-footer { opacity: 1 !important; }
   :root { color-scheme: light; --bg: white; --text: #222; --strong: #111; --muted: #444; --accent: #222; }
   body, [data-scene] { --scene-title: #111 !important; --scene-accent: #222 !important; --detail-accent: #222 !important; --scene-hover: #111 !important; }
-  html { font-size: 11pt; scroll-snap-type: none; scroll-behavior: auto; }
+  html { font-size: 11pt; }
   .world, .scene-fallback, .open-project, .skip-link, .scene-next, .site-footer { display: none !important; }
   .hero { min-height: 0; padding: 1rem 0 2rem; }
   .hero-name { font-size: 3rem; max-width: none; }
