@@ -117,15 +117,19 @@ dismiss the loader. Prepared geometries remain resident, so changing sections
 does not decode or upload a new mesh. Returning visitors receive an entry-script
 URL versioned from its contents, as well as the fingerprinted stylesheet.
 
-Each wheel or trackpad gesture advances at most one entry. The wheel handler starts
-a browser smooth scroll immediately and consumes the rest of that gesture, including
-momentum arriving after the animation finishes. Renewed acceleration or sustained
-force during a decaying tail starts a fresh swipe without waiting for silence.
-A pause or direction reversal also starts a fresh gesture. These decisions never
-wait for animation completion or renderer frames. Long entries retain
-native wheel reading, capped at their reading boundary before a new gesture can
-leave the entry. Keyboard, touch, pinch zoom, hashes, scrollbars and focus navigation
-remain native, with passive observers aligning gaps without an idle delay.
+Scrolling uses native mandatory CSS snapping, as in the original implementation.
+Whole entries are snap areas; `scroll-snap-stop: always` asks the browser to stop
+inertial gestures at the next entry. Tall entries remain freely readable within
+their own area. Wheel, trackpad, touch, keyboard, pinch zoom, hashes, scrollbars
+and focus navigation stay with the browser. There is no JavaScript wheel
+cancellation, momentum classifier, cooldown or deferred snap timer. The browser
+has gesture-phase information that standard DOM wheel events do not expose.
+
+Navigation tests use Chromium gestures with begin/change/end phases and WebKit
+wheel input. Chromium's test API does not provide trackpad fling velocity, and
+WebKit's does not expose gesture phases. These tests cover native navigation and
+its independence from rendering; they do not substitute for physical trackpad QA.
+
 The loading screen locks the viewport with CSS. The fixed artwork uses
 `overflow: clip` so it is not a nested scroll container. The renderer independently
 completes a 380ms eased dissolve between two intact tessellated surfaces, so stopping

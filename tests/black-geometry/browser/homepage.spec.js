@@ -657,7 +657,7 @@ for (const [width, height] of [[1440, 900], [390, 844], [740, 390]]) test(`Notes
 test('native wheel snapping permits reading complete education, industry and notes entries', async ({ page }) => {
   test.setTimeout(45000);
   await page.setViewportSize({ width: 390, height: 844 }); await ready(page);
-  expect(await page.evaluate(() => getComputedStyle(document.documentElement).scrollSnapType)).toBe('none');
+  expect(await page.evaluate(() => getComputedStyle(document.documentElement).scrollSnapType)).toBe('y mandatory');
   await page.mouse.move(25, 720); await page.mouse.wheel(0, 640); await scrollStopped(page);
   const snapped = await page.evaluate(() => ({ y: scrollY, ranges: window.__blackGeometry.snapshot().ranges }));
   expect(snapped.y).toBeGreaterThan(100);
@@ -701,18 +701,22 @@ for (const [width, height] of [[390, 844], [768, 1024]]) test(`native touch swip
   await client.send('Emulation.setTouchEmulationEnabled', { enabled: true, maxTouchPoints: 1 }); await ready(page);
   expect(await page.locator('.world').evaluate(element => getComputedStyle(element).touchAction)).toBe('pan-y pinch-zoom');
   const touch = (type, x, y) => client.send('Input.dispatchTouchEvent', { type, touchPoints: type === 'touchEnd' ? [] : [{ x, y }] });
-  await touch('touchStart', 190, 310);
-  for (let y = 285; y >= 135; y -= 25) { await touch('touchMove', 191, y); await page.waitForTimeout(20); }
-  await touch('touchEnd'); await expect.poll(() => page.evaluate(() => scrollY)).toBeGreaterThan(50);
+  const nativeSwipe = (y, distance, preventFling = false, speed = 2500) => client.send('Input.synthesizeScrollGesture', {
+    gestureSourceType: 'touch', x: 190, y, yDistance: distance, speed, preventFling,
+  });
+  // The browser owns release velocity and momentum. A short, slow drag can
+  // return to its starting entry; a deliberate flick advances one entry.
+  await nativeSwipe(310, -175, true, 500); await scrollStopped(page);
+  expect((await snapshot(page)).state.chapter).toBe('hero');
+  expect(await page.evaluate(() => scrollY)).toBeLessThanOrEqual(2);
+  await nativeSwipe(310, -175); await expect.poll(() => page.evaluate(() => scrollY)).toBeGreaterThan(50);
   expect((await snapshot(page)).interaction.orientation).toEqual([0, 0, 0, 1]);
   await scrollStopped(page);
   const swipe = await snapshot(page), swipeY = await page.evaluate(() => scrollY);
   expect(swipe.state.chapter).toBe('education-uchicago');
   expect(swipeY).toBeGreaterThanOrEqual(swipe.ranges[1].start - 2);
   expect(swipeY).toBeLessThanOrEqual(swipe.ranges[1].stop + 2);
-  await touch('touchStart', 190, 140);
-  for (let y = 165; y <= 315; y += 25) { await touch('touchMove', 191, y); await page.waitForTimeout(20); }
-  await touch('touchEnd'); await scrollStopped(page);
+  await nativeSwipe(140, 175); await scrollStopped(page);
   expect((await snapshot(page)).state.chapter).toBe('hero');
   expect(await page.evaluate(() => scrollY)).toBeLessThanOrEqual(2);
   await jump(page, 'hero');

@@ -1,7 +1,6 @@
 import { DEFAULTS, motionPolicy, QUALITY } from './preferences.js';
 import { chapterState, cameraPose, createTransition, advanceTransition } from './scene-state.js';
 import { createInteraction } from './interaction.js';
-import { createSectionSnap } from './section-snap.js';
 
 const body = document.body;
 const root = document.documentElement;
@@ -235,21 +234,6 @@ on(window, 'scroll', () => {
   scrollY = window.scrollY;
   if (motion !== 'full' || !world || failed) syncStatic();
 }, { passive: true });
-const sectionSnap = createSectionSnap({
-  getRanges: () => { if (layoutDirty) measure(); return ranges.filter(range => range.snap); },
-  getY: () => window.scrollY,
-  move: (top, behavior) => window.scrollTo({ top, behavior }),
-  isReduced: () => motion !== 'full',
-  isLoading: () => root.dataset.boot === 'loading',
-});
-on(window, 'scroll', sectionSnap.scroll, { passive: true });
-on(window, 'wheel', sectionSnap.wheel, { passive: false });
-on(window, 'keydown', sectionSnap.input, { passive: true });
-on(window, 'pointerdown', sectionSnap.pointerDown, { passive: true });
-for (const event of ['pointerup', 'pointercancel']) on(window, event, sectionSnap.pointerUp, { passive: true });
-on(window, 'touchstart', sectionSnap.touchStart, { passive: true });
-for (const event of ['touchend', 'touchcancel']) on(window, event, sectionSnap.touchEnd, { passive: true });
-for (const event of ['resize', 'hashchange']) on(window, event, sectionSnap.reset, { passive: true });
 on(window, 'resize', invalidate, { passive: true });
 on(window, 'hashchange', invalidate);
 on(document, 'click', event => {
@@ -268,7 +252,6 @@ const observer = new ResizeObserver(invalidate);
 for (const element of [document.querySelector('main'), document.querySelector('#top'), container]) observer.observe(element);
 document.fonts?.ready.then(() => { if (!disposed) invalidate(); });
 function suspend() {
-  sectionSnap.reset();
   active = false;
   interaction.setEnabled(false);
   cancelAnimationFrame(frame);

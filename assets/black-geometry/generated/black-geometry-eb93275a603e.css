@@ -16,8 +16,11 @@
 * { box-sizing: border-box; }
 html {
   background: var(--bg); font-size: 17px; scroll-padding-top: 0;
-  scroll-behavior: auto; scrollbar-gutter: stable;
+  scroll-snap-type: y mandatory; scroll-behavior: auto; scrollbar-gutter: stable;
 }
+/* The browser owns gesture phases and momentum. Whole entries are snap areas,
+   so tall entries remain readable and a fling stops at the next entry. */
+[data-scene]:not([data-snap="none"]) { scroll-snap-align: start; scroll-snap-stop: always; scroll-margin-block-start: 0; }
 body {
   margin: 0;
   color: var(--text);
@@ -283,7 +286,7 @@ li::marker { color: var(--strong); }
   [data-boot="loading"] .hero, [data-boot="loading"] main, [data-boot="loading"] .site-footer { opacity: 1 !important; }
   :root { color-scheme: light; --bg: white; --text: #222; --strong: #111; --muted: #444; --accent: #222; }
   body, [data-scene] { --scene-title: #111 !important; --scene-accent: #222 !important; --detail-accent: #222 !important; --scene-hover: #111 !important; }
-  html { font-size: 11pt; }
+  html { font-size: 11pt; scroll-snap-type: none; }
   .world, .scene-fallback, .open-project, .skip-link, .scene-next, .site-footer { display: none !important; }
   .hero { min-height: 0; padding: 1rem 0 2rem; }
   .hero-name { font-size: 3rem; max-width: none; }

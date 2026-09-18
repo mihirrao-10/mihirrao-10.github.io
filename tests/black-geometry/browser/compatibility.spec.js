@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { swipe } from './gestures.js';
 
 const snapshot = page => page.evaluate(() => window.__blackGeometry.snapshot());
 async function ready(page) {
@@ -16,21 +17,20 @@ async function stopped(page) {
   }).toBe(true);
 }
 
-for (const width of [390, 1366]) test(`wheel gestures stop at the adjacent entry at ${width}px`, async ({ page }) => {
+for (const width of [390, 1366]) test(`native gestures reach the next entry and can return at ${width}px`, async ({ page, browserName }) => {
   test.setTimeout(60000);
   await page.setViewportSize({ width, height: 768 });
   await ready(page);
   await page.mouse.move(30, 700);
-  // Small trackpad movements and Windows-style wheel notches both move natively.
-  for (const delta of [3, 120]) {
+  for (const distance of [500, 650]) {
     await page.evaluate(() => scrollTo({ top: 0, behavior: 'instant' }));
     await stopped(page);
-    await page.mouse.wheel(0, delta);
+    await swipe(page, browserName, 1, { x: 30, y: 700, distance });
     await stopped(page);
     const state = await snapshot(page);
     expect(state.state.chapter).toBe('education-uchicago');
     expect(await page.evaluate(() => scrollY)).toBeCloseTo(state.ranges[1].start, 0);
-    await page.mouse.wheel(0, -5000);
+    await swipe(page, browserName, -1, { x: 30, y: 700, distance });
     await stopped(page);
     expect((await snapshot(page)).state.chapter).toBe('hero');
   }
@@ -39,26 +39,26 @@ for (const width of [390, 1366]) test(`wheel gestures stop at the adjacent entry
   await page.evaluate(() => scrollTo({ top: document.documentElement.scrollHeight, behavior: 'instant' }));
   await stopped(page);
   const bottom = await page.evaluate(() => scrollY);
-  await page.mouse.wheel(0, -120);
+  await swipe(page, browserName, -1, { x: 30, y: 700 });
   await stopped(page);
   expect(await page.evaluate(() => scrollY)).toBeLessThan(bottom - 20);
 });
 
-test('continued mouse-wheel scrolling keeps advancing and settles on an entry without arrow clicks', async ({ page }) => {
+test('consecutive native gestures advance over artwork and reverse over text', async ({ page, browserName }) => {
   test.setTimeout(45000);
   await ready(page);
   // Scroll over the live sculpture as well as over the text column.
   await page.mouse.move(1100, 450);
-  for (let notch = 0; notch < 32; notch++) {
-    await page.mouse.wheel(0, 120);
-    await page.waitForTimeout(60);
+  for (let gesture = 0; gesture < 2; gesture++) {
+    await swipe(page, browserName, 1);
+    await stopped(page);
   }
   await stopped(page);
   const state = await snapshot(page), y = await page.evaluate(() => scrollY);
   expect(y).toBeGreaterThanOrEqual(state.ranges[2].start - 2);
   expect(state.ranges.some(range => y >= range.start - 2 && y <= range.stop + 2)).toBe(true);
   await page.mouse.move(30, 700);
-  await page.mouse.wheel(0, -120);
+  await swipe(page, browserName, -1, { x: 30, y: 700 });
   await stopped(page);
   const reversed = await page.evaluate(() => scrollY);
   expect(reversed).toBeLessThan(y - 20);
@@ -70,7 +70,7 @@ test('reduced-motion visitors can explicitly enable prepared, moving sculptures'
   await page.goto('/?bg-debug');
   const enable = page.getByRole('button', { name: 'Enable animation' });
   await expect(enable).toBeVisible();
-  expect(await page.evaluate(() => getComputedStyle(document.documentElement).scrollSnapType)).toBe('none');
+  expect(await page.evaluate(() => getComputedStyle(document.documentElement).scrollSnapType)).toBe('y mandatory');
   await enable.click();
   await expect(page.locator('html')).toHaveAttribute('data-boot', 'complete', { timeout: 20000 });
   await expect(enable).toBeHidden();
