@@ -9,7 +9,9 @@ async function observeInput(page) {
       return add.call(this, type, callback, options);
     };
     window.addEventListener('wheel', event => {
-      queueMicrotask(() => window.inputAudit.cancelled.push(event.defaultPrevented));
+      // Microtasks can run between listeners for a trusted browser event.
+      // Observe the result after the paging listener has also received it.
+      setTimeout(() => window.inputAudit.cancelled.push(event.defaultPrevented), 0);
     }, { passive: true });
   });
 }
@@ -37,10 +39,10 @@ for (const [width, height] of [[1440, 900], [390, 844], [768, 1024]]) test(`nati
   const audit = await page.evaluate(() => window.inputAudit);
   expect(audit.cancelled.length).toBeGreaterThanOrEqual(2);
   expect(audit.cancelled.every(value => value === false)).toBe(true);
-  expect(audit.listeners.every(listener => listener.passive)).toBe(true);
+  expect(audit.listeners.filter(listener => listener.type === 'touchmove').every(listener => listener.passive)).toBe(true);
 });
 
-test('scrolling over the sculpture stays native even without renderer frames', async ({ page }) => {
+test('wheel paging over the sculpture works even without renderer frames', async ({ page }) => {
   await ready(page);
   expect(await page.locator('.world').evaluate(el => getComputedStyle(el).overflowY)).toBe('clip');
   const first = await firstEntry(page);
@@ -49,7 +51,7 @@ test('scrolling over the sculpture stays native even without renderer frames', a
   await page.mouse.wheel(0, 120);
   await expect.poll(() => y(page)).toBeGreaterThan(40);
   await expect.poll(async () => Math.abs(await y(page) - first)).toBeLessThan(2);
-  expect(await page.evaluate(() => window.inputAudit.cancelled.every(value => value === false))).toBe(true);
+  expect(await page.evaluate(() => window.inputAudit.cancelled)).toEqual([true]);
 });
 
 test('keyboard and reverse wheel input interrupt and complete native scrolling', async ({ page }) => {

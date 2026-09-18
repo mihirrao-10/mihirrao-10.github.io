@@ -243,7 +243,8 @@ const sectionSnap = createSectionSnap({
   isLoading: () => root.dataset.boot === 'loading',
 });
 on(window, 'scroll', sectionSnap.scroll, { passive: true });
-for (const event of ['wheel', 'keydown']) on(window, event, sectionSnap.input, { passive: true });
+on(window, 'wheel', sectionSnap.wheel, { passive: false });
+on(window, 'keydown', sectionSnap.input, { passive: true });
 on(window, 'pointerdown', sectionSnap.pointerDown, { passive: true });
 for (const event of ['pointerup', 'pointercancel']) on(window, event, sectionSnap.pointerUp, { passive: true });
 on(window, 'touchstart', sectionSnap.touchStart, { passive: true });

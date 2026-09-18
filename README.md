@@ -117,16 +117,16 @@ dismiss the loader. Prepared geometries remain resident, so changing sections
 does not decode or upload a new mesh. Returning visitors receive an entry-script
 URL versioned from its contents, as well as the fingerprinted stylesheet.
 
-Scrolling belongs to the browser. Wheel, touch and keyboard observers are passive;
-there are no wheel cancellations, gesture cooldowns, input queues, custom scroll
-animation loops, or competing CSS snap rules. The loading screen locks the viewport
-with CSS. The fixed artwork uses `overflow: clip` so it is not a nested scroll container.
-As native scrolling reaches a partial entry, a small position-based helper aligns
-it in the direction of travel without an idle delay. Continuing wheel input lets
-the current snap finish instead of cancelling and restarting its animation.
-Reversing direction interrupts it immediately. Long entries retain normal reading
-throughout their content. Pinch zoom,
-hashes, scrollbars and focus navigation remain native. The renderer independently
+Each wheel or trackpad gesture advances at most one entry. The wheel handler starts
+a browser smooth scroll immediately and consumes the rest of that gesture, including
+momentum arriving after the animation finishes. A 200ms gap between wheel packets
+starts a fresh gesture; reversing direction starts one immediately. Neither rule
+delays the start of an animation or waits for renderer frames. Long entries retain
+native wheel reading, capped at their reading boundary before a new gesture can
+leave the entry. Keyboard, touch, pinch zoom, hashes, scrollbars and focus navigation
+remain native, with passive observers aligning gaps without an idle delay.
+The loading screen locks the viewport with CSS. The fixed artwork uses
+`overflow: clip` so it is not a nested scroll container. The renderer independently
 completes a 380ms eased dissolve between two intact tessellated surfaces, so stopping
 scrolling cannot freeze a partially assembled mesh. Reversals and skipped entries
 resolve to the latest selected identity. Entries fill at least their viewport
