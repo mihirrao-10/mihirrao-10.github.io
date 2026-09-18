@@ -42,7 +42,7 @@ test('native movement schedules alignment without an idle delay', () => {
   assert.deepEqual(scroll.moves, []);
   assert.ok(scroll.delays.every(delay => delay === 0));
   scroll.idle();
-  assert.deepEqual(scroll.moves, [{ top: 1000, behavior: 'smooth' }]);
+  assert.deepEqual(scroll.moves, [{ top: 300, behavior: 'instant' }, { top: 1000, behavior: 'smooth' }]);
 });
 
 test('long entries remain at the reading position chosen by the visitor', () => {
@@ -92,6 +92,43 @@ test('new input interrupts alignment and the browser can immediately reverse', (
   assert.deepEqual(scroll.moves.at(-1), { top: 400, behavior: 'instant' });
   scroll.native(280); scroll.idle();
   assert.deepEqual(scroll.moves.at(-1), { top: 0, behavior: 'smooth' });
+});
+
+test('continued wheel input lets a snap finish without restarting its easing', () => {
+  const scroll = setup();
+  scroll.wheel(120); scroll.native(120); scroll.idle();
+  for (const y of [200, 350, 600, 850]) { scroll.native(y); scroll.wheel(120); scroll.idle(); }
+  assert.deepEqual(scroll.moves, [{ top: 120, behavior: 'instant' }, { top: 1000, behavior: 'smooth' }]);
+  scroll.native(1000); scroll.idle();
+  scroll.wheel(120); scroll.native(1120); scroll.idle();
+  assert.equal(scroll.moves.length, 2, 'The long entry remains readable');
+});
+
+test('a reversed wheel cancels even when native reversal arrives before the input event', () => {
+  const scroll = setup();
+  scroll.wheel(120); scroll.native(120); scroll.idle();
+  scroll.native(400); scroll.native(350); scroll.wheel(-120);
+  assert.deepEqual(scroll.moves.at(-1), { top: 350, behavior: 'instant' });
+  scroll.idle();
+  assert.deepEqual(scroll.moves.at(-1), { top: 0, behavior: 'smooth' });
+});
+
+test('a tiny reversal cannot inherit the cancelled animation direction', () => {
+  const scroll = setup();
+  scroll.wheel(120); scroll.native(120); scroll.idle();
+  scroll.native(400); scroll.compositor(420); scroll.wheel(-3);
+  scroll.snap.scroll(); scroll.idle();
+  assert.deepEqual(scroll.moves.at(-1), { top: 0, behavior: 'smooth' });
+});
+
+test('native movement past a snap target cannot leave alignment stuck', () => {
+  const scroll = setup();
+  scroll.wheel(120); scroll.native(120); scroll.idle();
+  scroll.wheel(2000); scroll.native(1700); scroll.idle();
+  assert.deepEqual(scroll.moves, [
+    { top: 120, behavior: 'instant' }, { top: 1000, behavior: 'smooth' },
+    { top: 1700, behavior: 'instant' }, { top: 2400, behavior: 'smooth' },
+  ]);
 });
 
 test('holding a pointer or finger prevents snapping until release', () => {

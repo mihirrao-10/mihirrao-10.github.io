@@ -14,7 +14,7 @@ export function snapDestination(y, ranges, direction) {
 // scroll. Align a partial entry on the next task, without an idle delay.
 export function createSectionSnap({ getY, getRanges, move, isReduced, isLoading,
   setTimer = setTimeout, clearTimer = clearTimeout }) {
-  let previous = getY(), direction = 0, timer = null, destination = null;
+  let previous = getY(), direction = 0, snapDirection = 0, timer = null, destination = null;
   let active = false, touching = false, pressing = false;
   const clear = () => { clearTimer(timer); timer = null; };
   const interrupt = () => {
@@ -38,6 +38,11 @@ export function createSectionSnap({ getY, getRanges, move, isReduced, isLoading,
       return;
     }
     active = false;
+    snapDirection = Math.sign(destination - getY());
+    // Commit the compositor's current offset before starting a new animation.
+    // WebKit can otherwise animate from the preceding snap's stale position,
+    // briefly jumping backwards. This does not change the visible position.
+    if (!isReduced()) move(getY(), 'instant');
     move(destination, isReduced() ? 'instant' : 'smooth');
   }
   function scroll() {
@@ -45,8 +50,8 @@ export function createSectionSnap({ getY, getRanges, move, isReduced, isLoading,
     previous = y;
     if (delta) direction = Math.sign(delta);
     if (destination !== null) {
-      if (Math.abs(y - destination) <= 1) destination = null;
-      return;
+      if (snapDirection * (y - destination) < -1) return;
+      destination = null;
     }
     schedule();
   }
@@ -54,7 +59,21 @@ export function createSectionSnap({ getY, getRanges, move, isReduced, isLoading,
     if (isLoading() || event.defaultPrevented || event.ctrlKey || event.metaKey) return;
     if (event.type === 'wheel' && !event.deltaY) return;
     if (event.type === 'keydown' && !['ArrowDown', 'ArrowUp', 'PageDown', 'PageUp', ' ', 'Home', 'End'].includes(event.key)) return;
+    // Wheel packets in the same direction belong to the ongoing movement.
+    // Restarting its easing on every packet causes visible stop/start jitter.
+    // Keep the input intent, so native movement past the target can continue.
+    if (destination !== null && event.type === 'wheel' && Math.sign(event.deltaY) === snapDirection) {
+      active = true;
+      return;
+    }
+    const reversing = destination !== null && event.type === 'wheel';
     interrupt();
+    if (reversing) {
+      // The cancelled animation may have advanced ahead of its scroll event.
+      // Start the reversal at that position, without reusing its old direction.
+      previous = getY();
+      direction = Math.sign(event.deltaY);
+    }
     active = true;
     // Passive input may arrive after the compositor has moved the page. Keep
     // the position history, and settle even if its scroll event arrived first.

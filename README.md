@@ -122,8 +122,10 @@ there are no wheel cancellations, gesture cooldowns, input queues, custom scroll
 animation loops, or competing CSS snap rules. The loading screen locks the viewport
 with CSS. The fixed artwork uses `overflow: clip` so it is not a nested scroll container.
 As native scrolling reaches a partial entry, a small position-based helper aligns
-it in the direction of travel without an idle delay. New input immediately interrupts that
-alignment. Long entries retain normal reading throughout their content. Pinch zoom,
+it in the direction of travel without an idle delay. Continuing wheel input lets
+the current snap finish instead of cancelling and restarting its animation.
+Reversing direction interrupts it immediately. Long entries retain normal reading
+throughout their content. Pinch zoom,
 hashes, scrollbars and focus navigation remain native. The renderer independently
 completes a 380ms eased dissolve between two intact tessellated surfaces, so stopping
 scrolling cannot freeze a partially assembled mesh. Reversals and skipped entries
