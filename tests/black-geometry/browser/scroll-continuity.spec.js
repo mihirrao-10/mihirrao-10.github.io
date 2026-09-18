@@ -83,6 +83,25 @@ test('accelerating and decaying trackpad packets remain one slide per gesture', 
   }
 });
 
+for (const tailLength of [8, 40]) test(`consecutive swipes work while momentum is still arriving (${tailLength} tail packets)`, async ({ page }) => {
+  await ready(page);
+  const ranges = await page.evaluate(() => window.__blackGeometry.snapshot().ranges);
+  const flick = [3, 8, 20, 45, 80, 100, 80, 60, 40, 24, 15, 9, 5, 3, 2, 1];
+  const stroke = [...flick, ...Array(tailLength).fill(1)];
+  for (const direction of [1, -1]) {
+    await page.evaluate(() => { scrollAudit.calls = []; scrollAudit.positions = []; scrollAudit.wheels = []; });
+    // Two pushes in a single uninterrupted stream. There is no quiet gap to
+    // release the old gesture, including when the first snap is unfinished.
+    await wheelGesture(page, [...stroke, ...stroke].map(delta => delta * direction), 16);
+    await aligned(page);
+    const state = await page.evaluate(() => ({ ...scrollAudit, y: scrollY, max: document.documentElement.scrollHeight - innerHeight }));
+    const targets = direction > 0 ? [ranges[1].start, ranges[2].start] : [ranges[1].stop, 0];
+    expect(state.calls.filter(call => call.behavior === 'smooth').map(call => call.top)).toEqual(targets);
+    expect(Math.abs(state.y - targets[1])).toBeLessThan(2);
+    expectContinuous(state, direction);
+  }
+});
+
 test('large wheel deltas and separate gestures each move only to the adjacent slide', async ({ page }) => {
   await ready(page);
   const ranges = await page.evaluate(() => window.__blackGeometry.snapshot().ranges);

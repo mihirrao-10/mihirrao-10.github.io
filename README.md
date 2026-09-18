@@ -119,9 +119,10 @@ URL versioned from its contents, as well as the fingerprinted stylesheet.
 
 Each wheel or trackpad gesture advances at most one entry. The wheel handler starts
 a browser smooth scroll immediately and consumes the rest of that gesture, including
-momentum arriving after the animation finishes. A 200ms gap between wheel packets
-starts a fresh gesture; reversing direction starts one immediately. Neither rule
-delays the start of an animation or waits for renderer frames. Long entries retain
+momentum arriving after the animation finishes. Renewed acceleration or sustained
+force during a decaying tail starts a fresh swipe without waiting for silence.
+A pause or direction reversal also starts a fresh gesture. These decisions never
+wait for animation completion or renderer frames. Long entries retain
 native wheel reading, capped at their reading boundary before a new gesture can
 leave the entry. Keyboard, touch, pinch zoom, hashes, scrollbars and focus navigation
 remain native, with passive observers aligning gaps without an idle delay.

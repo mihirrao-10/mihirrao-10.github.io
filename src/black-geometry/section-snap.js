@@ -1,3 +1,5 @@
+import { createWheelIntent } from './wheel-intent.js';
+
 // Scroll position, not wheel packet size or timing, determines the destination.
 // Long entries have a readable interval; only the gaps between entries snap.
 export function snapDestination(y, ranges, direction) {
@@ -32,6 +34,7 @@ export function createSectionSnap({ getY, getRanges, move, isReduced, isLoading,
   setTimer = setTimeout, clearTimer = clearTimeout, now = () => performance.now(), getPageHeight = () => innerHeight }) {
   let previous = getY(), direction = 0, snapDirection = 0, timer = null, destination = null;
   let active = false, touching = false, pressing = false, gesture = null;
+  const wheelIntent = createWheelIntent();
   const clear = () => { clearTimer(timer); timer = null; };
   const interrupt = () => {
     clear();
@@ -107,19 +110,19 @@ export function createSectionSnap({ getY, getRanges, move, isReduced, isLoading,
       !event.deltaY || Math.abs(event.deltaX || 0) > Math.abs(event.deltaY) || event.isTrusted === false) return;
     if (pressing || touching || !event.cancelable) { input(event); return; }
     const time = Number.isFinite(event.timeStamp) ? event.timeStamp : now(), travel = Math.sign(event.deltaY);
-    // This is a gap between wheel packets, not a delay before navigation.
-    // Continue consuming momentum even after the destination is reached.
-    const fresh = !gesture || time - gesture.at > 200 || gesture.direction !== travel;
+    const unit = event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? getPageHeight() : 1;
+    if (!gesture) wheelIntent.reset();
+    // A fresh push can arrive while the previous swipe is still coasting.
+    // Keep consuming its tail, but never require complete silence to navigate.
+    const fresh = wheelIntent.push(event.deltaY * unit, time);
     if (fresh) {
       const origin = gesture?.claimed && destination === gesture.top ? gesture.top : getY();
       const target = wheelDestination(origin, getRanges(), travel);
-      gesture = target ? { ...target, direction: travel, at: time, claimed: false } : null;
+      gesture = target ? { ...target, claimed: false } : null;
     }
     if (!gesture) { input(event); return; }
-    gesture.at = time;
     // Reading within a tall entry stays native, but a large delta or its tail
     // cannot skip the rest of that entry and several following slides.
-    const unit = event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? getPageHeight() : 1;
     if (gesture.reading && !gesture.claimed && travel * (getY() + event.deltaY * unit - gesture.top) < 0) {
       input(event);
       return;
