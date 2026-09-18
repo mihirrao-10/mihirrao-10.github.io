@@ -11,7 +11,7 @@ export function snapDestination(y, ranges, direction) {
 }
 
 // Every input listener is passive. The browser performs the entire user's
-// scroll, including momentum. Only after it stops do we align a partial entry.
+// scroll. Align a partial entry on the next task, without an idle delay.
 export function createSectionSnap({ getY, getRanges, move, isReduced, isLoading,
   setTimer = setTimeout, clearTimer = clearTimeout }) {
   let previous = getY(), direction = 0, timer = null, destination = null;
@@ -23,16 +23,22 @@ export function createSectionSnap({ getY, getRanges, move, isReduced, isLoading,
   };
   const schedule = () => {
     clear();
-    if (active && !touching && !pressing && !isLoading()) timer = setTimer(settle, 180);
+    if (active && !touching && !pressing && !isLoading()) timer = setTimer(settle, 0);
   };
   function settle() {
     timer = null;
     if (!active || touching || pressing || isLoading()) return;
     // A compositor scroll may have advanced before its scroll event arrived.
     if (Math.abs(getY() - previous) > .5) { scroll(); return; }
-    active = false;
     destination = snapDestination(getY(), getRanges(), direction);
-    if (destination !== null) move(destination, isReduced() ? 'instant' : 'smooth');
+    if (destination === null) {
+      // Already on an entry: expire the input intent after native motion stops.
+      // Keep it armed for default scrolling that starts after the input task.
+      timer = setTimer(() => { active = false; timer = null; }, 180);
+      return;
+    }
+    active = false;
+    move(destination, isReduced() ? 'instant' : 'smooth');
   }
   function scroll() {
     const y = getY(), delta = y - previous;

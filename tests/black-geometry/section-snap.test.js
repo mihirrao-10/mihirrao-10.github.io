@@ -5,15 +5,15 @@ import { createSectionSnap, snapDestination } from '../../src/black-geometry/sec
 const ranges = [{ start: 0, stop: 0 }, { start: 1000, stop: 1400 }, { start: 2400, stop: 2400 }];
 function setup(reduced = false) {
   let y = 0, timer = null;
-  const moves = [];
+  const moves = [], delays = [];
   const snap = createSectionSnap({
     getY: () => y, getRanges: () => ranges,
     move: (top, behavior) => moves.push({ top, behavior }),
     isReduced: () => reduced, isLoading: () => false,
-    setTimer: callback => { timer = callback; return 1; }, clearTimer: () => { timer = null; },
+    setTimer: (callback, delay) => { delays.push(delay); timer = callback; return 1; }, clearTimer: () => { timer = null; },
   });
   return {
-    snap, moves,
+    snap, moves, delays,
     wheel: deltaY => snap.input({ type: 'wheel', deltaY, preventDefault() { assert.fail('native input must not be cancelled'); } }),
     native(yNext) { y = yNext; snap.scroll(); },
     compositor(yNext) { y = yNext; },
@@ -36,10 +36,11 @@ test('wheel input itself never drives or blocks scrolling', () => {
   assert.deepEqual(scroll.moves, []);
 });
 
-test('the browser moves freely before a partial entry is aligned after idle', () => {
+test('native movement schedules alignment without an idle delay', () => {
   const scroll = setup();
   scroll.wheel(120); scroll.native(120); scroll.native(300);
   assert.deepEqual(scroll.moves, []);
+  assert.ok(scroll.delays.every(delay => delay === 0));
   scroll.idle();
   assert.deepEqual(scroll.moves, [{ top: 1000, behavior: 'smooth' }]);
 });
@@ -48,6 +49,24 @@ test('long entries remain at the reading position chosen by the visitor', () => 
   const scroll = setup();
   scroll.native(1000); scroll.wheel(120); scroll.native(1120); scroll.idle();
   assert.deepEqual(scroll.moves, []);
+});
+
+test('native movement can begin after the input task without losing alignment', () => {
+  const scroll = setup();
+  scroll.wheel(120); scroll.idle();
+  assert.deepEqual(scroll.moves, []);
+  scroll.native(120); scroll.idle();
+  assert.deepEqual(scroll.moves.at(-1), { top: 1000, behavior: 'smooth' });
+});
+
+test('one native scroll can cross a long reading interval and align immediately', () => {
+  const scroll = setup();
+  scroll.native(1000); scroll.wheel(120); scroll.native(1120); scroll.idle();
+  assert.deepEqual(scroll.moves, []);
+  scroll.native(1700);
+  assert.equal(scroll.delays.at(-1), 0);
+  scroll.idle();
+  assert.deepEqual(scroll.moves.at(-1), { top: 2400, behavior: 'smooth' });
 });
 
 test('passive wheel delivery after compositor movement preserves direction', () => {
