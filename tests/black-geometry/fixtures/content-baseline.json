@@ -69,7 +69,7 @@
       "id": "notes",
       "heading": "personal notes",
       "entries": [
-        "California Institute of Technology Learning From Data Massachusetts Institute of Technology Distributed Systems Introduction to Algorithms Linear Algebra Principles of Discrete Applied Mathematics Principles of Macroeconomics Probabilistic Systems Analysis and Applied Probability Single Variable Calculus Carnegie Mellon University Discrete Differential Geometry: An Applied Introduction Principles of Functional Programming University of California, Irvine High-Dimensional Probability and Applications in Data Science"
+        "California Institute of Technology Learning From Data Massachusetts Institute of Technology Distributed Systems Introduction to Algorithms Linear Algebra Principles of Discrete Applied Mathematics Principles of Macroeconomics Probabilistic Systems Analysis and Applied Probability Single Variable Calculus Carnegie Mellon University Discrete Differential Geometry: An Applied Introduction Principles of Functional Programming University of California, Irvine High-Dimensional Probability and Applications in Data Science Princeton University Introduction to Robotics"
       ],
       "links": [
         {
@@ -126,6 +126,11 @@
           "href": "notes/high-dimensional-probability-uci.pdf",
           "text": "High-Dimensional Probability and Applications in Data Science",
           "label": ""
+        },
+        {
+          "href": "notes/introduction-to-robotics-princeton.pdf",
+          "label": "",
+          "text": "Introduction to Robotics"
         }
       ]
     }

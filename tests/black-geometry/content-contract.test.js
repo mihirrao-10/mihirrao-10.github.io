@@ -125,10 +125,10 @@ test("notes remain unique real list links and the document has complete native l
   assert.equal(all(doc, (n) => n.tagName === "h1").length, 1);
   assert.equal(all(doc, (n) => n.tagName === "main").length, 1);
   const lists = all(doc, (n) => hasClass(n, "notes-list"));
-  assert.equal(lists.length, 4);
+  assert.equal(lists.length, 5);
   const links = lists.flatMap((list) => all(list, (n) => n.tagName === "a"));
-  assert.equal(links.length, 11);
-  assert.equal(new Set(links.map((n) => attr(n, "href"))).size, 11);
+  assert.equal(links.length, 12);
+  assert.equal(new Set(links.map((n) => attr(n, "href"))).size, 12);
   for (const node of links) {
     assert.equal(node.parentNode.tagName, "li");
     await fs.access(new URL(attr(node, "href"), root));
