@@ -4,22 +4,14 @@ Mihir Rao's framework-free personal website. GitHub Pages serves the repository
 root from `main`; the production site therefore keeps real directories and
 relative links instead of client-side routing.
 
-The repository also hosts the **New Graduate Job Tracker (2027)**
-at [`/new-grad-job-tracker-2027/`](https://mihirrao-10.github.io/new-grad-job-tracker-2027/).
-The homepage has two mathematical project features; the tracker is a separate hosted route.
-It is a static, generated board of technically relevant U.S. graduate roles
-for undergraduate or master's candidates, with documented evidence about
-international-hiring support. Search, filtering, application state, and
-private notes run entirely in the visitor's browser.
-
-It links to **The Shortest Path Through a Curved World** at
+The Personal Projects section links to **The Shortest Path Through a Curved World** at
 [`/shortest-path-through-a-curved-world/`](https://mihirrao-10.github.io/shortest-path-through-a-curved-world/),
 a guided Heat Method story backed by a standalone C++20 CPU geometry engine on
 generated meshes with one to three handles. That implementation, its exported
 numerical data, and its Pages workflow live in the sibling
 `shortest-path-through-a-curved-world` repository.
 
-The Personal Projects section also links to **When Every Agent Finds the
+It also links to **When Every Agent Finds the
 Shortcut** at
 [`/multi-agent-reinforcement-learning-in-congestion-games/`](https://mihirrao-10.github.io/multi-agent-reinforcement-learning-in-congestion-games/),
 an exact atomic Braess congestion game study with deterministic learning
@@ -34,10 +26,10 @@ Pages workflow live in the sibling
 index.html  personal-site homepage
 assets/     shared static assets
 notes/      published book-note and course-note PDFs
-new-grad-job-tracker-2027/     tracker UI and generated public JSON
-data/job-tracker/              schemas, source configuration, curated records
-tools/job-tracker/             collectors, validation, and generator
-tests/job-tracker/             data-pipeline and browser-logic tests
+src/        homepage experience runtime source
+tools/      experience build, static-site copy, and verification
+tests/      unit and browser tests
+docs/       sculpture provenance and revision notes
 dist/       ignored production-build output
 ```
 
@@ -50,20 +42,6 @@ python3 -m http.server 8000 --bind 127.0.0.1
 # In a second terminal, inspect the production copy:
 python3 -m http.server 8001 --bind 127.0.0.1 -d dist
 ```
-
-Run `npm run update:jobs` for a live refresh against the configured official
-career pages and ATS feeds. The updater validates and deduplicates records,
-preserves first-seen history, and advances verification dates only after a
-successful observation. Temporary source failures never close prior jobs.
-Detailed scope, evidence, and lifecycle rules are documented in
-[`data/job-tracker/README.md`](data/job-tracker/README.md).
-
-This repository owns the scheduled GitHub Actions refresh and GitHub Pages
-deployment. The workflow refreshes and validates the three public JSON files
-each day, runs the tests and production build, and commits only changed
-generated data. The standalone tracker repository remains a private working
-copy; the public static mirror lives here so Pages can serve it at the website
-subpath without changing that repository's visibility.
 
 ## Personal notes
 
@@ -149,7 +127,7 @@ settled sculpture or two during a transition. Print uses dark text on white.
 
 ### Build and maintenance
 
-Use Node 20.19+ (the scheduled Node 20 workflow resolves a compatible release).
+Use Node 20.19+.
 Runtime source is in `src/black-geometry/`, styling in
 `assets/css/black-geometry.css`, and bundling/static-poster generation in
 `tools/black-geometry/`. Dependencies are pinned in `package-lock.json`.
@@ -158,9 +136,9 @@ Runtime source is in `src/black-geometry/`, styling in
 npm run build:experience      # update browser assets after editing the experience
 npm run verify:experience     # compare generated content without rewriting files
 npm run test:experience       # state, interaction, geometry, content and build contracts
-npm run check                # tracker validation + all unit tests + build + parity
+npm run check                # unit tests + build + parity
 
-# Browser binaries are optional and are not needed by the scheduled job refresh.
+# Browser binaries are optional.
 PLAYWRIGHT_BROWSERS_PATH=./node_modules/.cache/ms-playwright npx playwright install chromium webkit
 npm run test:browser          # serves root/dist on 8000/8001 if not already running
 ```
@@ -173,16 +151,13 @@ to a filename containing its content hash and updates its link in `index.html`, 
 returning visitors receive the current styles. Run the build after CSS edits and
 commit the generated stylesheet and updated HTML together. Builds write only
 changed files and delete stale files only within that owned directory. `dist/` is produced afterwards by the
-existing static copy build and remains ignored, as do `node_modules/` and browser
-evidence under `.artifacts/`. The workflow's three-file tracker commit allowlist
-is unchanged. A build alone does not publish homepage changes.
+static copy build (`tools/build-site.js`) and remains ignored, as do `node_modules/`
+and browser evidence under `.artifacts/`. A build alone does not publish homepage
+changes.
 
-The preservation fixture captures the local pre-redesign semantic content, not
-whitespace or layout. Update it only for a deliberate content edit. The separate
-`node tools/black-geometry/verify-preservation.js` check records the original local
-implementation session's HEAD, PDFs/tracker files and sibling states. It is an
-archival check outside the normal suite: later commits and authorized job refreshes
-deliberately no longer match that snapshot. Use `npm run check` for ongoing validation.
+The content fixture (`tests/black-geometry/fixtures/content-baseline.json`) captures the local pre-redesign semantic content, not
+whitespace or layout. Update it only for a deliberate content edit. Use
+`npm run check` for ongoing validation.
 
 For local diagnostics, append `?bg-debug` to the homepage. The read-only
 `window.__blackGeometry.snapshot()` reports production scene state, frame counts,

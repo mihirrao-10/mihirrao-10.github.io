@@ -123,7 +123,7 @@ async function scrollStopped(page) {
   }).toBe(true);
 }
 
-for (const port of [8000, 8001]) test(`root/dist ${port}: reviewed content, local assets, PDFs and hosted tracker remain available`, async ({ page, request }) => {
+for (const port of [8000, 8001]) test(`root/dist ${port}: reviewed content, local assets and PDFs remain available`, async ({ page, request }) => {
   const failures = [];
   page.on('response', response => { if (response.url().startsWith(`http://127.0.0.1:${port}`) && response.status() >= 400) failures.push(response.url()); });
   await ready(page, `http://127.0.0.1:${port}/?bg-debug`);
@@ -134,17 +134,6 @@ for (const port of [8000, 8001]) test(`root/dist ${port}: reviewed content, loca
     expect(response.ok()).toBe(true);
     expect((await response.body()).subarray(0, 5).toString()).toBe('%PDF-');
   }
-  await page.goto(`http://127.0.0.1:${port}/new-grad-job-tracker-2027/`);
-  const jobs = await request.get(`http://127.0.0.1:${port}/new-grad-job-tracker-2027/data/jobs.json`);
-  expect(jobs.ok()).toBe(true);
-  const published = await jobs.json(); expect(published.length).toBeGreaterThan(0);
-  await expect(page.locator('#active-role-count')).toHaveText(String(published.length));
-  await page.getByLabel('Keyword', { exact: true }).fill('no-such-company-xyz');
-  await expect(page.locator('#empty-state')).toBeVisible();
-  await page.locator('#reset-filters').click();
-  await expect(page.locator('#empty-state')).toBeHidden();
-  await page.getByRole('button', { name: 'Archived / closed' }).click();
-  await expect(page.locator('#archive-view')).toHaveAttribute('aria-pressed', 'true');
   expect(failures).toEqual([]);
 });
 
@@ -883,7 +872,7 @@ for (const mode of ['module', 'asset', 'renderer', 'shader', 'context']) test(`$
   await expect(page.locator('#project-congestion .open-project')).toHaveAttribute('target', '_blank');
 });
 
-for (const [width, height] of [[1440, 900], [390, 844]]) test(`skip link, native hashes/back, tracker restoration and page scrolling remain functional at ${width}px`, async ({ page }, info) => {
+for (const [width, height] of [[1440, 900], [390, 844]]) test(`skip link, native hashes/back, reading restoration and page scrolling remain functional at ${width}px`, async ({ page }, info) => {
   await page.setViewportSize({ width, height });
   await ready(page); await page.keyboard.press(info.project.name === 'webkit' ? 'Alt+Tab' : 'Tab');
   await expect(page.getByRole('link', { name: 'Skip to content' })).toBeFocused(); await page.keyboard.press('Enter');
@@ -895,7 +884,7 @@ for (const [width, height] of [[1440, 900], [390, 844]]) test(`skip link, native
   await page.goto('/?bg-debug#personal-projects'); await scrollStopped(page); await expect(page.locator('#personal-projects h2')).toBeInViewport();
   await page.goBack(); await scrollStopped(page); await expect(page.locator('#notes h2')).toBeInViewport();
   await jump(page, 'education-drexel'); await scrollStopped(page); const before = await page.evaluate(() => scrollY), beforeURL = page.url();
-  await page.goto('/new-grad-job-tracker-2027/'); await page.goBack();
+  await page.goto('about:blank'); await page.goBack();
   await expect(page.locator('body')).toHaveAttribute('data-experience-state', 'ready'); await settled(page, 'education-drexel');
   expect(Math.abs((await page.evaluate(() => scrollY)) - before)).toBeLessThan(5);
   expect(page.url()).toBe(beforeURL);

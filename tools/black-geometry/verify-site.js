@@ -13,7 +13,7 @@ async function walk(directory) {
   return result;
 }
 const publicFiles = [path.join(ROOT, "index.html")];
-for (const name of ["assets", "notes", "new-grad-job-tracker-2027"])
+for (const name of ["assets", "notes"])
   publicFiles.push(...(await walk(path.join(ROOT, name))));
 for (const file of publicFiles) {
   const relative = path.relative(ROOT, file),
