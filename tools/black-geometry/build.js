@@ -3,7 +3,7 @@ import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { createHash } from "node:crypto";
 import { build } from "esbuild";
-import { gzipSync } from "node:zlib";
+import { gzipSync, gunzipSync } from "node:zlib";
 import { posterOutputs } from "./posters.js";
 import { sculptureOutputs } from "./sculptures.js";
 
@@ -81,13 +81,23 @@ export async function expectedOutputs() {
   );
   return files;
 }
+// Node releases bundle different zlib versions, so identical input can gzip to
+// different bytes. Compare .gz outputs by payload to keep committed bytes stable.
+function sameContents(name, a, b) {
+  a = Buffer.from(a);
+  b = Buffer.from(b);
+  if (a.equals(b)) return true;
+  if (!name.endsWith(".gz")) return false;
+  try {
+    return gunzipSync(a).equals(gunzipSync(b));
+  } catch {
+    return false;
+  }
+}
 export function outputDifferences(expected, actual) {
   const differences = [];
   for (const [name, contents] of expected)
-    if (
-      !actual.has(name) ||
-      !Buffer.from(contents).equals(Buffer.from(actual.get(name)))
-    )
+    if (!actual.has(name) || !sameContents(name, contents, actual.get(name)))
       differences.push(name);
   for (const name of actual.keys())
     if (!expected.has(name)) differences.push(name);

@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs/promises";
 import { createHash } from "node:crypto";
+import { gzipSync } from "node:zlib";
 import {
   expectedOutputs,
   outputDifferences,
@@ -65,6 +66,16 @@ test("verification detects a missing, stale or extra asset without overwriting i
     "stale.js",
   ]);
   assert.equal(actual.get("main.js").toString(), "old");
+});
+
+test("gzip assets compare by payload so zlib versions cannot make them stale", () => {
+  const payload = Buffer.from("sculpture ".repeat(1000));
+  const fast = gzipSync(payload, { level: 1 }), best = gzipSync(payload, { level: 9 });
+  assert.ok(!fast.equals(best), "The fixture must differ in compressed bytes");
+  assert.deepEqual(outputDifferences(new Map([["data.bin.gz", best]]), new Map([["data.bin.gz", fast]])), []);
+  const changed = gzipSync(Buffer.from("changed"));
+  assert.deepEqual(outputDifferences(new Map([["data.bin.gz", best]]), new Map([["data.bin.gz", changed]])), ["data.bin.gz"]);
+  assert.deepEqual(outputDifferences(new Map([["data.bin.gz", best]]), new Map([["data.bin.gz", Buffer.from("junk")]])), ["data.bin.gz"]);
 });
 
 test("stylesheet fingerprints change with exact bytes and retain the source contents", () => {
