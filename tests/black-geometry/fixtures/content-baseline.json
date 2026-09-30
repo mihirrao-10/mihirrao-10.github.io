@@ -68,71 +68,8 @@
     {
       "id": "notes",
       "heading": "personal notes",
-      "entries": [
-        "California Institute of Technology Learning From Data Massachusetts Institute of Technology Distributed Systems Introduction to Algorithms Linear Algebra Principles of Discrete Applied Mathematics Principles of Macroeconomics Probabilistic Systems Analysis and Applied Probability Single Variable Calculus Carnegie Mellon University Discrete Differential Geometry: An Applied Introduction Principles of Functional Programming University of California, Irvine High-Dimensional Probability and Applications in Data Science Princeton University Introduction to Robotics"
-      ],
-      "links": [
-        {
-          "href": "notes/learning-from-data-caltech.pdf",
-          "text": "Learning From Data",
-          "label": ""
-        },
-        {
-          "href": "notes/distributed-systems-mit.pdf",
-          "text": "Distributed Systems",
-          "label": ""
-        },
-        {
-          "href": "notes/introduction-to-algorithms-mit.pdf",
-          "text": "Introduction to Algorithms",
-          "label": ""
-        },
-        {
-          "href": "notes/linear-algebra-mit.pdf",
-          "text": "Linear Algebra",
-          "label": ""
-        },
-        {
-          "href": "notes/principles-discrete-applied-math-mit.pdf",
-          "text": "Principles of Discrete Applied Mathematics",
-          "label": ""
-        },
-        {
-          "href": "notes/principles-macroeconomics-mit.pdf",
-          "text": "Principles of Macroeconomics",
-          "label": ""
-        },
-        {
-          "href": "notes/probabilistic-systems-analysis-mit.pdf",
-          "text": "Probabilistic Systems Analysis and Applied Probability",
-          "label": ""
-        },
-        {
-          "href": "notes/single-variable-calculus-mit.pdf",
-          "text": "Single Variable Calculus",
-          "label": ""
-        },
-        {
-          "href": "notes/discrete-differential-geometry-cmu.pdf",
-          "text": "Discrete Differential Geometry: An Applied Introduction",
-          "label": ""
-        },
-        {
-          "href": "notes/principles-functional-programming-cmu.pdf",
-          "text": "Principles of Functional Programming",
-          "label": ""
-        },
-        {
-          "href": "notes/high-dimensional-probability-uci.pdf",
-          "text": "High-Dimensional Probability and Applications in Data Science",
-          "label": ""
-        },
-        {
-          "href": "notes/introduction-to-robotics-princeton.pdf",
-          "label": "",
-          "text": "Introduction to Robotics"
-        }
-      ]
+      "entries": [],
+      "links": []
     }
   ]
 }

@@ -260,7 +260,9 @@ test('entry module failure releases the loader and retains the unenhanced native
   expect(await page.locator('.hero, main, .site-footer').evaluateAll(elements => elements.every(el => getComputedStyle(el).opacity === '1'))).toBe(true);
   await page.goto('/?bg-debug#notes');
   await expect(page.locator('#notes h2')).toBeInViewport();
-  await expect(page.locator('#notes a')).toHaveCount(11);
+  const noteCards = await page.locator('#notes li.note').count();
+  expect(noteCards).toBeGreaterThan(0);
+  await expect(page.locator('#notes a')).toHaveCount(noteCards);
   await expect(page.locator('.open-project').first()).toHaveAttribute('target', '_blank');
 });
 
@@ -902,7 +904,9 @@ test('without JavaScript all content, static sculptures, projects and PDFs stay 
     await expect.poll(() => art.evaluate(image => image.complete && image.naturalWidth > 0)).toBe(true);
   }
   await page.goto('http://127.0.0.1:8000/#notes'); await expect(page.locator('#notes h2')).toBeInViewport();
-  await expect(page.locator('#notes a')).toHaveCount(11);
+  const noteCards = await page.locator('#notes li.note').count();
+  expect(noteCards).toBeGreaterThan(0);
+  await expect(page.locator('#notes a')).toHaveCount(noteCards);
   await expect(page.locator('.open-project')).toHaveCount(2);
   await expect(page.locator('.open-project').first()).toHaveAttribute('target', '_blank'); await context.close();
 });
@@ -919,5 +923,7 @@ test('200 percent zoom and print preserve readable content', async ({ page }) =>
   await page.evaluate(() => { document.documentElement.style.zoom = ''; }); await page.emulateMedia({ media: 'print' });
   await expect(page.locator('.world')).toBeHidden();
   expect(await page.locator('body').evaluate(el => getComputedStyle(el).backgroundColor)).toBe('rgb(255, 255, 255)');
-  await expect(page.locator('#notes a')).toHaveCount(11);
+  const noteCards = await page.locator('#notes li.note').count();
+  expect(noteCards).toBeGreaterThan(0);
+  await expect(page.locator('#notes a')).toHaveCount(noteCards);
 });

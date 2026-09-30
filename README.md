@@ -46,11 +46,10 @@ python3 -m http.server 8001 --bind 127.0.0.1 -d dist
 ## Personal notes
 
 `notes/` holds generated PDFs only. Book- and course-note LaTeX sources live in
-the sibling `web/course-notes/` project. Do not edit the PDFs here by hand. Run
-`make publish` there to rebuild, verify that active source directories,
-published PDFs, and homepage links agree, and copy the files here. Each note
-set also requires one `<li>` in the homepage `notes-list`; `make check` detects
-missing or extra links.
+`../../learning/course-notes/`. Do not edit the PDFs or the homepage Notes
+section (between `<!-- notes:begin -->` and `<!-- notes:end -->`) by hand. Run
+`make publish` there to rebuild, copy changed PDFs here, and regenerate the
+section from the note sets' status files; `make check` detects any drift.
 
 ## Black Geometry homepage
 

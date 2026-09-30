@@ -120,17 +120,22 @@ test("the two existing project descriptions use their complete resume bullets", 
   assert.match(descriptions[1], /5\.0-billion-profile state space at 100K agents/);
   assert.match(descriptions[1], /23\.7% inefficiency/);
 });
-test("notes remain unique real list links and the document has complete native landmarks", async () => {
+test("generated notes are unique card links to real PDFs, with only non-empty groups", async () => {
   const doc = parse(await fs.readFile(new URL("index.html", root), "utf8"));
   assert.equal(all(doc, (n) => n.tagName === "h1").length, 1);
   assert.equal(all(doc, (n) => n.tagName === "main").length, 1);
-  const lists = all(doc, (n) => hasClass(n, "notes-list"));
-  assert.equal(lists.length, 5);
-  const links = lists.flatMap((list) => all(list, (n) => n.tagName === "a"));
-  assert.equal(links.length, 12);
-  assert.equal(new Set(links.map((n) => attr(n, "href"))).size, 12);
+  const notes = all(doc, (n) => attr(n, "id") === "notes")[0];
+  const cards = all(notes, (n) => hasClass(n, "note"));
+  const links = all(notes, (n) => n.tagName === "a");
+  assert.equal(links.length, cards.length);
+  assert.equal(new Set(links.map((n) => attr(n, "href"))).size, links.length);
   for (const node of links) {
+    assert.ok(hasClass(node, "note-link"));
     assert.equal(node.parentNode.tagName, "li");
+    assert.match(attr(node, "href"), /^notes\/[a-z0-9-]+\.pdf$/);
     await fs.access(new URL(attr(node, "href"), root));
   }
+  for (const group of all(notes, (n) => hasClass(n, "notes-group")))
+    assert.ok(all(group, (n) => hasClass(n, "note")).length > 0);
+  if (cards.length === 0) assert.equal(all(notes, (n) => hasClass(n, "notes-empty")).length, 1);
 });
