@@ -118,7 +118,7 @@ test("the two existing project descriptions use their complete resume bullets", 
   assert.match(descriptions[0], /6\.15 ms with < 2e-13 relative residuals/);
   assert.match(descriptions[1], /64 seeds and 5,000 episodes/);
   assert.match(descriptions[1], /5\.0-billion-profile state space at 100K agents/);
-  assert.match(descriptions[1], /23\.7% inefficiency/);
+  assert.match(descriptions[1], /measured a 4\/3 Price of Anarchy \(33% extra travel time\)/);
 });
 test("generated notes are unique card links to real PDFs, with only non-empty groups", async () => {
   const doc = parse(await fs.readFile(new URL("index.html", root), "utf8"));
