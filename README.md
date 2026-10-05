@@ -1,173 +1,93 @@
 # mihirrao-10.github.io
 
-Mihir Rao's framework-free personal website. GitHub Pages serves the repository
-root from `main`; the production site therefore keeps real directories and
-relative links instead of client-side routing.
+Framework-free personal homepage. GitHub Pages serves the repository root of
+`main` directly; commit generated browser assets along with their sources.
+The two research projects deploy from their own sibling repositories.
 
-The Personal Projects section links to **The Shortest Path Through a Curved World** at
-[`/shortest-path-through-a-curved-world/`](https://mihirrao-10.github.io/shortest-path-through-a-curved-world/),
-a guided Heat Method story backed by a standalone C++20 CPU geometry engine on
-generated meshes with one to three handles. That implementation, its exported
-numerical data, and its Pages workflow live in the sibling
-`shortest-path-through-a-curved-world` repository.
+## Layout
 
-It also links to **When Every Agent Finds the
-Shortcut** at
-[`/multi-agent-reinforcement-learning-in-congestion-games/`](https://mihirrao-10.github.io/multi-agent-reinforcement-learning-in-congestion-games/),
-an exact atomic Braess congestion game study with deterministic learning
-experiments involving multiple agents and an interactive Three.js potential
-landscape. Its Python analysis, exported story data, web experience, tests, and
-Pages workflow live in the sibling
-`multi-agent-reinforcement-learning-in-congestion-games` repository.
+| Path | Purpose |
+|---|---|
+| `index.html` | All homepage content, native links, and generated Notes. |
+| `assets/css/black-geometry.css` | Styles. |
+| `src/black-geometry/` | Runtime and sculpture source. |
+| `tools/black-geometry/` | Asset build and verification. |
+| `assets/black-geometry/generated/` | Committed JavaScript, posters, licenses, and hashed stylesheet. |
+| `assets/black-geometry/project-data/` | Prepared research geometry/data and license. |
+| `notes/` | Published PDFs; sources live in `../../learning/course-notes/`. |
+| `tests/black-geometry/` | Node tests and targeted Playwright browser specs. |
+| [docs/black-geometry/provenance.md](docs/black-geometry/provenance.md) | Sculpture equations, references, data origins, and authorship. |
+| `dist/` | Ignored production copy. |
 
-## Repository layout
+## Development
 
-```text
-index.html  personal-site homepage
-assets/     shared static assets
-notes/      published book-note and course-note PDFs
-src/        homepage experience runtime source
-tools/      experience build, static-site copy, and verification
-tests/      unit and browser tests
-docs/       sculpture provenance and revision notes
-dist/       ignored production-build output
-```
-
-## Local development
+Node ≥20.19 is required. Dependencies are pinned in `package-lock.json`.
 
 ```sh
 npm ci
 npm run check
 python3 -m http.server 8000 --bind 127.0.0.1
-# In a second terminal, inspect the production copy:
+# Preview the production copy separately:
 python3 -m http.server 8001 --bind 127.0.0.1 -d dist
 ```
 
-## Personal notes
+`npm run check` runs unit/content tests, builds, verifies deterministic generated
+assets, and checks root/dist parity. `npm run build` updates generated assets,
+removes stale files only inside the owned generated directory, and updates the
+stylesheet and entry-script URLs for returning visitors. Run it after CSS or
+runtime edits and include the generated changes in the commit.
 
-`notes/` holds generated PDFs only. Book- and course-note LaTeX sources live in
-`../../learning/course-notes/`. Do not edit the PDFs or the homepage Notes
-section (between `<!-- notes:begin -->` and `<!-- notes:end -->`) by hand. Run
-`make publish` there to rebuild, copy changed PDFs here, and regenerate the
-section from the note sets' status files; `make check` detects any drift.
-
-## Black Geometry homepage
-
-The homepage remains real HTML with STIX Two Text and native links. Its minimal
-layout has no header, menu or audio. An animation button appears only when the
-device requests reduced motion or graphics need a retry. Teaching course codes,
-titles, specialization, honors and awards sit inside Education; industry bullets
-and project descriptions come from the local résumé.
-Titles and links use colors coordinated with each sculpture; introductory links
-are white and note links are ice white. Project and Back to top controls have
-square corners. Projects open in separate tabs.
-
-Eight detailed sculptures follow the entries: Hanson's classic Calabi–Yau
-projection, a maroon-and-gray phoenix, navy-and-gold dragon, MATLAB membrane,
-Resolution Life flag, blue/teal two-handle surface, red/orange congestion landscape,
-and a crystalline white Klein bottle for notes. At least 65,536 prepared facets
-per target remain visible through luminous triangular edges and faceted shading.
-Sculptures are 16% smaller, gently translucent, and shimmer within their own
-palettes. A shared depth prepass prevents the rear surfaces from overwhelming
-their form. The Klein bottle uses a more translucent 0.70 face alpha; other
-sculptures retain 0.88. The Calabi–Yau palette uses indigo, amethyst, rose and
-champagne. Dragon scales and phoenix feather relief add local detail.
-
-The two project sculptures preserve prepared numerical results from the actual
-studies. Their scientific geometry and paths remain authored data; no numerical
-solver runs on the homepage. See the provenance documents for extraction details.
-
-Motion is on with all authored facets, targeting 60fps. Render resolution starts
-at up to 2× device pixel ratio within a 1.5-million-pixel budget. When sustained
-frame times exceed 25ms, the compositor glow is removed first, then resolution
-steps down if needed. Geometry detail is unchanged. Shared
-topology attributes and normalized packed colors/normals reduce buffer memory.
-Old stored display settings are ignored. OS reduced motion uses contextual SVG
-artwork; visitors can explicitly enable animation for their visit. Failed imports,
-assets, shaders or context creation retain the readable page, static sculptures
-and a retry button.
-
-The loading screen remains until fonts, all eight decoded sculptures, shaders,
-GPU buffer uploads and warm-up draws are ready. A GPU fence confirms completion.
-There is no elapsed-time fallback, and wheel, keyboard or touch input cannot
-dismiss the loader. Prepared geometries remain resident, so changing sections
-does not decode or upload a new mesh. Returning visitors receive an entry-script
-URL versioned from its contents, as well as the fingerprinted stylesheet.
-
-Scrolling uses native mandatory CSS snapping, as in the original implementation.
-Whole entries are snap areas; `scroll-snap-stop: always` asks the browser to stop
-inertial gestures at the next entry. Tall entries remain freely readable within
-their own area. Wheel, trackpad, touch, keyboard, pinch zoom, hashes, scrollbars
-and focus navigation stay with the browser. There is no JavaScript wheel
-cancellation, momentum classifier, cooldown or deferred snap timer. The browser
-has gesture-phase information that standard DOM wheel events do not expose.
-
-Navigation tests use Chromium gestures with begin/change/end phases and WebKit
-wheel input. Chromium's test API does not provide trackpad fling velocity, and
-WebKit's does not expose gesture phases. These tests cover native navigation and
-its independence from rendering; they do not substitute for physical trackpad QA.
-
-The loading screen locks the viewport with CSS. The fixed artwork uses
-`overflow: clip` so it is not a nested scroll container. The renderer independently
-completes a 380ms eased dissolve between two intact tessellated surfaces, so stopping
-scrolling cannot freeze a partially assembled mesh. Reversals and skipped entries
-resolve to the latest selected identity. Entries fill at least their viewport
-reading area; a small native downward link leads to the next entry.
-
-Each visit starts at its authored view and then orbits around the centered
-artwork. MathWorks and Resolution hold their recognizable opening view briefly
-before easing into motion. An outgoing endpoint retains its own orbit and drag
-state during the dissolve, including a quick reversal. Mouse/pen dragging rotates around
-screen axes using accumulated quaternions, including after prior turns, and
-pauses the orbit. Release adds brief inertia. Horizontal touch dragging rotates
-while native vertical scrolling and pinch zoom remain available. Focused arrow
-keys rotate; Home resets the drag orientation. One graphics context renders one
-settled sculpture or two during a transition. Print uses dark text on white.
-
-### Build and maintenance
-
-Use Node 20.19+.
-Runtime source is in `src/black-geometry/`, styling in
-`assets/css/black-geometry.css`, and bundling/static-poster generation in
-`tools/black-geometry/`. Dependencies are pinned in `package-lock.json`.
+Use focused browser specs when interaction or layout changes require them:
 
 ```sh
-npm run build:experience      # update browser assets after editing the experience
-npm run verify:experience     # compare generated content without rewriting files
-npm run test:experience       # state, interaction, geometry, content and build contracts
-npm run check                # unit tests + build + parity
-
-# Browser binaries are optional.
-PLAYWRIGHT_BROWSERS_PATH=./node_modules/.cache/ms-playwright npx playwright install chromium webkit
-npm run test:browser          # serves root/dist on 8000/8001 if not already running
+PLAYWRIGHT_BROWSERS_PATH=./node_modules/.cache/ms-playwright npx playwright test -g "notes"
 ```
 
-`assets/black-geometry/generated/` must be included in an ordinary later user
-commit because Pages serves the repository root. esbuild emits a stable entry,
-hashed dynamic chunks, and license notices there; the static SVGs use the same
-authored target geometry as the runtime packet. The build also copies the stylesheet
-to a filename containing its content hash and updates its link in `index.html`, so
-returning visitors receive the current styles. Run the build after CSS edits and
-commit the generated stylesheet and updated HTML together. Builds write only
-changed files and delete stale files only within that owned directory. `dist/` is produced afterwards by the
-static copy build (`tools/build-site.js`) and remains ignored, as do `node_modules/`
-and browser evidence under `.artifacts/`. A build alone does not publish homepage
-changes.
+The full `npm run test:browser` suite is slow. Browser evidence is ignored under
+`.artifacts/`. Chromium and WebKit tests cover simulated gestures; physical
+trackpad/Safari/iPhone behavior requires separate hands-on review.
 
-The content fixture (`tests/black-geometry/fixtures/content-baseline.json`) captures the local pre-redesign semantic content, not
-whitespace or layout. Update it only for a deliberate content edit. Use
-`npm run check` for ongoing validation.
+## Content and notes
 
-For local diagnostics, append `?bg-debug` to the homepage. The read-only
-`window.__blackGeometry.snapshot()` reports production scene state, frame counts,
-draw calls, material state, quality and interaction lifecycle. It does not change rendering or expose
-private data. Browser tests use this observation hook and real production code.
+Education, Experience, and Projects derive from the résumé. Deliberate edits to
+those sections require updating `tests/black-geometry/fixtures/content-baseline.json`
+in the same commit. Notes are checked structurally instead.
 
-See the [section polish report](docs/black-geometry/section-polish-report.md) for the
-current revision. The [crystalline mesh report](docs/black-geometry/crystalline-report.md),
-[minimal presentation report](docs/black-geometry/minimal-report.md),
-[interaction report](docs/black-geometry/interactive-report.md)
-and [refinement report](docs/black-geometry/refinement-report.md) describe earlier revisions. The [implementation log](docs/black-geometry/implementation-log.md),
-[acceptance report](docs/black-geometry/acceptance-report.md), and
-[revision report](docs/black-geometry/revision-report.md) retain historical evidence
-from the earlier passes.
+Never edit PDFs or the Notes block between `<!-- notes:begin ... -->` and
+`<!-- notes:end -->` by hand. Run `make publish` in
+[the notes workspace](../../learning/course-notes/README.md) to build, copy changed
+PDFs, regenerate the block from status metadata, and check consistency.
+
+## Runtime constraints
+
+The STIX Two Text page stays readable with static SVGs when graphics fail or
+reduced motion is requested. Visitors can enable animation or retry; rendering
+failures retain content and native links. Print uses dark text on white.
+
+One WebGL context renders eight prepared sculptures: the quintic slice, phoenix,
+dragon, membrane, Resolution flag, heat-method surface, congestion potential,
+and twisted figure-eight Klein immersion. All targets are prepared at build time;
+scientific geometry and paths come from the research exports. The homepage runs
+no numerical solver. The same geometry produces the static posters.
+
+A shared depth prepass, per-sculpture materials, and a two-surface dissolve preserve
+readable geometry through transitions. Notes use a faint hidden-contour pass to
+expose folded lobes. Prepared targets stay resident. Each visit has its own orbit
+start and drag state; reversal preserves a still-visible identity's state.
+
+The loader waits for fonts, all decoded sculptures, shaders, uploaded GPU buffers,
+warm-up draws, and a GPU fence. There is no timeout or input-driven dismissal.
+Resolution adapts to sustained frame cost by dropping glow and then render scale;
+geometry detail stays fixed.
+
+Navigation uses native mandatory CSS snapping, with no JavaScript wheel
+cancellation or momentum classifier. Tall entries remain readable within their
+snap area. Mouse/pen dragging rotates in screen coordinates with inertia; horizontal
+touch dragging preserves vertical scrolling and pinch zoom. Focused arrow keys
+rotate; Home resets. Rendering and transition completion remain independent of
+scroll input. History restoration preserves the URL and saved reading position
+while allowing user input to cancel a pending correction.
+
+For local diagnostics, append `?bg-debug`. The read-only
+`window.__blackGeometry.snapshot()` reports scene, frame, draw, material, quality,
+and interaction state without changing display settings.

@@ -1,6 +1,6 @@
 import * as THREE from "three";
 
-// Original numerical reconstruction; see revision-membrane-provenance.md.
+// Original numerical reconstruction; see docs/black-geometry/provenance.md#mathworks-membrane.
 // A nine-term boundary-collocation solve was performed at author time. Only the
 // first two terms are used for the displayed, deliberately relaxed outer edge.
 // No MATLAB code, downloaded mesh, or numerical eigensolver runs in the browser.

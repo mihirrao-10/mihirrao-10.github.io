@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 
 // Original faceted dragon; visual references and color provenance are recorded in
-// docs/black-geometry/revision-dragon-provenance.md. This is not official artwork.
+// docs/black-geometry/provenance.md#drexel-dragon. This is not official artwork.
 const BLUE = '#07294D';
 const GOLD = '#FFC600';
 const V = (p) => new THREE.Vector3(...p);

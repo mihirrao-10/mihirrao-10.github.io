@@ -3,7 +3,7 @@ import * as THREE from "three";
 // Original, deliberately simplified Harper Memorial Library sculpture.
 // The south elevation and its unlike tower crowns were studied in UChicago's
 // official architectural illustration and exterior/tower photographs.
-// See docs/black-geometry/revision-harper-provenance.md. No image or model asset
+// See docs/black-geometry/provenance.md#additional-source-factories. No image or model asset
 // is copied into the experience. +Y is up; the principal facade faces +Z.
 
 const COLORS = {
