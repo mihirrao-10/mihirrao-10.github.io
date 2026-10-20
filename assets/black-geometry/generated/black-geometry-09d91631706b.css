@@ -187,20 +187,28 @@ li::marker { color: var(--strong); }
 }
 .open-project:hover { color: var(--scene-hover); background: #ffffff08; }
 /* Notes are generated from the notes workspace: groups appear only when they
-   have entries, and each card's meter has one segment per lecture or chapter. */
+   have entries, and an unfinished set's meter has one segment per lecture or chapter.
+   Each institution's heading and list carry data-school; its colors tint the cards. */
 .notes-summary { margin: -0.35rem 0 1.7rem; color: var(--muted); font-size: 0.84rem; letter-spacing: 0.01em; }
 .notes-empty { margin: 0; color: var(--muted); font-size: 0.95rem; }
 .notes-group + .notes-group { margin-top: 2.4rem; }
 .notes-category { margin: 0 0 0.95rem; color: var(--strong); font-size: 0.72rem; }
-.notes-institution { margin: 1.5rem 0 0.7rem; color: var(--muted); font-size: 0.8rem; font-weight: 400; letter-spacing: 0.02em; }
+.notes-institution { margin: 1.7rem 0 0.7rem; color: var(--school-ink); font-size: 0.8rem; font-weight: 400; letter-spacing: 0.02em; }
 .notes-category + .notes-institution { margin-top: 0; }
-.notes-list { display: grid; gap: 0.85rem; list-style: none; margin: 0; padding: 0; max-width: 36rem; }
+.notes-list { display: grid; gap: 0.6rem; list-style: none; margin: 0; padding: 0; max-width: 36rem; }
+.notes-institution, .notes-list {
+  --school: #ffffff1f; --school-ink: var(--muted); --school-tint: #ffffff05; --school-hover: #ffffff0a;
+}
+[data-school="california-institute-of-technology"] { --school: #ff6c0c; --school-ink: #ff9b5c; --school-tint: #ff6c0c1c; --school-hover: #ff6c0c2e; }
+[data-school="massachusetts-institute-of-technology"] { --school: #c8233f; --school-ink: #ef7d92; --school-tint: #b0213c2e; --school-hover: #b0213c45; }
+[data-school="stanford-university"] { --school: #a81c0f; --school-ink: #e0694a; --school-tint: #8c2a1529; --school-hover: #8c2a153d; }
+[data-school="university-of-california-berkeley"] { --school: #fdb515; --school-ink: #fdc54f; --school-tint: #0026765c; --school-hover: #00267685; }
 .note {
   position: relative; display: grid; grid-template-columns: 1fr auto; align-items: baseline;
-  gap: 0 1rem; padding: 1.05rem 1.2rem 1.1rem; border: 1px solid #ffffff1f; background: #ffffff05;
-  transition: border-color 160ms, background-color 160ms;
+  gap: 0 1rem; padding: 0.9rem 1.15rem 0.95rem; border: 1px solid #ffffff17; border-left: 3px solid var(--school);
+  background: var(--school-tint); transition: border-color 160ms, background-color 160ms;
 }
-.note:hover { border-color: #d8edf366; background: #ffffff0a; }
+.note:hover { border-color: #ffffff38; border-left-color: var(--school); background: var(--school-hover); }
 .note:has(.note-link:focus-visible) { outline: 2px solid var(--bright); outline-offset: 4px; }
 .note-link, .note-link:visited {
   color: var(--scene-title); font-size: 1.28rem; font-weight: 500; line-height: 1.3; letter-spacing: -0.012em;
@@ -215,19 +223,17 @@ li::marker { color: var(--strong); }
 .note-format::after { content: "\2197"; display: inline-block; margin-left: 0.4em; letter-spacing: 0; transition: transform 160ms; }
 .note:hover .note-format { color: var(--strong); }
 .note:hover .note-format::after { transform: translate(2px, -2px); }
-.note-byline, .note-progress, .note-latest { grid-column: 1 / -1; margin: 0; }
-.note-byline { margin-top: 0.3rem; color: var(--text); font-size: 0.88rem; }
-.note-byline .course-code { font-size: 0.84rem; }
-.note-progress { display: flex; align-items: center; gap: 0.85rem; margin-top: 0.95rem; }
+.note-byline, .note-progress { grid-column: 1 / -1; margin: 0; }
+.note-byline { margin-top: 0.25rem; color: var(--muted); font-size: 0.84rem; }
+.note-byline .note-count { color: inherit; font-size: inherit; }
+.note-progress { display: flex; align-items: center; gap: 0.85rem; margin-top: 0.8rem; }
 .note-meter {
   flex: 1 1 auto; max-width: 20rem; height: 5px;
-  background: linear-gradient(to right, var(--scene-accent) calc(var(--done) / var(--total) * 100%), #ffffff24 0);
+  background: linear-gradient(to right, var(--school-ink) calc(var(--done) / var(--total) * 100%), #ffffff24 0);
   -webkit-mask: repeating-linear-gradient(to right, #000 0 calc(100% / var(--total) - 2px), transparent 0 calc(100% / var(--total)));
   mask: repeating-linear-gradient(to right, #000 0 calc(100% / var(--total) - 2px), transparent 0 calc(100% / var(--total)));
 }
 .note-count { color: var(--strong); font-size: 0.78rem; font-variant-numeric: tabular-nums; white-space: nowrap; }
-.note-latest { margin-top: 0.55rem; color: var(--muted); font-size: 0.8rem; line-height: 1.5; }
-.note-latest > span { white-space: nowrap; }
 #notes { scroll-margin-bottom: var(--notes-tail); }
 #notes > .section-heading { color: var(--scene-title); }
 /* Notes and the short footer share one sculpture and one continuous reading area.
