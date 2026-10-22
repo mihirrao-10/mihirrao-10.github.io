@@ -201,6 +201,7 @@ li::marker { color: var(--strong); }
 }
 [data-school="california-institute-of-technology"] { --school: #ff6c0c; --school-ink: #ff9b5c; --school-tint: #ff6c0c1c; --school-hover: #ff6c0c2e; }
 [data-school="massachusetts-institute-of-technology"] { --school: #c8233f; --school-ink: #ef7d92; --school-tint: #b0213c2e; --school-hover: #b0213c45; }
+[data-school="princeton-university"] { --school: #e77500; --school-ink: #f5a04a; --school-tint: #e775001f; --school-hover: #e7750033; }
 [data-school="stanford-university"] { --school: #a81c0f; --school-ink: #e0694a; --school-tint: #8c2a1529; --school-hover: #8c2a153d; }
 [data-school="university-of-california-berkeley"] { --school: #fdb515; --school-ink: #fdc54f; --school-tint: #0026765c; --school-hover: #00267685; }
 .note {
