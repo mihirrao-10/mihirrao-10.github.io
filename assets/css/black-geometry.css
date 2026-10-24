@@ -188,7 +188,7 @@ li::marker { color: var(--strong); }
 .open-project:hover { color: var(--scene-hover); background: #ffffff08; }
 /* Notes are generated from the notes workspace: groups appear only when they
    have entries, and an unfinished set's meter has one segment per lecture or chapter.
-   Each institution's heading and list carry data-school; its colors tint the cards. */
+   All institutions share the same neutral card colors. */
 .notes-summary { margin: -0.35rem 0 1.7rem; color: var(--muted); font-size: 0.84rem; letter-spacing: 0.01em; }
 .notes-empty { margin: 0; color: var(--muted); font-size: 0.95rem; }
 .notes-group + .notes-group { margin-top: 2.4rem; }
@@ -199,11 +199,6 @@ li::marker { color: var(--strong); }
 .notes-institution, .notes-list {
   --school: #ffffff1f; --school-ink: var(--muted); --school-tint: #ffffff05; --school-hover: #ffffff0a;
 }
-[data-school="california-institute-of-technology"] { --school: #ff6c0c; --school-ink: #ff9b5c; --school-tint: #ff6c0c1c; --school-hover: #ff6c0c2e; }
-[data-school="massachusetts-institute-of-technology"] { --school: #c8233f; --school-ink: #ef7d92; --school-tint: #b0213c2e; --school-hover: #b0213c45; }
-[data-school="princeton-university"] { --school: #e77500; --school-ink: #f5a04a; --school-tint: #e775001f; --school-hover: #e7750033; }
-[data-school="stanford-university"] { --school: #a81c0f; --school-ink: #e0694a; --school-tint: #8c2a1529; --school-hover: #8c2a153d; }
-[data-school="university-of-california-berkeley"] { --school: #fdb515; --school-ink: #fdc54f; --school-tint: #0026765c; --school-hover: #00267685; }
 .note {
   position: relative; display: grid; grid-template-columns: 1fr auto; align-items: baseline;
   gap: 0 1rem; padding: 0.9rem 1.15rem 0.95rem; border: 1px solid #ffffff17; border-left: 3px solid var(--school);
