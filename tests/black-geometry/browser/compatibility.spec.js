@@ -1,137 +1,54 @@
 import { test, expect } from '@playwright/test';
-import { swipe } from './gestures.js';
-
 const snapshot = page => page.evaluate(() => window.__blackGeometry.snapshot());
+
 async function ready(page) {
   await page.goto('/?bg-debug');
-  await expect(page.locator('html')).toHaveAttribute('data-boot', 'complete', { timeout: 20000 });
-  await expect(page.locator('body')).toHaveAttribute('data-experience-state', 'ready');
-}
-async function stopped(page) {
-  let last = -1, stable = 0;
-  await expect.poll(async () => {
-    const y = await page.evaluate(() => scrollY);
-    stable = Math.abs(y - last) < .5 ? stable + 1 : 0;
-    last = y;
-    return stable >= 3;
-  }).toBe(true);
+  await expect(page.locator('body')).toHaveAttribute('data-experience-state', 'ready', { timeout: 30000 });
 }
 
-for (const width of [390, 1366]) test(`native gestures reach the next entry and can return at ${width}px`, async ({ page, browserName }) => {
-  test.setTimeout(60000);
-  await page.setViewportSize({ width, height: 768 });
-  await ready(page);
-  await page.mouse.move(30, 700);
-  for (const distance of [500, 650]) {
-    await page.evaluate(() => scrollTo({ top: 0, behavior: 'instant' }));
-    await stopped(page);
-    await swipe(page, browserName, 1, { x: 30, y: 700, distance });
-    await stopped(page);
-    const state = await snapshot(page);
-    expect(state.state.chapter).toBe('education-uchicago');
-    expect(await page.evaluate(() => scrollY)).toBeCloseTo(state.ranges[1].start, 0);
-    await swipe(page, browserName, -1, { x: 30, y: 700, distance });
-    await stopped(page);
-    expect((await snapshot(page)).state.chapter).toBe('hero');
-  }
-  // The footer extends Notes' reading area; it must not become a zero-length
-  // wheel destination that traps the visitor at the bottom of the document.
-  await page.evaluate(() => scrollTo({ top: document.documentElement.scrollHeight, behavior: 'instant' }));
-  await stopped(page);
-  const bottom = await page.evaluate(() => scrollY);
-  await swipe(page, browserName, -1, { x: 30, y: 700 });
-  await stopped(page);
-  expect(await page.evaluate(() => scrollY)).toBeLessThan(bottom - 20);
-});
-
-test('consecutive native gestures advance over artwork and reverse over text', async ({ page, browserName }) => {
-  test.setTimeout(45000);
-  await ready(page);
-  // Scroll over the live sculpture as well as over the text column.
-  await page.mouse.move(1100, 450);
-  for (let gesture = 0; gesture < 2; gesture++) {
-    await swipe(page, browserName, 1);
-    await stopped(page);
-  }
-  await stopped(page);
-  const state = await snapshot(page), y = await page.evaluate(() => scrollY);
-  expect(y).toBeGreaterThanOrEqual(state.ranges[2].start - 2);
-  expect(state.ranges.some(range => y >= range.start - 2 && y <= range.stop + 2)).toBe(true);
-  await page.mouse.move(30, 700);
-  await swipe(page, browserName, -1, { x: 30, y: 700 });
-  await stopped(page);
-  const reversed = await page.evaluate(() => scrollY);
-  expect(reversed).toBeLessThan(y - 20);
-  expect(state.ranges.some(range => reversed >= range.start - 2 && reversed <= range.stop + 2)).toBe(true);
-});
-
-test('reduced-motion visitors can explicitly enable prepared, moving sculptures', async ({ page }) => {
+test('reduced-motion visitors can navigate posters and explicitly enable animation', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto('/?bg-debug');
   const enable = page.getByRole('button', { name: 'Enable animation' });
   await expect(enable).toBeVisible();
-  expect(await page.evaluate(() => getComputedStyle(document.documentElement).scrollSnapType)).toBe('y mandatory');
+  await page.getByRole('navigation', { name: 'Main navigation' }).getByRole('link', { name: 'Notes', exact: true }).click();
+  await expect(page.locator('#sculpture-poster')).toHaveAttribute('src', /sculpture-notes\.svg$/);
   await enable.click();
-  await expect(page.locator('html')).toHaveAttribute('data-boot', 'complete', { timeout: 20000 });
+  await expect(page.locator('body')).toHaveAttribute('data-experience-state', 'ready', { timeout: 30000 });
   await expect(enable).toBeHidden();
-  const state = await snapshot(page);
-  expect(state.motion).toBe('full');
-  expect(state.world.warmedTargets).toBe(8);
-  await expect.poll(async () => (await snapshot(page)).orbitTime).toBeGreaterThan(state.orbitTime + .2);
-  // Re-enabling an already-created renderer must release the loader too.
-  await page.emulateMedia({ reducedMotion: 'no-preference' });
-  await expect.poll(async () => (await snapshot(page)).motionOverride).toBe(false);
-  await page.emulateMedia({ reducedMotion: 'reduce' });
-  await expect(enable).toBeVisible();
-  await enable.click();
-  await expect(page.locator('html')).toHaveAttribute('data-boot', 'complete');
-  await expect(page.locator('body')).toHaveAttribute('data-experience-state', 'ready');
-});
-
-test('throttled Chromium prepares every mesh and continues animating through a resize', async ({ page }, info) => {
-  test.skip(info.project.name !== 'chromium', 'CPU throttling uses Chromium protocol.');
-  test.setTimeout(60000);
-  const client = await page.context().newCDPSession(page);
-  await client.send('Emulation.setCPUThrottlingRate', { rate: 4 });
-  await ready(page);
-  expect((await snapshot(page)).world.warmedTargets).toBe(8);
-  for (const id of ['education-drexel', 'project-surface', 'notes']) {
-    await page.evaluate(id => {
-      scrollTo({ top: window.__blackGeometry.snapshot().ranges.find(r => r.id === id).start, behavior: 'instant' });
-    }, id);
-    await expect.poll(async () => (await snapshot(page)).state.chapter).toBe(id);
-    const before = await snapshot(page);
-    await expect.poll(async () => (await snapshot(page)).orbitTime).toBeGreaterThan(before.orbitTime + .15);
-    expect((await snapshot(page)).world.decodedTargets).toBe(8);
-  }
-  await page.setViewportSize({ width: 390, height: 844 });
   const before = await snapshot(page);
-  await expect.poll(async () => (await snapshot(page)).world.frames).toBeGreaterThan(before.world.frames + 5);
-  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
-  await client.detach();
+  expect(before.world.warmedTargets).toBe(5);
+  await expect.poll(async () => (await snapshot(page)).orbitTime).toBeGreaterThan(before.orbitTime + .2);
 });
 
-for (const [width, height] of [[390, 844], [768, 1024]]) test(`high-DPI touch device ${width}px remains live after rotation`, async ({ browser }) => {
-  test.setTimeout(45000);
+test('sculpture drag and keyboard rotation remain independent of page navigation', async ({ page }) => {
+  await ready(page);
+  const world = page.locator('.world');
+  const box = await world.boundingBox();
+  const before = await snapshot(page);
+  await page.mouse.move(box.x + box.width * .45, box.y + box.height * .5);
+  await page.mouse.down();
+  await page.mouse.move(box.x + box.width * .65, box.y + box.height * .55, { steps: 8 });
+  await page.mouse.up();
+  expect((await snapshot(page)).interaction.orientation).not.toEqual(before.interaction.orientation);
+  await world.focus();
+  await page.keyboard.press('Home');
+  await page.keyboard.press('ArrowRight');
+  expect((await snapshot(page)).state.chapter).toBe('hero');
+  expect(await page.evaluate(() => scrollY)).toBe(0);
+});
+
+for (const [width, height] of [[390, 844], [768, 1024]]) test(`touch layout at ${width}px stays live after rotation`, async ({ browser }) => {
   const context = await browser.newContext({ viewport: { width, height }, deviceScaleFactor: 3, isMobile: true, hasTouch: true });
-  const page = await context.newPage(), errors = [];
-  page.on('pageerror', error => errors.push(error.message));
+  const page = await context.newPage();
   try {
-    await page.goto('http://127.0.0.1:8000/?bg-debug');
-    await expect(page.locator('html')).toHaveAttribute('data-boot', 'complete', { timeout: 20000 });
-    for (const viewport of [{ width, height }, { width: height, height: width }]) {
-      await page.setViewportSize(viewport);
-      await page.evaluate(() => { location.hash = 'education-drexel'; });
-      await expect.poll(async () => (await snapshot(page)).state.chapter).toBe('education-drexel');
-      const before = await snapshot(page);
-      expect(before.world.warmedTargets).toBe(8);
-      expect(before.world.dpr).toBeLessThanOrEqual(2);
-      await expect.poll(async () => (await snapshot(page)).orbitTime).toBeGreaterThan(before.orbitTime + .2);
-      expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
-      const title = await page.locator('#education-drexel .section-heading').boundingBox();
-      const stage = await page.locator('.world').boundingBox();
-      if (stage.x < 1) expect(title.y).toBeGreaterThanOrEqual(stage.y + stage.height);
-    }
-    expect(errors).toEqual([]);
+    await ready(page);
+    await page.getByRole('navigation', { name: 'Main navigation' }).getByRole('link', { name: 'Education', exact: true }).click();
+    await page.setViewportSize({ width: height, height: width });
+    await expect(page.locator('#education')).toBeVisible();
+    const before = await snapshot(page);
+    await expect.poll(async () => (await snapshot(page)).world.frames).toBeGreaterThan(before.world.frames + 5);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    expect((await snapshot(page)).world.dpr).toBeLessThanOrEqual(2);
   } finally { await context.close(); }
 });

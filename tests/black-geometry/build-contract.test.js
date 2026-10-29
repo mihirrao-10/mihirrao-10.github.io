@@ -27,6 +27,11 @@ test("generated assets are deterministic and every browser import resolves to a 
     "The homepage must reference the current generated stylesheet; run build:experience after CSS edits");
   assert.equal(withEntryReference(html, a.get('main.js')), html,
     'Returning visitors must fetch the current entry module rather than stale chunk references');
+  const dataVersion = createHash('sha256').update(a.get('sculpture-data.bin')).digest('hex').slice(0, 12);
+  const worldSource = [...a].filter(([name]) => name.startsWith('world-') && name.endsWith('.js'))
+    .map(([, contents]) => Buffer.from(contents).toString()).join('');
+  assert.ok(worldSource.includes(dataVersion), 'The binary content hash must version its fetch URL');
+  assert.ok(worldSource.includes('searchParams.set("v",'), 'The version must be used in the actual request');
   for (const [name, contents] of a) {
     if (!name.endsWith(".js")) continue;
     for (const match of Buffer.from(contents)

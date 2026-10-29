@@ -4,10 +4,10 @@ import fs from "node:fs/promises";
 import { correspond, bake } from "../../tools/black-geometry/sculptures.js";
 import { createSurface, createCongestion, SURFACE_INFO, CONGESTION_INFO } from "../../src/black-geometry/sculptures/projects.js";
 
-test("prepared sculpture packet has eight complete finite identities and simultaneous institutional colors", async () => {
+test("prepared sculpture packet has five complete finite abstract identities", async () => {
   const data=await fs.readFile(new URL("../../assets/black-geometry/generated/sculpture-data.bin",import.meta.url));
   const length=data.readUInt32LE(0), manifest=JSON.parse(data.subarray(4,length+4)), offset=length+4;
-  assert.deepEqual(manifest.models.map(m=>m.name),["hero","phoenix","dragon","membrane","resolution","notes","surface","congestion"]);
+  assert.deepEqual(manifest.models.map(m=>m.name),["hero","education","experience","projects","notes"]);
   assert.equal(data.length,offset+manifest.models.length*manifest.count*manifest.stride);
   assert.ok(manifest.count>=65536);
   assert.equal(manifest.version,2);assert.equal(manifest.stride,39);

@@ -7,6 +7,34 @@ and proprietary implementations are not redistributed. Display colors and lighti
 are presentation choices except where an official asset's colors are identified below.
 The source and tests define current sampling budgets and rendering parameters.
 
+## Current homepage
+
+The five pages use the quintic slice (About), a looped knot (Education), a folded
+ring (Experience), a three-twist ribbon (Projects), and the Klein immersion (Notes).
+They share grayscale presentation and prepared geometry. Institutional sculptures
+and research exports below document retained source factories, not active pages.
+
+`abstract.js` authors the three new forms. The knot uses Three.js
+`TorusKnotGeometry(1.5, .29, 288, 64, 2, 3)`. The folded ring is a corrugated torus:
+
+```text
+r = .48 + .13 cos(3u)
+R = 1.65 + .25 cos(3u) + r cos(v)
+P = (R cos(u), R sin(u), r sin(v) + .4 sin(3u))
+```
+
+The ribbon sweeps a strip with three half-twists:
+
+```text
+R = 1.7 + v cos(3u/2), -0.75 <= v <= 0.75
+P = (R cos(u), R sin(u), v sin(3u/2))
+```
+
+Its final seam reflects the strip parameter, `(2pi,v) ~ (0,-v)`. These are authored
+illustrations, unrelated to the schools, employers, or measured project data.
+Tests check finite, nondegenerate triangles, neutral vertex colors, closed knot
+and ring seams, and the ribbon's two parameter-edge chains joined at the reflection.
+
 ## Calabi–Yau slice
 
 `hero.js` implements Andrew J. Hanson's published construction from his

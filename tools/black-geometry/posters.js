@@ -43,6 +43,5 @@ export function sculpturePoster(model,{shortcut="open"}={}) {
 
 export function posterOutputs(models) {
   const files=new Map(models.map(model=>[`sculpture-${model.name}.svg`,sculpturePoster(model)]));
-  files.set("sculpture-congestion-closed.svg",sculpturePoster(models.find(m=>m.name==="congestion"),{shortcut:"closed"}));
   return files;
 }

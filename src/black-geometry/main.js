@@ -1,6 +1,7 @@
 import { DEFAULTS, motionPolicy, QUALITY } from './preferences.js';
-import { chapterState, cameraPose, createTransition, advanceTransition } from './scene-state.js';
+import { cameraPose, createTransition, advanceTransition } from './scene-state.js';
 import { createInteraction } from './interaction.js';
+import { createNavigation } from './navigation.js';
 
 const body = document.body;
 const root = document.documentElement;
@@ -15,17 +16,15 @@ const on = (target, event, callback, options = {}) => target.addEventListener(ev
 const debug = new URLSearchParams(location.search).has('bg-debug');
 const profile = 'high';
 const project = { shortcut: 'open', path: 1 };
-const navigation = performance.getEntriesByType('navigation')[0];
 let motion = motionPolicy(system.matches);
 let motionOverride = false;
 let world, worldImport, enhancementPending;
 let failed = root.dataset.boot === 'fallback', disposed = false, active = !document.hidden;
-const introVisit = root.dataset.boot === 'loading' && navigation?.type !== 'back_forward' && (!location.hash || location.hash === '#top');
-const entrance = { started: false, progress: introVisit ? 0 : 1 };
+const entrance = { started: false, progress: 1 };
 let frame = 0, syncFrame = 0, lastFrame = 0, time = 0, orbitTime = 0;
-let scrollY = window.scrollY, width = innerWidth, height = innerHeight, layoutDirty = true;
-let ranges = [], pointer = [0, 0], pointerTarget = [0, 0];
-let state = chapterState(0, []), visualState = state;
+let width = innerWidth, height = innerHeight, layoutDirty = true;
+let pointer = [0, 0], pointerTarget = [0, 0];
+let state = { chapter: 'hero', target: 'hero', nextTarget: 'hero', blend: 0, progress: 0 }, visualState = state;
 let transition = createTransition(state.target), lastChapter, lastPoster;
 const interaction = createInteraction({
   element: container,
@@ -42,50 +41,17 @@ function finishBoot(status = 'complete') {
   window.dispatchEvent(new Event('portfolio:boot-complete'));
 }
 
-function pixels(value) {
-  if (!value || value === 'auto' || value === 'normal') return 0;
-  if (value.endsWith('px') && Number.isFinite(Number(value.slice(0, -2)))) return Number(value.slice(0, -2));
-  const probe = document.createElement('div');
-  Object.assign(probe.style, { position: 'fixed', visibility: 'hidden', pointerEvents: 'none', width: '0', height: value });
-  body.append(probe);
-  const size = probe.getBoundingClientRect().height;
-  probe.remove();
-  return size;
-}
 function measure() {
-  // A width change reflows every preceding entry. Preserve the reading entry
-  // across rotation, but let mobile browser chrome change height freely.
-  const reading = width !== innerWidth && ranges.length ? { ...state } : null;
   width = innerWidth;
   height = innerHeight;
-  scrollY = window.scrollY;
-  const css = getComputedStyle(document.documentElement);
-  const top = pixels(css.scrollPaddingTop);
-  const bottom = pixels(css.scrollPaddingBottom);
-  const end = Math.max(1, document.documentElement.scrollHeight - height);
-  let previous = -1;
-  ranges = sceneElements.map((element, index) => {
-    const rect = element.getBoundingClientRect(), style = getComputedStyle(element);
-    const marginTop = pixels(style.scrollMarginTop);
-    const marginBottom = pixels(style.scrollMarginBottom);
-    const start = index === 0 ? 0 : Math.min(end, Math.max(previous + 1, rect.top + scrollY - top - marginTop));
-    previous = start;
-    // Long entries allow scrolling freely throughout this reading interval.
-    const stop = Math.min(end, Math.max(start, rect.bottom + scrollY + marginBottom - height + bottom));
-    return { id: element.dataset.scene, target: element.dataset.target, start, stop, end, snap: element.dataset.snap !== 'none' };
-  });
-  if (reading) {
-    const index = ranges.findIndex(range => range.id === reading.chapter), range = ranges[index];
-    const end = ranges[index + 1]?.start ?? range.end;
-    window.scrollTo({ top: Math.min(range.stop, range.start + reading.progress * (end - range.start)), behavior: 'instant' });
-    scrollY = window.scrollY;
-  }
   world?.resize(width, height, devicePixelRatio);
   layoutDirty = false;
 }
 function updateScene() {
   const previousTarget = state.target;
-  state = chapterState(scrollY, ranges);
+  const selected = navigation.current();
+  state = { chapter: selected.dataset.scene, target: selected.dataset.target,
+    nextTarget: selected.dataset.target, blend: 0, progress: 0 };
   if (lastChapter !== state.chapter) {
     if (lastChapter) {
       if (previousTarget !== state.target) interaction.reset(world?.entryOrientation(state.target));
@@ -97,8 +63,7 @@ function updateScene() {
       element.toggleAttribute('data-current-scene', element.dataset.scene === state.chapter);
   }
   body.dataset.sculpture = state.target;
-  // Parsing a dense, hidden SVG on every live section change stalls scrolling.
-  // Load the matching poster only when it is actually serving as the artwork.
+  // Load a poster only while it is serving as the artwork.
   if (lastPoster !== state.target && (motion !== 'full' || !world || failed)) {
     lastPoster = state.target;
     poster.src = `assets/black-geometry/generated/sculpture-${state.target}.svg`;
@@ -127,7 +92,10 @@ function fail(error) {
   animationAction.textContent = 'Retry animation';
   animationAction.title = 'The animation could not load. Try again.';
   animationAction.hidden = false;
-  if (debug) console.warn('Sculpture fallback:', error?.message || error);
+  if (debug) {
+    animationAction.title = String(error?.message || error);
+    console.warn('Sculpture fallback:', error?.message || error);
+  }
 }
 function draw(now) {
   frame = 0;
@@ -146,11 +114,9 @@ function draw(now) {
   const grab = interaction.snapshot();
   if (!grab.dragging) orbitTime += delta;
   pointer = pointer.map((value, i) => value + (pointerTarget[i] - value) * (1 - Math.exp(-delta * 5)));
-  // Real elapsed time completes the selected sculpture even when scrolling stops.
+  // Real elapsed time completes the selected sculpture after the page selection.
   transition = advanceTransition(transition, state.target, elapsed / 1000);
   visualState = { ...state, target: transition.from, nextTarget: transition.to, blend: transition.blend };
-  // Only the opening hero grows into view. A deep link or an early scroll
-  // always gets its complete sculpture, and returning never replays the intro.
   if (state.target !== 'hero') entrance.progress = 1;
   else if (entrance.started) entrance.progress = Math.min(1, entrance.progress + delta / 1.1);
   try {
@@ -226,23 +192,10 @@ on(animationAction, 'click', () => {
   motion = 'full';
   body.dataset.motion = motion;
   animationAction.hidden = true;
-  root.dataset.boot = 'loading';
   enhance();
 });
 on(window, 'portfolio:boot-fallback', () => fail(new Error('Sculpture entry module failed')));
-on(window, 'scroll', () => {
-  scrollY = window.scrollY;
-  if (motion !== 'full' || !world || failed) syncStatic();
-}, { passive: true });
 on(window, 'resize', invalidate, { passive: true });
-on(window, 'hashchange', invalidate);
-on(document, 'click', event => {
-  if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
-  if (!event.target.closest?.('a[href^="#"]')) return;
-  // Smooth deliberate anchor navigation, after the reading layout is ready.
-  // Startup hashes and reload restoration must never animate toward old bounds.
-  document.documentElement.style.scrollBehavior = motion === 'full' ? 'smooth' : 'auto';
-});
 on(document, 'pointermove', event => {
   if (motion === 'full' && finePointer.matches && event.pointerType !== 'touch' && !interaction.snapshot().dragging)
     pointerTarget = [(event.clientX / width) * 2 - 1, (event.clientY / height) * 2 - 1];
@@ -261,19 +214,11 @@ function suspend() {
 function resume() {
   if (disposed) return;
   active = !document.hidden;
-  scrollY = window.scrollY;
   invalidate();
   if (active) enhance();
 }
 on(document, 'visibilitychange', () => document.hidden ? suspend() : resume());
 on(window, 'pagehide', event => {
-  // Save into this existing entry without changing its URL or adding history.
-  // Startup can run before CSS or native scroll restoration on a cold return.
-  try {
-    const saved = history.state;
-    if (saved === null || (typeof saved === 'object' && !Array.isArray(saved)))
-      history.replaceState({ ...saved, portfolioReading: { href: location.href, y: window.scrollY } }, '');
-  } catch { /* Native restoration remains available when history writes fail. */ }
   suspend();
   if (!event.persisted) {
     disposed = true;
@@ -284,38 +229,17 @@ on(window, 'pagehide', event => {
   }
 });
 on(window, 'pageshow', resume);
+const navigation = createNavigation({ scenes: sceneElements, signal: listeners.signal, onChange: invalidate });
 measure();
 updateScene();
 settlePresentation();
 if (motion !== 'full' || failed) showStatic(failed ? 'fallback' : 'static');
-// WebKit can revisit an old fragment after restoring the reading position,
-// including after late fonts settle. Correct only that full-history case.
-let returnAnchor;
-try { returnAnchor = document.getElementById(decodeURIComponent(location.hash.slice(1)))?.dataset.scene; } catch {}
-const reading = history.state?.portfolioReading;
-if (navigation?.type === 'back_forward' && returnAnchor && reading?.href === location.href && Number.isFinite(reading.y) && reading.y >= 0) {
-  let interrupted = false;
-  for (const event of ['pointerdown', 'wheel', 'keydown'])
-    on(window, event, () => { interrupted = true; }, { once: true, passive: true });
-  on(window, 'pageshow', async event => {
-    if (event.persisted || interrupted) return;
-    await document.fonts?.ready;
-    await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
-    if (disposed || interrupted || location.href !== reading.href) return;
-    measure();
-    if (chapterState(reading.y, ranges).chapter === returnAnchor) return;
-    if (chapterState(window.scrollY, ranges).chapter !== returnAnchor) return;
-    window.scrollTo({ top: reading.y, behavior: 'instant' });
-    scrollY = window.scrollY;
-    invalidate();
-  }, { once: true });
-}
 if (debug) window.__blackGeometry = {
   snapshot: () => ({
     motion, motionOverride, preferences: { ...DEFAULTS }, profile, state: { ...state }, visualState: { ...visualState },
     transition: { ...transition }, project: { ...project }, time, orbitTime,
     interaction: interaction.snapshot(), active, pendingFrame: !!frame, world: world?.snapshot() || null,
-    ranges: structuredClone(ranges), entrance: { ...entrance },
+    page: navigation.current().id, entrance: { ...entrance },
   }),
 };
 enhance();

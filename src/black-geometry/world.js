@@ -3,6 +3,9 @@ import { QUALITY, renderingDpr } from "./preferences.js";
 import { cameraPose } from "./scene-state.js";
 
 export const SCULPTURE_PALETTES = Object.freeze({
+  education: ["#555555", "#888888", "#aaaaaa", "#dddddd"],
+  experience: ["#555555", "#888888", "#aaaaaa", "#dddddd"],
+  projects: ["#555555", "#888888", "#aaaaaa", "#dddddd"],
   hero: ["#5146c8", "#a08af5", "#df82a4", "#ffe2bd"],
   phoenix: ["#580000", "#800000", "#767676", "#D6D6CE"],
   dragon: ["#063766", "#087fcc", "#f4b411", "#fff176"],
@@ -199,7 +202,12 @@ export class PreparedPath extends THREE.Curve {
 
 async function loadSculptures() {
   const compressed = typeof DecompressionStream === "function";
-  const response = await fetch(new URL(compressed ? "./sculpture-data.bin.gz" : "./sculpture-data.bin", import.meta.url));
+  // Geometry changes independently of runtime code. Version its URL so returning
+  // visitors cannot pair a fresh renderer with a cached, older sculpture packet.
+  const version = typeof __SCULPTURE_DATA_VERSION__ === 'string' ? __SCULPTURE_DATA_VERSION__ : 'source';
+  const url = new URL(compressed ? './sculpture-data.bin.gz' : './sculpture-data.bin', import.meta.url);
+  url.searchParams.set('v', version);
+  const response = await fetch(url);
   if (!response.ok) throw new Error("The sculpture asset could not be loaded");
   const received = await response.arrayBuffer();
   const signature = new Uint8Array(received,0,Math.min(2,received.byteLength));
@@ -265,7 +273,7 @@ export async function createWorld({container,quality="high",onFailure}) {
     const bounds=packed.manifest.models[modelIndex].fitBounds,geometry=new THREE.BufferGeometry();
     geometry.setAttribute('position',new THREE.BufferAttribute(position,3));
     // Preserve the packet's exact quantized values with normalized GPU inputs;
-    // share topology attributes across all eight retained geometries.
+    // share topology attributes across all retained geometries.
     geometry.setAttribute('normal',new THREE.BufferAttribute(normal,3,true));
     geometry.setAttribute('surfaceColor',new THREE.BufferAttribute(color,3,true));
     geometry.setAttribute('barycentric',baryAttribute);

@@ -49,6 +49,8 @@ export function withEntryReference(html, contents) {
 }
 
 export async function expectedOutputs() {
+  const sculptures = await sculptureOutputs();
+  const dataVersion = createHash('sha256').update(sculptures.binary).digest('hex').slice(0, 12);
   const result = await build({
     absWorkingDir: ROOT,
     entryPoints: { main: "src/black-geometry/main.js" },
@@ -58,6 +60,7 @@ export async function expectedOutputs() {
     format: "esm",
     target: ["es2020"],
     minify: true,
+    define: { __SCULPTURE_DATA_VERSION__: JSON.stringify(dataVersion) },
     write: false,
     legalComments: "external",
     chunkNames: "[name]-[hash]",
@@ -70,7 +73,6 @@ export async function expectedOutputs() {
     await fs.readFile(path.join(ROOT, "assets/css/black-geometry.css")),
   );
   files.set(stylesheet.name, stylesheet.contents);
-  const sculptures = await sculptureOutputs();
   for (const [name, svg] of posterOutputs(sculptures.models)) files.set(name, Buffer.from(svg));
   files.set("sculpture-data.bin", sculptures.binary);
   files.set("sculpture-data.bin.gz", gzipSync(sculptures.binary, { level: 9 }));

@@ -1,13 +1,11 @@
 import * as THREE from "three";
 import { surfaceFitBounds, smoothSurfaceNormals } from "../../src/black-geometry/world.js";
 import { createHero } from "../../src/black-geometry/sculptures/hero.js";
-import { createPhoenix } from "../../src/black-geometry/sculptures/phoenix.js";
-import { createDragon } from "../../src/black-geometry/sculptures/dragon.js";
-import { createMembrane } from "../../src/black-geometry/sculptures/membrane.js";
-import { createResolution, createNotes } from "../../src/black-geometry/sculptures/mathematical.js";
+import { createNotes } from "../../src/black-geometry/sculptures/mathematical.js";
+import { createEducation, createExperience, createProjects } from "../../src/black-geometry/sculptures/abstract.js";
 
-const COMPONENTS = ["hero", "phoenix", "dragon", "membrane", "resolution", "notes"];
-const factories = [createHero, createPhoenix, createDragon, createMembrane, createResolution, createNotes];
+const COMPONENTS = ["hero", "education", "experience", "projects", "notes"];
+const factories = [createHero, createEducation, createExperience, createProjects, createNotes];
 const xyz = new THREE.Vector3();
 const center = (face) => [0, 1, 2].map(k => (face.p[k] + face.p[k + 3] + face.p[k + 6]) / 3);
 const area = (face) => {
@@ -94,8 +92,6 @@ export function correspond(original, count) {
 
 export async function sculptureOutputs() {
   const models = factories.map((factory,i)=>bake(factory(),COMPONENTS[i]));
-  const {createSurface, createCongestion} = await import("../../src/black-geometry/sculptures/projects.js");
-  models.push(bake(createSurface(),"surface"),bake(createCongestion(),"congestion"));
   const count = 2 ** Math.ceil(Math.log2(Math.max(65536, ...models.map(m=>m.faces.length))));
   const manifest = {version:2, count, stride:39, quantization:4096, normalQuantization:32767, models:[]};
   const buffers=[];

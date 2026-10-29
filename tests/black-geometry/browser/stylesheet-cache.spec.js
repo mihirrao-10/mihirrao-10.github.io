@@ -53,7 +53,7 @@ test('a fingerprinted stylesheet replaces a still-fresh legacy CSS cache entry',
     const stylesheetResponse = await responsePromise;
     expect(await stylesheetResponse.body()).toEqual(currentCSS);
     expect(stylesheetResponse.headers()['cache-control']).toBe('public, max-age=3600');
-    expect(await appearance()).toEqual({ border: '0px', padding: '25.5px' });
+    expect(await appearance()).toEqual({ border: '0px', padding: '0px' });
     expect(legacyRequests).toBe(1);
     expect(fingerprintedRequests, 'The new content-derived pathname must fetch the current stylesheet').toBe(1);
     await expect(page.locator('canvas, script')).toHaveCount(0);

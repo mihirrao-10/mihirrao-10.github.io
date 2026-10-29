@@ -40,11 +40,12 @@ runtime edits and include the generated changes in the commit.
 Use focused browser specs when interaction or layout changes require them:
 
 ```sh
-PLAYWRIGHT_BROWSERS_PATH=./node_modules/.cache/ms-playwright npx playwright test -g "notes"
+PLAYWRIGHT_BROWSERS_PATH=./node_modules/.cache/ms-playwright npx playwright test -g "page|education"
 ```
 
-The full `npm run test:browser` suite is slow. Browser evidence is ignored under
-`.artifacts/`. Chromium and WebKit tests cover simulated gestures; physical
+The `npm run test:browser` suite checks page navigation, responsive layout,
+sculpture interaction, fallback, and browser history. Browser evidence is ignored
+under `.artifacts/`. Chromium and WebKit tests cover simulated gestures; physical
 trackpad/Safari/iPhone behavior requires separate hands-on review.
 
 ## Content and notes
@@ -54,9 +55,11 @@ those sections require updating `tests/black-geometry/fixtures/content-baseline.
 in the same commit. Notes are checked structurally instead.
 
 Never edit PDFs or the Notes block between `<!-- notes:begin ... -->` and
-`<!-- notes:end -->` by hand. Run `make publish` in
-[the notes workspace](../../learning/course-notes/README.md) to build, copy changed
-PDFs, regenerate the block from status metadata, and check consistency.
+`<!-- notes:end -->` by hand. Follow the installed `/publish-notes` skill for the notes workflow.
+After approval to publish into the website working tree, run `make publish` in
+[the notes workspace](../../learning/course-notes/) to build, copy changed PDFs,
+regenerate the block from status metadata, and check consistency. Commits and
+pushes require their own separate approvals.
 
 ## Runtime constraints
 
@@ -64,29 +67,31 @@ The STIX Two Text page stays readable with static SVGs when graphics fail or
 reduced motion is requested. Visitors can enable animation or retry; rendering
 failures retain content and native links. Print uses dark text on white.
 
-One WebGL context renders eight prepared sculptures: the quintic slice, phoenix,
-dragon, membrane, Resolution flag, heat-method surface, congestion potential,
-and twisted figure-eight Klein immersion. All targets are prepared at build time;
-scientific geometry and paths come from the research exports. The homepage runs
-no numerical solver. The same geometry produces the static posters.
+One WebGL context renders five abstract sculptures: a quintic slice, looped knot,
+folded ring, three-twist ribbon, and figure-eight Klein immersion. Each main page
+has its own form. All geometry and static posters are prepared at build time;
+no numerical solver runs in the browser. Older institutional and project geometry
+factories remain in source but are not included in the homepage packet.
 
 A shared depth prepass, per-sculpture materials, and a two-surface dissolve preserve
 readable geometry through transitions. Notes use a faint hidden-contour pass to
 expose folded lobes. Prepared targets stay resident. Each visit has its own orbit
 start and drag state; reversal preserves a still-visible identity's state.
 
-The loader waits for fonts, all decoded sculptures, shaders, uploaded GPU buffers,
-warm-up draws, and a GPU fence. There is no timeout or input-driven dismissal.
-Resolution adapts to sustained frame cost by dropping glow and then render scale;
-geometry detail stays fixed.
+Text, navigation, and a static poster appear immediately. Live artwork waits for
+fonts, decoded sculptures, shaders, uploaded GPU buffers, warm-up draws, and a GPU
+fence. Graphics preparation never blocks navigation. Resolution adapts to sustained
+frame cost; geometry detail stays fixed.
 
-Navigation uses native mandatory CSS snapping, with no JavaScript wheel
-cancellation or momentum classifier. Tall entries remain readable within their
-snap area. Mouse/pen dragging rotates in screen coordinates with inertia; horizontal
-touch dragging preserves vertical scrolling and pinch zoom. Focused arrow keys
-rotate; Home resets. Rendering and transition completion remain independent of
-scroll input. History restoration preserves the URL and saved reading position
-while allowing user input to cancel a pending correction.
+The beige, grayscale homepage has five links and no secondary navigation.
+Education, Experience, and Projects show two brief entries each. Notes presents
+just the published book links; its generated source block stays intact.
+Native hash links, old section aliases, reload, and browser history select the
+corresponding text and sculpture without document scrolling. If enlarged text
+exceeds the available height, overflow stays within the selected panel.
+Mouse/pen dragging rotates the artwork with inertia; horizontal touch dragging
+and pinch zoom remain available. Focused arrow keys rotate; Home resets.
+All artwork, including fallback posters, is presented in grayscale.
 
 For local diagnostics, append `?bg-debug`. The read-only
 `window.__blackGeometry.snapshot()` reports scene, frame, draw, material, quality,

@@ -3,46 +3,6 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <style>
-    .site-loader { display: none; }
-    html[data-boot="loading"] { background: #080808; overflow: hidden; }
-    [data-boot="loading"] .hero, [data-boot="loading"] main,
-    [data-boot="loading"] .site-footer, [data-boot="loading"] .world { opacity: 0 !important; pointer-events: none !important; }
-    [data-boot="loading"] .site-loader {
-      position: fixed; inset: 0; z-index: 30; display: grid; place-items: center;
-      margin: 0; background: #080808; color: #e5e5e5; font: 500 12px/1.55 "STIX Two Text", "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
-      letter-spacing: .14em; text-transform: uppercase; pointer-events: auto;
-    }
-    .loader-dots > span { display: inline-block; animation: loading-dot 1.2s ease-in-out infinite; }
-    .loader-dots > span:nth-child(2) { animation-delay: .16s; }
-    .loader-dots > span:nth-child(3) { animation-delay: .32s; }
-    @keyframes loading-dot {
-      0%, 40%, 100% { transform: translateY(0); }
-      20% { transform: translateY(-.3em); }
-    }
-    @media (prefers-reduced-motion: reduce) {
-      .loader-dots > span { animation: none; }
-    }
-  </style>
-  <script>
-    (() => {
-      const root = document.documentElement;
-      if (!matchMedia('(prefers-reduced-motion: reduce)').matches) root.dataset.boot = 'loading';
-      const fallback = () => {
-        if (root.dataset.boot !== 'loading') return;
-        root.dataset.boot = 'fallback';
-        window.dispatchEvent(new Event('portfolio:boot-fallback'));
-      };
-      // CSS locks the viewport while loading. Do not install blocking wheel or
-      // touch listeners: they would delay native scrolling even after loading.
-      window.addEventListener('keydown', event => {
-        if (root.dataset.boot === 'loading' && ['Tab', ' ', 'PageDown', 'PageUp', 'Home', 'End', 'ArrowDown', 'ArrowUp'].includes(event.key)) event.preventDefault();
-      });
-      document.addEventListener('error', event => {
-        if (event.target.matches?.('script[data-experience-entry]')) fallback();
-      }, true);
-    })();
-  </script>
   <title>Mihir Rao</title>
   <link rel="icon" href="assets/images/profile.svg" type="image/svg+xml" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -51,201 +11,73 @@
     href="https://fonts.googleapis.com/css2?family=STIX+Two+Text:ital,opsz,wght@0,400..700;1,400..700&amp;display=swap"
     rel="stylesheet"
   />
-  <link
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
-    rel="stylesheet"
-  />
-  <link rel="stylesheet" href="assets/black-geometry/generated/black-geometry-af844aa11fb9.css" />
+  <link rel="stylesheet" href="assets/black-geometry/generated/black-geometry-4a0e3139646d.css" />
   <meta name="description" content="Mihir Rao — Theoretical Computer Scientist. Education, teaching, industry, mathematical projects, and personal notes." />
 </head>
 <body data-experience-state="static">
-  <p class="site-loader" role="status" aria-live="polite" aria-atomic="true"><span>Loading<span class="loader-dots" aria-hidden="true"><span>.</span><span>.</span><span>.</span></span></span></p>
   <button class="animation-action" hidden type="button">Enable animation</button>
   <a class="skip-link" href="#main">Skip to content</a>
+  <nav class="site-index" aria-label="Main navigation">
+    <a href="#top" data-page="about" aria-current="page">About</a>
+    <a href="#education" data-page="education">Education</a>
+    <a href="#experience" data-page="experience">Experience</a>
+    <a href="#personal-projects" data-page="projects">Projects</a>
+    <a href="#notes" data-page="notes">Notes</a>
+  </nav>
   <div class="world" role="group" aria-label="Interactive sculpture" aria-describedby="rotation-instructions" aria-keyshortcuts="ArrowUp ArrowDown ArrowLeft ArrowRight Home" aria-hidden="true">
     <img id="sculpture-poster" src="assets/black-geometry/generated/sculpture-hero.svg" width="1000" height="850" alt="" />
     <p id="rotation-hint" class="rotation-hint" hidden>Drag to rotate</p>
     <span id="rotation-instructions" class="sr-only">Drag to rotate. Use arrow keys to rotate or Home to reset the view.</span>
   </div>
-  <section class="hero" id="top" data-scene="hero" data-target="hero" aria-label="Introduction">
-    <img class="hero-art scene-fallback" src="assets/black-geometry/generated/sculpture-hero.svg" width="800" height="600" alt="" aria-hidden="true" />
+  <section class="hero scene-page" id="top" data-scene="hero" data-target="hero" data-current-scene aria-label="Introduction">
     <h1 class="hero-name">Mihir Rao</h1>
     <p class="hero-title">Theoretical Computer Scientist</p>
+    <p class="hero-description">Computer science at the University of Chicago.</p>
     <nav class="hero-links" aria-label="Contact links">
-      <a class="hero-link" href="https://github.com/mihirrao-10" aria-label="GitHub">
-        <i class="fa-brands fa-github" aria-hidden="true"></i><span>GitHub</span>
-      </a>
-      <a class="hero-link" href="https://www.linkedin.com/in/mihir-rao-6242a8209/" aria-label="LinkedIn">
-        <i class="fa-brands fa-linkedin-in" aria-hidden="true"></i><span>LinkedIn</span>
-      </a>
-      <a class="hero-link" href="mailto:raomihir.98@gmail.com" aria-label="Email Mihir">
-        <i class="fa-solid fa-envelope" aria-hidden="true"></i><span>Email</span>
-      </a>
+      <a href="https://github.com/mihirrao-10" aria-label="GitHub">GitHub</a>
+      <a href="https://www.linkedin.com/in/mihir-rao-6242a8209/" aria-label="LinkedIn">LinkedIn</a>
+      <a href="mailto:raomihir.98@gmail.com" aria-label="Email Mihir">Email</a>
     </nav>
-    <a class="scene-next" href="#education-uchicago" aria-label="Continue to education">
-      <svg viewBox="0 0 20 24" aria-hidden="true" focusable="false"><path d="M10 3v17m-6-6 6 6 6-6" /></svg>
-    </a>
   </section>
-
   <main id="main" tabindex="-1">
-    <section id="education" class="reading">
-      <div class="entry scene-page" id="education-uchicago" data-scene="education-uchicago" data-target="phoenix">
-        <h2 class="section-heading">Education &middot; 1/2</h2>
-        <img class="scene-fallback" src="assets/black-geometry/generated/sculpture-phoenix.svg" width="1000" height="850" alt="" aria-hidden="true" loading="lazy" />
-        <div class="entry-header">
-          <h3 class="entry-title">University of Chicago</h3>
-          <span class="entry-dates">Sept 2025 – Dec 2026</span>
-        </div>
-        <div class="entry-subheader">
-          <div class="degree-summary">
-            <p class="entry-role">M.S. in Computer Science</p>
-            <p class="degree-specialization">Concentration | Artificial Intelligence - Foundations</p>
-          </div>
-          <span class="entry-location">Chicago, IL</span>
-        </div>
-        <div class="teaching-record">
-          <h4 class="entry-subheading">Teaching Assistant Experience</h4>
-          <ul class="course-list">
-            <li><span class="course-code">CMSC 27230</span> | Honors Theory of Algorithms</li>
-            <li><span class="course-code">MPCS 55001</span> | Algorithms</li>
-            <li><span class="course-code">MPCS 50103</span> | Mathematics for Computer Science: Discrete Mathematics</li>
-          </ul>
-        </div>
-        <a class="scene-next" href="#education-drexel" aria-label="Next: Drexel University">
-          <svg viewBox="0 0 20 24" aria-hidden="true" focusable="false"><path d="M10 3v17m-6-6 6 6 6-6" /></svg>
-        </a>
-      </div>
-
-      <div class="entry scene-page" id="education-drexel" data-scene="education-drexel" data-target="dragon">
-        <p class="section-heading">Education &middot; 2/2</p>
-        <img class="scene-fallback" src="assets/black-geometry/generated/sculpture-dragon.svg" width="1000" height="850" alt="" aria-hidden="true" loading="lazy" />
-        <div class="entry-header">
-          <h3 class="entry-title">Drexel University</h3>
-          <span class="entry-dates">Sept 2020 – Jun 2025</span>
-        </div>
-        <div class="entry-subheader">
-          <div class="degree-summary">
-            <p class="entry-role">B.S. in Computer Science &amp; B.A. in Mathematics</p>
-            <p class="degree-specialization">Concentrations | Algorithms &amp; Data Structures, Artificial Intelligence</p>
-            <p class="degree-honors"><em>Magna Cum Laude</em></p>
-          </div>
-          <span class="entry-location">Philadelphia, PA</span>
-        </div>
-        <div class="teaching-record">
-          <h4 class="entry-subheading">Teaching Assistant Experience</h4>
-          <ul class="course-list">
-            <li><span class="course-code">CS 260</span> | Data Structures</li>
-            <li><span class="course-code">CS 277</span> | Algorithms &amp; Analysis</li>
-            <li><span class="course-code">CS 380</span> | Artificial Intelligence</li>
-            <li><span class="course-code">CS 615</span> | Deep Learning</li>
-          </ul>
-        </div>
-        <div class="awards-record">
-          <h4 class="entry-subheading">Academic Awards</h4>
-          <ul class="awards-list">
-            <li>A* Award</li>
-            <li>Jeffrey L. Popyack Teaching Assistant Award</li>
-            <li>Student Teaching Excellence Award</li>
-          </ul>
-        </div>
-        <a class="scene-next" href="#experience-mathworks" aria-label="Next: MathWorks">
-          <svg viewBox="0 0 20 24" aria-hidden="true" focusable="false"><path d="M10 3v17m-6-6 6 6 6-6" /></svg>
-        </a>
-      </div>
-    </section>
-
-    <section id="experience" class="reading">
-      <div class="entry scene-page" id="experience-mathworks" data-scene="experience-mathworks" data-target="membrane">
-        <h2 class="section-heading">Industry Experience &middot; 1/2</h2>
-        <img class="scene-fallback" src="assets/black-geometry/generated/sculpture-membrane.svg" width="1000" height="850" alt="" aria-hidden="true" loading="lazy" />
-        <div class="entry-header">
-          <h3 class="entry-title"><a class="project-link" href="https://www.mathworks.com/?s_tid=gn_logo">MathWorks</a></h3>
-          <span class="entry-dates">Jun 2026 – Sept 2026</span>
-        </div>
-        <div class="entry-subheader">
-          <p class="entry-role">Software Engineering Intern</p>
-          <span class="entry-location">Boston, MA</span>
-        </div>
-        <ul class="experience-points">
-          <li>Re-engineered a <strong class="technical-highlight">MATLAB</strong> tetrahedral point-location query loop in a <strong class="technical-highlight">C++ MEX</strong> prototype, cutting runtime from <strong class="metric">55.1 s</strong> to <strong class="metric">9.77 s</strong> (<strong class="metric">5.64×</strong>) across <strong class="metric">570,603</strong> queries via inline barycentric solves, expanding-radius <strong class="technical-highlight">KD-tree</strong> search, and AABB filtering; performed <strong class="metric">4.6×</strong> fewer candidate checks and <strong class="metric">138×</strong> fewer solves with <strong class="metric">0</strong> mismatches against the shipped engine.</li>
-          <li>Built an internal-marketplace <strong class="technical-highlight">Claude skill</strong> that audited <strong class="metric">79</strong> <strong class="technical-highlight">MATLAB</strong> functions and found <strong class="metric">110+</strong> error-message defects; automated <strong class="metric">100</strong>-run multi-agent repair evaluations with up to <strong class="metric">4</strong> attempts and produced evidence-backed rewrites in HTML.</li>
-          <li>Expanded <strong class="technical-highlight">Import and Analyze Data</strong>, the team&#x27;s <strong class="technical-highlight">Claude skill</strong>, for new <strong class="technical-highlight">MATLAB</strong> releases with <strong class="metric">8+</strong> coverage improvements and <strong class="metric">3</strong> evaluations; demonstrated its advantage over a no-skill baseline across <strong class="metric">12</strong> end-to-end workflows.</li>
-          <li>Optimized <strong class="technical-highlight">MATLAB</strong> APIs spanning missing-data detection, array shifts, convex-hull construction, and scattered interpolation; extended <strong class="technical-highlight">C++ kernels</strong> for speedups up to <strong class="metric">2.2×</strong> and added <strong class="metric">4</strong> performance benchmarks plus <strong class="metric">28</strong> correctness tests.</li>
-        </ul>
-        <a class="scene-next" href="#experience-resolution" aria-label="Next: Resolution Life US">
-          <svg viewBox="0 0 20 24" aria-hidden="true" focusable="false"><path d="M10 3v17m-6-6 6 6 6-6" /></svg>
-        </a>
-      </div>
-
-      <div class="entry scene-page" id="experience-resolution" data-scene="experience-resolution" data-target="resolution">
-        <p class="section-heading">Industry Experience &middot; 2/2</p>
-        <img class="scene-fallback" src="assets/black-geometry/generated/sculpture-resolution.svg" width="1000" height="850" alt="" aria-hidden="true" loading="lazy" />
-        <div class="entry-header">
-          <h3 class="entry-title"><a class="project-link" href="https://www.resolutionlife.com">Resolution Life US</a></h3>
-          <span class="entry-dates">Apr 2024 – Sept 2024</span>
-        </div>
-        <div class="entry-subheader">
-          <p class="entry-role">Data Science Intern</p>
-          <span class="entry-location">Philadelphia, PA</span>
-        </div>
-        <ul class="experience-points">
-          <li>Built an automated <strong class="technical-highlight">AWS</strong> ingestion and orchestration pipeline that replaced a <strong class="metric">$380K/year</strong> vendor Excel workflow: <strong class="technical-highlight">S3</strong>-triggered <strong class="technical-highlight">Lambda</strong> loaded Bloomberg/ICE files, <strong class="technical-highlight">Athena</strong> queried the stored data, and <strong class="technical-highlight">Step Functions</strong> coordinated <strong class="metric">54</strong> dependent jobs.</li>
-          <li>Recreated vendor fixed-income time-series calculations in <strong class="technical-highlight">Apache Spark (PySpark)</strong> across <strong class="metric">4</strong> rate instruments using instrument-specific U.S. holiday calendars, normalization, and linear/cubic-spline interpolation; delivered an <strong class="metric">8,314 × 63</strong> production dataset matching vendor rates within <strong class="metric">1e-3</strong> absolute error.</li>
-          <li>Fine-tuned <strong class="technical-highlight">FinBERT</strong> for fixed-income sentiment classification, filtering company news for bond-specific language and producing normalized negative/neutral/positive issuer scores; delivered reports to Portfolio Analytics for screening and valuation.</li>
-          <li>Automated a manual claims-interest workflow with <strong class="technical-highlight">Excel/VBA</strong> and <strong class="technical-highlight">XLOOKUP</strong>, encoding state-specific rules for dates of death, reporting windows, and policy details; saved <strong class="metric">10+ hours/week</strong> of manual lookup.</li>
-        </ul>
-        <a class="scene-next" href="#project-surface" aria-label="Next: The Shortest Path Through a Curved World">
-          <svg viewBox="0 0 20 24" aria-hidden="true" focusable="false"><path d="M10 3v17m-6-6 6 6 6-6" /></svg>
-        </a>
-      </div>
-    </section>
-
-    <section id="personal-projects">
-      <article class="project-feature scene-page" id="project-surface" data-scene="project-surface" data-target="surface">
-        <h2 class="section-heading">Personal Projects &middot; 1/2</h2>
-      <img class="scene-fallback" src="assets/black-geometry/generated/sculpture-surface.svg" width="1000" height="850" alt="" aria-hidden="true" loading="lazy" />
-      <div class="entry">
-        <div class="entry-header">
-          <h3 class="entry-title">
-            <a class="project-link" href="https://mihirrao-10.github.io/shortest-path-through-a-curved-world/" target="_blank" rel="noopener">The Shortest Path Through a Curved World</a>
-          </h3>
-        </div>
-        <p class="entry-detail">
-          Built a deterministic <strong class="technical-highlight">C++20</strong> <strong class="technical-highlight">heat-method solver</strong> for genus 1–3 triangle meshes, assembling <strong class="technical-highlight">cotangent-Laplacian</strong> and lumped-mass operators and factoring heat and pinned-Poisson systems with <strong class="technical-highlight">Eigen</strong>; preprocessed <strong class="metric">45K</strong> vertices and <strong class="metric">91K</strong> faces in <strong class="metric">180 ms</strong>, then answered queries in <strong class="metric">6.15 ms</strong> with <strong class="metric">&lt; 2e-13</strong> relative residuals and exported native paths to <strong class="technical-highlight">Three.js</strong>.
-        </p>
-        <p class="project-tags">C++20 | Eigen | Three.js</p>
-      </div>
-
-        <a class="open-project" href="https://mihirrao-10.github.io/shortest-path-through-a-curved-world/" target="_blank" rel="noopener" aria-label="Open The Shortest Path Through a Curved World">Open project</a>
-        <a class="scene-next" href="#project-congestion" aria-label="Next: When Every Agent Finds the Shortcut">
-          <svg viewBox="0 0 20 24" aria-hidden="true" focusable="false"><path d="M10 3v17m-6-6 6 6 6-6" /></svg>
-        </a>
+    <section id="education" class="scene-page" data-scene="education" data-target="education">
+      <h2 class="section-heading">Education</h2>
+      <article class="entry">
+        <h3 class="entry-title">University of Chicago</h3>
+        <p>M.S. Computer Science, 2025–2026</p>
+        <p class="entry-detail">Foundations of artificial intelligence.</p>
       </article>
-      <article class="project-feature scene-page" id="project-congestion" data-scene="project-congestion" data-target="congestion">
-        <p class="section-heading">Personal Projects &middot; 2/2</p>
-      <img class="scene-fallback" src="assets/black-geometry/generated/sculpture-congestion.svg" width="1000" height="850" alt="" aria-hidden="true" loading="lazy" />
-      <div class="entry">
-        <div class="entry-header">
-          <h3 class="entry-title">
-            <a class="project-link" href="https://mihirrao-10.github.io/multi-agent-reinforcement-learning-in-congestion-games/" target="_blank" rel="noopener">When Every Agent Finds the Shortcut</a>
-          </h3>
-        </div>
-        <p class="entry-detail">
-          Built a <strong class="technical-highlight">Python</strong> study of <strong class="technical-highlight">Q-learning</strong> and <strong class="technical-highlight">Hedge</strong> in atomic <strong class="technical-highlight">Braess routing</strong> across <strong class="metric">64</strong> seeds and <strong class="metric">5,000</strong> episodes; solved equilibrium and welfare over a <strong class="metric">5.0-billion</strong>-profile state space at <strong class="metric">100K</strong> agents via an exact constant-size <strong class="technical-highlight">discrete-convex reduction</strong>, measured a <strong class="metric">4/3</strong> <strong class="technical-highlight">Price of Anarchy</strong> (<strong class="metric">33%</strong> extra travel time), and derived <strong class="technical-highlight">marginal-cost tolls</strong> restoring the social optimum.
-        </p>
-        <p class="project-tags">Python | NumPy | Three.js</p>
-      </div>
-
-        <a class="open-project" href="https://mihirrao-10.github.io/multi-agent-reinforcement-learning-in-congestion-games/" target="_blank" rel="noopener" aria-label="Open When Every Agent Finds the Shortcut">Open project</a>
-        <a class="scene-next" href="#notes" aria-label="Next: Personal notes">
-          <svg viewBox="0 0 20 24" aria-hidden="true" focusable="false"><path d="M10 3v17m-6-6 6 6 6-6" /></svg>
-        </a>
+      <article class="entry">
+        <h3 class="entry-title">Drexel University</h3>
+        <p>B.S. Computer Science · B.A. Mathematics, 2020–2025</p>
       </article>
     </section>
-
-    <section id="notes" class="reading scene-page" data-scene="notes" data-target="notes">
-      <h2 class="section-heading">personal notes</h2>
-
+    <section id="experience" class="scene-page" data-scene="experience" data-target="experience">
+      <h2 class="section-heading">Experience</h2>
+      <article class="entry">
+        <h3 class="entry-title"><a href="https://www.mathworks.com/?s_tid=gn_logo">MathWorks</a></h3>
+        <p>Software Engineering Intern, 2026</p>
+        <p class="entry-detail">Algorithms and performance for MATLAB.</p>
+      </article>
+      <article class="entry">
+        <h3 class="entry-title"><a href="https://www.resolutionlife.com">Resolution Life US</a></h3>
+        <p>Data Science Intern, 2024</p>
+        <p class="entry-detail">Data pipelines and financial modeling.</p>
+      </article>
+    </section>
+    <section id="personal-projects" class="scene-page" data-scene="projects" data-target="projects">
+      <h2 class="section-heading">Projects</h2>
+      <article class="entry">
+        <h3 class="entry-title"><a href="https://mihirrao-10.github.io/shortest-path-through-a-curved-world/" target="_blank" rel="noopener">The Shortest Path Through a Curved World</a></h3>
+        <p class="entry-detail">Shortest paths on curved surfaces.</p>
+      </article>
+      <article class="entry">
+        <h3 class="entry-title"><a href="https://mihirrao-10.github.io/multi-agent-reinforcement-learning-in-congestion-games/" target="_blank" rel="noopener">When Every Agent Finds the Shortcut</a></h3>
+        <p class="entry-detail">Learning and equilibrium in congestion games.</p>
+      </article>
+    </section>
+    <section id="notes" class="scene-page" data-scene="notes" data-target="notes">
+      <h2 class="section-heading">Notes</h2>
       <!-- notes:begin (generated by learning/course-notes/tools/render-notes.py; do not edit) -->
       <div class="entry notes-shelf">
         <p class="notes-summary">2 books · 2 chapters written</p>
@@ -270,9 +102,6 @@
       <!-- notes:end -->
     </section>
   </main>
-  <footer class="site-footer" id="contact" data-scene="contact" data-target="notes" data-snap="none">
-    <a class="back-to-top" href="#top">Back to top</a>
-  </footer>
-  <script type="module" data-experience-entry src="assets/black-geometry/generated/main.js?v=d307870f038d"></script>
+  <script type="module" data-experience-entry src="assets/black-geometry/generated/main.js?v=4761ed8302e2"></script>
 </body>
 </html>
