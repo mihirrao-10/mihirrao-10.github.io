@@ -67,42 +67,39 @@ The STIX Two Text page stays readable with static SVGs when graphics fail or
 reduced motion is requested. Visitors can enable animation or retry; rendering
 failures retain content and native links. Print uses dark text on white.
 
-One WebGL context renders seven tessellated astronomical sculptures: Earth and
-Moon (About), Jupiter (Education), the Sun (Industry experience), a neutron star
-(Publications), a black hole (Teaching), the Milky Way (Projects), and a galaxy
-cluster (Personal notes). Every visible surface uses the same triangle-edge
-shader, flat facet samples, translucent faces, and restrained color gradients.
-Edges follow the actual triangles using barycentric coordinates, with an
-antialiased width in screen pixels. There are no photographic display planes
-or point-cloud substitutes for the sculptures.
+One WebGL context renders seven grayscale scenes: a fictional planet and moon
+(About), an uneven giant star (Education), a black hole (Industry experience),
+a radial stellar cloud (Publications), the Milky Way (Teaching), two colliding
+galaxies (Projects), and a globular star cluster (Personal notes). Detailed
+surface fields, volumetric particles, and bent-ray integration suit each subject;
+there are no visible wireframes or tessellated surface treatments. A shared
+presentation factor makes the artwork about 15% smaller, with more space around it.
 
-Earth, Moon, Jupiter, and the Sun sample the existing NASA maps once per triangle.
-The continents, lunar terrain, cloud bands, and active regions become geometric
-mosaics. Earth and Moon have smaller radii and a wider orbit that keeps a visible
-gap in the default view. Jupiter occupies less of the art panel. Solar loops,
-magnetic ribbons, and polar beams use the same triangular material as the globes.
+The invented planet has authored terrain and clouds; its orbiting moon uses the
+retained NASA lunar map. The giant star combines a slightly uneven surface,
+SDO-derived activity, granular shading, and a soft particle corona. The black
+hole traces deflected rays through a turbulent disk, producing a dark circular
+shadow, a lighter foreground band, and a lensed arch. This is an illustrative
+ray model, not a relativistic solver.
 
-The black hole combines a dark faceted shadow, a warped accretion disk, and an
-arched image of the far disk. Rotation and bounded differential shear animate
-the lattice without stretching triangles indefinitely. There is no spacetime
-grid. The lensing shape is an authored illustration, not a geodesic solver.
-The Milky Way has four thick spiral ribbons, a translucent triangular disk, a
-bar, and a central bulge. The cluster contains 112 small triangular elliptical
-or spiral galaxies, distributed in depth and independently rotating.
+The galaxy scenes and radial cloud contain stars distributed in three dimensions,
+with individual orbital motion and slowly changing views. The colliding pair has
+two tilted disks, a stellar bridge, and tidal tails. The final scene is a globular
+cluster of stars with a dense core and an extended halo. The stars, cloud fields,
+orbital rates, and interaction are authored, not observational reconstructions
+or gravitational simulations. Darkness represents luminous density on the beige
+page. Geometry stays resident; motion uses uniforms and object transforms.
 
-Geometry and facet values are prepared once and remain resident. Motion uses
-uniforms and object transforms. The black-hole shadow writes depth for coherent
-occlusion; other surfaces retain a faint view of their rear faces. Presentation
-sizes and rates are chosen for legibility, not physical scale or ephemerides.
-Credits and map preparation details are in
-`assets/black-geometry/textures/CREDITS.txt`. The former smooth-surface materials,
-ray-integrated accretion renderer, and spacetime grid remain in source outside
-the active homepage build. Archived texture fields are not fetched by the page.
+Only the Moon and Sun image fields are loaded by the current page. Other NASA
+and Hubble derivatives, together with earlier scene implementations, remain as
+archived references. Credits and preparation details are in
+`assets/black-geometry/textures/CREDITS.txt`. The two user-supplied inspiration
+images guide composition only and are not redistributed.
 
 Static posters embed 1600 × 1200 deterministic software-rendered PNGs in SVG
-wrappers. They use the same triangles, sampled facet colors, edge widths, and
-translucency. Each visit has its own orbit and drag state; reversal preserves a
-still-visible identity's state.
+wrappers, using the same geometry, surface fields, and black-hole ray model.
+Their shading approximates the live rendering. Each visit has its own orbit and
+drag state; reversal preserves a still-visible identity's state.
 
 Text, navigation, and a static poster appear immediately. Live artwork waits for
 fonts, surface maps, procedural scenes, shaders, uploaded GPU buffers, warm-up draws, and a GPU
@@ -120,7 +117,7 @@ corresponding text and sculpture without document scrolling. If enlarged text
 exceeds the available height, overflow stays within the selected panel.
 Mouse/pen dragging rotates the artwork with inertia; horizontal touch dragging
 and pinch zoom remain available. Focused arrow keys rotate; Home resets.
-Artwork and fallback posters share muted mineral palettes; text stays neutral.
+Artwork and fallback posters are strictly grayscale; the beige page and neutral text remain.
 
 For local diagnostics, append `?bg-debug`. The read-only
 `window.__blackGeometry.snapshot()` reports scene, frame, draw, material, quality,

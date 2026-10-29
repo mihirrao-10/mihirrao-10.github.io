@@ -16,41 +16,43 @@ float diskNoise(vec3 p,float footprint){
 }
 float disk(vec3 p,float footprint){
  float r=length(p.xz),a=atan(p.z,p.x);
- float fade=smoothstep(.73,.91,r)*(1.0-smoothstep(2.65,3.08,r));
- // Differential orbital flow, with no periodic rings or one-sided brightness.
- float orbit=a-time*.34/pow(max(r,.75),1.5);
+ float orbit=a-time*.28/pow(max(r,.75),1.5);
  vec2 flow=vec2(cos(orbit),sin(orbit));
  float pixel=max(.0015,footprint);
- float eddies=diskNoise(vec3(flow*r*4.0,time*.075),pixel*4.0);
- float stream=diskNoise(vec3(flow*r*19.0+vec2(eddies*.8),time*.12),pixel*19.0);
- float fine=mix(.5,noise(vec3(flow*r*67.0,time*.17)),1.0-smoothstep(.25,.75,pixel*67.0));
- float heat=pow(.85/max(r,.75),.82);
- return fade*heat*(.10+.55*eddies+.78*smoothstep(.28,.70,stream)+.12*fine);
+ float eddies=diskNoise(vec3(flow*r*3.2,time*.045),pixel*3.2);
+ // Anisotropic noise draws irregular filaments, never evenly spaced rings.
+ float stream=diskNoise(vec3(r*18.0+eddies*1.8,flow*3.8+time*.025),pixel*18.0);
+ float fine=mix(.5,noise(vec3(r*63.0+eddies*2.0,flow*9.0+time*.05)),1.0-smoothstep(.25,.75,pixel*63.0));
+ float fade=smoothstep(.73,.91,r)*(1.0-smoothstep(2.50+eddies*.15,3.05,r));
+ float heat=pow(.85/max(r,.75),1.05);
+ return fade*heat*(.11+.40*eddies+.86*smoothstep(.25,.73,stream)+.17*fine);
 }
 void main(){
  vec3 direction=normalize(vLocal-localCamera),p=vLocal+direction*.001;
  float pixelCone=length(fwidth(direction));
- float emission=0.0,transmission=1.0;
+ float emission=0.0,transmission=1.0,captured=0.0;
  for(int i=0;i<176;i++){
-   float r=length(p);if(r<.43||r>3.34)break;
+   float r=length(p);if(r<.43){captured=1.0;break;}if(r>3.34)break;
    float stepSize=clamp((r-.34)*.095,.018,.17);
    vec3 acceleration=-.60*p/(r*r*r);
    acceleration-=direction*dot(acceleration,direction);
    vec3 nextDirection=normalize(direction+acceleration*stepSize);
    vec3 next=p+(direction+nextDirection)*(.5*stepSize);
-   float sigma=.026+.012*length((p.xz+next.xz)*.5);
+   float sigma=.018+.010*length((p.xz+next.xz)*.5);
    if(min(abs(p.y),abs(next.y))<sigma*6.0||p.y*next.y<0.0){
      float dy=next.y-p.y;
      float mass=abs(dy)>.00001?(atan(next.y/sigma)-atan(p.y/sigma))/dy*stepSize/3.14159265:stepSize*sigma/(3.14159265*(p.y*p.y+sigma*sigma));
      float nearest=abs(dy)>.00001?clamp(-p.y/dy,0.0,1.0):.5;
      vec3 hit=mix(p,next,nearest);
      float density=disk(hit,pixelCone*length(hit-localCamera));
-     float weight=mass*max(.20,abs(direction.y));
+     float weight=mass*max(.20,abs((next.y-p.y)/stepSize));
      emission+=transmission*density*weight;transmission*=exp(-density*weight*.36);
    }
    direction=nextDirection;p=next;
  }
- float ink=(1.0-exp(-emission*2.15))*presence;
+ float light=1.0-exp(-emission*2.65);
+ // Captured rays form an unshaded void; foreground plasma stays readable over it.
+ float ink=mix(light,.94-.40*light,captured)*presence;
  if(ink<.002)discard;
  gl_FragColor=vec4(vec3(.015),min(.98,ink));
 }`;
@@ -78,29 +80,31 @@ function noise(x,y,z){
 }
 function fbm(x,y,z){let v=0,a=.5;for(let i=0;i<4;i++){v+=a*noise(x,y,z);x=x*2.03+7.1;y=y*2.03+3.7;z=z*2.03+1.3;a*=.5;}return v;}
 export function traceBlackHole(px,py,pz,dx,dy,dz,time=0){
-  let emission=0,transmission=1;
+  let emission=0,transmission=1,captured=false;
   for(let i=0;i<176;i++){
-    const r=Math.hypot(px,py,pz);if(r<.43||r>3.34)break;
+    const r=Math.hypot(px,py,pz);if(r<.43){captured=true;break;}if(r>3.34)break;
     const step=Math.max(.018,Math.min(.17,(r-.34)*.095)),factor=-.60/(r*r*r);
     let ax=px*factor,ay=py*factor,az=pz*factor;
     const along=ax*dx+ay*dy+az*dz;ax-=dx*along;ay-=dy*along;az-=dz*along;
     let nx=dx+ax*step,ny=dy+ay*step,nz=dz+az*step;
     const length=Math.hypot(nx,ny,nz);nx/=length;ny/=length;nz/=length;
     const qx=px+(dx+nx)*step*.5,qy=py+(dy+ny)*step*.5,qz=pz+(dz+nz)*step*.5;
-    const sigma=.026+.012*Math.hypot((px+qx)*.5,(pz+qz)*.5);
+    const sigma=.018+.010*Math.hypot((px+qx)*.5,(pz+qz)*.5);
     if(Math.min(Math.abs(py),Math.abs(qy))<sigma*6||py*qy<0){
       const dy=qy-py,mass=Math.abs(dy)>.00001?(Math.atan(qy/sigma)-Math.atan(py/sigma))/dy*step/Math.PI:step*sigma/(Math.PI*(py*py+sigma*sigma));
       const t=Math.abs(dy)>.00001?Math.max(0,Math.min(1,-py/dy)):.5,x=px+(qx-px)*t,z=pz+(qz-pz)*t;
-      const radius=Math.hypot(x,z),angle=Math.atan2(z,x)-time*.34/Math.max(radius,.75)**1.5;
+      const radius=Math.hypot(x,z),angle=Math.atan2(z,x)-time*.28/Math.max(radius,.75)**1.5;
       const smooth=(a,b,x)=>{const t=Math.max(0,Math.min(1,(x-a)/(b-a)));return t*t*(3-2*t);};
-      const fade=smooth(.73,.91,radius)*(1-smooth(2.65,3.08,radius));
-      const eddies=fbm(Math.cos(angle)*radius*4,Math.sin(angle)*radius*4,time*.075);
-      const stream=fbm(Math.cos(angle)*radius*19+eddies*.8,Math.sin(angle)*radius*19+eddies*.8,time*.12);
-      const fine=noise(Math.cos(angle)*radius*67,Math.sin(angle)*radius*67,time*.17);
-      const density=fade*(.85/Math.max(radius,.75))**.82*(.10+.55*eddies+.78*smooth(.28,.70,stream)+.12*fine),weight=mass*Math.max(.20,Math.abs(dy/step));
+      const fx=Math.cos(angle),fz=Math.sin(angle);
+      const eddies=fbm(fx*radius*3.2,fz*radius*3.2,time*.045);
+      const stream=fbm(radius*18+eddies*1.8,fx*3.8+time*.025,fz*3.8+time*.025);
+      const fine=noise(radius*63+eddies*2,fx*9+time*.05,fz*9+time*.05);
+      const fade=smooth(.73,.91,radius)*(1-smooth(2.50+eddies*.15,3.05,radius));
+      const density=fade*(.85/Math.max(radius,.75))**1.05*(.11+.40*eddies+.86*smooth(.25,.73,stream)+.17*fine),weight=mass*Math.max(.20,Math.abs(dy/step));
       emission+=transmission*density*weight;transmission*=Math.exp(-density*weight*.36);
     }
     dx=nx;dy=ny;dz=nz;px=qx;py=qy;pz=qz;
   }
-  return Math.min(.98,1-Math.exp(-emission*2.15));
+  const light=1-Math.exp(-emission*2.65);
+  return Math.min(.98,captured?.94-.40*light:light);
 }

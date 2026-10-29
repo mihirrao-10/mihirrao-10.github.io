@@ -1,5 +1,9 @@
 import * as THREE from 'three';
 import { deflateSync } from 'node:zlib';
+import { traceBlackHole } from '../../src/black-geometry/black-hole.js';
+import { sampleRingProfile } from '../../src/black-geometry/ring-profile.js';
+import { valueNoise } from '../../src/black-geometry/astronomy-materials.js';
+
 function crc32(buffer){let crc=0xffffffff;for(const byte of buffer){crc^=byte;for(let i=0;i<8;i++)crc=(crc>>>1)^((crc&1)?0xedb88320:0);}return(crc^0xffffffff)>>>0;}
 function chunk(name,data){const type=Buffer.from(name),out=Buffer.alloc(data.length+12);out.writeUInt32BE(data.length);type.copy(out,4);data.copy(out,8);out.writeUInt32BE(crc32(Buffer.concat([type,data])),data.length+8);return out;}
 function png(width,height,pixels){
@@ -7,56 +11,129 @@ function png(width,height,pixels){
   const rows=Buffer.alloc(height*(width*4+1));for(let y=0;y<height;y++)pixels.copy(rows,y*(width*4+1)+1,y*width*4,(y+1)*width*4);
   return Buffer.concat([Buffer.from([137,80,78,71,13,10,26,10]),chunk('IHDR',header),chunk('IDAT',deflateSync(rows,{level:9})),chunk('IEND',Buffer.alloc(0))]);
 }
-const smooth=(a,b,x)=>{const t=THREE.MathUtils.clamp((x-a)/(b-a),0,1);return t*t*(3-2*t);};
+const clamp=(v,a=0,b=1)=>Math.max(a,Math.min(b,v));
+const grain=(x,y,z)=>.62*valueNoise(x*28,y*28,z*28)+.27*valueNoise(x*57+7,y*57+3,z*57+1)+.11*valueNoise(x*116+2,y*116+8,z*116+6);
+function mapSample(texture,u,v){
+  const data=texture?.userData;if(!data?.pixels)return .5;
+  const x=Math.floor(((u%1+1)%1)*(data.width-1)),y=Math.floor(clamp(1-v)*(data.height-1));return data.pixels[y*data.width+x]/255;
+}
+function surfaceInk(object,u,v,x,y,z,nx,ny,nz){
+  const material=object.material,kind=object.userData.surfaceKind,opacity=material.uniforms.opacity.value;
+  const light=.30+.70*Math.max(0,(-.65*nx+.45*ny+.9*nz)/1.1979);
+  const sample=mapSample(material.uniforms.surfaceMap.value,u,v),g=grain(x,y,z);
+  if(kind===5)return Math.max(0,(grain(x*.4,y*.4,z*.4)-.48)*2)*opacity;
+  if(kind===6)return (1-Math.abs(nz))**4*opacity;
+  if(kind===7){const d=Math.sqrt(Math.max(0,1-nz*nz));return d>.65&&d<1?Math.max(0,1-Math.abs(d-.73)*5)*g*g*.12*opacity:0;}
+  let density=.40+.52*sample;
+  if(kind===1)density=.33+.6*sample+.1*g;
+  if(kind===2)density=.20+.73*(1-sample)+.055*g;
+  if(kind===3)density=.20+.80*sample+.15*g;
+  if(kind===4)density=.35+.38*g;
+  if(kind===8)density=.49+.38*g+.25*Math.abs(y/Math.hypot(x,y,z))**9;
+  if(kind===9)return Math.max(0,g-.38)*opacity*.45;
+  return clamp(opacity*(density*(kind===3||kind===8?.98:light)+.08),0,.94);
+}
 
-// Software rasterization uses the same triangles, facet colors, and edge widths.
-export function cosmicPoster(scene) {
-  scene.update(0);
-  const width=1600,height=1200,focal=height/(2*Math.tan(35*Math.PI/360));
+// A small deterministic software renderer keeps the fallback detailed without
+// shipping megabytes of triangle paths. It uses the live geometry and maps.
+export function cosmicPoster(scene){
+  scene.update(0);const blackHole=scene.renderMode==='bent-ray-accretion';
+  const width=1600,height=1200;
   const pixels=Buffer.alloc(width*height*4),depth=new Float32Array(width*height).fill(-Infinity);
   const view=new THREE.Matrix4().makeRotationFromEuler(new THREE.Euler(.14,-.18,0));
-  const scale=new THREE.Matrix4().makeScale(...Array(3).fill(3.45/scene.radius));
-  const triangles=[],a=new THREE.Vector3(),b=new THREE.Vector3(),c=new THREE.Vector3(),normal=new THREE.Vector3();
-  const lightDirection=new THREE.Vector3(-.5,.7,1).normalize();
-  const project=p=>[width/2+p.x/(12-p.z)*focal,height/2-p.y/(12-p.z)*focal,p.z];
-  scene.root.traverse(object=>{
-    if(!object.isMesh)return;
-    const p=object.geometry.attributes.position,values=object.geometry.attributes.facetValue;
-    const matrix=new THREE.Matrix4().multiplyMatrices(view,new THREE.Matrix4().multiplyMatrices(scale,object.matrixWorld));
-    const style=object.material.userData.facetStyle;
-    const low=new THREE.Color(style.palette[0]),high=new THREE.Color(style.palette[1]);
-    for(let i=0;i<p.count;i+=3) {
-      a.fromBufferAttribute(p,i).applyMatrix4(matrix);b.fromBufferAttribute(p,i+1).applyMatrix4(matrix);c.fromBufferAttribute(p,i+2).applyMatrix4(matrix);
-      normal.crossVectors(b.clone().sub(a),c.clone().sub(a)).normalize();
-      const center=a.clone().add(b).add(c).multiplyScalar(1/3),front=normal.dot(new THREE.Vector3(0,0,12).sub(center))>0;
-      if(style.voidCore&&!front)continue;
-      const shade=.72+.28*Math.abs(normal.dot(lightDirection)),value=values.getX(i);
-      const color=low.clone().lerp(high,value).multiplyScalar(shade),line=high.clone().multiplyScalar(.55);
-      let alpha=style.fill*(.55+.45*value),edge=style.edge;
-      if(!front){alpha*=style.back;edge*=style.back;}
-      if(style.voidCore){color.setRGB(.009,.010,.014);line.setRGB(.016,.018,.023);alpha=.98;edge=.99;}
-      color.convertLinearToSRGB();line.convertLinearToSRGB();
-      triangles.push({points:[project(a),project(b),project(c)],z:center.z,color:color.toArray(),line:line.toArray(),alpha,edge,width:style.width*2,write:style.voidCore});
+  const focal=height/(2*Math.tan(35*Math.PI/360)),scale=2.90/scene.radius;
+  const scaleMatrix=new THREE.Matrix4().makeScale(scale,scale,scale);
+  const point=new THREE.Vector3(),normal=new THREE.Vector3();
+  const blend=(x,y,z,alpha,write=false)=>{
+    if(x<0||x>=width||y<0||y>=height||alpha<.001)return;
+    const index=y*width+x;if(z<depth[index]-.001)return;
+    const at=index*4,old=pixels[at+3]/255,next=alpha+old*(1-alpha);
+    pixels[at]=pixels[at+1]=pixels[at+2]=6;pixels[at+3]=Math.round(clamp(next)*255);
+    if(write)depth[index]=z;
+  };
+  const project=(position,i,matrix)=>{
+    point.fromBufferAttribute(position,i).applyMatrix4(matrix);
+    return [width*.5+point.x/(12-point.z)*focal,height*.5-point.y/(12-point.z)*focal,point.z];
+  };
+  if(blackHole){
+    let volume;scene.root.traverse(o=>{if(o.userData.posterKind==='black-hole')volume=o;});
+    const inverse=new THREE.Matrix4().multiplyMatrices(view,new THREE.Matrix4().multiplyMatrices(scaleMatrix,volume.matrixWorld)).invert();
+    const origin=new THREE.Vector3(0,0,12).applyMatrix4(inverse),direction=new THREE.Vector3();
+    for(let y=0;y<height;y++)for(let x=0;x<width;x++){
+      direction.set((x+.5-width*.5)/focal,(height*.5-y-.5)/focal,-1).normalize().transformDirection(inverse);
+      const b=origin.dot(direction),c=origin.lengthSq()-3.3**2,discriminant=b*b-c;
+      if(discriminant<=0)continue;
+      const distance=-b-Math.sqrt(discriminant),p=origin.clone().addScaledVector(direction,distance+.001);
+      const ink=traceBlackHole(p.x,p.y,p.z,direction.x,direction.y,direction.z);
+      blend(x,y,0,ink);
     }
-  });
-  triangles.sort((a,b)=>Number(b.write)-Number(a.write)||a.z-b.z);
-  for(const t of triangles) {
-    const [[ax,ay,az],[bx,by,bz],[cx,cy,cz]]=t.points;
-    const area=(bx-ax)*(cy-ay)-(by-ay)*(cx-ax);if(Math.abs(area)<.00001)continue;
-    const deriv=[Math.abs(cy-by)+Math.abs(cx-bx),Math.abs(ay-cy)+Math.abs(ax-cx),Math.abs(by-ay)+Math.abs(bx-ax)].map(v=>v/Math.abs(area)*t.width);
-    const xmin=Math.max(0,Math.floor(Math.min(ax,bx,cx))),xmax=Math.min(width-1,Math.ceil(Math.max(ax,bx,cx)));
-    const ymin=Math.max(0,Math.floor(Math.min(ay,by,cy))),ymax=Math.min(height-1,Math.ceil(Math.max(ay,by,cy)));
-    for(let y=ymin;y<=ymax;y++)for(let x=xmin;x<=xmax;x++) {
-      const w1=((bx-x-.5)*(cy-y-.5)-(by-y-.5)*(cx-x-.5))/area;
-      const w2=((cx-x-.5)*(ay-y-.5)-(cy-y-.5)*(ax-x-.5))/area,w3=1-w1-w2;
-      if(w1<0||w2<0||w3<0)continue;
-      const z=w1*az+w2*bz+w3*cz,index=y*width+x;if(z<depth[index]-.001)continue;
-      const wire=1-Math.min(...[w1,w2,w3].map((w,i)=>smooth(deriv[i]*.22,deriv[i]*1.15,w)));
-      const alpha=t.alpha*(1-wire)+t.edge*wire,at=index*4,old=pixels[at+3]/255,next=alpha+old*(1-alpha);
-      if(next<.001)continue;
-      for(let k=0;k<3;k++){const color=t.color[k]*(1-wire)+t.line[k]*wire;pixels[at+k]=Math.round((color*255*alpha+pixels[at+k]*old*(1-alpha))/next);}
-      pixels[at+3]=Math.round(next*255);if(t.write)depth[index]=z;
+  }else{
+    const objects=[];scene.root.traverse(o=>{if(o.geometry)objects.push(o);});objects.sort((a,b)=>a.renderOrder-b.renderOrder);
+    for(const object of objects){
+      const geometry=object.geometry,positions=geometry.attributes.position;
+      let matrix=new THREE.Matrix4().multiplyMatrices(view,new THREE.Matrix4().multiplyMatrices(scaleMatrix,object.matrixWorld));
+      if(['event-horizon','photon-rim'].includes(object.userData.posterKind))matrix=scaleMatrix.clone();
+      const localCamera=new THREE.Vector3(0,0,12).applyMatrix4(matrix.clone().invert());
+      const projected=new Float32Array(positions.count*3);
+      for(let i=0;i<positions.count;i++)projected.set(project(positions,i,matrix),i*3);
+      if(object.isMesh){
+        const normals=geometry.attributes.normal,uv=geometry.attributes.uv,index=geometry.index;
+        const normalMatrix=new THREE.Matrix3().getNormalMatrix(matrix),count=index?index.count:positions.count;
+        for(let at=0;at<count;at+=3){
+          const ids=[0,1,2].map(k=>index?index.getX(at+k):at+k),a=ids[0]*3,b=ids[1]*3,c=ids[2]*3;
+          const ax=projected[a],ay=projected[a+1],az=projected[a+2],bx=projected[b],by=projected[b+1],bz=projected[b+2],cx=projected[c],cy=projected[c+1],cz=projected[c+2];
+          const area=(bx-ax)*(cy-ay)-(by-ay)*(cx-ax);if(Math.abs(area)<.00001)continue;
+          normal.set(0,0,0);for(const id of ids){point.fromBufferAttribute(normals,id);normal.add(point);}normal.normalize().applyMatrix3(normalMatrix).normalize();
+          if(object.material.side===THREE.FrontSide&&normal.z<0)continue;
+          point.set(0,0,0);let u=0,v=0;for(const id of ids){u+=uv.getX(id)/3;v+=uv.getY(id)/3;point.x+=positions.getX(id)/3;point.y+=positions.getY(id)/3;point.z+=positions.getZ(id)/3;}
+          let alpha;
+          if(['event-horizon','photon-rim','minimal-disk'].includes(object.userData.posterKind)){
+            alpha=object.material.opacity;
+          }else if(object.userData.posterKind==='spacetime-sheet'){
+            alpha=.035*clamp((3.35-Math.hypot(point.x,point.y))/.8);
+          }else if(object.userData.posterKind==='magnetic-field'){
+            alpha=(.42+.58*(.5+.5*Math.sin(u*13))**2)*object.material.uniforms.opacity.value;
+          }else if(object.userData.posterKind==='pulsar-beam'){
+            alpha=(1-v)**1.5*(.65+.35*Math.sin(v*22))*object.material.uniforms.opacity.value;
+          }else if(object.userData.posterKind==='ring'){
+            const r=Math.hypot(point.x,point.z),fraction=(r-object.userData.innerRadius)/(object.userData.outerRadius-object.userData.innerRadius);
+            const along=(-.65*point.x+.9*point.z)/Math.hypot(.65,.65,.9),distance=Math.sqrt(Math.max(0,point.lengthSq()-along*along));
+            const shadow=along<0&&distance<object.userData.innerRadius*.82?.85:0;
+            alpha=sampleRingProfile(object.material.uniforms.ringProfile.value,fraction,.0015)*(1-shadow)*object.material.uniforms.opacity.value;
+          }else if(object.userData.posterKind==='volume'){
+            const path=point.clone().normalize().dot(localCamera.clone().sub(point).normalize());
+            alpha=Math.max(0,path)**2.2*object.material.uniforms.opacity.value*.85;
+          }else if(object.userData.posterKind==='flare'){
+            alpha=Math.exp(-(((v-.5)*5)**2))*(.55+.45*Math.sin(u*16+object.material.uniforms.phase.value))*.16;
+          }else alpha=surfaceInk(object,u,v,point.x,point.y,point.z,normal.x,normal.y,normal.z);
+          const xmin=Math.max(0,Math.floor(Math.min(ax,bx,cx))),xmax=Math.min(width-1,Math.ceil(Math.max(ax,bx,cx)));
+          const ymin=Math.max(0,Math.floor(Math.min(ay,by,cy))),ymax=Math.min(height-1,Math.ceil(Math.max(ay,by,cy)));
+          for(let y=ymin;y<=ymax;y++)for(let x=xmin;x<=xmax;x++){
+            const w1=((bx-x-.5)*(cy-y-.5)-(by-y-.5)*(cx-x-.5))/area;
+            const w2=((cx-x-.5)*(ay-y-.5)-(cy-y-.5)*(ax-x-.5))/area,w3=1-w1-w2;
+            if(w1<0||w2<0||w3<0)continue;
+            blend(x,y,w1*az+w2*bz+w3*cz,alpha,object.material.userData.bodyDepth);
+          }
+        }
+      }else if(object.isPoints){
+        const sizes=geometry.attributes.starSize,strengths=geometry.attributes.strength,soft=object.userData.posterSoft;
+        for(let i=0;i<positions.count;i++){
+          const x=projected[i*3],y=projected[i*3+1],z=projected[i*3+2];
+          const radius=Math.max(.4,Math.min(soft?18:4,sizes.getX(i)*.7)),strength=strengths.getX(i);
+          for(let yy=Math.floor(y-radius);yy<=Math.ceil(y+radius);yy++)for(let xx=Math.floor(x-radius);xx<=Math.ceil(x+radius);xx++){
+            const d=((xx+.5-x)**2+(yy+.5-y)**2)/(radius*radius);if(d>1)continue;blend(xx,yy,z,Math.exp(-d*(soft?5:4))*strength);
+          }
+        }
+      }else if(object.isLineSegments){
+        for(let i=0;i<positions.count;i+=2){
+          const a=i*3,b=a+3,dx=projected[b]-projected[a],dy=projected[b+1]-projected[a+1],steps=Math.max(1,Math.ceil(Math.hypot(dx,dy)));
+          const radius=Math.hypot(positions.getX(i),positions.getY(i));
+          const alpha=object.userData.posterKind==='spacetime-grid'?object.userData.posterOpacity*clamp((3.35-radius)/.8):object.material.opacity*.55;
+          for(let j=0;j<=steps;j++){const t=j/steps;blend(Math.round(projected[a]+dx*t),Math.round(projected[a+1]+dy*t),projected[a+2]*(1-t)+projected[b+2]*t,alpha);}
+        }
+      }
     }
   }
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}" aria-hidden="true"><image width="${width}" height="${height}" href="data:image/png;base64,${png(width,height,pixels).toString('base64')}"/></svg>\n`;
+  const data=png(width,height,pixels).toString('base64');
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}" aria-hidden="true"><image width="${width}" height="${height}" href="data:image/png;base64,${data}"/></svg>\n`;
 }

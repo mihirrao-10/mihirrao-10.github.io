@@ -53,13 +53,7 @@ void main(){
  if(kind>8.5){
    float cloud=smoothstep(.38,.67,fbm(normalize(vLocal)*24.0+vec3(time*.018,0,0)));
    gl_FragColor=vec4(vec3(.03),cloud*opacity*presence*.45);return;}
- vec2 cell=vUv*vec2(meshDensity,meshDensity*.5),f=fract(cell),w=max(fwidth(cell),vec2(.0001));
- float edge=min(min(f.x,1.0-f.x)/w.x,min(f.y,1.0-f.y)/w.y);
- float diagonal=abs(f.x-f.y)/max(w.x+w.y,.0001);
- float wire=1.0-smoothstep(.15,.65,min(edge,diagonal));
- wire*=smoothstep(.65,2.0,1.0/max(w.x,w.y));
- float wireInk=kind>1.5&&kind<3.5?.035:kind>7.5?.06:mix(.16,.24,step(.5,kind));
- float ink=opacity*(density*light+wireInk*wire+.09*pow(1.0-facing,3.0));
+ float ink=opacity*(density*light+.09*pow(1.0-facing,3.0));
  gl_FragColor=vec4(vec3(.025),clamp(ink,0.0,.94)*presence);
 }`;
 export function surfaceMaterial(scene,kind=0,map=null,{opacity=1,detail=256,depthWrite=true}={}) {

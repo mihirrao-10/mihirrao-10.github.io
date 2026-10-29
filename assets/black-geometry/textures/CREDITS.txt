@@ -1,8 +1,9 @@
 Surface maps converted to grayscale from NASA imagery.
-The current artwork samples these fields per triangle and applies authored
-mineral-color gradients, visible edges, and translucency.
+Only the Moon and Sun fields are active on the current homepage. All artwork
+is grayscale, without visible wireframes or tessellated surface treatments.
+The fictional planet uses an authored terrain/cloud field, not an Earth map.
 
-Earth: NASA/Goddard Space Flight Center Scientific Visualization Studio.
+Archived Earth field (not loaded by the current homepage): NASA/Goddard Space Flight Center Scientific Visualization Studio.
 Blue Marble data courtesy of Reto Stockli (NASA/GSFC) and NASA Earth Observatory.
 https://svs.gsfc.nasa.gov/2915/
 https://svs.gsfc.nasa.gov/vis/a000000/a002900/a002915/bluemarble-2048.png
@@ -22,15 +23,16 @@ https://sdo.gsfc.nasa.gov/data/
 Downloaded image: https://sdo.gsfc.nasa.gov/assets/img/latest/latest_2048_0171.jpg
 Input SHA-256: 181879b00a174bacce35642243bb341d1bdc2b52a3aa861ce931a890b21437ad
 The observed disk is unprojected onto a sphere, with a reflected reverse hemisphere.
-Solar evolution, granulation, coronal loop geometry, and animation are authored.
+The current giant star uses this solar field as an activity reference. Its
+uneven shape, granulation, soft corona, and animation are authored, not observed.
 
-Jupiter: NASA/JPL/Space Science Institute. Cassini PIA07782.
+Archived Jupiter field (not loaded by the current homepage): NASA/JPL/Space Science Institute. Cassini PIA07782.
 https://science.nasa.gov/photojournal/cassinis-best-maps-of-jupiter-cylindrical-map/
 https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia07/pia07782/PIA07782.jpg?w=3601&h=1801&fit=clip&crop=faces%2Cfocalpoint
 Input SHA-256: 17512607755473debef169a8b74db8d3b3818df452ffeeaffc6d93e524b90c6b
 The cylindrical cloud map is resized to 3600 x 1800, converted to grayscale,
 autocontrasted at one percent, and lightly sharpened. Belts, zones, and storms
-come from the map; facet colors and rotation are authored.
+come from the map; the earlier scene shading and rotation were authored.
 Reproduce with tools/black-geometry/prepare-jupiter.py and the recorded input.
 Requires Pillow; not a website build dependency.
 
@@ -51,7 +53,7 @@ https://science.nasa.gov/mission/hubble/science/explore-the-night-sky/hubble-mes
 https://science.nasa.gov/wp-content/uploads/2023/04/m51-and-companion_0-jpg.webp?w=2048
 Input SHA-256: c850aa52de08035f60f5cbb0ca3fc91119138a8b8012b10d4314df42fe776600
 
-Abell 1689: NASA, ESA, the Hubble Heritage Team (STScI/AURA), J. Blakeslee
+Archived Abell 1689 field (not loaded by the current homepage): NASA, ESA, the Hubble Heritage Team (STScI/AURA), J. Blakeslee
 (NRC Herzberg Astrophysics Program, Dominion Astrophysical Observatory), and H. Ford (JHU).
 https://science.nasa.gov/asset/hubble/hubble-wide-field-image-of-galaxy-cluster-and-gravitational-lens-abell-1689/
 https://assets.science.nasa.gov/dynamicimage/assets/science/missions/hubble/releases/2013/09/STScI-01EVT3NJQZ5QD80MPB66494TFD.tif?w=1600&format=jpg
@@ -61,10 +63,12 @@ Galaxy fields: grayscale luminance conversion, background removal, and soft edge
 feathering. The current Milky Way is authored procedural geometry rather than an
 image-derived field. Its broad bar/arm structure references NASA's illustration:
 https://science.nasa.gov/resource/the-milky-way-galaxy/
-Luminous features in the Abell 1689 field seed a three-dimensional population of
-112 separate galaxies. No active galaxy scene displays an image on a surface.
-Depth, triangular galaxy shapes, and rotation are authored, not measured.
-Darker facets emphasize dense regions. Source frames are not time series.
+Luminous features in the Abell 1689 field supplied the earlier population of
+112 galaxies, retained outside the active build. Current galaxy scenes use
+authored three-dimensional star populations, not photographic display planes.
+The final scene is now a globular star cluster. Its radial profile, stellar
+positions, and motion are authored. Dark ink represents luminous density.
+Source frames are not time series.
 
 Reproduction of Sun, archived Saturn/M51, and cluster fields: save the four inputs
 as sun.jpg, saturn.jpg, galaxy.jpg, cluster.jpg; verify the hashes above, then run
@@ -72,11 +76,16 @@ tools/black-geometry/prepare-astronomy.py with the input directory. The SDO late
 URL is mutable: use the recorded frame. Requires Pillow and NumPy; the website
 build does not. The active map manifest excludes archived fields.
 
-The current neutron star uses authored dipole geometry and polar beams:
+The archived neutron star used authored dipole geometry and polar beams:
 https://imagine.gsfc.nasa.gov/science/objects/neutron_stars1.html
-The current black hole uses a warped triangular disk and an arched ribbon
-around a dark shadow. No photograph or film still is redistributed. The earlier
-ray integrator and background grid remain outside the active build. The
-accretion silhouette references
+The current black hole traces deflected rays through an authored turbulent
+accretion disk around an absorbing center. It is an approximate illustration,
+not a relativistic geodesic solver. The accretion silhouette references
 Gargantua from Interstellar and NASA's warped-world visualization:
 https://www.nasa.gov/universe/nasa-visualization-shows-a-black-holes-warped-world/
+
+The two user-supplied images in Documents guide the black-hole and globular-
+cluster compositions only. Neither reference image nor any film still is
+copied into the website or redistributed. The radial stellar cloud, Milky Way,
+colliding galaxy pair, and globular cluster are authored particle populations;
+their depth, orbital rates, and interaction are not measured or simulated gravity.

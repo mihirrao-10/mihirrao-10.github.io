@@ -1,80 +1,189 @@
 import * as THREE from 'three';
-import { random, gaussian } from './astronomy-materials.js';
-import { facetGeometry, facetMaterial, facetMesh, globe, triangleSurface, PALETTES, TAU } from './tessellation.js';
+import { random, gaussian, pointMaterial, volumeMaterial, valueNoise } from './astronomy-materials.js';
 
-function spiralArm(phase, minor=false, columns=144, rows=12) {
-  return triangleSurface((u,v)=>{
-    const r=.34+2.45*u,a=phase+3.8*Math.log(1+2.4*u),cross=v*TAU;
-    const envelope=Math.sin(Math.PI*u)**.42;
-    const width=(minor?.12:.22)*(1+.7*u)*envelope;
-    const radial=r+width*Math.cos(cross),height=(.09+.07*(1-u))*envelope*Math.sin(cross);
-    return[radial*Math.cos(a),height+.045*Math.sin(a*3)*envelope,radial*Math.sin(a)];
-  },columns,rows);
-}
-export function createGalaxyVolume(scene) {
-  const content=new THREE.Group(),arms=new THREE.Group();scene.root.add(content);content.add(arms);
-  for(let i=0;i<4;i++) {
-    const minor=i>1,phase=i*Math.PI+(minor?Math.PI*.5:0);
-    const arm=facetMesh(scene,arms,facetGeometry(spiralArm(phase,minor),p=>{
-      const r=Math.hypot(p[0],p[2]);return .2+.5*(1-r/3)+.12*Math.sin(r*8);
-    }),{palette:PALETTES.galaxy,fill:minor?.17:.30,edge:minor?.48:.72,width:.58,back:.24,flow:.055,ripple:.018});
-    arm.userData.role='spiral-arm';
+const TAU = Math.PI * 2;
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const normal = (rng, scale = 1) => clamp(gaussian(rng), -3, 3) * scale;
+
+function stars(scene, parent, count, seed, sample, soft = 0) {
+  const rng = random(seed), data = { position: [], starSize: [], strength: [], phase: [], rate: [], orbitCenter: [], orbitAxis: [] };
+  for (let i = 0; i < count; i++) {
+    const p = sample(rng, i);
+    data.position.push(...p.position);data.starSize.push(p.size ?? .5 + rng());
+    data.strength.push(p.strength ?? .2 + rng() * .4);data.phase.push(rng() * TAU);
+    data.rate.push(p.rate ?? 0);data.orbitCenter.push(...(p.center ?? [0, 0, 0]));
+    data.orbitAxis.push(...(p.axis ?? [0, 1, 0]));
   }
-  const disk=globe(scene,content,1,21,{palette:PALETTES.galaxy,scale:[2.85,.12,2.85],fill:.055,edge:.19,width:.50,back:.16,field:p=>.18+.55*Math.abs(p[1])**3});
-  disk.userData.role='galactic-disk';
-  const bar=globe(scene,content,1,15,{palette:PALETTES.galaxy,scale:[.90,.21,.30],fill:.30,edge:.64});
-  const bulge=globe(scene,content,1,15,{palette:PALETTES.galaxy,scale:[.50,.36,.43],fill:.46,edge:.77,field:()=>.82});
-  scene.animate=t=>{content.rotation.set(.75+Math.sin(t*.05)*.12,Math.sin(t*.035)*.24,-.24);arms.rotation.y=t*.045;bar.rotation.y=t*.025;bulge.rotation.y=t*.035;disk.rotation.y=t*.018;};
-  scene.theme='Milky Way';scene.volumeKind='stellar-disk';scene.galaxyCount=1;scene.radius=3.25;
+  const geometry = new THREE.BufferGeometry();
+  for (const [name, values] of Object.entries(data)) geometry.setAttribute(name, new THREE.Float32BufferAttribute(values, ['position', 'orbitCenter', 'orbitAxis'].includes(name) ? 3 : 1));
+  const points = new THREE.Points(geometry, pointMaterial(scene, soft));
+  points.frustumCulled = false;points.renderOrder = 2;points.userData.posterSoft = soft;
+  points.userData.posterKind = 'stars';parent.add(points);return points;
 }
 
-function combineGeometry(parts) {
-  const triangles=parts.map(g=>{if(!g.index)return g;const plain=g.toNonIndexed();g.dispose();return plain;});
-  const size=triangles.reduce((n,g)=>n+g.attributes.position.array.length,0),p=new Float32Array(size);let at=0;
-  for(const geometry of triangles){p.set(geometry.attributes.position.array,at);at+=geometry.attributes.position.array.length;geometry.dispose();}
-  const geometry=new THREE.BufferGeometry();geometry.setAttribute('position',new THREE.BufferAttribute(p,3));return geometry;
-}
-// Locate luminous objects in a coarse image field, then retain their sky positions.
-export function clusterFeatures(map){
-  const {pixels,width,height}=map.userData,size=96,field=new Float32Array(size*size);
-  for(let y=0;y<height;y+=2)for(let x=0;x<width;x+=2){
-    const index=Math.min(size-1,Math.floor(y/height*size))*size+Math.min(size-1,Math.floor(x/width*size));
-    field[index]+=(pixels[y*width+x]/255)**1.5;
-  }
-  const candidates=[];
-  for(let y=2;y<size-2;y++)for(let x=2;x<size-2;x++){
-    let value=0;for(let j=-1;j<=1;j++)for(let i=-1;i<=1;i++)value+=field[(y+j)*size+x+i]*(i===0&&j===0?4:1);
-    candidates.push({u:(x+.5)/size,v:(y+.5)/size,value});
-  }
-  candidates.sort((a,b)=>b.value-a.value);
-  const selected=[];
-  for(const feature of candidates){
-    if(selected.every(p=>Math.hypot(p.u-feature.u,p.v-feature.v)>.051))selected.push(feature);
-    if(selected.length===112)break;
-  }
-  return selected;
+function cloud(scene, parent, scale, opacity, center = [0, 0, 0]) {
+  const mesh = new THREE.Mesh(new THREE.SphereGeometry(1, 96, 64), volumeMaterial(scene, opacity));
+  mesh.scale.fromArray(scale);mesh.position.fromArray(center);mesh.renderOrder = 1;
+  mesh.userData.posterKind = 'volume';parent.add(mesh);return mesh;
 }
 
-export function createClusterVolume(scene,maps) {
-  const content=new THREE.Group();scene.root.add(content);const rng=random(66327);
-  const ellipse=facetGeometry(new THREE.IcosahedronGeometry(1,2),p=>.35+.45*Math.abs(p[1]));
-  const miniCore=new THREE.IcosahedronGeometry(.58,2);miniCore.scale(1,.6,1);
-  const spiral=facetGeometry(combineGeometry([miniCore,spiralArm(0,false,24,4),spiralArm(Math.PI,false,24,4)]),p=>.25+.65*Math.exp(-Math.hypot(...p)));
-  const material=facetMaterial(scene,{palette:PALETTES.cluster,fill:.36,edge:.72,width:.52,back:.20,pulse:.035});
-  const features=clusterFeatures(maps.cluster),maximum=features[0].value;
-  const galaxies=features.map((feature,i)=>{
-    const x=(feature.u-.5)*4.55,y=(.5-feature.v)*4.55,r=Math.hypot(x,y),luminosity=feature.value/maximum;
-    const z=THREE.MathUtils.clamp(gaussian(rng),-2.8,2.8)*.78*Math.sqrt(Math.max(.12,1-r*r/10));
-    const radius=.035+.060*Math.sqrt(luminosity),isSpiral=i%3===0;
-    const q=new THREE.Quaternion().setFromEuler(new THREE.Euler(rng()*2.2,rng()*TAU,rng()*TAU));
-    const mesh=new THREE.Mesh(isSpiral?spiral:ellipse,material);mesh.position.set(x,y,z);mesh.quaternion.copy(q);
-    mesh.scale.set(radius*(isSpiral?1:1.6),radius*(isSpiral?1:.8),radius*(isSpiral?1:1.15));
-    mesh.userData.tessellated=true;mesh.userData.posterKind='facets';mesh.userData.role='cluster-galaxy';content.add(mesh);
-    return {mesh,q,radius,center:[x,y,z],rate:.055+luminosity*.045};
+// Bound local stellar orbits and every parent rotation without a time-dependent fit.
+function fitVolume(scene) {
+  let bound = 0;
+  scene.root.traverse(object => {
+    if (!object.geometry) return;
+    const { position, orbitCenter } = object.geometry.attributes;
+    let radius = 0;
+    for (let i = 0; i < position.count; i++) {
+      const x = position.getX(i), y = position.getY(i), z = position.getZ(i);
+      if (orbitCenter) {
+        const cx = orbitCenter.getX(i), cy = orbitCenter.getY(i), cz = orbitCenter.getZ(i);
+        radius = Math.max(radius, Math.hypot(cx, cy, cz) + Math.hypot(x - cx, y - cy, z - cz));
+      } else radius = Math.max(radius, Math.hypot(x, y, z));
+    }
+    for (let node = object; node && node !== scene.root; node = node.parent) radius = radius * Math.max(...node.scale.toArray()) + node.position.length();
+    bound = Math.max(bound, radius);
   });
-  const turn=new THREE.Quaternion(),axis=new THREE.Vector3(0,1,0);
-  scene.animate=t=>{content.rotation.set(.12+Math.sin(t*.08)*.14,t*.043,.06+Math.sin(t*.06)*.06);
-    galaxies.forEach(g=>g.mesh.quaternion.copy(g.q).multiply(turn.setFromAxisAngle(axis,t*g.rate)));};
-  scene.theme='Galaxy cluster';scene.volumeKind='galaxy-population';scene.galaxyCenters=galaxies.map(g=>g.center);scene.galaxyRadii=galaxies.map(g=>g.radius);
-  scene.radius=Math.max(...galaxies.map(g=>Math.hypot(...g.center)+g.radius*3.2))*1.05;
+  scene.radius = bound * 1.045;
+}
+
+function spiral(scene, parent, seed, density = 1) {
+  const armPoint = (rng, i, soft = false) => {
+    let u = rng() ** .82;
+    if (rng() < .26) u = clamp(Math.round(u * 39) / 39 + normal(rng, .011), 0, 1);
+    const r = .40 + 2.40 * u, minor = i % 4 === 0;
+    const phase = (i % 2) * Math.PI + (minor ? 1.35 : 0);
+    const theta = phase + (i % 2 ? 2.48 : 2.76) * Math.log(r / .40) + .14 * Math.sin(u * 11 + phase) + .08 * Math.sin(u * 29 + phase * .7);
+    const spread = (minor ? .25 : .13) + .16 * u;
+    const a = theta + normal(rng, spread);
+    const rr = r + normal(rng, .045 + u * .085);
+    const density = .56 + .44 * valueNoise(r * 8, phase * 3, 1);
+    return { position: [rr * Math.cos(a), normal(rng, .025 + .06 * (1 - u)), rr * Math.sin(a)],
+      rate: .019 / (r + .5) ** .65,
+      size: soft ? 3 + rng() * 7 : .45 + rng() ** 2 * 1.35,
+      strength: (soft ? .035 + rng() * .045 : .15 + rng() * .43) * density * (minor ? .75 : 1) };
+  };
+  stars(scene, parent, Math.round(100000 * density), seed, (rng, i) => armPoint(rng, i));
+  stars(scene, parent, Math.round(16000 * density), seed + 1, (rng, i) => armPoint(rng, i, true), 1);
+  stars(scene, parent, Math.round(65000 * density), seed + 2, rng => {
+    let r;do { r = rng() < .28 ? 2.85 * Math.sqrt(rng()) : -.56 * Math.log(Math.max(1e-9, rng() * rng())); } while (r > 2.85);
+    const a = rng() * TAU;
+    const lane = .75 + .25 * valueNoise(Math.cos(a) * r * 7, 2, Math.sin(a) * r * 7);
+    return { position: [r * Math.cos(a), normal(rng, .085), r * Math.sin(a)], rate: .015 / (r + .6) ** .6,
+      size: .40 + rng() ** 2 * 1.05, strength: (.22 + rng() * .38) * (.4 + .6 * (1 - r / 3.15)) * lane };
+  });
+  stars(scene, parent, Math.round(24000 * density), seed + 3, rng => ({
+    position: [normal(rng, .31), normal(rng, .19), normal(rng, .28)], size: .6 + rng() ** 2 * 1.8,
+    strength: .28 + rng() * .42, rate: .028 + rng() * .015,
+  }));
+  stars(scene, parent, Math.round(12000 * density), seed + 4, rng => ({
+    position: [normal(rng, .56), normal(rng, .09), normal(rng, .15)], size: .5 + rng(), strength: .18 + rng() * .26, rate: .012,
+  }));
+  cloud(scene, parent, [.23, .17, .22], .16);
+  cloud(scene, parent, [.48, .27, .44], .055);
+  cloud(scene, parent, [.92, .12, .22], .035);
+}
+
+export function createGalaxyVolume(scene) {
+  const content = new THREE.Group();scene.root.add(content);spiral(scene, content, 60827);
+  scene.animate = t => content.rotation.set(.87 + Math.sin(t * .045) * .13, t * .025, -.24 + Math.sin(t * .03) * .04);
+  scene.theme = 'Milky Way';scene.volumeKind = 'stellar-disk';scene.galaxyCount = 1;fitVolume(scene);
+}
+
+export function createCollisionVolume(scene) {
+  const content = new THREE.Group(), first = new THREE.Group(), second = new THREE.Group();
+  scene.root.add(content);content.add(first, second);
+  first.position.set(-.81, -.14, 0);first.scale.setScalar(.68);first.rotation.set(.46, 0, -.24);
+  second.position.set(.92, .18, .25);second.scale.setScalar(.53);second.rotation.set(.98, -.42, .34);
+  spiral(scene, first, 98117, .45);spiral(scene, second, 47437, .36);
+  // Broad tidal tails are spatial streams, not drawn curves or a flat image.
+  stars(scene, content, 40000, 12397, (rng, i) => {
+    const side = i % 2 ? 1 : -1, u = rng() ** .85, angle = side * (.4 + u * 2.5);
+    const r = 1.05 + u * 2.05, spread = .035 + .18 * u;
+    return { position: [side * .45 + side * r * Math.cos(angle) + normal(rng, spread),
+      side * (.10 + .38 * u * u) + normal(rng, .06 + .10 * u),
+      side * r * Math.sin(angle) * .68 + normal(rng, spread)],
+      size: .45 + rng() ** 2 * 1.0, strength: (.30 + rng() * .42) * (1 - .60 * u), rate: .007 };
+  });
+  stars(scene, content, 14000, 16199, rng => {
+    const u = rng(), x = -.81 + 1.73 * u;
+    return { position: [x + normal(rng, .08), .05 + .20 * Math.sin(u * Math.PI) + normal(rng, .08), .12 + normal(rng, .16)],
+      size: .6 + rng() * 1.3, strength: .24 + rng() * .32, rate: .011 };
+  });
+  scene.animate = t => {
+    content.rotation.set(.65 + Math.sin(t * .04) * .09, t * .018, -.20);
+    first.rotation.y = t * .016;second.rotation.y = -.42 - t * .021;
+  };
+  scene.theme = 'Colliding galaxies';scene.volumeKind = 'interacting-galaxies';scene.galaxyCount = 2;fitVolume(scene);
+}
+
+function sphere(rng, radius) {
+  const z = rng() * 2 - 1, a = rng() * TAU, s = Math.sqrt(1 - z * z);
+  return [radius * s * Math.cos(a), radius * z, radius * s * Math.sin(a)];
+}
+
+export function createClusterVolume(scene) {
+  const content = new THREE.Group();scene.root.add(content);
+  // A truncated Plummer distribution gives the dense center and extended halo
+  // of the supplied globular-cluster reference without copying its stars.
+  stars(scene, content, 186000, 66327, rng => {
+    let r;do { r = .54 / Math.sqrt(Math.max(1e-9, rng() ** (-2 / 3) - 1)); } while (r > 3.05);
+    const p = sphere(rng, r), giant = rng() < .024;
+    const axis = new THREE.Vector3(...sphere(rng, 1)).normalize().toArray();
+    return { position: p, axis, rate: .008 + .015 / (r + .4),
+      size: giant ? 1.9 + rng() * 2.7 : .4 + rng() ** 2 * 1.05,
+      strength: giant ? .35 + rng() * .5 : .11 + rng() * .34 };
+  });
+  stars(scene, content, 36000, 41833, rng => {
+    const r = 2.95 * rng() ** .55;
+    return { position: sphere(rng, r), size: .5 + rng() * .95, strength: .14 + rng() * .22, rate: .013 };
+  });
+  cloud(scene, content, [.24, .24, .24], .15);
+  cloud(scene, content, [.47, .47, .47], .055);
+  scene.animate = t => content.rotation.set(.16 + Math.sin(t * .04) * .08, t * .028, -.08);
+  scene.theme = 'Globular star cluster';scene.volumeKind = 'globular-cluster';scene.starCount = 222000;fitVolume(scene);
+}
+
+export function createRadialVolume(scene) {
+  const content = new THREE.Group();scene.root.add(content);
+  stars(scene, content, 126000, 21973, rng => {
+    const p = sphere(rng, 1), a = Math.atan2(p[2], p[0]);
+    const knots = valueNoise(p[0] * 5 + 3, p[1] * 5, p[2] * 5);
+    const shell = 1.43 + .38 * Math.sin(a * 3 + p[1] * 4) + .42 * (knots - .5);
+    const r = shell + normal(rng, .10 + .10 * knots);
+    return { position: p.map(v => v * r), size: .7 + rng() * 1.2,
+      strength: (.20 + .85 * knots ** 2) * (.5 + rng() * .5), rate: .009 + .004 * p[1] };
+  });
+  const rng = random(9271), directions = Array.from({ length: 32 }, () => new THREE.Vector3(...sphere(rng, 1)));
+  stars(scene, content, 46000, 41783, (rng, i) => {
+    const axis = directions[i % directions.length], r = .40 + rng() ** .7 * 1.65, spread = .018 + r * .022;
+    const tangent = new THREE.Vector3().crossVectors(axis, new THREE.Vector3(0, 1, 0)).normalize();
+    const bend = .12 * r * Math.sin(r * 2 + i % directions.length);
+    const p = axis.clone().multiplyScalar(r).addScaledVector(tangent, bend).add(new THREE.Vector3(normal(rng, spread), normal(rng, spread), normal(rng, spread)));
+    return { position: p.toArray(), size: 1.5 + rng() * 4, strength: .04 + rng() * .055, rate: .012 };
+  }, 1);
+  stars(scene, content, 3500, 85139, rng => ({ position: sphere(rng, .24 * rng() ** .65),
+    size: .8 + rng() * 1.6, strength: .11 + rng() * .14, rate: .07 }));
+  stars(scene, content, 8000, 37811, rng => ({ position: sphere(rng, 2.3 * rng() ** .5),
+    size: .5 + rng() ** 3 * 2.5, strength: .18 + rng() * .30, rate: .009 }));
+  cloud(scene, content, [.15, .15, .15], .12);
+  scene.animate = t => content.rotation.set(.25 + Math.sin(t * .045) * .10, t * .032, -.16);
+  scene.theme = 'Radial stellar cloud';scene.volumeKind = 'radial-cloud';fitVolume(scene);
+}
+
+// Retained image-field helper for archived galaxy-cluster references.
+export function clusterFeatures(map) {
+  const { pixels, width, height } = map.userData, size = 96, field = new Float32Array(size * size);
+  for (let y = 0; y < height; y += 2) for (let x = 0; x < width; x += 2) {
+    const index = Math.min(size - 1, Math.floor(y / height * size)) * size + Math.min(size - 1, Math.floor(x / width * size));
+    field[index] += (pixels[y * width + x] / 255) ** 1.5;
+  }
+  const candidates = [];
+  for (let y = 2; y < size - 2; y++) for (let x = 2; x < size - 2; x++) {
+    let value = 0;for (let j = -1; j <= 1; j++) for (let i = -1; i <= 1; i++) value += field[(y + j) * size + x + i] * (i === 0 && j === 0 ? 4 : 1);
+    candidates.push({ u: (x + .5) / size, v: (y + .5) / size, value });
+  }
+  candidates.sort((a, b) => b.value - a.value);const selected = [];
+  for (const feature of candidates) { if (selected.every(p => Math.hypot(p.u - feature.u, p.v - feature.v) > .051)) selected.push(feature);if (selected.length === 112) break; }
+  return selected;
 }
