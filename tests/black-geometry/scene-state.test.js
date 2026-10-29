@@ -2,9 +2,9 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { CHAPTERS, chapterState, cameraPose, createTransition, advanceTransition, TRANSITION_SECONDS } from "../../src/black-geometry/scene-state.js";
 import { surfaceData, surfacePoint, pathPoint, TAU } from "../../src/black-geometry/geometry.js";
-const starts=[0,910,1895,3010,3850];
+const starts=[0,910,1895,3010,3850,4700,5600];
 const ranges=CHAPTERS.map((id,index)=>({id,start:starts[index],stop:starts[index]+(index===1?350:0),end:7650}));
-const targets=["hero","education","experience","projects","notes"];
+const targets=["hero","education","experience","publications","teaching","projects","notes"];
 test("nearest snap intervals always select a complete identity and keep long reading areas readable",()=>{
   for(let i=0;i<ranges.length;i++) {
     const state=chapterState(starts[i],ranges);

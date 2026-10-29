@@ -45,6 +45,7 @@ export function contentContract(html) {
           "education",
           "experience",
           "research",
+          "publications",
           "teaching",
           "personal-projects",
           "notes",

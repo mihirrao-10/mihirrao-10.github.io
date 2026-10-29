@@ -20,17 +20,17 @@
       "id": "education",
       "heading": "Education",
       "entries": [
-        "University of Chicago Sept 2025 - Dec 2026 M.S. in Computer Science",
-        "Drexel University Sept 2020 - Jun 2025 B.S. in Computer Science · B.A. in Mathematics"
+        "University of Chicago Sept 2025 - Dec 2026 M.S. in Computer Science Chicago, IL",
+        "Drexel University Sept 2020 - Jun 2025 B.S. in Computer Science · B.A. in Mathematics Philadelphia, PA"
       ],
       "links": []
     },
     {
       "id": "experience",
-      "heading": "Experience",
+      "heading": "Industry experience",
       "entries": [
-        "MathWorks Jun 2026 - Sept 2026 Software Engineering Intern MATLAB Data Analysis",
-        "Resolution Life US Apr 2024 - Sept 2024 Data Science Intern Investment Process Engineering"
+        "MathWorks Jun 2026 - Sept 2026 Software Engineering Intern MATLAB Data Analysis team Boston, MA",
+        "Resolution Life US Apr 2024 - Sept 2024 Data Science Intern Investment Process Engineering team Philadelphia, PA"
       ],
       "links": [
         {
@@ -44,6 +44,21 @@
           "label": ""
         }
       ]
+    },
+    {
+      "id": "publications",
+      "heading": "Publications",
+      "entries": [],
+      "links": []
+    },
+    {
+      "id": "teaching",
+      "heading": "Teaching",
+      "entries": [
+        "University of Chicago Honors Theory of Algorithms CMSC 27230 Algorithms MPCS 55001 Discrete Mathematics MPCS 50103",
+        "Drexel University Data Structures CS 260 Algorithms & Analysis CS 277 Artificial Intelligence CS 380 Deep Learning CS 615"
+      ],
+      "links": []
     },
     {
       "id": "personal-projects",
@@ -67,7 +82,7 @@
     },
     {
       "id": "notes",
-      "heading": "Notes",
+      "heading": "Personal notes",
       "entries": [],
       "links": []
     }

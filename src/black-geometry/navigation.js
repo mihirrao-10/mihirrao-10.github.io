@@ -2,6 +2,7 @@ const aliases = {
   'education-uchicago': 'education', 'education-drexel': 'education',
   'experience-mathworks': 'experience', 'experience-resolution': 'experience',
   'project-surface': 'personal-projects', 'project-congestion': 'personal-projects',
+  'industry-experience': 'experience', 'personal-notes': 'notes',
   projects: 'personal-projects', contact: 'notes', main: 'top',
 };
 
@@ -34,7 +35,7 @@ export function createNavigation({ scenes, onChange, signal }) {
       else link.removeAttribute('aria-current');
     }
     if (previous !== selected) {
-      document.title = page === 'about' ? 'Mihir Rao' : `${page[0].toUpperCase()}${page.slice(1)} · Mihir Rao`;
+      document.title = page === 'about' ? 'Mihir Rao' : `${selected.querySelector('h2')?.textContent || page} · Mihir Rao`;
       if (previous?.contains(document.activeElement)) {
         selected.tabIndex = -1;
         selected.focus({ preventScroll: true });

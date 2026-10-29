@@ -19,7 +19,7 @@ test("generated assets are deterministic and every browser import resolves to a 
     b = await expectedOutputs();
   assert.deepEqual(outputDifferences(a, b), []);
   assert.ok(
-    a.has("main.js") && a.has("sculpture-hero.svg") && a.has("sculpture-data.bin") && a.has("THREE-LICENSE.txt"),
+    a.has("main.js") && a.has("sculpture-hero.svg") && a.has("THREE-LICENSE.txt"),
   );
   const stylesheet = await fs.readFile(`${ROOT}/assets/css/black-geometry.css`);
   const stylesheetName = `black-geometry-${createHash("sha256").update(stylesheet).digest("hex").slice(0, 12)}.css`;
@@ -30,11 +30,7 @@ test("generated assets are deterministic and every browser import resolves to a 
   assert.equal(withEntryReference(html, a.get('main.js')), html,
     'Returning visitors must fetch the current entry module rather than stale chunk references');
   assert.equal(withPosterReferences(html, posterVersions(a)), html, 'Static and live poster URLs must use the same content hash');
-  const dataVersion = createHash('sha256').update(a.get('sculpture-data.bin')).digest('hex').slice(0, 12);
-  const worldSource = [...a].filter(([name]) => name.startsWith('world-') && name.endsWith('.js'))
-    .map(([, contents]) => Buffer.from(contents).toString()).join('');
-  assert.ok(worldSource.includes(dataVersion), 'The binary content hash must version its fetch URL');
-  assert.ok(worldSource.includes('searchParams.set("v",'), 'The version must be used in the actual request');
+  assert.ok(!a.has('sculpture-data.bin'), 'All active scenes are procedural; no legacy mesh packet is shipped');
   for (const [name, contents] of a) {
     if (!name.endsWith(".js")) continue;
     for (const match of Buffer.from(contents)

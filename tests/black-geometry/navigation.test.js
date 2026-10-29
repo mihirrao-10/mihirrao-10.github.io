@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { resolveScene } from '../../src/black-geometry/navigation.js';
 
-const ids = ['top', 'education', 'experience', 'personal-projects', 'notes'];
+const ids = ['top', 'education', 'experience', 'publications', 'teaching', 'personal-projects', 'notes'];
 
 test('page links retain old section aliases and reject unknown or malformed fragments', () => {
   for (const id of ids) assert.equal(resolveScene(`#${id}`, ids), id);

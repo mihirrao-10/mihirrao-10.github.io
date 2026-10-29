@@ -2,6 +2,8 @@ export const ENTRIES = Object.freeze([
   { id: "hero", target: "hero", section: "top" },
   { id: "education", target: "education", section: "education" },
   { id: "experience", target: "experience", section: "experience" },
+  { id: "publications", target: "publications", section: "publications" },
+  { id: "teaching", target: "teaching", section: "teaching" },
   { id: "projects", target: "projects", section: "personal-projects" },
   { id: "notes", target: "notes", section: "notes" },
 ]);
@@ -60,9 +62,9 @@ export function cameraPose(state, { time = 0, pointer = [0, 0], fullMotion = tru
   const b = TARGET_POSES[state.nextTarget] || a;
   const pose = a.map((value, i) => mix(value, b[i], state.blend));
   if (fullMotion) {
-    if (['education', 'experience', 'projects'].includes(state.target)) {
-      pose[3] += .14 + Math.sin(time * .075) * .065 + clamp(pointer[1], -1, 1) * .015;
-      pose[4] += .22 + time * .018 + clamp(pointer[0], -1, 1) * .025;
+    if (['hero', 'education', 'experience', 'publications', 'teaching', 'projects', 'notes'].includes(state.target)) {
+      pose[3] += .14 + Math.sin(time * .075) * .045 + clamp(pointer[1], -1, 1) * .015;
+      pose[4] += .18 + Math.sin(time * .035) * .15 + clamp(pointer[0], -1, 1) * .025;
       pose[5] += Math.sin(time * .06) * .025;
       return pose;
     }

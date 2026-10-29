@@ -9,29 +9,34 @@ The source and tests define current sampling budgets and rendering parameters.
 
 ## Current homepage
 
-The five pages use the quintic slice (About), an orbital system (Education),
-an accretion disk and polar jets (Experience), a spiral galaxy (Projects), and
-the Klein immersion (Notes). All use grayscale presentation. Institutional
-sculptures and research exports below document retained source factories,
-not active pages.
+All seven pages use original grayscale scenes from `cosmos.js`:
 
-`cosmos.js` authors the three space-inspired scenes with transparent parametric
-shells, seeded star fields, and independent orbital motion:
+- **About:** a quasar-like accretion form inspired by the halo and flattened disk
+  of Gargantua in *Interstellar*. Two fine, flowing disk sheets meet an upright
+  annular lens image, a narrow inner rim, and a foreground half-disk. A beige
+  sphere masks the central shadow. The [film imagery discussed by AIP](https://www.aip.org/inside-science/interstellars-black-hole-once-seen-as-pure-speculation)
+  informed the silhouette; no film pixels or meshes are redistributed.
+- **Education:** a banded spherical lattice, three annular rings, and three moons
+  following differently inclined paths. Ring dust moves independently.
+- **Industry experience:** a pair of rotating neutron-star forms, fine magnetic
+  loops, and two polar cones.
+- **Publications:** a single pulsar, twelve magnetic meridians, and polar beams.
+- **Teaching:** a dense, seeded globular star cluster and intersecting orbital
+  traces. Density increases toward the center.
+- **Projects:** two broad logarithmic arms with irregular secondary spurs, diffuse
+  dust, and a concentrated stellar bulge. Inverted luminance makes the core dark;
+  star density and opacity fade toward the outskirts. Arms and stars share their
+  slow angular speed so the spiral remains coherent throughout a visit.
+- **Personal notes:** four overlapping, corrugated nebular veils surrounding a
+  small central star and a seeded star field.
 
-- **Education:** a fine spherical lattice, three warped annular rings, and three
-  satellites following differently inclined paths. Ring dust rotates separately.
-- **Experience:** two warped accretion sheets surround a toroidal rim and ghost
-  core. Two hollow polar jets carry outward-flowing particles.
-- **Projects:** five logarithmic spiral ribbons surround an oblate stellar core,
-  a tiny binary pair, and a seeded cluster of stars. Differential rotation gives
-  the star field gentle motion independent of the ribbons.
-
-These are original abstract artworks, not reconstructions of observed objects,
+These are authored abstract artworks, not reconstructions of observed objects,
 orbital mechanics, or relativistic simulations. Shells have antialiased triangle
-edges and nearly clear faces; depth occlusion is disabled to reveal rear layers.
-Particle motion is computed in shaders and shell buffers remain fixed. Tests
-check finite geometry, deterministic seeds, moving bounds, transparency, and
-buffer reuse. Static SVGs project the same scene geometry and initial pose.
+edges, textured accretion bands, and nearly clear faces. Particle motion is
+computed in shaders and shell buffers remain fixed. Tests check finite geometry,
+deterministic seeds, moving bounds, transparency, and buffer reuse. Static SVGs
+project the same geometry and initial pose. The former quintic and Klein meshes
+remain as tested source factories below and are no longer active homepage art.
 
 ## Retained algorithm illustrations
 

@@ -5,7 +5,6 @@ import { createHash } from "node:crypto";
 import { build } from "esbuild";
 import { gzipSync, gunzipSync } from "node:zlib";
 import { posterOutputs } from "./posters.js";
-import { sculptureOutputs } from "./sculptures.js";
 
 export const ROOT = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
@@ -62,9 +61,7 @@ export function withPosterReferences(html, versions) {
 }
 
 export async function expectedOutputs() {
-  const sculptures = await sculptureOutputs();
-  const posters = posterOutputs(sculptures.models);
-  const dataVersion = createHash('sha256').update(sculptures.binary).digest('hex').slice(0, 12);
+  const posters = posterOutputs();
   const result = await build({
     absWorkingDir: ROOT,
     entryPoints: { main: "src/black-geometry/main.js" },
@@ -75,7 +72,6 @@ export async function expectedOutputs() {
     target: ["es2020"],
     minify: true,
     define: {
-      __SCULPTURE_DATA_VERSION__: JSON.stringify(dataVersion),
       __SCULPTURE_POSTER_VERSIONS__: JSON.stringify(posterVersions(posters)),
     },
     write: false,
@@ -91,8 +87,6 @@ export async function expectedOutputs() {
   );
   files.set(stylesheet.name, stylesheet.contents);
   for (const [name, svg] of posters) files.set(name, Buffer.from(svg));
-  files.set("sculpture-data.bin", sculptures.binary);
-  files.set("sculpture-data.bin.gz", gzipSync(sculptures.binary, { level: 9 }));
   // esbuild preserves notices; include the complete third-party license as well.
   files.set(
     "THREE-LICENSE.txt",

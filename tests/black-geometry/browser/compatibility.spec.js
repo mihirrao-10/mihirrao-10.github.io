@@ -11,13 +11,13 @@ test('reduced-motion visitors can navigate posters and explicitly enable animati
   await page.goto('/?bg-debug');
   const enable = page.getByRole('button', { name: 'Enable animation' });
   await expect(enable).toBeVisible();
-  await page.getByRole('navigation', { name: 'Main navigation' }).getByRole('link', { name: 'Notes', exact: true }).click();
+  await page.getByRole('navigation', { name: 'Main navigation' }).getByRole('link', { name: 'Personal notes', exact: true }).click();
   await expect(page.locator('#sculpture-poster')).toHaveAttribute('src', /sculpture-notes\.svg\?v=/);
   await enable.click();
   await expect(page.locator('body')).toHaveAttribute('data-experience-state', 'ready', { timeout: 30000 });
   await expect(enable).toBeHidden();
   const before = await snapshot(page);
-  expect(before.world.warmedTargets).toBe(5);
+  expect(before.world.warmedTargets).toBe(7);
   await expect.poll(async () => (await snapshot(page)).orbitTime).toBeGreaterThan(before.orbitTime + .2);
 });
 
@@ -34,6 +34,7 @@ test('sculpture drag and keyboard rotation remain independent of page navigation
   await world.focus();
   await page.keyboard.press('Home');
   await page.keyboard.press('ArrowRight');
+  await expect(world).toHaveCSS('outline-style', 'none');
   expect((await snapshot(page)).state.chapter).toBe('hero');
   expect(await page.evaluate(() => scrollY)).toBe(0);
 });

@@ -67,32 +67,31 @@ The STIX Two Text page stays readable with static SVGs when graphics fail or
 reduced motion is requested. Visitors can enable animation or retry; rendering
 failures retain content and native links. Print uses dark text on white.
 
-One WebGL context renders five sculptures: a quintic slice, an orbital system,
-an accretion disk with polar jets, a spiral galaxy, and a figure-eight Klein
-immersion. The two mathematical meshes are packed at build time. The three
-space-inspired scenes build deterministic transparent shells and star fields at
-startup. Satellites orbit independently; shaders animate stars and flowing jets
-without rebuilding buffers. These are authored abstract forms, not physical
-simulations. All five have matching static SVG posters prepared at build time.
-Older institutional, algorithm, and project factories remain in source but are
-not included in the homepage packet.
+One WebGL context renders seven original space-inspired scenes: a lensed quasar,
+ringed worlds, binary neutron stars, a pulsar, a globular cluster, a spiral galaxy,
+and a stellar nebula. Deterministic parametric shells and seeded star fields are
+prepared once at startup. Shaders animate stars and fine accretion textures while
+shell and satellite transforms reuse existing GPU buffers. No geometry packet is
+fetched. The older mathematical, institutional, algorithm, and project factories
+remain in source with their tests, outside the active homepage build.
 
-A shared depth prepass and two-surface dissolve preserve the mathematical meshes
-through transitions. Notes use a faint hidden-contour pass to expose folded
-lobes. Cosmic shells use antialiased mesh lines, nearly clear faces, and alpha
-transitions without depth occlusion, so their rear layers remain visible.
+Cosmic shells use antialiased mesh lines, nearly clear faces, and alpha transitions
+without depth occlusion. About adds a beige event-horizon mask and foreground
+accretion sheet. These are abstract artworks inspired by space, not physical
+simulations. Every page has a static SVG generated from the same scene and pose.
 Prepared targets stay resident. Each visit has its own orbit start and drag state;
 reversal preserves a still-visible identity's state.
 
 Text, navigation, and a static poster appear immediately. Live artwork waits for
-fonts, decoded sculptures, shaders, uploaded GPU buffers, warm-up draws, and a GPU
+fonts, procedural scenes, shaders, uploaded GPU buffers, warm-up draws, and a GPU
 fence. Graphics preparation never blocks navigation. Resolution adapts to sustained
-frame cost; geometry detail stays fixed. Geometry and poster requests carry
-content hashes so returning visitors receive the current visuals.
+frame cost; geometry detail stays fixed. Runtime and poster URLs carry content hashes so returning visitors receive the
+current visuals.
 
-The beige, grayscale homepage has five links and no secondary navigation.
-Education, Experience, and Projects show two brief entries each. Notes presents
-just the published book links; its generated source block stays intact.
+The beige, grayscale homepage has seven links and no secondary navigation:
+About, Education, Industry experience, Publications, Teaching, Projects, and
+Personal notes. Education and industry show locations; Notes shows each book
+with its author and edition. Its generated source block stays intact.
 Native hash links, old section aliases, reload, and browser history select the
 corresponding text and sculpture without document scrolling. If enlarged text
 exceeds the available height, overflow stays within the selected panel.

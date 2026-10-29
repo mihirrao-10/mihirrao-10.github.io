@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test';
 const snapshot = page => page.evaluate(() => window.__blackGeometry.snapshot());
 const scenes = [
   ['top', 'hero'], ['education', 'education'], ['experience', 'experience'],
-  ['personal-projects', 'projects'], ['notes', 'notes'],
+  ['publications', 'publications'], ['teaching', 'teaching'], ['personal-projects', 'projects'], ['notes', 'notes'],
 ];
 async function select(page, id) {
   await page.locator(`.site-index a[href="#${id}"]`).click();
@@ -37,11 +37,12 @@ for (const [width, height] of [[320, 568], [390, 844], [768, 1024], [1024, 768],
       await page.mouse.wheel(0, 900);
       expect(await page.evaluate(() => scrollY)).toBe(0);
       await expect(page.locator('[data-current-scene]')).toHaveCount(1);
+      await expect(page.locator('.site-index')).toBeVisible();
     }
   });
 }
 
-test('menu switches mathematical meshes and translucent cosmic scenes and supports rapid reversals', async ({ page }) => {
+test('menu switches seven translucent cosmic scenes and supports rapid reversals', async ({ page }) => {
   await live(page);
   for (const [id, target] of scenes) {
     await select(page, id);
@@ -50,20 +51,20 @@ test('menu switches mathematical meshes and translucent cosmic scenes and suppor
       return [world.target, world.nextTarget, world.blend];
     }).toEqual([target, target, 0]);
     const { world } = await snapshot(page);
-    expect(world.decodedTargets).toBe(5);
-    expect(world.warmedTargets).toBe(5);
+    expect(world.decodedTargets).toBe(7);
+    expect(world.warmedTargets).toBe(7);
     expect(world.finiteActiveBuffers).toBe(true);
-    const cosmic = ['education', 'experience', 'projects'].includes(target);
+    const cosmic = true;
     expect(world.depthPrepass).toBe(!cosmic);
     expect(world.transparentCosmos).toBe(true);
     expect(world.cosmicTargets).toEqual(cosmic ? [target] : []);
-    expect(world.activeInteriorMeshes).toBe(target === 'notes' ? 1 : 0);
+    expect(world.activeInteriorMeshes).toBe(0);
   }
   await select(page, 'personal-projects');
   await select(page, 'education');
   await select(page, 'top');
   await expect.poll(async () => (await snapshot(page)).world.target).toBe('hero');
-  await expect(page.locator('.world')).toHaveCSS('filter', 'grayscale(1)');
+  await expect(page.locator('.world')).toHaveCSS('filter', 'none');
 });
 
 test('deep links, reload and browser history restore the selected page', async ({ page }) => {
@@ -97,7 +98,7 @@ test('each section shows both entries with no secondary navigation or detail con
 });
 
 test('content and navigation remain usable while sculpture data is unavailable', async ({ page }) => {
-  await page.route('**/sculpture-data.bin*', route => route.abort());
+  await page.route('**/world-*.js', route => route.abort());
   await page.goto('/?bg-debug');
   await expect(page.getByRole('heading', { name: 'Mihir Rao', exact: true })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Retry animation' })).toBeVisible();

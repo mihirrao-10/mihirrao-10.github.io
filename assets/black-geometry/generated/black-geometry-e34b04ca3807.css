@@ -4,7 +4,7 @@
   --text: #282725;
   --muted: #706e68;
   --content-left: clamp(2rem, 10vw, 11rem);
-  --reading-top: 32vh;
+  --reading-top: 27vh;
   --reading-width: min(39vw, 34rem);
 }
 * { box-sizing: border-box; }
@@ -26,7 +26,7 @@ button { padding: .2rem 0; border: 0; font: inherit; color: inherit; background:
 .skip-link:focus { top: .5rem; }
 .site-index {
   position: fixed; top: max(2rem, env(safe-area-inset-top)); left: var(--content-left); z-index: 5;
-  display: flex; gap: 1.5rem; font-size: .84rem;
+  display: flex; gap: 1.35rem; font-size: .8rem;
 }
 .site-index a { padding: .5rem 0; color: var(--muted); }
 .site-index a[aria-current] { color: var(--text); text-decoration: underline; text-underline-offset: .35em; text-decoration-thickness: 1px; }
@@ -42,57 +42,75 @@ button { padding: .2rem 0; border: 0; font: inherit; color: inherit; background:
 .hero-title { margin: 1.6rem 0 0; font-size: 1rem; }
 .hero-links { display: flex; gap: 1.35rem; margin-top: 1.8rem; font-size: .9rem; color: var(--muted); }
 .hero-links a { padding: .3rem 0; }
-.section-heading { margin: 0 0 1.8rem; color: var(--muted); font-size: .84rem; font-weight: 400; }
+.section-heading { margin: 0 0 .5rem; color: var(--muted); font-size: .84rem; font-weight: 400; }
+.section-description { margin: 0 0 1.7rem; color: #7b7870; font-size: .83rem; line-height: 1.6; }
+.hero .section-description { margin: .9rem 0 0; max-width: 25rem; }
+.coming-soon { margin: 0; font-size: 1.1rem; }
 .entry + .entry { margin-top: 1.6rem; }
 .entry-title { margin: 0; font-size: 1.1rem; line-height: 1.4; font-weight: 400; }
 .entry p { margin: .3rem 0 0; font-size: .92rem; }
 .entry-heading { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: .3rem 1.5rem; margin-bottom: .5rem; }
 .entry-heading .entry-dates { margin: 0; color: var(--muted); font-size: .78rem; white-space: nowrap; font-variant-numeric: tabular-nums; }
 .entry .entry-detail { color: var(--muted); font-size: .88rem; }
+.entry .entry-location { color: var(--muted); font-size: .75rem; }
+.course-list { list-style: none; margin: .5rem 0 0; padding: 0; font-size: .82rem; line-height: 1.8; }
+.course-list span { margin-left: .4rem; color: var(--muted); font-size: .7rem; white-space: nowrap; }
 .entry .entry-fields { margin-top: .6rem; color: var(--muted); font-size: .72rem; line-height: 1.5; }
 .world {
-  position: fixed; top: 21vh; right: 6vw; bottom: 17vh; left: 54%; z-index: 1;
-  overflow: hidden; pointer-events: none; filter: grayscale(1);
+  position: fixed; top: 16vh; right: 2vw; bottom: 10vh; left: 51%; z-index: 1;
+  overflow: hidden; pointer-events: none;
 }
 .world[data-interactive="true"] { pointer-events: auto; cursor: grab; touch-action: pinch-zoom; user-select: none; -webkit-user-select: none; }
 .world[data-dragging="true"] { cursor: grabbing; }
-.world:focus-visible { outline: 1px solid var(--muted); outline-offset: -6px; }
+.world:focus, .world:focus-visible { outline: none; }
 .world canvas, #sculpture-poster { position: absolute; inset: 0; display: block; width: 100%; height: 100%; pointer-events: none; }
-.world canvas { opacity: 0; filter: brightness(.48) !important; }
-#sculpture-poster { object-fit: contain; filter: brightness(.48); }
+.world canvas { opacity: 0; }
+#sculpture-poster { object-fit: contain; }
 [data-experience-state="ready"] .world canvas { opacity: 1; }
 [data-experience-state="ready"] #sculpture-poster { opacity: 0; }
 .rotation-hint { position: absolute; bottom: 0; left: 0; right: 0; margin: 0; text-align: center; font-size: .7rem; color: var(--muted); pointer-events: none; }
+.world:focus-visible .rotation-hint { color: var(--text); }
 .world:focus-visible .rotation-hint::after { content: " · Arrow keys · Home to reset"; }
 /* Keep the publishing source intact while presenting only the book links. */
-.notes-summary, .notes-category, .notes-institution, .note-format, .note-byline, .note-progress { display: none; }
+.notes-summary, .notes-category, .notes-institution, .note-format, .note-progress { display: none; }
+.note-byline { display: block; margin: .05rem 0 0; color: var(--muted); font-size: .78rem; }
 .notes-list { list-style: none; margin: 0; padding: 0; }
 .note + .note { margin-top: 1rem; }
 .note-link { display: inline-block; padding: .2rem 0; font-size: 1.1rem; }
 .notes-empty { font-size: 1rem; }
 @media (max-width: 1100px) and (min-width: 800px) {
   :root { --content-left: 3rem; --reading-width: 43vw; }
-  .world { left: 54%; right: 2vw; }
+  .world { left: 52%; right: 1vw; }
 }
 @media (max-width: 799px) {
-  :root { --content-left: 1.25rem; --reading-top: 16vh; --reading-width: calc(100vw - 2.5rem); }
+  :root { --content-left: 1.25rem; --reading-top: max(7rem, 16vh); --reading-width: calc(100vw - 2.5rem); }
   html { font-size: 16px; }
-  .site-index { top: max(1rem, env(safe-area-inset-top)); gap: .9rem; font-size: .78rem; }
+  .site-index { top: max(1rem, env(safe-area-inset-top)); right: 1.25rem; flex-wrap: wrap; gap: 0 1rem; font-size: .72rem; }
   .hero-name { font-size: 1.8rem; }
   .hero-title { margin-top: 1.3rem; }
   .hero-links { margin-top: 1.2rem; }
-  .section-heading { margin-bottom: 1.2rem; }
+  .section-description { margin-bottom: 1rem; font-size: .78rem; }
+  .scene-page { max-height: calc(66dvh - var(--reading-top) - .5rem); }
   .entry + .entry { margin-top: 1.3rem; }
   .entry-heading { display: block; margin-bottom: .55rem; }
   .entry-heading .entry-dates { margin-top: .3rem; }
-  .world { top: auto; bottom: 1rem; left: 17%; right: 5%; height: 33vh; }
+  .world { top: auto; bottom: .5rem; left: 5%; right: 5%; height: 33vh; }
+  .course-list { font-size: .76rem; line-height: 1.65; }
+  .course-list span { font-size: .65rem; }
   .rotation-hint { display: none; }
   .animation-action { right: 1rem; bottom: .3rem; }
 }
 @media (max-width: 799px) and (max-height: 650px) {
-  :root { --reading-top: 5.5rem; }
-  .world { height: 27vh; bottom: .5rem; }
+  :root { --reading-top: 6.5rem; }
+  .world { height: 30vh; bottom: .5rem; }
   body[data-page="projects"] .world { height: 20vh; }
+  body[data-page="projects"] .scene-page { max-height: calc(78dvh - var(--reading-top) - 1rem); }
+}
+@media (max-width: 380px) and (max-height: 650px) {
+  #personal-projects .entry-title { font-size: .96rem; line-height: 1.3; }
+  #personal-projects .entry-detail { font-size: .78rem; line-height: 1.45; }
+  #personal-projects .entry-fields { font-size: .63rem; line-height: 1.3; }
+  #personal-projects .entry + .entry { margin-top: .85rem; }
 }
 @media (max-height: 460px) {
   :root { --reading-top: 5rem; --reading-width: 47vw; }

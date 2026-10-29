@@ -1,11 +1,10 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import fs from "node:fs/promises";
-import { correspond, bake } from "../../tools/black-geometry/sculptures.js";
+import { correspond, bake, sculptureOutputs } from "../../tools/black-geometry/sculptures.js";
 import { createSurface, createCongestion, SURFACE_INFO, CONGESTION_INFO } from "../../src/black-geometry/sculptures/projects.js";
 
-test("prepared packet retains the two mathematical sculptures alongside procedural cosmic scenes", async () => {
-  const data=await fs.readFile(new URL("../../assets/black-geometry/generated/sculpture-data.bin",import.meta.url));
+test("retained mathematical factories can still produce their validated archival packet", async () => {
+  const data=(await sculptureOutputs()).binary;
   const length=data.readUInt32LE(0), manifest=JSON.parse(data.subarray(4,length+4)), offset=length+4;
   assert.deepEqual(manifest.models.map(m=>m.name),["hero","notes"]);
   assert.equal(data.length,offset+manifest.models.length*manifest.count*manifest.stride);

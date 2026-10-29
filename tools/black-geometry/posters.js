@@ -43,7 +43,7 @@ export function sculpturePoster(model,{shortcut="open"}={}) {
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" fill="none" aria-hidden="true"><defs><filter id="glow" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="4"/></filter></defs><use href="#surface" filter="url(#glow)" opacity=".42"/><g opacity="${sculptureOpacity(model.name)}">${body}</g></svg>\n`;
 }
 
-export function posterOutputs(models) {
+export function posterOutputs(models = []) {
   const files=new Map(models.map(model=>[`sculpture-${model.name}.svg`,sculpturePoster(model)]));
   for (const name of COSMIC_TARGETS) {
     const scene = createCosmos(name);

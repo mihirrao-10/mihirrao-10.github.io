@@ -16,7 +16,7 @@ export const SCULPTURE_PALETTES = Object.freeze({
   congestion: ["#ae1425", "#f13b30", "#ff6729", "#ffb24b"],
   notes: ["#e8e2f7", "#ddeef9", "#ffe4d4", "#fafaff"],
 });
-export const SCULPTURE_STYLE = Object.freeze({ scale: .84, opacity: .88 });
+export const SCULPTURE_STYLE = Object.freeze({ scale: .96, opacity: .88 });
 export const sculptureOpacity = name => name === 'hero' ? .30 : name === 'notes' || COSMIC_TARGETS.includes(name) ? .32 : SCULPTURE_STYLE.opacity;
 
 /** Smooth coincident corners without rounding genuine creases or changing data positions. */
@@ -78,119 +78,6 @@ export function fitSurfaceDistance(bounds, cameraSpaceRotation, aspect, margin =
   return Math.max(4,distance*margin);
 }
 
-const VERTEX = `
-attribute vec3 surfaceColor;
-attribute vec3 barycentric;
-attribute float facetSeed;
-varying vec3 vColor;
-varying vec3 vBarycentric;
-varying float vFacetSeed;
-varying vec3 vViewPosition;
-varying vec3 vNormal;
-varying vec3 vPosition;
-void main(){
-  vColor=surfaceColor;vBarycentric=barycentric;vPosition=position;vFacetSeed=facetSeed;
-  vNormal=normalize(normalMatrix*normal);
-  vec4 viewPosition=modelViewMatrix*vec4(position,1.0);
-  vViewPosition=viewPosition.xyz;gl_Position=projectionMatrix*viewPosition;
-}`;
-// Both passes use exactly the same endpoint mask, including during reversals.
-const DISSOLVE = `
-  float noise=fract(52.9829189*fract(dot(floor(gl_FragCoord.xy),vec2(.06711056,.00583715))));
-  if(endpoint<.5){if(noise<progress)discard;}else{if(noise>=progress)discard;}
-`;
-const DEPTH_FRAGMENT = `
-uniform float progress;
-uniform float endpoint;
-void main(){${DISSOLVE}gl_FragColor=vec4(0.0);}
-`;
-// A Klein bottle has no globally consistent front/back orientation. Depth,
-// rather than face culling, selects the faint contours behind its front sheet.
-const INTERIOR_FRAGMENT = `
-uniform float progress;
-uniform float endpoint;
-varying vec3 vViewPosition;
-varying vec3 vNormal;
-void main(){
-  ${DISSOLVE}
-  float rim=pow(1.0-abs(dot(normalize(vNormal),normalize(-vViewPosition))),4.0);
-  if(rim<.035)discard;
-  gl_FragColor=vec4(.80,.87,1.0,.14*rim);
-  #include <colorspace_fragment>
-}`;
-const FRAGMENT = `
-uniform float progress;
-uniform float endpoint;
-uniform float time;
-uniform float opacity;
-uniform float stardust;
-uniform vec3 palette0;
-uniform vec3 palette1;
-uniform vec3 palette2;
-uniform vec3 palette3;
-varying vec3 vColor;
-varying vec3 vBarycentric;
-varying float vFacetSeed;
-varying vec3 vViewPosition;
-varying vec3 vNormal;
-varying vec3 vPosition;
-void main(){
-  // Derivatives must be evaluated before the per-pixel dissolve discards lanes.
-  vec3 facetNormal=normalize(cross(dFdx(vViewPosition),dFdy(vViewPosition)));
-  vec3 width=max(fwidth(vBarycentric),vec3(.00001));
-  ${DISSOLVE}
-  vec3 view=normalize(-vViewPosition), normal=normalize(vNormal);
-  if(dot(normal,view)<0.0)normal=-normal;
-  if(dot(facetNormal,view)<0.0)facetNormal=-facetNormal;
-  normal=normalize(mix(normal,facetNormal,.55));
-  float phase=dot(vPosition,vec3(.48,.66,.38))+time*.68;
-  float gradient=.5+.5*sin(phase);
-  // Animate within the nearest authored color family. Mixing opposing blue
-  // and orange regions together would turn the membrane into a pastel field.
-  float authoredValue=max(max(vColor.r,vColor.g),vColor.b);
-  vec3 authored=vColor/max(authoredValue,.0001);
-  vec3 lowerCenter=(palette0+palette1)*.5;
-  vec3 upperCenter=(palette2+palette3)*.5;
-  lowerCenter/=max(max(lowerCenter.r,lowerCenter.g),lowerCenter.b);
-  upperCenter/=max(max(upperCenter.r,upperCenter.g),upperCenter.b);
-  float family=step(distance(authored,upperCenter),distance(authored,lowerCenter));
-  vec3 lower=mix(palette0,palette1,gradient);
-  vec3 upper=mix(palette2,palette3,gradient);
-  vec3 animated=mix(lower,upper,family);
-  // Dark eyes, recesses and navy areas retain their authored value as their
-  // hue changes; a bright moving palette must not fill every recess with gold.
-  animated*=authoredValue/max(max(animated.r,animated.g),animated.b);
-  vec3 base=mix(vColor,animated,.24+.04*sin(phase*.71));
-  float key=max(dot(normal,normalize(vec3(-.45,.72,1.0))),0.0);
-  float fill=max(dot(normal,normalize(vec3(.7,-.25,.65))),0.0);
-  float rim=pow(1.0-max(dot(normal,view),0.0),2.2);
-  vec3 light=normalize(vec3(-.5+.18*sin(time*.8),.7,1.0));
-  float specular=pow(max(dot(normal,normalize(light+view)),0.0),110.0);
-  float shimmer=pow(.5+.5*sin(phase*2.1+time*.9),10.0);
-  float facetLight=.76+.28*vFacetSeed+.09*sin(phase*1.8+vFacetSeed*6.283);
-  vec3 face=base*(.38+.76*key+.12*fill)*facetLight+vec3(.88,.94,1.0)*specular*.30;
-  face+=base*(rim*.30+shimmer*.10);
-  vec3 lines=smoothstep(vec3(0.0),width*.72,vBarycentric);
-  float edge=1.0-min(min(lines.x,lines.y),lines.z);
-  float trianglePixels=1.0/max(max(width.x,width.y),width.z);
-  // Fine luminous edges reveal the real tessellation; individually lit facets
-  // read as a crystalline mesh, while subpixel triangles stay antialiased.
-  edge*=smoothstep(.8,4.0,trianglePixels);
-  vec3 thread=base*1.85+vec3(.025,.035,.05);
-  face=mix(face,thread,edge*.66);
-  float spark=pow(max(vBarycentric.x,max(vBarycentric.y,vBarycentric.z)),35.0);
-  face+=mix(base,vec3(.8,.9,1.0),.28)*spark*shimmer*.48;
-  // Sparse pearl glints ride actual facets rather than filling the bottle
-  // with an unrelated particle cloud. Most of the surface stays softly lit.
-  float twinkle=pow(.5+.5*sin(time*1.35+vFacetSeed*91.7),24.0);
-  float star=step(.975,vFacetSeed)*twinkle;
-  face+=mix(vec3(.86,.91,1.0),vec3(1.0,.92,.85),vFacetSeed)*stardust*star*(.22+spark*1.65);
-  gl_FragColor=vec4(face,mix(opacity+stardust*rim*.12,min(.98,opacity+.18+stardust*.18),edge));
-  #include <colorspace_fragment>
-}`;
-// TubeGeometry normally redistributes samples by arc length. These paths are
-// prepared polylines: preserving their parameterization keeps every original
-// vertex, the reveal length and the animated marker in agreement.
 export class PreparedPath extends THREE.Curve {
   constructor(points) { super(); this.points=points; this.count=points.length/3; }
   getPoint(t,target=new THREE.Vector3()) {
@@ -201,251 +88,110 @@ export class PreparedPath extends THREE.Curve {
   getTangentAt(t,target) { return this.getTangent(t,target); }
 }
 
-async function loadSculptures() {
-  const compressed = typeof DecompressionStream === "function";
-  // Geometry changes independently of runtime code. Version its URL so returning
-  // visitors cannot pair a fresh renderer with a cached, older sculpture packet.
-  const version = typeof __SCULPTURE_DATA_VERSION__ === 'string' ? __SCULPTURE_DATA_VERSION__ : 'source';
-  const url = new URL(compressed ? './sculpture-data.bin.gz' : './sculpture-data.bin', import.meta.url);
-  url.searchParams.set('v', version);
-  const response = await fetch(url);
-  if (!response.ok) throw new Error("The sculpture asset could not be loaded");
-  const received = await response.arrayBuffer();
-  const signature = new Uint8Array(received,0,Math.min(2,received.byteLength));
-  // Static hosts may either serve .gz verbatim or transparently decode it.
-  const data = compressed && signature[0]===31 && signature[1]===139
-    ? await new Response(new Blob([received]).stream().pipeThrough(new DecompressionStream("gzip"))).arrayBuffer()
-    : received;
-  const view = new DataView(data);
-  const size = view.getUint32(0,true);
-  const manifest = JSON.parse(new TextDecoder().decode(new Uint8Array(data,4,size)));
-  if(manifest.version !== 2 || manifest.stride !== 39) throw new Error("Unsupported sculpture data");
-  return {data,view,manifest,offset:4+size};
-}
 
-
-/** Mildly translucent, tessellated surfaces with a shared nearest-surface depth pass. */
-export async function createWorld({container,quality="high",onFailure}) {
-  const packed=await loadSculptures();
-  const renderer=new THREE.WebGLRenderer({alpha:true,antialias:true,powerPreference:"high-performance"});
-  renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.setClearColor(0x080808,0);
-  const canvas=renderer.domElement;canvas.setAttribute("aria-hidden","true");container.append(canvas);
-  let disposed=false,shaderFailed=false,frames=0,currentQuality=quality,pair="",currentName="hero",nextName="hero",blend=0,gradientTime=0;
-  renderer.debug.onShaderError=()=>{shaderFailed=true;};
-  const contextLost=event=>{event.preventDefault();onFailure(new Error("WebGL context lost"));};canvas.addEventListener("webglcontextlost",contextLost);
-  const scene=new THREE.Scene(),pivot=new THREE.Group();scene.add(pivot);
-  const camera=new THREE.PerspectiveCamera(35,1,.1,60),entryCamera=new THREE.PerspectiveCamera(),dragQuaternion=new THREE.Quaternion(),inverseView=new THREE.Quaternion(),fitRotation=new THREE.Quaternion();
-  let orbitClock=0,entranceProgress=1,entranceScale=1;
-  let userRotation=[0,0],userOrientation=[0,0,0,1],dragging=false;
-  const count=packed.manifest.count,bary=new Float32Array(count*9),facetSeeds=new Float32Array(count*3),decoded=new Map();
-  for(let i=0;i<count;i++){
-    bary[i*9]=1;bary[i*9+4]=1;bary[i*9+8]=1;
-    let seed=Math.imul(i^0x9e3779b9,0x85ebca6b);seed=Math.imul(seed^(seed>>>13),0xc2b2ae35);seed^=seed>>>16;
-    facetSeeds.fill((seed>>>0)/4294967296,i*3,i*3+3);
-  }
-  const baryAttribute=new THREE.BufferAttribute(bary,3),seedAttribute=new THREE.BufferAttribute(facetSeeds,1);
-  const makeMaterial=endpoint=>new THREE.ShaderMaterial({
-    vertexShader:VERTEX,fragmentShader:FRAGMENT,side:THREE.DoubleSide,transparent:true,depthWrite:false,forceSinglePass:true,
-    uniforms:{progress:{value:0},endpoint:{value:endpoint},time:{value:0},opacity:{value:SCULPTURE_STYLE.opacity},stardust:{value:0},...Object.fromEntries([0,1,2,3].map(i=>[`palette${i}`,{value:new THREE.Color()}]))},
-  });
-  const emptyGeometry=new THREE.BufferGeometry();
-  const meshes=[0,1].map(endpoint=>{const mesh=new THREE.Mesh(emptyGeometry,makeMaterial(endpoint));mesh.frustumCulled=false;mesh.renderOrder=1;pivot.add(mesh);return mesh;});
-  const depthMeshes=meshes.map(mesh=>{
-    const material=new THREE.ShaderMaterial({vertexShader:VERTEX,fragmentShader:DEPTH_FRAGMENT,uniforms:mesh.material.uniforms,
-      side:THREE.DoubleSide,colorWrite:false,depthWrite:true,transparent:false,forceSinglePass:true});
-    const depth=new THREE.Mesh(emptyGeometry,material);depth.frustumCulled=false;pivot.add(depth);return depth;
-  });
-  const interiorMeshes=meshes.map(mesh=>{
-    const material=new THREE.ShaderMaterial({vertexShader:VERTEX,fragmentShader:INTERIOR_FRAGMENT,uniforms:mesh.material.uniforms,
-      side:THREE.DoubleSide,transparent:true,depthTest:true,depthFunc:THREE.GreaterDepth,depthWrite:false,forceSinglePass:true});
-    const interior=new THREE.Mesh(emptyGeometry,material);interior.frustumCulled=false;interior.renderOrder=0;interior.visible=false;pivot.add(interior);return interior;
-  });
-  const cosmic = new Map(COSMIC_TARGETS.map(name => {
-    const cosmos = createCosmos(name);
-    cosmos.root.visible = false; pivot.add(cosmos.root);
-    return [name, { name, cosmos, bounds: cosmos.bounds, finite: true, orbitStart: 0, orientation: [0,0,0,1] }];
+/** All pages share one renderer and keep their prepared cosmic buffers resident. */
+export async function createWorld({container,quality='high',onFailure}) {
+  const renderer=new THREE.WebGLRenderer({alpha:true,antialias:true,powerPreference:'high-performance'});
+  renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.setClearColor(0xf5f2eb,0);
+  const canvas=renderer.domElement;canvas.setAttribute('aria-hidden','true');container.append(canvas);
+  const scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(35,1,.1,60);
+  const viewCamera=new THREE.PerspectiveCamera(),rotation=new THREE.Quaternion(),drag=new THREE.Quaternion(),inverseView=new THREE.Quaternion();
+  const models=new Map(COSMIC_TARGETS.map(name=>{
+    const cosmos=createCosmos(name);cosmos.root.visible=false;scene.add(cosmos.root);
+    return [name,{name,cosmos,orbitStart:0,orientation:[0,0,0,1]}];
   }));
-  let finiteActiveBuffers=true;
-  function decode(name){
-    if(cosmic.has(name))return cosmic.get(name);
-    if(decoded.has(name))return decoded.get(name);
-    const modelIndex=packed.manifest.models.findIndex(m=>m.name===name);
-    if(modelIndex<0)throw new Error(`Unknown sculpture ${name}`);
-    const position=new Float32Array(count*9),color=new Uint8Array(count*9),normal=new Int16Array(count*9),stride=packed.manifest.stride,offset=packed.offset+modelIndex*count*stride;
-    for(let i=0;i<count;i++){
-      const at=offset+i*stride;
-      for(let j=0;j<9;j++){position[i*9+j]=packed.view.getInt16(at+j*2,true)/4096;normal[i*9+j]=packed.view.getInt16(at+21+j*2,true);}
-      for(let k=0;k<3;k++)for(let j=0;j<3;j++)color[i*9+j*3+k]=packed.view.getUint8(at+18+k);
-    }
-    const bounds=packed.manifest.models[modelIndex].fitBounds,geometry=new THREE.BufferGeometry();
-    geometry.setAttribute('position',new THREE.BufferAttribute(position,3));
-    // Preserve the packet's exact quantized values with normalized GPU inputs;
-    // share topology attributes across all retained geometries.
-    geometry.setAttribute('normal',new THREE.BufferAttribute(normal,3,true));
-    geometry.setAttribute('surfaceColor',new THREE.BufferAttribute(color,3,true));
-    geometry.setAttribute('barycentric',baryAttribute);
-    geometry.setAttribute('facetSeed',seedAttribute);
-    const finite=position.every(Number.isFinite)&&normal.every(Number.isFinite);
-    const result={name,position,color,normal,bounds,geometry,finite,orbitStart:orbitClock,orientation:[0,0,0,1]};decoded.set(name,result);return result;
-  }
-  let activeModels=[];
-  function updatePair(a,b){
-    const key=`${a}/${b}`;if(key===pair)return;
-    const previousNames=new Set(activeModels.map(model=>model.name));
-    activeModels=[decode(a),decode(b)];
-    for(const model of activeModels)if(!previousNames.has(model.name)){
-      model.orbitStart=orbitClock;model.orientation=[0,0,0,1];
-    }
-    for(let i=0;i<2;i++){
-      // A target owns its geometry across endpoint changes. Both settled
-      // meshes can reference it safely; only one endpoint is visible.
-      if (activeModels[i].geometry) {
-        meshes[i].geometry=activeModels[i].geometry;
-        depthMeshes[i].geometry=activeModels[i].geometry;
-        interiorMeshes[i].geometry=activeModels[i].geometry;
-      }
-      meshes[i].material.uniforms.opacity.value=sculptureOpacity(i?b:a);
-      meshes[i].material.uniforms.stardust.value=(i?b:a)==='notes'?1:0;
-      SCULPTURE_PALETTES[i?b:a].forEach((color,k)=>meshes[i].material.uniforms[`palette${k}`].value.set(color));
-    }
-    finiteActiveBuffers=activeModels.every(model=>model.finite);
-    if(!pair)emptyGeometry.dispose();
-    pair=key;
-  }
-  const routes=[];
-  for(const model of packed.manifest.models)for(const path of model.paths){
-    const points=path.points,count=points.length/3,context=path.kind==="context";
-    const color=context?0xe9d6d5:model.name==="surface"?0xb7fff0:0xffd18a;
-    let line,unitsPerPoint=1;
-    if(model.name==="surface"||model.name==="congestion"){
-      const radius=model.name==="congestion"?.027:.013;
-      line=new THREE.Mesh(new THREE.TubeGeometry(new PreparedPath(points),count-1,radius,8,false),new THREE.MeshBasicMaterial({color,transparent:true,depthWrite:false}));unitsPerPoint=48;
-    }else{
-      const geometry=new THREE.BufferGeometry().setAttribute("position",new THREE.Float32BufferAttribute(points,3));
-      line=new THREE.Line(geometry,new THREE.LineBasicMaterial({color,depthTest:true,transparent:true,depthWrite:false}));
-    }
-    line.renderOrder=2;line.visible=false;pivot.add(line);routes.push({line,model:model.name,kind:path.kind,count,unitsPerPoint,shown:count});
-  }
-  let width=1,height=1,lastDpr=1,dprCeiling=QUALITY[currentQuality].dpr;
-  let frameSamples=0,frameTotal=0,warmedTargets=0,effectsEnabled=true;
-  const orbitRadius=12;
-  let fitScales=[1,1];
+  let disposed=false,shaderFailed=false,frames=0,warmedTargets=0,currentQuality=quality;
+  let width=1,height=1,lastDpr=devicePixelRatio,dprCeiling=QUALITY[quality].dpr;
+  let orbitClock=0,currentName='hero',nextName='hero',blend=0,activeNames=new Set();
+  let entranceProgress=1,entranceScale=1,fitScales=[],frameSamples=0,frameTotal=0;
+  let userRotation=[0,0],userOrientation=[0,0,0,1],dragging=false;
+  renderer.debug.onShaderError=()=>{shaderFailed=true;};
+  const contextLost=event=>{event.preventDefault();onFailure(new Error('WebGL context lost'));};
+  canvas.addEventListener('webglcontextlost',contextLost);
   function resize(_width,_height,dpr=lastDpr){
     width=Math.max(1,container.clientWidth);height=Math.max(1,container.clientHeight);lastDpr=dpr;
     renderer.setPixelRatio(renderingDpr(width,height,dpr,dprCeiling));renderer.setSize(width,height,false);
-    canvas.style.filter=effectsEnabled?"drop-shadow(0 0 12px rgb(153 190 240 / .46)) drop-shadow(0 0 3px rgb(229 239 255 / .38))":"none";
     camera.aspect=width/height;camera.updateProjectionMatrix();
   }
-  updatePair("hero","hero");resize(0,0,devicePixelRatio);
-  const world = {
-    resize,setQuality(next){currentQuality=next;resize();},
+  const world={
+    resize,setQuality(next){currentQuality=next;dprCeiling=QUALITY[next].dpr;resize();},
     recordFrame(milliseconds){
       if(milliseconds<=0)return;
       frameTotal+=Math.min(milliseconds,250);frameSamples++;
       if(frameSamples<12||frameTotal<1500)return;
-      if(frameTotal/frameSamples>25){
-        // Shed the compositor glow before reducing artwork resolution.
-        if(effectsEnabled){effectsEnabled=false;resize();}
-        else if(renderer.getPixelRatio()>.75){dprCeiling=Math.max(.75,renderer.getPixelRatio()*.8);resize();}
-      }
+      if(frameTotal/frameSamples>25&&renderer.getPixelRatio()>.85){dprCeiling=Math.max(.85,renderer.getPixelRatio()*.85);resize();}
       frameTotal=frameSamples=0;
     },
-    // Geometry stays prepared, but a completed visit resets its orbit and drag.
-    entryOrientation:name=>activeModels.find(model=>model.name===name)?.orientation.slice(),
-    render({state,pose,time,orbitTime=time,pointer=[0,0],project,interaction,interactionTarget=state.nextTarget||state.target,entrance=1}){
+    entryOrientation:name=>activeNames.has(name)?models.get(name)?.orientation.slice():undefined,
+    render({state,time,orbitTime=time,pointer=[0,0],interaction,interactionTarget=state.nextTarget||state.target,entrance=1}){
       if(disposed)return;
-      entranceProgress=THREE.MathUtils.clamp(entrance,0,1);
-      entranceScale=.08+.92*(1-Math.pow(1-entranceProgress,4));
-      orbitClock=orbitTime;
-      currentName=state.target||"hero";nextName=state.nextTarget||currentName;updatePair(currentName,nextName);
-      blend=currentName===nextName?0:THREE.MathUtils.clamp(state.blend,0,1);gradientTime=time;
-      const elevation=pose?.[3]||0,azimuth=pose?.[4]||0;
-      camera.position.set(Math.cos(elevation)*Math.sin(azimuth),Math.sin(elevation),Math.cos(elevation)*Math.cos(azimuth));
-      camera.lookAt(0,0,0);camera.rotateZ(pose?.[5]||0);
+      orbitClock=orbitTime;currentName=state.target||'hero';nextName=state.nextTarget||currentName;
+      blend=currentName===nextName?0:THREE.MathUtils.clamp(state.blend,0,1);
+      entranceProgress=THREE.MathUtils.clamp(entrance,0,1);entranceScale=.08+.92*(1-(1-entranceProgress)**4);
       userRotation=interaction?.rotation||[0,0];userOrientation=interaction?.orientation||[0,0,0,1];dragging=!!interaction?.dragging;
-      // Each endpoint retains its own visit clock and last drag orientation.
-      // The outgoing sculpture keeps moving continuously while the incoming
-      // one opens at its authored view, without a shared-camera reset jump.
-      fitScales=activeModels.map((model,index)=>{
-        if(model.name===interactionTarget)model.orientation=[...userOrientation];
-        const localPose=cameraPose({target:model.name,nextTarget:model.name,blend:0},{time:Math.max(0,orbitClock-model.orbitStart),pointer});
-        const elevation=localPose[3],azimuth=localPose[4];
-        entryCamera.position.set(Math.cos(elevation)*Math.sin(azimuth),Math.sin(elevation),Math.cos(elevation)*Math.cos(azimuth));
-        entryCamera.lookAt(0,0,0);entryCamera.rotateZ(localPose[5]);
-        dragQuaternion.fromArray(model.orientation).normalize();inverseView.copy(entryCamera.quaternion).invert();
-        fitRotation.copy(dragQuaternion).multiply(inverseView);
-        meshes[index].quaternion.copy(camera.quaternion).multiply(fitRotation);
-        depthMeshes[index].quaternion.copy(meshes[index].quaternion);
-        interiorMeshes[index].quaternion.copy(meshes[index].quaternion);
-        // Lower the Klein bottle a little in screen space without moving the
-        // outgoing sculpture or the fixed mobile artwork/reading boundary.
-        const lowerBy=model.name==='notes'?.025*2*orbitRadius*Math.tan(THREE.MathUtils.degToRad(camera.fov/2)):0;
-        meshes[index].position.set(0,-lowerBy,0).applyQuaternion(camera.quaternion);
-        depthMeshes[index].position.copy(meshes[index].position);
-        interiorMeshes[index].position.copy(meshes[index].position);
-        return entranceScale*SCULPTURE_STYLE.scale*orbitRadius/fitSurfaceDistance(model.bounds,fitRotation,camera.aspect);
-      });
-      meshes.forEach((mesh,index)=>{mesh.scale.setScalar(fitScales[index]);depthMeshes[index].scale.copy(mesh.scale);interiorMeshes[index].scale.copy(mesh.scale);});
-      camera.position.multiplyScalar(orbitRadius);
-      meshes[0].visible=blend<1&&!activeModels[0].cosmos;
-      meshes[1].visible=currentName!==nextName&&blend>0&&!activeModels[1].cosmos;
-      for(const model of cosmic.values())model.cosmos.root.visible=false;
-      activeModels.forEach((model,index)=>{
-        if(!model.cosmos)return;
+      camera.position.set(0,0,12);camera.lookAt(0,0,0);
+      const names=new Set([currentName,nextName]);
+      for(const name of names){
+        if(!models.has(name))throw new Error(`Unknown cosmic scene: ${name}`);
+        if(!activeNames.has(name)){const model=models.get(name);model.orbitStart=orbitClock;model.orientation=[0,0,0,1];}
+      }
+      activeNames=names;fitScales=[];
+      for(const model of models.values())model.cosmos.root.visible=false;
+      [currentName,nextName].forEach((name,index)=>{
         const presence=index===0?1-blend:currentName!==nextName?blend:0;
         if(presence<=0)return;
-        const root=model.cosmos.root;
-        root.visible=true;root.quaternion.copy(meshes[index].quaternion);root.scale.setScalar(fitScales[index]);
-        model.cosmos.update(Math.max(0,orbitClock-model.orbitStart),presence,renderer.getPixelRatio());
+        const model=models.get(name),age=Math.max(0,orbitClock-model.orbitStart);
+        if(name===interactionTarget)model.orientation=[...userOrientation];
+        const pose=cameraPose({target:name,nextTarget:name,blend:0},{time:age,pointer});
+        viewCamera.position.set(Math.cos(pose[3])*Math.sin(pose[4]),Math.sin(pose[3]),Math.cos(pose[3])*Math.cos(pose[4]));
+        viewCamera.lookAt(0,0,0);viewCamera.rotateZ(pose[5]);
+        drag.fromArray(model.orientation).normalize();rotation.copy(drag).multiply(inverseView.copy(viewCamera.quaternion).invert());
+        const scale=entranceScale*SCULPTURE_STYLE.scale*12/fitSurfaceDistance(model.cosmos.bounds,rotation,camera.aspect);
+        const root=model.cosmos.root;root.visible=true;root.quaternion.copy(rotation);root.scale.setScalar(scale);fitScales.push(scale);
+        model.cosmos.update(age,presence,renderer.getPixelRatio());
       });
-      depthMeshes.forEach((mesh,index)=>{mesh.visible=meshes[index].visible;});
-      interiorMeshes.forEach((mesh,index)=>{mesh.visible=activeModels[index].name==='notes'&&meshes[index].visible;});
-      for(const mesh of meshes){mesh.material.uniforms.progress.value=blend;mesh.material.uniforms.time.value=time;}
-      for(const route of routes){
-        const presence=currentName===route.model?1-blend:nextName===route.model?blend:0;
-        // Prepared route and host sculpture share the same presentation scale.
-        route.line.scale.setScalar(currentName===route.model?fitScales[0]:fitScales[1]);
-        route.line.quaternion.copy(meshes[currentName===route.model?0:1].quaternion);
-        route.line.material.opacity=presence*(route.kind==="context"?.38:1);
-        route.line.visible=presence>.001&&(route.kind==="route"||route.kind===project.shortcut||route.kind==="boundary"||route.kind==="context");
-        route.shown=Math.max(2,Math.floor(route.count*(route.model==="surface"?project.path:1)));
-        route.line.geometry.setDrawRange(0,route.unitsPerPoint===1?route.shown:(route.shown-1)*route.unitsPerPoint);
-      }
-      // Prepare the hidden-contour shader during the existing loading screen,
-      // so its first appearance in Notes does not interrupt a section change.
-      renderer.render(scene,camera);if(shaderFailed)throw new Error("Sculpture shader initialization failed");frames++;
+      renderer.render(scene,camera);if(shaderFailed)throw new Error('Cosmic shader initialization failed');frames++;
     },
-    snapshot:()=>({frames,warmedTargets,drawCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles,quality:currentQuality,dpr:renderer.getPixelRatio(),geometries:renderer.info.memory.geometries,contextLost:renderer.getContext().isContextLost(),target:currentName,nextTarget:nextName,blend,opacity:meshes[0].material.uniforms.opacity.value,opaque:meshes.every(mesh=>!mesh.material.transparent),depthPrepass:!activeModels.some(model=>model.cosmos)&&depthMeshes.every((depth,i)=>depth.geometry===meshes[i].geometry&&depth.material.uniforms===meshes[i].material.uniforms&&depth.material.depthWrite&&!depth.material.colorWrite&&depth.visible===meshes[i].visible&&depth.scale.equals(meshes[i].scale)&&depth.quaternion.equals(meshes[i].quaternion)&&depth.position.equals(meshes[i].position)),presentationScale:SCULPTURE_STYLE.scale,entranceProgress,entranceScale,gradientTime,orbitAges:activeModels.map(model=>Math.max(0,orbitClock-model.orbitStart)),endpointOpacities:meshes.map(mesh=>mesh.material.uniforms.opacity.value),activeMeshes:meshes.filter(m=>m.visible).length,activeDepthMeshes:depthMeshes.filter(m=>m.visible).length,activeInteriorMeshes:interiorMeshes.filter(m=>m.visible).length,interiorTargets:interiorMeshes.flatMap((mesh,i)=>mesh.visible?[activeModels[i].name]:[]),interiorContoursAligned:interiorMeshes.every((mesh,i)=>mesh.geometry===meshes[i].geometry&&mesh.material.uniforms===meshes[i].material.uniforms&&mesh.material.depthFunc===THREE.GreaterDepth&&!mesh.material.depthWrite&&mesh.scale.equals(meshes[i].scale)&&mesh.quaternion.equals(meshes[i].quaternion)&&mesh.position.equals(meshes[i].position)&&mesh.visible===(activeModels[i].name==='notes'&&meshes[i].visible)),shading:"tessellated",camera:camera.position.toArray(),cameraOrientation:camera.quaternion.toArray(),rotation:[...userRotation],userOrientation:[...userOrientation],orientation:meshes[0].quaternion.toArray(),dragging,facets:count,decodedTargets:decoded.size+cosmic.size,packedTargets:decoded.size,cosmicTargets:COSMIC_TARGETS.filter(name=>cosmic.get(name).cosmos.root.visible),cosmicAges:Object.fromEntries([...cosmic].map(([name,model])=>[name,model.cosmos.uniforms.time.value])),transparentCosmos:[...cosmic.values()].every(model=>[...model.cosmos.materials].every(material=>material.transparent&&!material.depthWrite&&!material.depthTest)),finiteActiveBuffers,visibleRoutes:routes.filter(r=>r.line.visible).map(r=>r.kind),activePathPoints:routes.filter(r=>r.line.visible).map(r=>r.shown),width,height,orbitRadius,fitScales:[...fitScales]}),
-    dispose(){if(disposed)return;disposed=true;canvas.removeEventListener("webglcontextlost",contextLost);[...meshes,...depthMeshes,...interiorMeshes].forEach(mesh=>mesh.material.dispose());for(const model of decoded.values())model.geometry.dispose();routes.forEach(({line})=>{line.geometry.dispose();line.material.dispose();});decoded.clear();for(const model of cosmic.values())model.cosmos.dispose();cosmic.clear();renderer.dispose();canvas.remove();},
+    snapshot:()=>({
+      frames,warmedTargets,drawCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles,
+      quality:currentQuality,dpr:renderer.getPixelRatio(),geometries:renderer.info.memory.geometries,
+      contextLost:renderer.getContext().isContextLost(),target:currentName,nextTarget:nextName,blend,
+      depthPrepass:false,activeInteriorMeshes:0,decodedTargets:models.size,packedTargets:0,
+      cosmicTargets:COSMIC_TARGETS.filter(name=>models.get(name).cosmos.root.visible),
+      cosmicAges:Object.fromEntries([...models].map(([name,model])=>[name,model.cosmos.uniforms.time.value])),
+      transparentCosmos:[...models.values()].every(model=>[...model.cosmos.materials].every(m=>m.transparent&&!m.depthWrite&&!m.depthTest)),
+      finiteActiveBuffers:true,presentationScale:SCULPTURE_STYLE.scale,entranceProgress,entranceScale,
+      orbitAges:[...activeNames].map(name=>Math.max(0,orbitClock-models.get(name).orbitStart)),
+      camera:camera.position.toArray(),cameraOrientation:camera.quaternion.toArray(),
+      rotation:[...userRotation],userOrientation:[...userOrientation],orientation:models.get(currentName).cosmos.root.quaternion.toArray(),
+      dragging,width,height,orbitRadius:12,fitScales,
+    }),
+    dispose(){
+      if(disposed)return;disposed=true;canvas.removeEventListener('webglcontextlost',contextLost);
+      for(const model of models.values())model.cosmos.dispose();models.clear();renderer.dispose();canvas.remove();
+    },
   };
-  try {
-    // Compile every material, decode every sculpture and upload every buffer
-    // while the loader covers the page. Yield between targets to keep it alive.
+  resize();
+  try{
     await renderer.compileAsync(scene,camera);
-    for(const name of [...packed.manifest.models.map(model=>model.name),...COSMIC_TARGETS]){
+    for(const name of COSMIC_TARGETS){
       if(disposed||renderer.getContext().isContextLost())throw new Error('Graphics preparation interrupted');
-      world.render({state:{target:name,nextTarget:name,blend:0},time:0,project:{shortcut:'open',path:1}});
-      warmedTargets++;
+      world.render({state:{target:name,nextTarget:name,blend:0},time:0});warmedTargets++;
       await new Promise(resolve=>setTimeout(resolve,0));
     }
-    world.render({state:{target:'hero',nextTarget:'hero',blend:0},time:0,entrance:0,project:{shortcut:'open',path:1}});
-    // GPU submission is asynchronous: wait for the actual warm-up work before
-    // reporting readiness, including on integrated Windows laptop graphics.
+    world.render({state:{target:'hero',nextTarget:'hero',blend:0},time:0,entrance:0});
     const gl=renderer.getContext(),fence=gl.fenceSync(gl.SYNC_GPU_COMMANDS_COMPLETE,0);
     if(!fence)throw new Error('Graphics preparation could not be synchronized');
     gl.flush();
-    try {
-      await new Promise((resolve,reject)=>{
-        const poll=()=>{
-          if(disposed||gl.isContextLost()){reject(new Error('Graphics context lost during preparation'));return;}
-          const status=gl.clientWaitSync(fence,0,0);
-          if(status===gl.WAIT_FAILED)reject(new Error('Graphics preparation failed'));
-          else if(status===gl.TIMEOUT_EXPIRED)setTimeout(poll,16);
-          else resolve();
-        };poll();
-      });
-    } finally {gl.deleteSync(fence);}
-    frames=0;
+    try{await new Promise((resolve,reject)=>{
+      const poll=()=>{
+        if(disposed||gl.isContextLost()){reject(new Error('Graphics context lost during preparation'));return;}
+        const status=gl.clientWaitSync(fence,0,0);
+        if(status===gl.WAIT_FAILED)reject(new Error('Graphics preparation failed'));
+        else if(status===gl.TIMEOUT_EXPIRED)setTimeout(poll,16);
+        else resolve();
+      };poll();
+    });}finally{gl.deleteSync(fence);}
     return world;
-  } catch(error){world.dispose();throw error;}
+  }catch(error){world.dispose();throw error;}
 }

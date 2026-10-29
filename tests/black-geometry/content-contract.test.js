@@ -13,15 +13,15 @@ test('concise content matches the authorized revision and retains its destinatio
   assert.deepEqual(contentContract(html), baseline);
 });
 
-test('the five main links reach one complete page each, without secondary controls', async () => {
+test('the seven main links reach one complete page each, without secondary controls', async () => {
   const doc = await document();
   const scenes = all(doc, node => attr(node, 'data-scene'));
-  assert.deepEqual(scenes.map(node => attr(node, 'id')), ['top', 'education', 'experience', 'personal-projects', 'notes']);
+  assert.deepEqual(scenes.map(node => attr(node, 'id')), ['top', 'education', 'experience', 'publications', 'teaching', 'personal-projects', 'notes']);
   const index = all(doc, node => hasClass(node, 'site-index'))[0];
   const links = all(index, node => node.tagName === 'a');
-  assert.deepEqual(links.map(node => normalize(text(node))), ['About', 'Education', 'Experience', 'Projects', 'Notes']);
+  assert.deepEqual(links.map(node => normalize(text(node))), ['About', 'Education', 'Industry experience', 'Publications', 'Teaching', 'Projects', 'Personal notes']);
   assert.deepEqual(links.map(node => attr(node, 'href')), scenes.map(node => `#${attr(node, 'id')}`));
-  assert.equal(new Set(scenes.map(node => attr(node, 'data-target'))).size, 5);
+  assert.equal(new Set(scenes.map(node => attr(node, 'data-target'))).size, 7);
   assert.equal(links.filter(node => attr(node, 'aria-current') === 'page').length, 1);
   assert.equal(all(doc, node => ['page-index', 'detail-pagination', 'education-pagination', 'scene-next'].some(name => hasClass(node, name))).length, 0);
   for (const id of ['education', 'experience', 'personal-projects']) {
@@ -77,5 +77,17 @@ test('education and employment use separate month ranges and the requested teams
   assert.doesNotMatch(text(education), /Foundations|specialization/i);
   const experience = all(doc, node => attr(node, 'id') === 'experience')[0];
   assert.deepEqual(all(experience, node => hasClass(node, 'entry-detail')).map(node => normalize(text(node))),
-    ['MATLAB Data Analysis', 'Investment Process Engineering']);
+    ['MATLAB Data Analysis team', 'Investment Process Engineering team']);
+});
+
+test('new sections include publication status, teaching courses, locations, and book subtitles', async () => {
+  const doc = await document();
+  const publication = all(doc, node => attr(node, 'id') === 'publications')[0];
+  assert.match(text(publication), /Coming soon\.\.\./);
+  assert.equal(all(doc, node => hasClass(node, 'entry-location')).length, 4);
+  const teaching = all(doc, node => attr(node, 'id') === 'teaching')[0];
+  assert.equal(all(teaching, node => node.tagName === 'li').length, 7);
+  assert.equal(all(doc, node => hasClass(node, 'section-description')).length, 7);
+  for (const note of all(doc, node => hasClass(node, 'note')))
+    assert.ok(normalize(text(all(note, node => hasClass(node, 'note-byline'))[0])).length > 10);
 });
