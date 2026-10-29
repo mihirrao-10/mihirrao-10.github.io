@@ -72,21 +72,26 @@ Earth and Moon (About), Saturn (Education), the Sun (Industry experience),
 the solar system (Publications), a quasar / black hole (Teaching), the Whirlpool
 galaxy (Projects), and the Abell 1689 galaxy cluster (Personal notes). Distances
 and presentation sizes are compressed for the page. Dense indexed meshes,
-atmospheres, ring grains, coronal loop bundles, and image-sampled star fields
+atmospheres, coronal loop bundles, and image-sampled stellar volumes
 stay resident on the GPU. Surface rotation, differential orbital flow, changing
-plasma, and gentle depth parallax animate without rebuilding geometry. Planetary
+plasma, and continuous volume rotation animate without rebuilding geometry. Planetary
 surfaces write depth so rings and moons have coherent occlusion.
 
 The quasar integrates bent viewing rays through a turbulent accretion disk,
 inspired by Gargantua in *Interstellar*. It is an authored approximation, not a
-Kerr geodesic solver. Mipmapped optical-depth profiles replace periodic ring
-patterns; screen-footprint filtering limits shimmer in the accretion disk.
+Kerr geodesic solver. Saturn uses broad, analytically filtered optical-depth
+bands and a soft planetary shadow. Its rings contain no moving grain overlay.
+The accretion disk integrates a finite vertical density profile along each ray
+segment, with filtered Cartesian turbulence instead of radial filaments.
 NASA and Hubble images supply Earth and lunar surfaces, Saturn's latitude bands,
-solar active regions, and the spatial structure of both extragalactic fields.
+solar active regions, and the structure of the extragalactic scenes. The galaxy
+has 226,000 orbiting stellar/cloud points, a thick disk, and rounded bulges. The
+cluster contains 76 independently oriented galaxies distributed through a volume,
+with 120,000 orbiting points. Neither scene contains a photographic display plane.
 Darkness represents brightness in the grayscale artwork. Credits and preparation
 details are in `assets/black-geometry/textures/CREDITS.txt`; the optional authoring
 tool is `tools/black-geometry/prepare-astronomy.py`. Seven content-addressed
-textures, with compressed equivalents, are shared across the scenes. Legacy
+maps, with compressed equivalents, include the retained ring authoring profile. Legacy
 factories remain tested in source, outside the active homepage build.
 
 Static posters embed deterministic software-rendered PNGs in SVG wrappers, using

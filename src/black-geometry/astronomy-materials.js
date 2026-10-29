@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { RING_PROFILE_GLSL } from './ring-profile.js';
 
 export const NOISE = `
 float hash(vec3 p){p=fract(p*.3183099+vec3(.13,.27,.41));p*=17.0;return fract(p.x*p.y*p.z*(p.x+p.y+p.z));}
@@ -65,43 +66,33 @@ export function surfaceMaterial(scene,kind=0,map=null,{opacity=1,detail=256,dept
 }
 const RING_FRAGMENT=`
 uniform float time,presence,innerRadius,outerRadius,opacity;
-uniform sampler2D ringProfile;
 varying vec2 vUv;varying vec3 vNormal,vLocal,vView;
-${NOISE}
+${RING_PROFILE_GLSL}
 void main(){
  float r=length(vLocal.xz),u=(r-innerRadius)/(outerRadius-innerRadius);
- float a=atan(vLocal.z,vLocal.x);
- // Mipmapped aperiodic optical depth avoids moving interference fringes.
- float bands=texture2D(ringProfile,vec2(u,.5)).r;
- vec2 flow=vec2(cos(a-time*.055/pow(max(r,1.0),1.5)),sin(a-time*.055/pow(max(r,1.0),1.5)));
- float grain=noise(vec3(flow*r*45.0,r*18.0));
- float fade=smoothstep(0.0,.025,u)*(1.0-smoothstep(.96,1.0,u));
- float density=bands*(.86+.14*grain);
- gl_FragColor=vec4(vec3(.025),density*fade*opacity*presence);
+ float density=ringOpticalDepth(u,fwidth(u));
+ vec3 light=normalize(vec3(-.65,.65,.9));float along=dot(vLocal,light);
+ float distanceToLightRay=length(vLocal-light*along),planetRadius=innerRadius*.82;
+ float shadow=(1.0-smoothstep(planetRadius*.92,planetRadius*1.07,distanceToLightRay))*(1.0-smoothstep(-.1,.1,along));
+ gl_FragColor=vec4(vec3(.025),density*(1.0-shadow*.85)*opacity*presence);
 }`;
-export function ringMaterial(scene,inner,outer,opacity=.9,map=null) {
-  if(!map){
-    const pixels=new Uint8Array(256);
-    for(let i=0;i<256;i++){const u=i/255;pixels[i]=Math.round(180*(1-.95*Math.exp(-(((u-.645)/.015)**4))));}
-    map=new THREE.DataTexture(pixels,256,1,THREE.RedFormat);map.magFilter=THREE.LinearFilter;map.minFilter=THREE.LinearMipmapLinearFilter;map.generateMipmaps=true;map.needsUpdate=true;scene.textures.add(map);
-    map.userData={width:256,height:1,pixels};
-  }
+export function ringMaterial(scene,inner,outer,opacity=.9) {
   const material=new THREE.ShaderMaterial({vertexShader:VERTEX,fragmentShader:RING_FRAGMENT,
     side:THREE.DoubleSide,transparent:true,depthWrite:false,depthTest:true,
-    uniforms:{...scene.uniforms,innerRadius:{value:inner},outerRadius:{value:outer},opacity:{value:opacity},ringProfile:{value:map}}});
+    uniforms:{...scene.uniforms,innerRadius:{value:inner},outerRadius:{value:outer},opacity:{value:opacity}}});
   scene.materials.add(material);return material;
 }
 
-export function fieldMaterial(scene,map,opacity=.7){
+export function volumeMaterial(scene,opacity=.12){
   const material=new THREE.ShaderMaterial({vertexShader:VERTEX,fragmentShader:`
-    uniform sampler2D surfaceMap;uniform float time,presence,opacity;
-    varying vec2 vUv;varying vec3 vLocal;
+    uniform float time,presence,opacity;
+    varying vec3 vNormal,vView,vLocal;
     ${NOISE}
-    void main(){float light=texture2D(surfaceMap,vUv).r;
-      float flow=.94+.06*fbm(vec3(vUv*90.0,time*.04));
-      gl_FragColor=vec4(vec3(.015),pow(light,.85)*opacity*flow*presence);}`,
-    side:THREE.DoubleSide,transparent:true,depthWrite:false,depthTest:true,
-    uniforms:{...scene.uniforms,surfaceMap:{value:map},opacity:{value:opacity}}});
+    void main(){float facing=max(0.0,dot(normalize(vNormal),normalize(vView)));
+      float cloud=.65+.35*fbm(vLocal*16.0+vec3(time*.04,0,0));
+      gl_FragColor=vec4(vec3(.015),pow(facing,1.8)*cloud*opacity*presence);}`,
+    side:THREE.FrontSide,transparent:true,depthWrite:false,depthTest:true,
+    uniforms:{...scene.uniforms,opacity:{value:opacity}}});
   scene.materials.add(material);return material;
 }
 
@@ -118,9 +109,11 @@ export function flareMaterial(scene,phase){
 }
 const POINT_VERTEX=`
 attribute float starSize,strength,phase,rate;
+attribute vec3 orbitCenter,orbitAxis;
 uniform float time,pixelRatio,soft;
 varying float alpha;
-void main(){vec3 p=position;float a=time*rate;p.xz=mat2(cos(a),-sin(a),sin(a),cos(a))*p.xz;
+void main(){vec3 p=position-orbitCenter;float a=time*rate;
+p=p*cos(a)+cross(orbitAxis,p)*sin(a)+orbitAxis*dot(orbitAxis,p)*(1.0-cos(a))+orbitCenter;
 vec4 v=modelViewMatrix*vec4(p,1.0);gl_Position=projectionMatrix*v;
 gl_PointSize=clamp(starSize*pixelRatio*12.0/max(1.0,-v.z),.65,mix(9.0,45.0,soft)*pixelRatio);
 alpha=strength*(.96+.04*sin(time*.35+phase));}`;

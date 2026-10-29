@@ -28,7 +28,7 @@ for (const name of COSMIC_TARGETS) {
 
     });
     assert.ok(triangles > 10000 && triangles < 1000000);
-    assert.ok(['hero', 'teaching'].includes(name) ? particles === 0 : particles > 2000 && particles < 160000);
+    assert.ok(['hero', 'education', 'teaching'].includes(name) ? particles === 0 : particles > 2000 && particles < (name==='projects'?260000:160000));
     const point = new THREE.Vector3();
     const first = [];
     scene.root.traverse(object => { if (object.isMesh) first.push(object.matrixWorld.elements.slice()); });
@@ -73,4 +73,35 @@ test('navigation moves outward in scale and Saturn contains only its ringed plan
     }
     scene.dispose();
   });
+});
+
+for(const name of ['projects','notes'])test(`${name} has a moving stellar volume with orbit-safe depth`,()=>{
+  const scene=createCosmos(name,{maps}),points=[];let imageSheets=0;
+  scene.root.traverse(o=>{if(o.isPoints)points.push(o);if(o.userData.posterKind==='field')imageSheets++;});
+  assert.equal(imageSheets,0,'The live scene must not contain an image-backed sheet');
+  assert.equal(scene.volumeKind,name==='projects'?'stellar-disk':'galaxy-population');
+  const ranges=[[],[],[]],p=new THREE.Vector3(),center=new THREE.Vector3(),axis=new THREE.Vector3();
+  let moving=0;
+  for(const object of points){
+    const data=object.geometry.attributes;
+    for(let i=0;i<data.position.count;i+=97){
+      for(let k=0;k<3;k++)ranges[k].push(data.position.array[i*3+k]);
+      center.fromBufferAttribute(data.orbitCenter,i);axis.fromBufferAttribute(data.orbitAxis,i);
+      assert.ok(Math.abs(axis.length()-1)<1e-6);
+      p.fromBufferAttribute(data.position,i).sub(center);
+      const before=p.clone();p.applyAxisAngle(axis,data.rate.getX(i)*2);
+      if(p.distanceTo(before)>.003)moving++;
+      for(const time of [0,3,1000]){
+        p.fromBufferAttribute(data.position,i).sub(center).applyAxisAngle(axis,data.rate.getX(i)*time).add(center);
+        assert.ok(p.length()<scene.radius,'GPU particle orbits must stay inside the fit at every orientation');
+      }
+    }
+  }
+  for(const values of ranges){values.sort((a,b)=>a-b);assert.ok(values[Math.floor(values.length*.95)]-values[Math.floor(values.length*.05)]>.20,'Depth must span a volume');}
+  assert.ok(moving>200,'Individual stars must move in addition to the camera');
+  if(name==='notes'){
+    assert.ok(scene.galaxyCenters.length>50);
+    const depths=scene.galaxyCenters.map(c=>c[2]);assert.ok(Math.max(...depths)-Math.min(...depths)>2);
+  }
+  scene.dispose();
 });

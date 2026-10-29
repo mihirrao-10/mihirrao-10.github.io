@@ -43,8 +43,11 @@ https://assets.science.nasa.gov/dynamicimage/assets/science/missions/hubble/rele
 Input SHA-256: 65ff216d962b9697f3bc3f2a94d919336708e82ba963f8a638533891856cdd26
 
 Galaxy fields: grayscale luminance conversion, background removal, and soft edge
-feathering. A fine tessellated mesh and weighted particle samples retain the
-photographed positions. Depth, parallax, and motion are authored, not measured.
+feathering. The M51 field seeds a thick stellar disk and rounded bulges. Luminous
+features in the Abell 1689 field seed a three-dimensional population of separate
+galaxies. Neither live scene displays the image on a surface. Depth, shapes, and
+orbital motion are authored, not measured. The earlier ring raster remains an
+authoring reference; live rings use broad, analytically filtered bands.
 Dark ink represents emitted light in all scenes. Source frames are not time series.
 
 Reproduction: save the four inputs as sun.jpg, saturn.jpg, galaxy.jpg, cluster.jpg;

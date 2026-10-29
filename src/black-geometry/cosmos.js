@@ -1,6 +1,7 @@
 import * as THREE from 'three';
-import { surfaceMaterial, ringMaterial, pointMaterial, fieldMaterial, flareMaterial, random, gaussian } from './astronomy-materials.js';
+import { surfaceMaterial, ringMaterial, pointMaterial, flareMaterial, random, gaussian } from './astronomy-materials.js';
 import { createBlackHole } from './black-hole.js';
+import { createGalaxyVolume, createClusterVolume } from './stellar-volumes.js';
 
 export const COSMIC_TARGETS=Object.freeze(['hero','education','experience','publications','teaching','projects','notes']);
 const TAU=2*Math.PI;
@@ -18,18 +19,18 @@ function body(scene,parent,radius,kind=4,{map,detail=384,opacity=1,scale=[1,1,1]
   const mesh=new THREE.Mesh(new THREE.SphereGeometry(radius,detail,Math.round(detail*.5)),material);
   mesh.scale.fromArray(scale);mesh.userData.posterKind='body';mesh.userData.surfaceKind=kind;parent.add(mesh);return mesh;
 }
-function annulus(scene,parent,inner,outer,{opacity=.9,columns=1024,rows=128,map=null}={}){
+function annulus(scene,parent,inner,outer,{opacity=.9,columns=1024,rows=128}={}){
   const geometry=grid((u,v)=>{const a=u*TAU,r=inner+(outer-inner)*v;return[r*Math.cos(a),0,r*Math.sin(a)];},columns,rows);
-  const mesh=new THREE.Mesh(geometry,ringMaterial(scene,inner,outer,opacity,map));mesh.renderOrder=1;
+  const mesh=new THREE.Mesh(geometry,ringMaterial(scene,inner,outer,opacity));mesh.renderOrder=1;
   mesh.userData.posterKind='ring';mesh.userData.innerRadius=inner;mesh.userData.outerRadius=outer;parent.add(mesh);return mesh;
 }
 function points(scene,parent,count,seed,sample,{soft=0}={}){
-  const rng=random(seed),data={position:[],starSize:[],strength:[],phase:[],rate:[]};
+  const rng=random(seed),data={position:[],starSize:[],strength:[],phase:[],rate:[],orbitCenter:[],orbitAxis:[]};
   for(let i=0;i<count;i++){
     const p=sample(rng,i);data.position.push(...p.position);data.starSize.push(p.size??.5+rng());
-    data.strength.push(p.strength??.35+rng()*.4);data.phase.push(rng()*TAU);data.rate.push(p.rate??0);
+    data.strength.push(p.strength??.35+rng()*.4);data.phase.push(rng()*TAU);data.rate.push(p.rate??0);data.orbitCenter.push(...(p.center??[0,0,0]));data.orbitAxis.push(...(p.axis??[0,1,0]));
   }
-  const geometry=new THREE.BufferGeometry();for(const[k,v]of Object.entries(data))geometry.setAttribute(k,new THREE.Float32BufferAttribute(v,k==='position'?3:1));
+  const geometry=new THREE.BufferGeometry();for(const[k,v]of Object.entries(data))geometry.setAttribute(k,new THREE.Float32BufferAttribute(v,['position','orbitCenter','orbitAxis'].includes(k)?3:1));
   const mesh=new THREE.Points(geometry,pointMaterial(scene,soft));mesh.frustumCulled=false;mesh.renderOrder=2;
   mesh.userData.posterSoft=soft;parent.add(mesh);return mesh;
 }
@@ -95,12 +96,7 @@ function earthMoon(scene,maps){
 function saturn(scene,maps){
   const content=new THREE.Group();content.rotation.set(.37,.1,-.28);scene.root.add(content);
   const planet=body(scene,content,1.13,2,{map:maps.saturn,detail:640,opacity:1.12,scale:[1,.90,1]});
-  annulus(scene,content,1.37,2.65,{columns:1536,rows:160,opacity:1,map:maps.rings});
-  // Fine grains sit within the ring plane, outside the major optical gaps.
-  points(scene,content,16000,73913,rng=>{
-    let r=1.38+rng()*1.25;if(r>2.15&&r<2.21)r=2.22;
-    const a=rng()*TAU;return{position:[r*Math.cos(a),gaussian(rng)*.004,r*Math.sin(a)],size:.36+rng()*.45,strength:.16+rng()*.3,rate:.075/r};
-  });
+  annulus(scene,content,1.37,2.65,{columns:1536,rows:160,opacity:1});
   scene.animate=t=>{planet.rotation.y=t*.055;content.rotation.y=.1+Math.sin(t*.07)*.045;};
   scene.theme='Saturn';scene.radius=2.85;
 }
@@ -118,7 +114,7 @@ function solarSystem(scene,maps){
     const orbitGroup=new THREE.Group();orbitGroup.rotation.z=(i%3-1)*.025;content.add(orbitGroup);orbit(scene,orbitGroup,radius);
     const group=new THREE.Group();orbitGroup.add(group);
     const planet=body(scene,group,sizes[i],i===2?0:i>3?2:4,{map:i===2?maps.earth:null,detail:i>3?160:128,opacity:1.2});
-    if(i===5){group.rotation.z=.4;annulus(scene,group,.25,.41,{columns:384,rows:32,map:maps.rings});}
+    if(i===5){group.rotation.z=.4;annulus(scene,group,.25,.41,{columns:384,rows:32});}
     return {group,planet,radius,phase:[.5,2.1,3.9,5.4,1.1,4.4,2.7,5.7][i],speed:.19/(radius**1.5)};
   });
   points(scene,content,16000,39173,rng=>{
@@ -127,44 +123,8 @@ function solarSystem(scene,maps){
   scene.animate=t=>{sun.rotation.y=t*.03;for(const p of planets){const a=p.phase+t*p.speed;p.group.position.set(p.radius*Math.cos(a),0,p.radius*Math.sin(a));p.planet.rotation.y=t*.05;}};
   scene.theme='Solar system';scene.radius=3.17;
 }
-function photoField(scene,maps,name){
-  let map=maps[name];
-  if(!map){
-    const pixels=new Uint8Array(256*256);
-    for(let y=0;y<256;y++)for(let x=0;x<256;x++){
-      const r=Math.hypot(x-128,y-128)/128,a=Math.atan2(y-128,x-128);
-      pixels[y*256+x]=Math.round(255*Math.exp(-r*4)*(.5+.5*Math.cos(a*2-r*13)));
-    }
-    map=new THREE.DataTexture(pixels,256,256,THREE.RedFormat);map.needsUpdate=true;
-    map.userData={width:256,height:256,pixels};scene.textures.add(map);
-  }
-  const {width,height,pixels}=map.userData,aspect=height/width;
-  const content=new THREE.Group();scene.root.add(content);
-  // Depth is authored, but the stars, knots, dust lanes, and cores follow the photograph.
-  const halfWidth=name==='galaxy'?2.85:2.30,halfHeight=halfWidth*aspect;
-  const depthAt=(u,v)=>name==='galaxy'?.055*Math.sin(u*8+v*5):.13*Math.sin(u*14)*Math.cos(v*9);
-  const geometry=grid((u,v)=>[(u-.5)*halfWidth*2,(.5-v)*halfHeight*2,depthAt(u,v)],384,256);
-  const veil=new THREE.Mesh(geometry,fieldMaterial(scene,map,name==='galaxy'?.84:.9));
-  veil.userData.posterKind='field';content.add(veil);
-  const cdf=new Float64Array(pixels.length);let sum=0;
-  for(let i=0;i<pixels.length;i++){sum+=(pixels[i]/255)**1.4;cdf[i]=sum;}
-  const sample=(rng,soft)=>{
-    const target=rng()*sum;let lo=0,hi=cdf.length-1;
-    while(lo<hi){const mid=(lo+hi)>>>1;if(cdf[mid]<target)lo=mid+1;else hi=mid;}
-    const u=(lo%width+rng())/width,v=(Math.floor(lo/width)+rng())/height;
-    const light=pixels[lo]/255;
-    return{position:[(u-.5)*halfWidth*2,(.5-v)*halfHeight*2,depthAt(u,v)+gaussian(rng)*(name==='galaxy'?.045:.10)],
-      size:soft?2+rng()*5:.40+rng()*.65,strength:soft?.018+light*.025:.12+light*.27};
-  };
-  points(scene,content,name==='galaxy'?104000:90000,60827,rng=>sample(rng,false));
-  points(scene,content,14000,58271,rng=>sample(rng,true),{soft:1});
-  scene.animate=t=>{
-    content.rotation.set(.10+Math.sin(t*.035)*.07,Math.sin(t*.045)*.10,(name==='galaxy'?-.12:.06)+t*(name==='galaxy'?.006:.002));
-  };
-  scene.theme=name==='galaxy'?'Spiral galaxy':'Galaxy cluster';scene.radius=Math.hypot(halfWidth,halfHeight)+.35;
-}
-function galaxy(scene,maps){photoField(scene,maps,'galaxy');}
-function cluster(scene,maps){photoField(scene,maps,'cluster');}
+function galaxy(scene,maps){createGalaxyVolume(scene,maps,points);}
+function cluster(scene,maps){createClusterVolume(scene,maps,points);}
 export function createCosmos(name,{maps={}}={}){
   const factory={hero:earthMoon,education:saturn,experience:star,publications:solarSystem,teaching:blackHole,projects:galaxy,notes:cluster}[name];
   if(!factory)throw new Error(`Unknown cosmic scene: ${name}`);

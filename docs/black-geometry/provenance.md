@@ -22,11 +22,11 @@ moves from nearby worlds toward structures larger than a galaxy:
   2048 × 1024 grayscale conversions with their original spatial mapping.
 - **Education:** one oblate Saturn, with no satellite. A latitude profile derived
   from Cassini's [Jewel of the Solar System](https://science.nasa.gov/photojournal/jewel-of-the-solar-system/)
-  informs the atmospheric bands. The ring's aperiodic optical-depth profile has
-  broad C/B/A regions, the Cassini division, and a finer Encke gap. The profile
-  is authored from the reference's appearance, rather than calibrated optical
-  measurements. Mipmap filtering and orbiting grains avoid regular interference
-  patterns. Credit: NASA/JPL-Caltech/Space Science Institute.
+  informs the atmospheric bands. The rings use broad, analytic C/B/A optical-depth
+  regions and the Cassini division, with smooth radial gradients and a soft
+  planetary shadow. Band edges are filtered using their screen footprint. There
+  is no moving grain overlay. The earlier raster ring profile remains an authoring
+  reference. Credit: NASA/JPL-Caltech/Space Science Institute.
 - **Industry experience:** the Sun, with a grayscale surface derived from an
   [SDO/AIA 171 Å observation](https://sdo.gsfc.nasa.gov/data/) dated October 29,
   2026, 16:26:22 UT. The visible solar disk is unprojected and reflected to
@@ -39,29 +39,36 @@ moves from nearby worlds toward structures larger than a galaxy:
   for legibility, rather than being a scale model or ephemeris.
 - **Teaching:** an inverse-grayscale hyper-luminous accretion disk and black-hole
   shadow. Bent viewing rays produce the direct disk and its lensed images.
-  Continuous turbulent noise follows differential orbital flow; high frequencies
-  are filtered using the pixel footprint. Brightness is symmetric rather than
+  A finite vertical density profile is integrated along each curved ray segment.
+  Cartesian turbulent clouds follow differential orbital flow; filtering preserves
+  mean brightness as the footprint changes. Fine radial filaments are removed. Brightness is symmetric rather than
   using a Doppler modulation. References: the silhouette of Gargantua in
   *Interstellar* and [NASA's warped accretion-disk visualization](https://www.nasa.gov/universe/nasa-visualization-shows-a-black-holes-warped-world/).
   No film still is redistributed. This is an authored deflection approximation,
   not a relativistic geodesic solver or the film's renderer.
-- **Projects:** the Whirlpool galaxy and its companion, built from
-  [Hubble's M51 image](https://esahubble.org/images/heic0506a/). A tessellated
-  translucent luminosity field and 118,000 image-weighted stellar/cloud points
-  preserve the observed irregular arms, dust lanes, and bright cores. Depth,
-  gentle rotation, and evolving cloud detail are authored. Credit: NASA, ESA,
-  S. Beckwith (STScI), and the Hubble Heritage Team (STScI/AURA).
-- **Personal notes:** the larger [Abell 1689 galaxy cluster](https://science.nasa.gov/asset/hubble/hubble-wide-field-image-of-galaxy-cluster-and-gravitational-lens-abell-1689/),
-  with a fine luminosity mesh and 104,000 image-weighted points. The galaxies and
-  lensing arcs follow the photograph; depth and motion are authored rather than
-  measured. Credit: NASA, ESA, the Hubble Heritage Team (STScI/AURA),
-  J. Blakeslee (NRC Herzberg Astrophysics Program, Dominion Astrophysical
-  Observatory), and H. Ford (JHU).
+- **Projects:** a fully three-dimensional Whirlpool galaxy and companion, using
+  [Hubble's M51 image](https://esahubble.org/images/heic0506a/) to sample the stellar
+  distribution. The display has a thick disk, rounded bulges, translucent volume
+  shells, and 226,000 stellar/cloud points with differential orbital motion. The
+  finer disk population retains the image's structure while a thicker cloud
+  population and the bulges give depth. There is no photographic display plane.
+  Depth, thickness, and motion are authored. Credit: NASA, ESA, S. Beckwith
+  (STScI), and the Hubble Heritage Team (STScI/AURA).
+- **Personal notes:** a three-dimensional cluster inspired by [Abell 1689](https://science.nasa.gov/asset/hubble/hubble-wide-field-image-of-galaxy-cluster-and-gravitational-lens-abell-1689/).
+  Luminous features in the image supply 76 approximate sky positions. Each becomes
+  an independently oriented elliptical or spiral stellar volume, with an authored
+  depth, shape, and local orbital motion. The cluster has 120,000 stellar/cloud
+  points and soft ellipsoidal volume shells. Its depth and motion are illustrative,
+  not measured, and it does not reconstruct the image's gravitational lensing.
+  Credit: NASA, ESA, the Hubble Heritage Team (STScI/AURA), J. Blakeslee
+  (NRC Herzberg Astrophysics Program, Dominion Astrophysical Observatory),
+  and H. Ford (JHU).
 
 All scenes use grayscale. Surface maps, procedural noise, geometry, and seeds
 are deterministic. Motion changes uniforms and object transforms without
 rebuilding buffers. Tests check geometry, moving bounds, texture hashes, map
-compression parity, and ray-field tonal variation. A deterministic software
+compression parity, volumetric depth, individual particle orbits, filtered ring
+energy, and ray-field tonal variation. A deterministic software
 renderer creates detailed fallback posters from the same geometry and maps;
 its shading is an approximation of the live shader. Legacy mathematical and
 institutional factories below remain as tested source, outside active pages.

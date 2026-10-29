@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { deflateSync } from 'node:zlib';
 import { traceBlackHole } from '../../src/black-geometry/black-hole.js';
+import { ringOpticalDepth } from '../../src/black-geometry/ring-profile.js';
 
 function crc32(buffer){let crc=0xffffffff;for(const byte of buffer){crc^=byte;for(let i=0;i<8;i++)crc=(crc>>>1)^((crc&1)?0xedb88320:0);}return(crc^0xffffffff)>>>0;}
 function chunk(name,data){const type=Buffer.from(name),out=Buffer.alloc(data.length+12);out.writeUInt32BE(data.length);type.copy(out,4);data.copy(out,8);out.writeUInt32BE(crc32(Buffer.concat([type,data])),data.length+8);return out;}
@@ -82,9 +83,11 @@ export function cosmicPoster(scene){
           let alpha;
           if(object.userData.posterKind==='ring'){
             const r=Math.hypot(point.x,point.z),fraction=(r-object.userData.innerRadius)/(object.userData.outerRadius-object.userData.innerRadius);
-            alpha=mapSample(object.material.uniforms.ringProfile.value,fraction,.5)*.93*object.material.uniforms.opacity.value;
-          }else if(object.userData.posterKind==='field'){
-            alpha=mapSample(object.material.uniforms.surfaceMap.value,u,1-v)**.85*object.material.uniforms.opacity.value;
+            const along=(-.65*point.x+.9*point.z)/Math.hypot(.65,.65,.9),distance=Math.sqrt(Math.max(0,point.lengthSq()-along*along));
+            const shadow=along<0&&distance<object.userData.innerRadius*.82?.85:0;
+            alpha=ringOpticalDepth(fraction,.002)*(1-shadow)*object.material.uniforms.opacity.value;
+          }else if(object.userData.posterKind==='volume'){
+            alpha=Math.max(0,normal.z)**1.8*object.material.uniforms.opacity.value*.85;
           }else if(object.userData.posterKind==='flare'){
             alpha=Math.exp(-(((v-.5)*5)**2))*(.55+.45*Math.sin(u*16+object.material.uniforms.phase.value))*.16;
           }else alpha=surfaceInk(object,u,v,point.x,point.y,point.z,normal.x,normal.y,normal.z);
