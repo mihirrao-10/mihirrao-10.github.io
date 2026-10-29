@@ -69,20 +69,23 @@ failures retain content and native links. Print uses dark text on white.
 
 One WebGL context renders seven grayscale scenes: a fictional planet and moon
 (About), an uneven giant star (Education), a black hole (Industry experience),
-a radial stellar cloud (Publications), the Milky Way (Teaching), two colliding
+a neutron star (Publications), the Milky Way (Teaching), two colliding
 galaxies (Projects), and a globular star cluster (Personal notes). Detailed
 surface fields, volumetric particles, and bent-ray integration suit each subject;
 there are no visible wireframes or tessellated surface treatments. A shared
-presentation factor makes the artwork about 15% smaller, with more space around it.
+presentation factor enlarges the previous grayscale artwork by about 8%, while
+keeping space around it.
 
 The invented planet has authored terrain and clouds; its orbiting moon uses the
-retained NASA lunar map. The giant star combines a slightly uneven surface,
-SDO-derived activity, granular shading, and a soft particle corona. The black
+retained NASA lunar map and a wider orbit. The giant star combines a slightly
+uneven surface, SDO-derived activity, and fine evolving convection. Its dark
+center fades toward a pale limb, without an outer haze or particle corona. The black
 hole traces deflected rays through a turbulent disk, producing a dark circular
 shadow, a lighter foreground band, and a lensed arch. This is an illustrative
 ray model, not a relativistic solver.
 
-The galaxy scenes and radial cloud contain stars distributed in three dimensions,
+The neutron star has a compact core, curved dipole fields, and two narrow polar
+beams that sweep with its tilted magnetic axis. The galaxy scenes contain stars distributed in three dimensions,
 with individual orbital motion and slowly changing views. The colliding pair has
 two tilted disks, a stellar bridge, and tidal tails. The final scene is a globular
 cluster of stars with a dense core and an extended halo. The stars, cloud fields,

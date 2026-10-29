@@ -17,7 +17,7 @@ export const SCULPTURE_PALETTES = Object.freeze({
   congestion: ["#ae1425", "#f13b30", "#ff6729", "#ffb24b"],
   notes: ["#e8e2f7", "#ddeef9", "#ffe4d4", "#fafaff"],
 });
-export const SCULPTURE_STYLE = Object.freeze({ scale: .84, opacity: .88 });
+export const SCULPTURE_STYLE = Object.freeze({ scale: .91, opacity: .88 });
 export const sculptureOpacity = name => name === 'hero' ? .30 : name === 'notes' || COSMIC_TARGETS.includes(name) ? .32 : SCULPTURE_STYLE.opacity;
 
 /** Smooth coincident corners without rounding genuine creases or changing data positions. */

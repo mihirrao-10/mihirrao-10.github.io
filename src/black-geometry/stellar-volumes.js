@@ -48,36 +48,43 @@ function fitVolume(scene) {
 }
 
 function spiral(scene, parent, seed, density = 1) {
+  const identity = (seed % 101) * .071;
   const armPoint = (rng, i, soft = false) => {
-    let u = rng() ** .82;
-    if (rng() < .26) u = clamp(Math.round(u * 39) / 39 + normal(rng, .011), 0, 1);
-    const r = .40 + 2.40 * u, minor = i % 4 === 0;
-    const phase = (i % 2) * Math.PI + (minor ? 1.35 : 0);
-    const theta = phase + (i % 2 ? 2.48 : 2.76) * Math.log(r / .40) + .14 * Math.sin(u * 11 + phase) + .08 * Math.sin(u * 29 + phase * .7);
-    const spread = (minor ? .25 : .13) + .16 * u;
-    const a = theta + normal(rng, spread);
-    const rr = r + normal(rng, .045 + u * .085);
-    const density = .56 + .44 * valueNoise(r * 8, phase * 3, 1);
-    return { position: [rr * Math.cos(a), normal(rng, .025 + .06 * (1 - u)), rr * Math.sin(a)],
+    const u = rng() ** .82, r = .42 + 2.38 * u, arm = i % 2, minor = i % 5 === 0;
+    const phase = arm * Math.PI + (minor ? .86 : 0) + identity * .09;
+    const winding = arm ? 1.72 : 1.94;
+    const theta = phase + winding * Math.log((r + .10) / .52) + .10 * Math.sin(u * 12 + phase);
+    const knot = valueNoise(u * 15 + identity, phase * 3, 2.4);
+    const width = (minor ? .22 : .09) + .14 * u + .10 * knot;
+    let offset = normal(rng, width);
+    // Spurs fan out from the main arms; breaks between stellar knots keep
+    // the spiral from reading as two continuous dark circles.
+    if (u > .32 && rng() < .18) offset += .16 + .32 * (u - .32);
+    const a = theta + offset, rr = r + normal(rng, .035 + u * .07);
+    const laneOffset = -.035 + .025 * Math.sin(u * 23 + identity);
+    const dust = 1 - .72 * Math.exp(-(((offset - laneOffset) / (.023 + .018 * u)) ** 2));
+    const patch = .24 + .76 * clamp((knot - .13) / .62, 0, 1);
+    const bright = rng() < .014;
+    return { position: [rr * Math.cos(a), normal(rng, .025 + .06 * (1 - u)) + .025 * Math.sin(a * 3), rr * Math.sin(a)],
       rate: .019 / (r + .5) ** .65,
-      size: soft ? 3 + rng() * 7 : .45 + rng() ** 2 * 1.35,
-      strength: (soft ? .035 + rng() * .045 : .15 + rng() * .43) * density * (minor ? .75 : 1) };
+      size: soft ? 3 + rng() * 7 : bright ? 1.6 + rng() * 1.4 : .34 + rng() ** 2.8 * 1.55,
+      strength: (soft ? .035 + rng() * .045 : .18 + rng() * .48) * patch * dust * (minor ? .65 : 1) };
   };
-  stars(scene, parent, Math.round(100000 * density), seed, (rng, i) => armPoint(rng, i));
+  stars(scene, parent, Math.round(106000 * density), seed, (rng, i) => armPoint(rng, i));
   stars(scene, parent, Math.round(16000 * density), seed + 1, (rng, i) => armPoint(rng, i, true), 1);
   stars(scene, parent, Math.round(65000 * density), seed + 2, rng => {
     let r;do { r = rng() < .28 ? 2.85 * Math.sqrt(rng()) : -.56 * Math.log(Math.max(1e-9, rng() * rng())); } while (r > 2.85);
-    const a = rng() * TAU;
-    const lane = .75 + .25 * valueNoise(Math.cos(a) * r * 7, 2, Math.sin(a) * r * 7);
-    return { position: [r * Math.cos(a), normal(rng, .085), r * Math.sin(a)], rate: .015 / (r + .6) ** .6,
-      size: .40 + rng() ** 2 * 1.05, strength: (.22 + rng() * .38) * (.4 + .6 * (1 - r / 3.15)) * lane };
+    const a = rng() * TAU, x = Math.cos(a) * r, z = Math.sin(a) * r;
+    const lane = .45 + .55 * valueNoise(x * 5 + identity, 2, z * 5);
+    return { position: [x, normal(rng, .085), z], rate: .015 / (r + .6) ** .6,
+      size: .35 + rng() ** 2.5 * 1.15, strength: (.24 + rng() * .40) * (.4 + .6 * (1 - r / 3.15)) * lane };
   });
   stars(scene, parent, Math.round(24000 * density), seed + 3, rng => ({
-    position: [normal(rng, .31), normal(rng, .19), normal(rng, .28)], size: .6 + rng() ** 2 * 1.8,
-    strength: .28 + rng() * .42, rate: .028 + rng() * .015,
+    position: [normal(rng, .31), normal(rng, .19), normal(rng, .28)], size: .45 + rng() ** 2.7 * 2.0,
+    strength: .32 + rng() * .42, rate: .028 + rng() * .015,
   }));
   stars(scene, parent, Math.round(12000 * density), seed + 4, rng => ({
-    position: [normal(rng, .56), normal(rng, .09), normal(rng, .15)], size: .5 + rng(), strength: .18 + rng() * .26, rate: .012,
+    position: [normal(rng, .56), normal(rng, .09), normal(rng, .15)], size: .4 + rng() ** 2 * 1.2, strength: .20 + rng() * .28, rate: .012,
   }));
   cloud(scene, parent, [.23, .17, .22], .16);
   cloud(scene, parent, [.48, .27, .44], .055);
@@ -93,17 +100,18 @@ export function createGalaxyVolume(scene) {
 export function createCollisionVolume(scene) {
   const content = new THREE.Group(), first = new THREE.Group(), second = new THREE.Group();
   scene.root.add(content);content.add(first, second);
-  first.position.set(-.81, -.14, 0);first.scale.setScalar(.68);first.rotation.set(.46, 0, -.24);
-  second.position.set(.92, .18, .25);second.scale.setScalar(.53);second.rotation.set(.98, -.42, .34);
+  first.position.set(-.81, -.14, 0);first.scale.set(.71, .68, .64);first.rotation.set(.46, 0, -.24);
+  second.position.set(.92, .18, .25);second.scale.set(.50, .53, .57);second.rotation.set(.98, -.42, .34);
   spiral(scene, first, 98117, .45);spiral(scene, second, 47437, .36);
   // Broad tidal tails are spatial streams, not drawn curves or a flat image.
   stars(scene, content, 40000, 12397, (rng, i) => {
-    const side = i % 2 ? 1 : -1, u = rng() ** .85, angle = side * (.4 + u * 2.5);
-    const r = 1.05 + u * 2.05, spread = .035 + .18 * u;
+    const side = i % 2 ? 1 : -1, u = rng() ** .85, angle = side * ((side > 0 ? .35 : .60) + u * (side > 0 ? 1.95 : 2.3));
+    const r = 1.05 + u * (side > 0 ? 2.05 : 1.83), spread = .035 + .18 * u;
+    const knot = .4 + .6 * valueNoise(u * 12, side + 1, 3.7);
     return { position: [side * .45 + side * r * Math.cos(angle) + normal(rng, spread),
       side * (.10 + .38 * u * u) + normal(rng, .06 + .10 * u),
       side * r * Math.sin(angle) * .68 + normal(rng, spread)],
-      size: .45 + rng() ** 2 * 1.0, strength: (.30 + rng() * .42) * (1 - .60 * u), rate: .007 };
+      size: .45 + rng() ** 2 * 1.0, strength: (.30 + rng() * .42) * (1 - .60 * u) * knot, rate: .007 };
   });
   stars(scene, content, 14000, 16199, rng => {
     const u = rng(), x = -.81 + 1.73 * u;
@@ -127,21 +135,22 @@ export function createClusterVolume(scene) {
   // A truncated Plummer distribution gives the dense center and extended halo
   // of the supplied globular-cluster reference without copying its stars.
   stars(scene, content, 186000, 66327, rng => {
-    let r;do { r = .54 / Math.sqrt(Math.max(1e-9, rng() ** (-2 / 3) - 1)); } while (r > 3.05);
-    const p = sphere(rng, r), giant = rng() < .024;
+    let r;do { r = .57 / Math.sqrt(Math.max(1e-9, rng() ** (-2 / 3) - 1)); } while (r > 3.05);
+    const p = sphere(rng, r), giant = rng() < .018 + .014 * Math.exp(-r);
+    p[1] *= .97;
     const axis = new THREE.Vector3(...sphere(rng, 1)).normalize().toArray();
     return { position: p, axis, rate: .008 + .015 / (r + .4),
-      size: giant ? 1.9 + rng() * 2.7 : .4 + rng() ** 2 * 1.05,
-      strength: giant ? .35 + rng() * .5 : .11 + rng() * .34 };
+      size: giant ? 1.7 + rng() ** 1.4 * 2.9 : .32 + rng() ** 2.7 * 1.20,
+      strength: giant ? .40 + rng() * .5 : .13 + rng() * .36 };
   });
-  stars(scene, content, 36000, 41833, rng => {
+  stars(scene, content, 42000, 41833, rng => {
     const r = 2.95 * rng() ** .55;
-    return { position: sphere(rng, r), size: .5 + rng() * .95, strength: .14 + rng() * .22, rate: .013 };
+    return { position: sphere(rng, r), size: .35 + rng() ** 2 * 1.25, strength: .15 + rng() * .25, rate: .013 };
   });
   cloud(scene, content, [.24, .24, .24], .15);
   cloud(scene, content, [.47, .47, .47], .055);
   scene.animate = t => content.rotation.set(.16 + Math.sin(t * .04) * .08, t * .028, -.08);
-  scene.theme = 'Globular star cluster';scene.volumeKind = 'globular-cluster';scene.starCount = 222000;fitVolume(scene);
+  scene.theme = 'Globular star cluster';scene.volumeKind = 'globular-cluster';scene.starCount = 228000;fitVolume(scene);
 }
 
 export function createRadialVolume(scene) {

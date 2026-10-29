@@ -17,7 +17,7 @@ for (const [name,file] of Object.entries({...MAP_FILES,...ARCHIVE_MAP_FILES})) t
   map.dispose();
 });
 
-test('archived light-bending samples retain a clear shadow surrounded by structured accretion light',()=>{
+test('light-bending samples retain a clear shadow surrounded by structured accretion light',()=>{
   const samples=[];
   const origin=[0,1.7,12];
   for(let y=-1.5;y<=1.5;y+=.15)for(let x=-3;x<=3;x+=.15){
@@ -34,7 +34,7 @@ test('archived light-bending samples retain a clear shadow surrounded by structu
   assert.ok(new Set(samples.map(v=>Math.round(v*100))).size>60, 'The disk must have tonal detail instead of one opaque band');
 });
 
-test('archived accretion detail moves smoothly over time while the shadow stays clear',()=>{
+test('accretion detail moves smoothly over time while the shadow stays clear',()=>{
   const origin=[0,1.7,12],frames=[[],[],[]];
   for(let y=-1;y<=1;y+=.2)for(let x=-2.5;x<=2.5;x+=.2){
     const d=[x,y-1.7,-12],n=Math.hypot(...d);for(let i=0;i<3;i++)d[i]/=n;

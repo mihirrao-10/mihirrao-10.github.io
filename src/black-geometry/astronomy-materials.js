@@ -28,10 +28,16 @@ void main(){
    float bands=mix(fbm(vec3(vLocal.y*18.0,0,0)),sampleMap,hasSurfaceMap);
    density=.20+.73*(1.0-bands)+.055*fbm(vLocal*42.0+vec3(time*.025,0,0));}
  if(kind>2.5&&kind<3.5){
-   vec3 p=normalize(vLocal)*45.0;
-   float cells=fbm(p+vec3(fbm(p*1.7),time*.065,0));
-   float activity=mix(cells,sampleMap,hasSurfaceMap);
-   density=.20+.80*activity+.15*cells;light=.94+.06*facing;}
+   vec3 p=normalize(vLocal),drift=vec3(time*.023,-time*.016,time*.011);
+   float convection=fbm(p*12.0+drift);
+   float cells=fbm(p*48.0+vec3(convection*2.0,time*.065,0));
+   float granules=fbm(p*155.0+vec3(cells,time*.04,convection));
+   float activity=mix(convection,sampleMap,hasSurfaceMap);
+   float surface=.69+.58*(activity-.5)+.36*(cells-.5)+.20*(granules-.5);
+   // Inverse luminance: a dense center softens toward the physical limb, with no halo.
+   float limb=.15+.85*pow(facing,.62);
+   float stellarInk=opacity*clamp(surface,.22,.90)*limb;
+   gl_FragColor=vec4(vec3(.025),clamp(stellarInk,0.0,.94)*presence);return;}
  if(kind>3.5&&kind<4.5)density=.35+.38*grain;
  if(kind>4.5&&kind<5.5){
    float clouds=smoothstep(.49,.68,fbm(normalize(vLocal)*9.0+vec3(time*.006,0,0)));

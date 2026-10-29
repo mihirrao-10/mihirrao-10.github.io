@@ -23,9 +23,11 @@ float disk(vec3 p,float footprint){
  // Anisotropic noise draws irregular filaments, never evenly spaced rings.
  float stream=diskNoise(vec3(r*18.0+eddies*1.8,flow*3.8+time*.025),pixel*18.0);
  float fine=mix(.5,noise(vec3(r*63.0+eddies*2.0,flow*9.0+time*.05)),1.0-smoothstep(.25,.75,pixel*63.0));
+ float knots=diskNoise(vec3(flow*r*8.5+eddies*.7,time*.06),pixel*8.5);
+ float threads=mix(.5,noise(vec3(r*121.0+stream*2.8,flow*17.0+time*.035)),1.0-smoothstep(.25,.75,pixel*121.0));
  float fade=smoothstep(.73,.91,r)*(1.0-smoothstep(2.50+eddies*.15,3.05,r));
  float heat=pow(.85/max(r,.75),1.05);
- return fade*heat*(.11+.40*eddies+.86*smoothstep(.25,.73,stream)+.17*fine);
+ return fade*heat*(.09+.32*eddies+.86*smoothstep(.25,.73,stream)+.19*fine+.09*threads)*(.74+.52*knots);
 }
 void main(){
  vec3 direction=normalize(vLocal-localCamera),p=vLocal+direction*.001;
@@ -99,8 +101,10 @@ export function traceBlackHole(px,py,pz,dx,dy,dz,time=0){
       const eddies=fbm(fx*radius*3.2,fz*radius*3.2,time*.045);
       const stream=fbm(radius*18+eddies*1.8,fx*3.8+time*.025,fz*3.8+time*.025);
       const fine=noise(radius*63+eddies*2,fx*9+time*.05,fz*9+time*.05);
+      const knots=fbm(fx*radius*8.5+eddies*.7,fz*radius*8.5+eddies*.7,time*.06);
+      const threads=noise(radius*121+stream*2.8,fx*17+time*.035,fz*17+time*.035);
       const fade=smooth(.73,.91,radius)*(1-smooth(2.50+eddies*.15,3.05,radius));
-      const density=fade*(.85/Math.max(radius,.75))**1.05*(.11+.40*eddies+.86*smooth(.25,.73,stream)+.17*fine),weight=mass*Math.max(.20,Math.abs(dy/step));
+      const density=fade*(.85/Math.max(radius,.75))**1.05*(.09+.32*eddies+.86*smooth(.25,.73,stream)+.19*fine+.09*threads)*(.74+.52*knots),weight=mass*Math.max(.20,Math.abs(dy/step));
       emission+=transmission*density*weight;transmission*=Math.exp(-density*weight*.36);
     }
     dx=nx;dy=ny;dz=nz;px=qx;py=qy;pz=qz;

@@ -24,7 +24,8 @@ Downloaded image: https://sdo.gsfc.nasa.gov/assets/img/latest/latest_2048_0171.j
 Input SHA-256: 181879b00a174bacce35642243bb341d1bdc2b52a3aa861ce931a890b21437ad
 The observed disk is unprojected onto a sphere, with a reflected reverse hemisphere.
 The current giant star uses this solar field as an activity reference. Its
-uneven shape, granulation, soft corona, and animation are authored, not observed.
+uneven shape, granulation, dark-to-light limb gradient, and animation are authored,
+not observed. It has no outer corona or particle haze.
 
 Archived Jupiter field (not loaded by the current homepage): NASA/JPL/Space Science Institute. Cassini PIA07782.
 https://science.nasa.gov/photojournal/cassinis-best-maps-of-jupiter-cylindrical-map/
@@ -76,7 +77,7 @@ tools/black-geometry/prepare-astronomy.py with the input directory. The SDO late
 URL is mutable: use the recorded frame. Requires Pillow and NumPy; the website
 build does not. The active map manifest excludes archived fields.
 
-The archived neutron star used authored dipole geometry and polar beams:
+The current neutron star uses authored dipole geometry and polar beams:
 https://imagine.gsfc.nasa.gov/science/objects/neutron_stars1.html
 The current black hole traces deflected rays through an authored turbulent
 accretion disk around an absorbing center. It is an approximate illustration,
@@ -86,6 +87,6 @@ https://www.nasa.gov/universe/nasa-visualization-shows-a-black-holes-warped-worl
 
 The two user-supplied images in Documents guide the black-hole and globular-
 cluster compositions only. Neither reference image nor any film still is
-copied into the website or redistributed. The radial stellar cloud, Milky Way,
+copied into the website or redistributed. The archived radial stellar cloud, Milky Way,
 colliding galaxy pair, and globular cluster are authored particle populations;
 their depth, orbital rates, and interaction are not measured or simulated gravity.

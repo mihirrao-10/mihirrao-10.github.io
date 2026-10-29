@@ -27,7 +27,10 @@ function surfaceInk(object,u,v,x,y,z,nx,ny,nz){
   let density=.40+.52*sample;
   if(kind===1)density=.33+.6*sample+.1*g;
   if(kind===2)density=.20+.73*(1-sample)+.055*g;
-  if(kind===3)density=.20+.80*sample+.15*g;
+  if(kind===3){
+    const activity=.69+.58*(sample-.5)+.56*(g-.5);
+    return clamp(opacity*clamp(activity,.22,.90)*(.15+.85*Math.abs(nz)**.62),0,.94);
+  }
   if(kind===4)density=.35+.38*g;
   if(kind===8)density=.49+.38*g+.25*Math.abs(y/Math.hypot(x,y,z))**9;
   if(kind===9)return Math.max(0,g-.38)*opacity*.45;
@@ -41,7 +44,7 @@ export function cosmicPoster(scene){
   const width=1600,height=1200;
   const pixels=Buffer.alloc(width*height*4),depth=new Float32Array(width*height).fill(-Infinity);
   const view=new THREE.Matrix4().makeRotationFromEuler(new THREE.Euler(.14,-.18,0));
-  const focal=height/(2*Math.tan(35*Math.PI/360)),scale=2.90/scene.radius;
+  const focal=height/(2*Math.tan(35*Math.PI/360)),scale=3.14/scene.radius;
   const scaleMatrix=new THREE.Matrix4().makeScale(scale,scale,scale);
   const point=new THREE.Vector3(),normal=new THREE.Vector3();
   const blend=(x,y,z,alpha,write=false)=>{
@@ -92,9 +95,9 @@ export function cosmicPoster(scene){
           }else if(object.userData.posterKind==='spacetime-sheet'){
             alpha=.035*clamp((3.35-Math.hypot(point.x,point.y))/.8);
           }else if(object.userData.posterKind==='magnetic-field'){
-            alpha=(.42+.58*(.5+.5*Math.sin(u*13))**2)*object.material.uniforms.opacity.value;
+            alpha=(.60+.40*(.5+.5*Math.sin(u*13))**2)*(.65+.35*Math.sin((u%1)*Math.PI))*Math.abs(normal.z)**.35*object.material.uniforms.opacity.value;
           }else if(object.userData.posterKind==='pulsar-beam'){
-            alpha=(1-v)**1.5*(.65+.35*Math.sin(v*22))*object.material.uniforms.opacity.value;
+            alpha=(1-v)**1.65*(.78+.22*Math.sin(v*16))*Math.abs(normal.z)**.80*object.material.uniforms.opacity.value;
           }else if(object.userData.posterKind==='ring'){
             const r=Math.hypot(point.x,point.z),fraction=(r-object.userData.innerRadius)/(object.userData.outerRadius-object.userData.innerRadius);
             const along=(-.65*point.x+.9*point.z)/Math.hypot(.65,.65,.9),distance=Math.sqrt(Math.max(0,point.lengthSq()-along*along));

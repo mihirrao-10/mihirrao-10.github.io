@@ -12,21 +12,22 @@ The source and tests define current sampling budgets and rendering parameters.
 
 The seven scenes use grayscale surface maps, procedural fields, three-dimensional
 star populations, and a bent-ray black-hole renderer. Their presentation is
-smaller and has no visible triangulation or wire overlays. All positions,
+slightly larger than the previous grayscale version, with no visible triangulation
+or wire overlays. All positions,
 dynamics, and scales are illustrative unless an image-derived field is explicitly
 identified. Dark ink represents luminous density against the beige page.
 
 - **About:** an invented planet with procedurally authored terrain and clouds,
-  accompanied by an orbiting moon. The moon retains the 2048 × 1024 grayscale
+  accompanied by a moon in a wider orbit. The moon retains the 2048 × 1024 grayscale
   [NASA CGI Moon Kit](https://svs.gsfc.nasa.gov/4720/) LROC field, credited to
   NASA/Goddard Space Flight Center Scientific Visualization Studio and the
   Lunar Reconnaissance Orbiter Camera / Lunar Reconnaissance Orbiter. The planet
   is not Earth or another specific observed world.
 - **Education:** a giant star with a slightly uneven surface, granular activity,
-  and a soft corona. Its activity field derives from the retained
+  and a dark-center-to-light-limb gradient. It has no surrounding haze. Its activity field derives from the retained
   [SDO/AIA 171 Å observation](https://sdo.gsfc.nasa.gov/data/) of October 29, 2026,
   16:26:22 UT. The observed solar disk was unprojected and reflected to synthesize
-  the reverse hemisphere. Shape, granulation, corona, and motion are authored;
+  the reverse hemisphere. Shape, granulation, luminosity gradient, and motion are authored;
   the result is an imagined star, not a measured solar reconstruction.
   Credit: NASA/SDO and the AIA science team.
 - **Industry experience:** rays deflect through a turbulent accretion disk around
@@ -35,9 +36,10 @@ identified. Dark ink represents luminous density against the beige page.
   *Interstellar* and [NASA's warped-disk illustration](https://www.nasa.gov/universe/nasa-visualization-shows-a-black-holes-warped-world/).
   This is an authored approximate ray model, not a solution of the relativistic
   geodesic equations. No film frame or background grid is used.
-- **Publications:** a radial stellar cloud with an irregular shell, diffuse
-  outward filaments, and a compact center. Its particles occupy a volume and
-  rotate at different rates. All fields and motion are authored.
+- **Publications:** a neutron star with a detailed compact core, curved dipole
+  fields, and two tapered beams along a tilted magnetic axis. Its shape and motion
+  reference [NASA Goddard's pulsar illustration](https://imagine.gsfc.nasa.gov/science/objects/neutron_stars1.html).
+  The surface, field visibility, and slowed rotation are authored illustrations.
 - **Teaching:** one three-dimensional Milky Way illustration, with spiral arms,
   a thick stellar disk, bar, and bulge. The broad structure references
   [NASA's Milky Way illustration](https://science.nasa.gov/resource/the-milky-way-galaxy/).

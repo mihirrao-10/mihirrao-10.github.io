@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { surfaceMaterial, pointMaterial, random, valueNoise } from './astronomy-materials.js';
+import { surfaceMaterial, valueNoise } from './astronomy-materials.js';
 
 const TAU = Math.PI * 2;
 const clamp = x => THREE.MathUtils.clamp(x, 0, 1);
@@ -14,7 +14,7 @@ function fbm(x, y, z, octaves = 5) {
 
 // A spherical field gives this invented world its own geography without a UV seam.
 function planetMap(scene) {
-  const width = 1024, height = 512, pixels = new Uint8Array(width * height);
+  const width = 1536, height = 768, pixels = new Uint8Array(width * height);
   for (let j = 0; j < height; j++) {
     const latitude = Math.PI * j / (height - 1), y = Math.cos(latitude), radial = Math.sin(latitude);
     for (let i = 0; i < width; i++) {
@@ -62,44 +62,21 @@ export function createPlanetMoon(scene, maps) {
     const a = .46 + t * .045;
     world.position.set(-.47 - .065 * Math.cos(a), -.035 * Math.sin(a), -.02 * Math.sin(a));
     planet.rotation.y = .28 + t * .032;clouds.rotation.y = .28 + t * .039;
-    moon.position.set(2.13 * Math.cos(a), 1.72 * Math.sin(a), .72 * Math.sin(a));
+    moon.position.set(2.60 * Math.cos(a), 2.10 * Math.sin(a), .88 * Math.sin(a));
     moon.rotation.y = -a + .7;
   };
   scene.theme = 'Planet and Moon';scene.radius = 3.25;
   scene.bodyRadii = [1.15, .29];scene.volumeKind = 'planet-moon';
 }
 
-function corona(scene, parent, radius) {
-  const rng = random(732178), count = 36000;
-  const data = { position: [], starSize: [], strength: [], phase: [], rate: [], orbitCenter: [], orbitAxis: [] };
-  for (let i = 0; i < count; i++) {
-    const longitude = rng() * TAU, height = rng() * 2 - 1, radial = Math.sqrt(1 - height * height);
-    const n = [radial * Math.cos(longitude), height, radial * Math.sin(longitude)];
-    const activity = fbm(n[0] * 4, n[1] * 4, n[2] * 4, 3);
-    const altitude = .015 + rng() ** 2.8 * (.11 + activity * .47), r = radius * (1 + altitude);
-    data.position.push(...n.map(v => v * r));data.starSize.push(1.4 + rng() * 6);
-    data.strength.push(.026 * (1 - altitude / .65) * (.4 + activity));
-    data.phase.push(rng() * TAU);data.rate.push(.012 + rng() * .004);
-    data.orbitCenter.push(0, 0, 0);data.orbitAxis.push(0, 1, 0);
-  }
-  const geometry = new THREE.BufferGeometry();
-  for (const [key, values] of Object.entries(data)) geometry.setAttribute(key, new THREE.Float32BufferAttribute(values, ['position', 'orbitCenter', 'orbitAxis'].includes(key) ? 3 : 1));
-  const particles = new THREE.Points(geometry, pointMaterial(scene, 1));
-  particles.userData.posterSoft = 1;particles.userData.role = 'stellar-corona';particles.renderOrder = 2;
-  particles.frustumCulled = false;parent.add(particles);
-}
-
 export function createStar(scene, maps) {
   const content = new THREE.Group();content.rotation.set(.12, 0, -.16);scene.root.add(content);
   const star = body(scene, content, 1.37, 3, { map: maps.sun, detail: 640, opacity: 1.19, uneven: true });
   star.userData.role = 'convective-star';
-  const shell = body(scene, content, 1.87, 7, { detail: 256, opacity: 1.15, uneven: true });shell.renderOrder = 1;
-  const skin = body(scene, content, 1.389, 6, { detail: 256, opacity: .12, uneven: true });skin.renderOrder = 1;
-  corona(scene, content, 1.37);
   scene.animate = t => {
-    star.rotation.y = t * .027;skin.rotation.y = t * .027;shell.rotation.y = t * .02;
+    star.rotation.y = t * .027;
     content.rotation.z = -.16 + Math.sin(t * .035) * .018;
-    const breath = 1 + .004 * Math.sin(t * .18);star.scale.setScalar(breath);skin.scale.setScalar(breath);
+    const breath = 1 + .004 * Math.sin(t * .18);star.scale.setScalar(breath);
   };
   scene.theme = 'Giant star';scene.radius = 2.95;scene.volumeKind = 'convective-star';
 }
