@@ -1,4 +1,6 @@
 import * as THREE from "three";
+import { createCosmos, COSMIC_TARGETS } from "../../src/black-geometry/cosmos.js";
+import { cosmicPoster } from "./cosmos-posters.js";
 import { SCULPTURE_STYLE, sculptureOpacity } from "../../src/black-geometry/world.js";
 
 const n = value => value.toFixed(1);
@@ -43,5 +45,10 @@ export function sculpturePoster(model,{shortcut="open"}={}) {
 
 export function posterOutputs(models) {
   const files=new Map(models.map(model=>[`sculpture-${model.name}.svg`,sculpturePoster(model)]));
+  for (const name of COSMIC_TARGETS) {
+    const scene = createCosmos(name);
+    files.set(`sculpture-${name}.svg`, cosmicPoster(scene));
+    scene.dispose();
+  }
   return files;
 }

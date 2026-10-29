@@ -67,16 +67,22 @@ The STIX Two Text page stays readable with static SVGs when graphics fail or
 reduced motion is requested. Visitors can enable animation or retry; rendering
 failures retain content and native links. Print uses dark text on white.
 
-One WebGL context renders five sculptures: a quintic slice, permutation graph,
-loss landscape, Bellman decision graph, and figure-eight Klein immersion. Each
-main page has its own form. All geometry and static posters are prepared at build time;
-no numerical solver runs in the browser. Older institutional and project geometry
-factories remain in source but are not included in the homepage packet.
+One WebGL context renders five sculptures: a quintic slice, an orbital system,
+an accretion disk with polar jets, a spiral galaxy, and a figure-eight Klein
+immersion. The two mathematical meshes are packed at build time. The three
+space-inspired scenes build deterministic transparent shells and star fields at
+startup. Satellites orbit independently; shaders animate stars and flowing jets
+without rebuilding buffers. These are authored abstract forms, not physical
+simulations. All five have matching static SVG posters prepared at build time.
+Older institutional, algorithm, and project factories remain in source but are
+not included in the homepage packet.
 
-A shared depth prepass, per-sculpture materials, and a two-surface dissolve preserve
-readable geometry through transitions. Notes use a faint hidden-contour pass to
-expose folded lobes. Prepared targets stay resident. Each visit has its own orbit
-start and drag state; reversal preserves a still-visible identity's state.
+A shared depth prepass and two-surface dissolve preserve the mathematical meshes
+through transitions. Notes use a faint hidden-contour pass to expose folded
+lobes. Cosmic shells use antialiased mesh lines, nearly clear faces, and alpha
+transitions without depth occlusion, so their rear layers remain visible.
+Prepared targets stay resident. Each visit has its own orbit start and drag state;
+reversal preserves a still-visible identity's state.
 
 Text, navigation, and a static poster appear immediately. Live artwork waits for
 fonts, decoded sculptures, shaders, uploaded GPU buffers, warm-up draws, and a GPU

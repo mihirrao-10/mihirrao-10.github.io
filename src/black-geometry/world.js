@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { QUALITY, renderingDpr } from "./preferences.js";
 import { cameraPose } from "./scene-state.js";
+import { createCosmos, COSMIC_TARGETS } from "./cosmos.js";
 
 export const SCULPTURE_PALETTES = Object.freeze({
   education: ["#555555", "#888888", "#aaaaaa", "#dddddd"],
@@ -16,7 +17,7 @@ export const SCULPTURE_PALETTES = Object.freeze({
   notes: ["#e8e2f7", "#ddeef9", "#ffe4d4", "#fafaff"],
 });
 export const SCULPTURE_STYLE = Object.freeze({ scale: .84, opacity: .88 });
-export const sculptureOpacity = name => name === 'notes' ? .32 : SCULPTURE_STYLE.opacity;
+export const sculptureOpacity = name => name === 'hero' ? .30 : name === 'notes' || COSMIC_TARGETS.includes(name) ? .32 : SCULPTURE_STYLE.opacity;
 
 /** Smooth coincident corners without rounding genuine creases or changing data positions. */
 export function smoothSurfaceNormals(position, creaseCosine = 0.65) {
@@ -259,8 +260,14 @@ export async function createWorld({container,quality="high",onFailure}) {
       side:THREE.DoubleSide,transparent:true,depthTest:true,depthFunc:THREE.GreaterDepth,depthWrite:false,forceSinglePass:true});
     const interior=new THREE.Mesh(emptyGeometry,material);interior.frustumCulled=false;interior.renderOrder=0;interior.visible=false;pivot.add(interior);return interior;
   });
+  const cosmic = new Map(COSMIC_TARGETS.map(name => {
+    const cosmos = createCosmos(name);
+    cosmos.root.visible = false; pivot.add(cosmos.root);
+    return [name, { name, cosmos, bounds: cosmos.bounds, finite: true, orbitStart: 0, orientation: [0,0,0,1] }];
+  }));
   let finiteActiveBuffers=true;
   function decode(name){
+    if(cosmic.has(name))return cosmic.get(name);
     if(decoded.has(name))return decoded.get(name);
     const modelIndex=packed.manifest.models.findIndex(m=>m.name===name);
     if(modelIndex<0)throw new Error(`Unknown sculpture ${name}`);
@@ -292,9 +299,11 @@ export async function createWorld({container,quality="high",onFailure}) {
     for(let i=0;i<2;i++){
       // A target owns its geometry across endpoint changes. Both settled
       // meshes can reference it safely; only one endpoint is visible.
-      meshes[i].geometry=activeModels[i].geometry;
-      depthMeshes[i].geometry=activeModels[i].geometry;
-      interiorMeshes[i].geometry=activeModels[i].geometry;
+      if (activeModels[i].geometry) {
+        meshes[i].geometry=activeModels[i].geometry;
+        depthMeshes[i].geometry=activeModels[i].geometry;
+        interiorMeshes[i].geometry=activeModels[i].geometry;
+      }
       meshes[i].material.uniforms.opacity.value=sculptureOpacity(i?b:a);
       meshes[i].material.uniforms.stardust.value=(i?b:a)==='notes'?1:0;
       SCULPTURE_PALETTES[i?b:a].forEach((color,k)=>meshes[i].material.uniforms[`palette${k}`].value.set(color));
@@ -378,7 +387,17 @@ export async function createWorld({container,quality="high",onFailure}) {
       });
       meshes.forEach((mesh,index)=>{mesh.scale.setScalar(fitScales[index]);depthMeshes[index].scale.copy(mesh.scale);interiorMeshes[index].scale.copy(mesh.scale);});
       camera.position.multiplyScalar(orbitRadius);
-      meshes[0].visible=blend<1;meshes[1].visible=currentName!==nextName&&blend>0;
+      meshes[0].visible=blend<1&&!activeModels[0].cosmos;
+      meshes[1].visible=currentName!==nextName&&blend>0&&!activeModels[1].cosmos;
+      for(const model of cosmic.values())model.cosmos.root.visible=false;
+      activeModels.forEach((model,index)=>{
+        if(!model.cosmos)return;
+        const presence=index===0?1-blend:currentName!==nextName?blend:0;
+        if(presence<=0)return;
+        const root=model.cosmos.root;
+        root.visible=true;root.quaternion.copy(meshes[index].quaternion);root.scale.setScalar(fitScales[index]);
+        model.cosmos.update(Math.max(0,orbitClock-model.orbitStart),presence,renderer.getPixelRatio());
+      });
       depthMeshes.forEach((mesh,index)=>{mesh.visible=meshes[index].visible;});
       interiorMeshes.forEach((mesh,index)=>{mesh.visible=activeModels[index].name==='notes'&&meshes[index].visible;});
       for(const mesh of meshes){mesh.material.uniforms.progress.value=blend;mesh.material.uniforms.time.value=time;}
@@ -396,14 +415,14 @@ export async function createWorld({container,quality="high",onFailure}) {
       // so its first appearance in Notes does not interrupt a section change.
       renderer.render(scene,camera);if(shaderFailed)throw new Error("Sculpture shader initialization failed");frames++;
     },
-    snapshot:()=>({frames,warmedTargets,drawCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles,quality:currentQuality,dpr:renderer.getPixelRatio(),geometries:renderer.info.memory.geometries,contextLost:renderer.getContext().isContextLost(),target:currentName,nextTarget:nextName,blend,opacity:meshes[0].material.uniforms.opacity.value,opaque:meshes.every(mesh=>!mesh.material.transparent),depthPrepass:depthMeshes.every((depth,i)=>depth.geometry===meshes[i].geometry&&depth.material.uniforms===meshes[i].material.uniforms&&depth.material.depthWrite&&!depth.material.colorWrite&&depth.visible===meshes[i].visible&&depth.scale.equals(meshes[i].scale)&&depth.quaternion.equals(meshes[i].quaternion)&&depth.position.equals(meshes[i].position)),presentationScale:SCULPTURE_STYLE.scale,entranceProgress,entranceScale,gradientTime,orbitAges:activeModels.map(model=>Math.max(0,orbitClock-model.orbitStart)),endpointOpacities:meshes.map(mesh=>mesh.material.uniforms.opacity.value),activeMeshes:meshes.filter(m=>m.visible).length,activeDepthMeshes:depthMeshes.filter(m=>m.visible).length,activeInteriorMeshes:interiorMeshes.filter(m=>m.visible).length,interiorTargets:interiorMeshes.flatMap((mesh,i)=>mesh.visible?[activeModels[i].name]:[]),interiorContoursAligned:interiorMeshes.every((mesh,i)=>mesh.geometry===meshes[i].geometry&&mesh.material.uniforms===meshes[i].material.uniforms&&mesh.material.depthFunc===THREE.GreaterDepth&&!mesh.material.depthWrite&&mesh.scale.equals(meshes[i].scale)&&mesh.quaternion.equals(meshes[i].quaternion)&&mesh.position.equals(meshes[i].position)&&mesh.visible===(activeModels[i].name==='notes'&&meshes[i].visible)),shading:"tessellated",camera:camera.position.toArray(),cameraOrientation:camera.quaternion.toArray(),rotation:[...userRotation],userOrientation:[...userOrientation],orientation:meshes[0].quaternion.toArray(),dragging,facets:count,decodedTargets:decoded.size,finiteActiveBuffers,visibleRoutes:routes.filter(r=>r.line.visible).map(r=>r.kind),activePathPoints:routes.filter(r=>r.line.visible).map(r=>r.shown),width,height,orbitRadius,fitScales:[...fitScales]}),
-    dispose(){if(disposed)return;disposed=true;canvas.removeEventListener("webglcontextlost",contextLost);[...meshes,...depthMeshes,...interiorMeshes].forEach(mesh=>mesh.material.dispose());for(const model of decoded.values())model.geometry.dispose();routes.forEach(({line})=>{line.geometry.dispose();line.material.dispose();});decoded.clear();renderer.dispose();canvas.remove();},
+    snapshot:()=>({frames,warmedTargets,drawCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles,quality:currentQuality,dpr:renderer.getPixelRatio(),geometries:renderer.info.memory.geometries,contextLost:renderer.getContext().isContextLost(),target:currentName,nextTarget:nextName,blend,opacity:meshes[0].material.uniforms.opacity.value,opaque:meshes.every(mesh=>!mesh.material.transparent),depthPrepass:!activeModels.some(model=>model.cosmos)&&depthMeshes.every((depth,i)=>depth.geometry===meshes[i].geometry&&depth.material.uniforms===meshes[i].material.uniforms&&depth.material.depthWrite&&!depth.material.colorWrite&&depth.visible===meshes[i].visible&&depth.scale.equals(meshes[i].scale)&&depth.quaternion.equals(meshes[i].quaternion)&&depth.position.equals(meshes[i].position)),presentationScale:SCULPTURE_STYLE.scale,entranceProgress,entranceScale,gradientTime,orbitAges:activeModels.map(model=>Math.max(0,orbitClock-model.orbitStart)),endpointOpacities:meshes.map(mesh=>mesh.material.uniforms.opacity.value),activeMeshes:meshes.filter(m=>m.visible).length,activeDepthMeshes:depthMeshes.filter(m=>m.visible).length,activeInteriorMeshes:interiorMeshes.filter(m=>m.visible).length,interiorTargets:interiorMeshes.flatMap((mesh,i)=>mesh.visible?[activeModels[i].name]:[]),interiorContoursAligned:interiorMeshes.every((mesh,i)=>mesh.geometry===meshes[i].geometry&&mesh.material.uniforms===meshes[i].material.uniforms&&mesh.material.depthFunc===THREE.GreaterDepth&&!mesh.material.depthWrite&&mesh.scale.equals(meshes[i].scale)&&mesh.quaternion.equals(meshes[i].quaternion)&&mesh.position.equals(meshes[i].position)&&mesh.visible===(activeModels[i].name==='notes'&&meshes[i].visible)),shading:"tessellated",camera:camera.position.toArray(),cameraOrientation:camera.quaternion.toArray(),rotation:[...userRotation],userOrientation:[...userOrientation],orientation:meshes[0].quaternion.toArray(),dragging,facets:count,decodedTargets:decoded.size+cosmic.size,packedTargets:decoded.size,cosmicTargets:COSMIC_TARGETS.filter(name=>cosmic.get(name).cosmos.root.visible),cosmicAges:Object.fromEntries([...cosmic].map(([name,model])=>[name,model.cosmos.uniforms.time.value])),transparentCosmos:[...cosmic.values()].every(model=>[...model.cosmos.materials].every(material=>material.transparent&&!material.depthWrite&&!material.depthTest)),finiteActiveBuffers,visibleRoutes:routes.filter(r=>r.line.visible).map(r=>r.kind),activePathPoints:routes.filter(r=>r.line.visible).map(r=>r.shown),width,height,orbitRadius,fitScales:[...fitScales]}),
+    dispose(){if(disposed)return;disposed=true;canvas.removeEventListener("webglcontextlost",contextLost);[...meshes,...depthMeshes,...interiorMeshes].forEach(mesh=>mesh.material.dispose());for(const model of decoded.values())model.geometry.dispose();routes.forEach(({line})=>{line.geometry.dispose();line.material.dispose();});decoded.clear();for(const model of cosmic.values())model.cosmos.dispose();cosmic.clear();renderer.dispose();canvas.remove();},
   };
   try {
     // Compile every material, decode every sculpture and upload every buffer
     // while the loader covers the page. Yield between targets to keep it alive.
     await renderer.compileAsync(scene,camera);
-    for(const {name} of packed.manifest.models){
+    for(const name of [...packed.manifest.models.map(model=>model.name),...COSMIC_TARGETS]){
       if(disposed||renderer.getContext().isContextLost())throw new Error('Graphics preparation interrupted');
       world.render({state:{target:name,nextTarget:name,blend:0},time:0,project:{shortcut:'open',path:1}});
       warmedTargets++;

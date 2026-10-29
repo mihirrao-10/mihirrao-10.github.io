@@ -60,6 +60,12 @@ export function cameraPose(state, { time = 0, pointer = [0, 0], fullMotion = tru
   const b = TARGET_POSES[state.nextTarget] || a;
   const pose = a.map((value, i) => mix(value, b[i], state.blend));
   if (fullMotion) {
+    if (['education', 'experience', 'projects'].includes(state.target)) {
+      pose[3] += .14 + Math.sin(time * .075) * .065 + clamp(pointer[1], -1, 1) * .015;
+      pose[4] += .22 + time * .018 + clamp(pointer[0], -1, 1) * .025;
+      pose[5] += Math.sin(time * .06) * .025;
+      return pose;
+    }
     // Continuous orbit, with an elevated, gently tilting viewpoint. The shared
     // clock pauses during a grab.
     pose[3] += 0.2 + Math.sin(time * 0.23) * 0.18 + clamp(pointer[1], -1, 1) * 0.025;

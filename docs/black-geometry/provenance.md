@@ -9,12 +9,34 @@ The source and tests define current sampling budgets and rendering parameters.
 
 ## Current homepage
 
-The five pages use the quintic slice (About), a permutation graph (Education),
-a loss landscape (Experience), a Bellman decision graph (Projects), and the Klein
-immersion (Notes). All use grayscale presentation. Institutional sculptures and
-research exports below document retained source factories, not active pages.
+The five pages use the quintic slice (About), an orbital system (Education),
+an accretion disk and polar jets (Experience), a spiral galaxy (Projects), and
+the Klein immersion (Notes). All use grayscale presentation. Institutional
+sculptures and research exports below document retained source factories,
+not active pages.
 
-`abstract.js` prepares the three themed illustrations at build time:
+`cosmos.js` authors the three space-inspired scenes with transparent parametric
+shells, seeded star fields, and independent orbital motion:
+
+- **Education:** a fine spherical lattice, three warped annular rings, and three
+  satellites following differently inclined paths. Ring dust rotates separately.
+- **Experience:** two warped accretion sheets surround a toroidal rim and ghost
+  core. Two hollow polar jets carry outward-flowing particles.
+- **Projects:** five logarithmic spiral ribbons surround an oblate stellar core,
+  a tiny binary pair, and a seeded cluster of stars. Differential rotation gives
+  the star field gentle motion independent of the ribbons.
+
+These are original abstract artworks, not reconstructions of observed objects,
+orbital mechanics, or relativistic simulations. Shells have antialiased triangle
+edges and nearly clear faces; depth occlusion is disabled to reveal rear layers.
+Particle motion is computed in shaders and shell buffers remain fixed. Tests
+check finite geometry, deterministic seeds, moving bounds, transparency, and
+buffer reuse. Static SVGs project the same scene geometry and initial pose.
+
+## Retained algorithm illustrations
+
+`abstract.js` retains three earlier themed illustrations, outside the active
+homepage build:
 
 - **Education:** the 24 permutations of `(0,1,2,3)`, centered and projected from
   the sum-zero hyperplane in four dimensions into an orthonormal 3D basis. Edges

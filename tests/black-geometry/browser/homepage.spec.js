@@ -41,7 +41,7 @@ for (const [width, height] of [[320, 568], [390, 844], [768, 1024], [1024, 768],
   });
 }
 
-test('menu switches five distinct abstract sculptures and supports rapid reversals', async ({ page }) => {
+test('menu switches mathematical meshes and translucent cosmic scenes and supports rapid reversals', async ({ page }) => {
   await live(page);
   for (const [id, target] of scenes) {
     await select(page, id);
@@ -53,7 +53,10 @@ test('menu switches five distinct abstract sculptures and supports rapid reversa
     expect(world.decodedTargets).toBe(5);
     expect(world.warmedTargets).toBe(5);
     expect(world.finiteActiveBuffers).toBe(true);
-    expect(world.depthPrepass).toBe(true);
+    const cosmic = ['education', 'experience', 'projects'].includes(target);
+    expect(world.depthPrepass).toBe(!cosmic);
+    expect(world.transparentCosmos).toBe(true);
+    expect(world.cosmicTargets).toEqual(cosmic ? [target] : []);
     expect(world.activeInteriorMeshes).toBe(target === 'notes' ? 1 : 0);
   }
   await select(page, 'personal-projects');
@@ -111,4 +114,13 @@ for (const port of [8000, 8001]) test(`root/dist ${port} preserves PDF links and
     expect(response.ok()).toBe(true);
     expect((await response.body()).subarray(0, 5).toString()).toBe('%PDF-');
   }
+});
+
+test('cosmic orbits advance smoothly while the prepared mesh count stays stable', async ({ page }) => {
+  await live(page);
+  await select(page, 'education');
+  await expect.poll(async () => (await snapshot(page)).world.cosmicTargets).toEqual(['education']);
+  const before = (await snapshot(page)).world;
+  await expect.poll(async () => (await snapshot(page)).world.cosmicAges.education).toBeGreaterThan(before.cosmicAges.education + .3);
+  expect((await snapshot(page)).world.geometries).toBe(before.geometries);
 });

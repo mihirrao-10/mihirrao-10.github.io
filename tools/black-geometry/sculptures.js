@@ -2,10 +2,9 @@ import * as THREE from "three";
 import { surfaceFitBounds, smoothSurfaceNormals } from "../../src/black-geometry/world.js";
 import { createHero } from "../../src/black-geometry/sculptures/hero.js";
 import { createNotes } from "../../src/black-geometry/sculptures/mathematical.js";
-import { createEducation, createExperience, createProjects } from "../../src/black-geometry/sculptures/abstract.js";
 
-const COMPONENTS = ["hero", "education", "experience", "projects", "notes"];
-const factories = [createHero, createEducation, createExperience, createProjects, createNotes];
+const COMPONENTS = ["hero", "notes"];
+const factories = [createHero, createNotes];
 const xyz = new THREE.Vector3();
 const center = (face) => [0, 1, 2].map(k => (face.p[k] + face.p[k + 3] + face.p[k + 6]) / 3);
 const area = (face) => {
