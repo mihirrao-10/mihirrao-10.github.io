@@ -19,7 +19,7 @@ test('the seven main links reach one complete page each, without secondary contr
   assert.deepEqual(scenes.map(node => attr(node, 'id')), ['top', 'education', 'experience', 'publications', 'teaching', 'personal-projects', 'notes']);
   const index = all(doc, node => hasClass(node, 'site-index'))[0];
   const links = all(index, node => node.tagName === 'a');
-  assert.deepEqual(links.map(node => normalize(text(node))), ['About', 'Education', 'Industry experience', 'Publications', 'Teaching assistant', 'Projects', 'Personal notes']);
+  assert.deepEqual(links.map(node => normalize(text(node))), ['About', 'Education', 'Industry experience', 'Publications', 'Teaching', 'Projects', 'Personal notes']);
   assert.deepEqual(links.map(node => attr(node, 'href')), scenes.map(node => `#${attr(node, 'id')}`));
   assert.equal(new Set(scenes.map(node => attr(node, 'data-target'))).size, 7);
   assert.equal(links.filter(node => attr(node, 'aria-current') === 'page').length, 1);
