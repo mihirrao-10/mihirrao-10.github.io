@@ -67,9 +67,9 @@ The STIX Two Text page stays readable with static SVGs when graphics fail or
 reduced motion is requested. Visitors can enable animation or retry; rendering
 failures retain content and native links. Print uses dark text on white.
 
-One WebGL context renders five abstract sculptures: a quintic slice, looped knot,
-folded ring, three-twist ribbon, and figure-eight Klein immersion. Each main page
-has its own form. All geometry and static posters are prepared at build time;
+One WebGL context renders five sculptures: a quintic slice, permutation graph,
+loss landscape, Bellman decision graph, and figure-eight Klein immersion. Each
+main page has its own form. All geometry and static posters are prepared at build time;
 no numerical solver runs in the browser. Older institutional and project geometry
 factories remain in source but are not included in the homepage packet.
 
@@ -81,7 +81,8 @@ start and drag state; reversal preserves a still-visible identity's state.
 Text, navigation, and a static poster appear immediately. Live artwork waits for
 fonts, decoded sculptures, shaders, uploaded GPU buffers, warm-up draws, and a GPU
 fence. Graphics preparation never blocks navigation. Resolution adapts to sustained
-frame cost; geometry detail stays fixed.
+frame cost; geometry detail stays fixed. Geometry and poster requests carry
+content hashes so returning visitors receive the current visuals.
 
 The beige, grayscale homepage has five links and no secondary navigation.
 Education, Experience, and Projects show two brief entries each. Notes presents

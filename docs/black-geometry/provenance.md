@@ -9,31 +9,34 @@ The source and tests define current sampling budgets and rendering parameters.
 
 ## Current homepage
 
-The five pages use the quintic slice (About), a looped knot (Education), a folded
-ring (Experience), a three-twist ribbon (Projects), and the Klein immersion (Notes).
-They share grayscale presentation and prepared geometry. Institutional sculptures
-and research exports below document retained source factories, not active pages.
+The five pages use the quintic slice (About), a permutation graph (Education),
+a loss landscape (Experience), a Bellman decision graph (Projects), and the Klein
+immersion (Notes). All use grayscale presentation. Institutional sculptures and
+research exports below document retained source factories, not active pages.
 
-`abstract.js` authors the three new forms. The knot uses Three.js
-`TorusKnotGeometry(1.5, .29, 288, 64, 2, 3)`. The folded ring is a corrugated torus:
+`abstract.js` prepares the three themed illustrations at build time:
 
-```text
-r = .48 + .13 cos(3u)
-R = 1.65 + .25 cos(3u) + r cos(v)
-P = (R cos(u), R sin(u), r sin(v) + .4 sin(3u))
-```
+- **Education:** the 24 permutations of `(0,1,2,3)`, centered and projected from
+  the sum-zero hyperplane in four dimensions into an orthonormal 3D basis. Edges
+  exchange consecutive values. Breadth-first search highlights a six-edge route
+  from ascending to descending order. This is the four-coordinate permutohedron,
+  following the [convex-hull definition in MIT's notes](https://math.mit.edu/~apost/courses/18.217_2024/lect01_18217.pdf).
+- **Experience:** an authored objective
+  `f(x,z)=.16(x²+z²)+.6 sin(1.7x) cos(1.4z)`, for `x,z` in `[-2.2,2.2]`.
+  Height is `.95 f`. Contours intersect the actual display triangles. Three
+  gradient-descent paths use analytic derivatives and backtracking line search;
+  their endpoints mark local minima. This illustrates optimization and does not
+  represent measured training losses or employer data.
+- **Projects:** a finite-horizon deterministic decision graph with 28 states and
+  42 actions. Terminal rewards have two peaks; backward induction computes
+  `V(s)=max_a[r(s,a)+.92 V(next(s,a))]`. A dark route follows the optimal policy,
+  while depth reflects state value. This illustrates the Bellman optimality idea
+  described by [Sutton and Barto](https://www.incompleteideas.net/book/bookdraft2018mar21.pdf),
+  rather than claiming to reproduce the linked research project's state space.
 
-The ribbon sweeps a strip with three half-twists:
-
-```text
-R = 1.7 + v cos(3u/2), -0.75 <= v <= 0.75
-P = (R cos(u), R sin(u), v sin(3u/2))
-```
-
-Its final seam reflects the strip parameter, `(2pi,v) ~ (0,-v)`. These are authored
-illustrations, unrelated to the schools, employers, or measured project data.
-Tests check finite, nondegenerate triangles, neutral vertex colors, closed knot
-and ring seams, and the ribbon's two parameter-edge chains joined at the reflection.
+Tests verify graph adjacency and shortest-path length, gradients against finite
+differences, monotone descent, and Bellman values against exhaustive discounted
+returns. The three source meshes remain within the 65,536-facet packet budget.
 
 ## Calabi–Yau slice
 

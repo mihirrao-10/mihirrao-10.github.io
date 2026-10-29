@@ -21,7 +21,7 @@ for (const [width, height] of [[320, 568], [390, 844], [768, 1024], [1024, 768],
     await page.goto('/?bg-debug');
     for (const [id, target] of scenes) {
       await select(page, id);
-      await expect(page.locator('#sculpture-poster')).toHaveAttribute('src', `assets/black-geometry/generated/sculpture-${target}.svg`);
+      expect(await page.locator('#sculpture-poster').evaluate(image => new URL(image.src).pathname)).toBe(`/assets/black-geometry/generated/sculpture-${target}.svg`);
       const dimensions = await page.locator(`#${id}`).evaluate(element => {
         const box = element.getBoundingClientRect();
         return { top: box.top, bottom: box.bottom, right: box.right, height: innerHeight,
@@ -100,7 +100,7 @@ test('content and navigation remain usable while sculpture data is unavailable',
   await expect(page.getByRole('button', { name: 'Retry animation' })).toBeVisible();
   await select(page, 'notes');
   await expect(page.locator('#notes .note-link')).toHaveCount(2);
-  await expect(page.locator('#sculpture-poster')).toHaveAttribute('src', /sculpture-notes\.svg$/);
+  await expect(page.locator('#sculpture-poster')).toHaveAttribute('src', /sculpture-notes\.svg\?v=/);
 });
 
 for (const port of [8000, 8001]) test(`root/dist ${port} preserves PDF links and local assets`, async ({ page, request }) => {

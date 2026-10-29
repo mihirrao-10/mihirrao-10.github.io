@@ -48,8 +48,22 @@ export function withEntryReference(html, contents) {
   return updated;
 }
 
+export function posterVersions(files) {
+  return Object.fromEntries([...files].filter(([name]) => /^sculpture-.*\.svg$/.test(name))
+    .map(([name, contents]) => [name.slice(10, -4), createHash('sha256').update(contents).digest('hex').slice(0, 12)]));
+}
+
+export function withPosterReferences(html, versions) {
+  return html.replace(/(src=")assets\/black-geometry\/generated\/sculpture-([a-z-]+)\.svg(?:\?[^"\s]*)?(")/g,
+    (_, before, name, after) => {
+      if (!versions[name]) throw new Error(`Missing poster version: ${name}`);
+      return `${before}assets/black-geometry/generated/sculpture-${name}.svg?v=${versions[name]}${after}`;
+    });
+}
+
 export async function expectedOutputs() {
   const sculptures = await sculptureOutputs();
+  const posters = posterOutputs(sculptures.models);
   const dataVersion = createHash('sha256').update(sculptures.binary).digest('hex').slice(0, 12);
   const result = await build({
     absWorkingDir: ROOT,
@@ -60,7 +74,10 @@ export async function expectedOutputs() {
     format: "esm",
     target: ["es2020"],
     minify: true,
-    define: { __SCULPTURE_DATA_VERSION__: JSON.stringify(dataVersion) },
+    define: {
+      __SCULPTURE_DATA_VERSION__: JSON.stringify(dataVersion),
+      __SCULPTURE_POSTER_VERSIONS__: JSON.stringify(posterVersions(posters)),
+    },
     write: false,
     legalComments: "external",
     chunkNames: "[name]-[hash]",
@@ -73,7 +90,7 @@ export async function expectedOutputs() {
     await fs.readFile(path.join(ROOT, "assets/css/black-geometry.css")),
   );
   files.set(stylesheet.name, stylesheet.contents);
-  for (const [name, svg] of posterOutputs(sculptures.models)) files.set(name, Buffer.from(svg));
+  for (const [name, svg] of posters) files.set(name, Buffer.from(svg));
   files.set("sculpture-data.bin", sculptures.binary);
   files.set("sculpture-data.bin.gz", gzipSync(sculptures.binary, { level: 9 }));
   // esbuild preserves notices; include the complete third-party license as well.
@@ -114,7 +131,8 @@ export async function buildExperience({ check = false } = {}) {
   const indexPath = path.join(ROOT, "index.html");
   const html = await fs.readFile(indexPath, "utf8");
   const stylesheetName = [...expected.keys()].find(name => STYLESHEET_NAME.test(name));
-  const updatedHTML = withEntryReference(withStylesheetReference(html, stylesheetName), expected.get('main.js'));
+  const updatedHTML = withPosterReferences(
+    withEntryReference(withStylesheetReference(html, stylesheetName), expected.get('main.js')), posterVersions(expected));
   const stylesheetChanged = updatedHTML !== html;
   const stale = [...differences, ...(stylesheetChanged ? ["index.html asset references"] : [])];
   if (check && stale.length)

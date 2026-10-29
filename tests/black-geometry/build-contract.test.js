@@ -9,6 +9,8 @@ import {
   fingerprintedStylesheet,
   withStylesheetReference,
   withEntryReference,
+  posterVersions,
+  withPosterReferences,
   ROOT,
   OUTPUT,
 } from "../../tools/black-geometry/build.js";
@@ -27,6 +29,7 @@ test("generated assets are deterministic and every browser import resolves to a 
     "The homepage must reference the current generated stylesheet; run build:experience after CSS edits");
   assert.equal(withEntryReference(html, a.get('main.js')), html,
     'Returning visitors must fetch the current entry module rather than stale chunk references');
+  assert.equal(withPosterReferences(html, posterVersions(a)), html, 'Static and live poster URLs must use the same content hash');
   const dataVersion = createHash('sha256').update(a.get('sculpture-data.bin')).digest('hex').slice(0, 12);
   const worldSource = [...a].filter(([name]) => name.startsWith('world-') && name.endsWith('.js'))
     .map(([, contents]) => Buffer.from(contents).toString()).join('');
@@ -107,4 +110,17 @@ test("stylesheet references update deterministically without changing surroundin
   assert.throws(() => withStylesheetReference("<p>No stylesheet</p>", name), /exactly one/);
   assert.throws(() => withStylesheetReference(`${source}<link rel="stylesheet" href="assets/css/black-geometry.css">`, name), /found 2/);
   assert.throws(() => withStylesheetReference(source, "../other.css"), /Invalid generated/);
+});
+
+test('poster URLs change only when their own artwork changes', () => {
+  const files = new Map([['sculpture-hero.svg', Buffer.from('keep')], ['sculpture-education.svg', Buffer.from('old')]]);
+  const old = posterVersions(files);
+  files.set('sculpture-education.svg', Buffer.from('new'));
+  const next = posterVersions(files);
+  assert.equal(old.hero, next.hero);
+  assert.notEqual(old.education, next.education);
+  const html = '<img src="assets/black-geometry/generated/sculpture-education.svg">';
+  const updated = withPosterReferences(html, next);
+  assert.ok(updated.includes(`?v=${next.education}`));
+  assert.equal(withPosterReferences(updated, next), updated);
 });

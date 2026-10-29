@@ -27,7 +27,7 @@ test('the five main links reach one complete page each, without secondary contro
   for (const id of ['education', 'experience', 'personal-projects']) {
     const page = scenes.find(node => attr(node, 'id') === id);
     assert.equal(all(page, node => hasClass(node, 'entry')).length, 2);
-    assert.ok(normalize(text(page)).split(/\s+/).length < 50, `${id} remains a short page`);
+    assert.ok(normalize(text(page)).split(/\s+/).length < (id === 'personal-projects' ? 100 : 65), `${id} remains a short page`);
   }
 });
 
@@ -62,4 +62,20 @@ test('generated notes remain unique links to real PDFs in non-empty groups', asy
   }
   for (const group of all(notes, node => hasClass(node, 'notes-group')))
     assert.ok(all(group, node => hasClass(node, 'note')).length > 0);
+});
+
+test('education and employment use separate month ranges and the requested teams', async () => {
+  const doc = await document();
+  const dates = all(doc, node => hasClass(node, 'entry-dates'));
+  assert.deepEqual(dates.map(node => normalize(text(node))), [
+    'Sept 2025 - Dec 2026', 'Sept 2020 - Jun 2025',
+    'Jun 2026 - Sept 2026', 'Apr 2024 - Sept 2024',
+  ]);
+  for (const date of dates) assert.equal(all(date, node => node.tagName === 'time').length, 2);
+  assert.equal(all(doc, node => hasClass(node, 'hero-description')).length, 0);
+  const education = all(doc, node => attr(node, 'id') === 'education')[0];
+  assert.doesNotMatch(text(education), /Foundations|specialization/i);
+  const experience = all(doc, node => attr(node, 'id') === 'experience')[0];
+  assert.deepEqual(all(experience, node => hasClass(node, 'entry-detail')).map(node => normalize(text(node))),
+    ['MATLAB Data Analysis', 'Investment Process Engineering']);
 });

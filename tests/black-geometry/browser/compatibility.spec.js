@@ -12,7 +12,7 @@ test('reduced-motion visitors can navigate posters and explicitly enable animati
   const enable = page.getByRole('button', { name: 'Enable animation' });
   await expect(enable).toBeVisible();
   await page.getByRole('navigation', { name: 'Main navigation' }).getByRole('link', { name: 'Notes', exact: true }).click();
-  await expect(page.locator('#sculpture-poster')).toHaveAttribute('src', /sculpture-notes\.svg$/);
+  await expect(page.locator('#sculpture-poster')).toHaveAttribute('src', /sculpture-notes\.svg\?v=/);
   await enable.click();
   await expect(page.locator('body')).toHaveAttribute('data-experience-state', 'ready', { timeout: 30000 });
   await expect(enable).toBeHidden();

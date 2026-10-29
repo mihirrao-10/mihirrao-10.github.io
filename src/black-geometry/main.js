@@ -7,6 +7,7 @@ const body = document.body;
 const root = document.documentElement;
 const container = document.querySelector('.world');
 const poster = document.querySelector('#sculpture-poster');
+const posterVersions = typeof __SCULPTURE_POSTER_VERSIONS__ === 'object' ? __SCULPTURE_POSTER_VERSIONS__ : {};
 const animationAction = document.querySelector('.animation-action');
 const system = matchMedia('(prefers-reduced-motion: reduce)');
 const finePointer = matchMedia('(pointer: fine)');
@@ -66,7 +67,8 @@ function updateScene() {
   // Load a poster only while it is serving as the artwork.
   if (lastPoster !== state.target && (motion !== 'full' || !world || failed)) {
     lastPoster = state.target;
-    poster.src = `assets/black-geometry/generated/sculpture-${state.target}.svg`;
+    const version = posterVersions[state.target];
+    poster.src = `assets/black-geometry/generated/sculpture-${state.target}.svg${version ? `?v=${version}` : ''}`;
   }
 }
 function settlePresentation() {
