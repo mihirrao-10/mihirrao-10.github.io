@@ -1,83 +1,39 @@
 import * as THREE from 'three';
-import { random, gaussian, volumeMaterial } from './astronomy-materials.js';
+import { random, gaussian } from './astronomy-materials.js';
+import { facetGeometry, facetMaterial, facetMesh, globe, triangleSurface, PALETTES, TAU } from './tessellation.js';
 
-const TAU=2*Math.PI;
-const limit=(value,low,high)=>Math.max(low,Math.min(high,value));
-const normal=(rng,scale=1)=>limit(gaussian(rng),-2.8,2.8)*scale;
-
-function shells(scene,parent,{detail=128,opacity=.26}={}){
-  const geometry=new THREE.SphereGeometry(1,detail,detail/2),material=volumeMaterial(scene,opacity);
-  return (center,scale,quaternion)=>{
-    const mesh=new THREE.Mesh(geometry,material);mesh.position.fromArray(center);mesh.scale.fromArray(scale);
-    if(quaternion)mesh.quaternion.copy(quaternion);
-    mesh.userData.posterKind='volume';mesh.renderOrder=1;parent.add(mesh);return mesh;
-  };
+function spiralArm(phase, minor=false, columns=144, rows=12) {
+  return triangleSurface((u,v)=>{
+    const r=.34+2.45*u,a=phase+3.8*Math.log(1+2.4*u),cross=v*TAU;
+    const envelope=Math.sin(Math.PI*u)**.42;
+    const width=(minor?.12:.22)*(1+.7*u)*envelope;
+    const radial=r+width*Math.cos(cross),height=(.09+.07*(1-u))*envelope*Math.sin(cross);
+    return[radial*Math.cos(a),height+.045*Math.sin(a*3)*envelope,radial*Math.sin(a)];
+  },columns,rows);
 }
-
-// A conservative bound covers every local particle orbit, including tilted ones.
-function fitVolume(scene){
-  let radius=0;
-  scene.root.traverse(object=>{
-    if(!object.geometry)return;
-    const {position,orbitCenter}=object.geometry.attributes;
-    if(object.isPoints){
-      for(let i=0;i<position.count;i++){
-        const c=[orbitCenter.getX(i),orbitCenter.getY(i),orbitCenter.getZ(i)];
-        radius=Math.max(radius,Math.hypot(...c)+Math.hypot(position.getX(i)-c[0],position.getY(i)-c[1],position.getZ(i)-c[2]));
-      }
-    }else radius=Math.max(radius,object.position.length()+Math.max(...object.scale.toArray()));
-  });
-  scene.radius=radius*1.035;
-}
-
-export function createGalaxyVolume(scene,_maps,points){
-  const content=new THREE.Group();scene.root.add(content);
-  const shell=shells(scene,content,{detail:64,opacity:.13});
-  const armPoint=(u,arm=0,minor=false)=>{
-    const r=(minor?1.0:.48)+(minor?1.82:2.50)*u;
-    const angle=arm*Math.PI+(minor?1.27:0)+2.5*Math.log(r/.48)+.06*Math.sin(u*19+arm);
-    return {r,angle};
-  };
-  const arm=(rng,i,minor=false,soft=false)=>{
-    let u=rng()**.82;
-    if(rng()<.38)u=limit(Math.round(u*38)/38+normal(rng,.007),0,1);
-    const {r,angle}=armPoint(u,i%2,minor);
-    const a=angle+normal(rng,(minor?.23:.16)+u*.14)+(rng()<.12?.17:0);
-    return {position:[r*Math.cos(a),normal(rng,.025+.075*(1-u)),r*Math.sin(a)],
-      rate:.023/(r+.5)**.45,size:soft?5+rng()*8:.45+rng()*.95,
-      strength:soft?.07+rng()*.055:(minor?.18:.22)+rng()*.34};
-  };
-  points(scene,content,112000,60827,(rng,i)=>arm(rng,i));
-  points(scene,content,28000,52931,(rng,i)=>arm(rng,i,true));
-  points(scene,content,28000,58271,(rng,i)=>arm(rng,i,false,true),{soft:1});
-  points(scene,content,72000,91283,rng=>{
-    let r;do{r=-.72*Math.log(Math.max(1e-9,rng()*rng()));}while(r>3.03);const a=rng()*TAU;
-    return {position:[r*Math.cos(a),normal(rng,.075),r*Math.sin(a)],rate:.017/(r+.6)**.4,
-      size:.35+rng()*.6,strength:(.30+rng()*.30)*(1-r/3.3)};
-  });
-  points(scene,content,40000,30193,rng=>({position:[normal(rng,.50),normal(rng,.12),normal(rng,.19)],
-    size:.55+rng()*.9,strength:.35+rng()*.35,rate:0}));
-  points(scene,content,20000,19137,rng=>({position:[normal(rng,.34),normal(rng,.23),normal(rng,.30)],
-    size:.8+rng()*1.2,strength:.35+rng()*.4,rate:.045}));
-  for(const radius of [.16,.27,.40,.59])shell([0,0,0],[radius*1.35,radius*.74,radius]);
-  shell([0,0,0],[.92,.14,.24]);
-  const starlight=shell([0,0,0],[3.04,.10,3.04]);starlight.material=volumeMaterial(scene,.09);
-  const movingClouds=[],axisY=new THREE.Vector3(0,1,0),turn=new THREE.Quaternion();
-  // Soft three-dimensional cloud volumes follow the two dominant arms.
-  for(let arm=0;arm<2;arm++)for(let j=0;j<24;j++){
-    const u=(j+.5)/24,{r,angle}=armPoint(u,arm),x=r*Math.cos(angle),z=r*Math.sin(angle);
-    const tangent=new THREE.Vector3(Math.cos(angle)-2.5*Math.sin(angle),0,Math.sin(angle)+2.5*Math.cos(angle)).normalize();
-    const q=new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(1,0,0),tangent);
-    const mesh=shell([x,0,z],[.20+.06*u,.055,.14+.04*u],q);
-    movingClouds.push({mesh,center:mesh.position.clone(),orientation:q,rate:.023/(r+.5)**.45});
+export function createGalaxyVolume(scene) {
+  const content=new THREE.Group(),arms=new THREE.Group();scene.root.add(content);content.add(arms);
+  for(let i=0;i<4;i++) {
+    const minor=i>1,phase=i*Math.PI+(minor?Math.PI*.5:0);
+    const arm=facetMesh(scene,arms,facetGeometry(spiralArm(phase,minor),p=>{
+      const r=Math.hypot(p[0],p[2]);return .2+.5*(1-r/3)+.12*Math.sin(r*8);
+    }),{palette:PALETTES.galaxy,fill:minor?.17:.30,edge:minor?.48:.72,width:.58,back:.24,flow:.055,ripple:.018});
+    arm.userData.role='spiral-arm';
   }
-  scene.animate=t=>{
-    content.rotation.set(.80+Math.sin(t*.055)*.12,Math.sin(t*.035)*.30,-.27+Math.sin(t*.045)*.06);
-    for(const cloud of movingClouds){cloud.mesh.position.copy(cloud.center).applyAxisAngle(axisY,t*cloud.rate);cloud.mesh.quaternion.copy(turn.setFromAxisAngle(axisY,t*cloud.rate)).multiply(cloud.orientation);}
-  };
-  scene.theme='Milky Way';scene.volumeKind='stellar-disk';scene.galaxyCount=1;fitVolume(scene);
+  const disk=globe(scene,content,1,21,{palette:PALETTES.galaxy,scale:[2.85,.12,2.85],fill:.055,edge:.19,width:.50,back:.16,field:p=>.18+.55*Math.abs(p[1])**3});
+  disk.userData.role='galactic-disk';
+  const bar=globe(scene,content,1,15,{palette:PALETTES.galaxy,scale:[.90,.21,.30],fill:.30,edge:.64});
+  const bulge=globe(scene,content,1,15,{palette:PALETTES.galaxy,scale:[.50,.36,.43],fill:.46,edge:.77,field:()=>.82});
+  scene.animate=t=>{content.rotation.set(.75+Math.sin(t*.05)*.12,Math.sin(t*.035)*.24,-.24);arms.rotation.y=t*.045;bar.rotation.y=t*.025;bulge.rotation.y=t*.035;disk.rotation.y=t*.018;};
+  scene.theme='Milky Way';scene.volumeKind='stellar-disk';scene.galaxyCount=1;scene.radius=3.25;
 }
 
+function combineGeometry(parts) {
+  const triangles=parts.map(g=>{if(!g.index)return g;const plain=g.toNonIndexed();g.dispose();return plain;});
+  const size=triangles.reduce((n,g)=>n+g.attributes.position.array.length,0),p=new Float32Array(size);let at=0;
+  for(const geometry of triangles){p.set(geometry.attributes.position.array,at);at+=geometry.attributes.position.array.length;geometry.dispose();}
+  const geometry=new THREE.BufferGeometry();geometry.setAttribute('position',new THREE.BufferAttribute(p,3));return geometry;
+}
 // Locate luminous objects in a coarse image field, then retain their sky positions.
 export function clusterFeatures(map){
   const {pixels,width,height}=map.userData,size=96,field=new Float32Array(size*size);
@@ -99,40 +55,26 @@ export function clusterFeatures(map){
   return selected;
 }
 
-export function createClusterVolume(scene,maps,points){
-  const content=new THREE.Group();scene.root.add(content);const shell=shells(scene,content),rng=random(66327);
+export function createClusterVolume(scene,maps) {
+  const content=new THREE.Group();scene.root.add(content);const rng=random(66327);
+  const ellipse=facetGeometry(new THREE.IcosahedronGeometry(1,2),p=>.35+.45*Math.abs(p[1]));
+  const miniCore=new THREE.IcosahedronGeometry(.58,2);miniCore.scale(1,.6,1);
+  const spiral=facetGeometry(combineGeometry([miniCore,spiralArm(0,false,24,4),spiralArm(Math.PI,false,24,4)]),p=>.25+.65*Math.exp(-Math.hypot(...p)));
+  const material=facetMaterial(scene,{palette:PALETTES.cluster,fill:.36,edge:.72,width:.52,back:.20,pulse:.035});
   const features=clusterFeatures(maps.cluster),maximum=features[0].value;
   const galaxies=features.map((feature,i)=>{
     const x=(feature.u-.5)*4.55,y=(.5-feature.v)*4.55,r=Math.hypot(x,y),luminosity=feature.value/maximum;
-    const z=normal(rng,.78)*Math.sqrt(Math.max(.12,1-r*r/10));
-    const radius=.025+.072*Math.sqrt(luminosity),spiral=i%7===0&&i>8;
+    const z=THREE.MathUtils.clamp(gaussian(rng),-2.8,2.8)*.78*Math.sqrt(Math.max(.12,1-r*r/10));
+    const radius=.035+.060*Math.sqrt(luminosity),isSpiral=i%3===0;
     const q=new THREE.Quaternion().setFromEuler(new THREE.Euler(rng()*2.2,rng()*TAU,rng()*TAU));
-    const axis=new THREE.Vector3(0,1,0).applyQuaternion(q).toArray();
-    const galaxy={center:[x,y,z],radius,spiral,q,axis,luminosity,phase:rng()*TAU};
-    if(i<26){
-      galaxy.mesh=shell(galaxy.center,[radius*1.7,radius*(spiral?.48:1.3),radius*1.4],q);
-    }
-    return galaxy;
+    const mesh=new THREE.Mesh(isSpiral?spiral:ellipse,material);mesh.position.set(x,y,z);mesh.quaternion.copy(q);
+    mesh.scale.set(radius*(isSpiral?1:1.6),radius*(isSpiral?1:.8),radius*(isSpiral?1:1.15));
+    mesh.userData.tessellated=true;mesh.userData.posterKind='facets';mesh.userData.role='cluster-galaxy';content.add(mesh);
+    return {mesh,q,radius,center:[x,y,z],rate:.055+luminosity*.045};
   });
-  const cdf=[],total=galaxies.reduce((sum,g)=>{const next=sum+.18+g.luminosity;cdf.push(next);return next;},0);
-  const sample=(rng,soft=false)=>{
-    const select=rng()*total,index=cdf.findIndex(value=>value>=select),g=galaxies[index];
-    let p;
-    if(g.spiral&&rng()>.42){
-      const u=rng()**.72,r=g.radius*(.2+2.7*u),a=(rng()<.5?0:Math.PI)+g.phase+4.1*Math.log(1+3*u)+normal(rng,.23)+.12*Math.sin(u*19+g.phase);
-      p=new THREE.Vector3(r*Math.cos(a),normal(rng,g.radius*.12),r*Math.sin(a));
-    }else p=new THREE.Vector3(normal(rng,g.radius*.65),normal(rng,g.radius*.50),normal(rng,g.radius*.65));
-    p.applyQuaternion(g.q).add(new THREE.Vector3(...g.center));
-    return {position:p.toArray(),center:g.center,axis:g.axis,rate:.055+g.luminosity*.035,
-      size:soft?2+rng()*4:.4+rng()*.55,strength:soft?.085+g.luminosity*.10:.50+g.luminosity*.45};
-  };
-  points(scene,content,120000,11933,rng=>sample(rng));
-  points(scene,content,16000,41833,rng=>sample(rng,true),{soft:1});
-  const spin=new THREE.Quaternion(),axisY=new THREE.Vector3(0,1,0);
-  scene.animate=t=>{
-    content.rotation.set(.12+Math.sin(t*.095)*.18,t*.050,.06+Math.sin(t*.07)*.07);
-    galaxies.forEach(g=>{if(g.mesh)g.mesh.quaternion.copy(g.q).multiply(spin.setFromAxisAngle(axisY,t*(.055+g.luminosity*.035)));});
-  };
+  const turn=new THREE.Quaternion(),axis=new THREE.Vector3(0,1,0);
+  scene.animate=t=>{content.rotation.set(.12+Math.sin(t*.08)*.14,t*.043,.06+Math.sin(t*.06)*.06);
+    galaxies.forEach(g=>g.mesh.quaternion.copy(g.q).multiply(turn.setFromAxisAngle(axis,t*g.rate)));};
   scene.theme='Galaxy cluster';scene.volumeKind='galaxy-population';scene.galaxyCenters=galaxies.map(g=>g.center);scene.galaxyRadii=galaxies.map(g=>g.radius);
-  fitVolume(scene);
+  scene.radius=Math.max(...galaxies.map(g=>Math.hypot(...g.center)+g.radius*3.2))*1.05;
 }

@@ -6,6 +6,7 @@ import { MAP_FILES, decodeMap } from '../../src/black-geometry/astronomy-maps.js
 const maps=Object.fromEntries(Object.entries(MAP_FILES).map(([name,file])=>[name,decodeMap(fs.readFileSync(new URL(`../../assets/black-geometry/textures/${file}`,import.meta.url)))]));
 import { createCosmos, COSMIC_TARGETS } from '../../src/black-geometry/cosmos.js';
 import { sculptureOpacity } from '../../src/black-geometry/world.js';
+import { deformFacet } from '../../src/black-geometry/tessellation.js';
 
 for (const name of COSMIC_TARGETS) {
   test(`${name} has a detailed finite geometry, stable motion, and deterministic sampling`, () => {
@@ -20,6 +21,14 @@ for (const name of COSMIC_TARGETS) {
     scene.root.traverse(object => {
       if (!object.geometry) return;
       geometries.add(object.geometry); materials.add(object.material);
+      assert.equal(object.userData.tessellated, true);
+      const { barycentric, facetValue } = object.geometry.attributes;
+      assert.equal(barycentric.count, object.geometry.attributes.position.count);
+      for (let i = 0; i < barycentric.count; i += 3) {
+        assert.deepEqual(Array.from(barycentric.array.slice(i*3,i*3+9)), [1,0,0,0,1,0,0,0,1]);
+        assert.equal(facetValue.getX(i), facetValue.getX(i+1));
+        assert.equal(facetValue.getX(i), facetValue.getX(i+2));
+      }
       for (const attribute of Object.values(object.geometry.attributes)) assert.ok(attribute.array.every(Number.isFinite));
       if (object.isMesh) triangles += (object.geometry.index?.count || object.geometry.attributes.position.count) / 3;
       if (object.isPoints) particles += object.geometry.attributes.position.count;
@@ -27,8 +36,8 @@ for (const name of COSMIC_TARGETS) {
       assert.equal(object.material.depthWrite, !!object.material.userData.bodyDepth, 'Only coherent planetary surfaces write depth');
 
     });
-    assert.ok(triangles > 10000 && triangles < 1000000);
-    assert.ok(['hero', 'education', 'publications', 'teaching'].includes(name) ? particles === 0 : particles > 2000 && particles < (name==='projects'?330000:160000));
+    assert.ok(triangles > 6000 && triangles < 200000);
+    assert.equal(particles, 0, 'Every scene must use tessellated surfaces instead of point clouds');
     const point = new THREE.Vector3();
     const first = [];
     scene.root.traverse(object => { if (object.isMesh) first.push(object.matrixWorld.elements.slice()); });
@@ -42,7 +51,8 @@ for (const name of COSMIC_TARGETS) {
         assert.ok(object.matrixWorld.elements.every(Number.isFinite));
         const position = object.geometry.attributes.position;
         for (let i = 0; i < position.count; i += 13) {
-          point.fromBufferAttribute(position, i).applyMatrix4(object.matrixWorld);
+          const style = object.material.userData.facetStyle;
+          point.fromArray(deformFacet([position.getX(i),position.getY(i),position.getZ(i)], time, style.flow, style.ripple)).applyMatrix4(object.matrixWorld);
           assert.ok(point.length() < scene.bounds[0].radius, 'Moving bodies must stay inside their rotation-safe fit');
         }
       });
@@ -75,41 +85,33 @@ test('navigation uses the requested subjects and Jupiter replaces the ringed pla
   });
 });
 
-for(const name of ['projects','notes'])test(`${name} has a moving stellar volume with orbit-safe depth`,()=>{
-  const scene=createCosmos(name,{maps}),points=[];let imageSheets=0;
-  scene.root.traverse(o=>{if(o.isPoints)points.push(o);if(o.userData.posterKind==='field')imageSheets++;});
-  assert.equal(imageSheets,0,'The live scene must not contain an image-backed sheet');
+for(const name of ['projects','notes'])test(`${name} has moving triangular volumes with real depth`,()=>{
+  const scene=createCosmos(name,{maps}),meshes=[];
+  scene.root.traverse(o=>{if(o.isMesh)meshes.push(o);assert.ok(!o.isPoints);});
   assert.equal(scene.volumeKind,name==='projects'?'stellar-disk':'galaxy-population');
-  const ranges=[[],[],[]],p=new THREE.Vector3(),center=new THREE.Vector3(),axis=new THREE.Vector3();
-  let moving=0;
-  for(const object of points){
-    const data=object.geometry.attributes;
-    for(let i=0;i<data.position.count;i+=97){
-      for(let k=0;k<3;k++)ranges[k].push(data.position.array[i*3+k]);
-      center.fromBufferAttribute(data.orbitCenter,i);axis.fromBufferAttribute(data.orbitAxis,i);
-      assert.ok(Math.abs(axis.length()-1)<1e-6);
-      p.fromBufferAttribute(data.position,i).sub(center);
-      const before=p.clone();p.applyAxisAngle(axis,data.rate.getX(i)*2);
-      if(p.distanceTo(before)>.003)moving++;
-      for(const time of [0,3,1000]){
-        p.fromBufferAttribute(data.position,i).sub(center).applyAxisAngle(axis,data.rate.getX(i)*time).add(center);
-        assert.ok(p.length()<scene.radius,'GPU particle orbits must stay inside the fit at every orientation');
-      }
+  const initial=meshes.map(o=>o.matrixWorld.elements.slice());scene.update(3);
+  assert.notDeepEqual(meshes.map(o=>o.matrixWorld.elements),initial);
+  if(name==='projects'){
+    assert.equal(scene.galaxyCount,1);
+    for(const mesh of meshes.filter(o=>o.userData.role==='spiral-arm')){
+      mesh.geometry.computeBoundingBox();
+      assert.ok(mesh.geometry.boundingBox.max.y-mesh.geometry.boundingBox.min.y>.20, 'Spiral arms have a closed, thick cross section');
     }
-  }
-  for(const values of ranges){values.sort((a,b)=>a-b);assert.ok(values[Math.floor(values.length*.95)]-values[Math.floor(values.length*.05)]>.20,'Depth must span a volume');}
-  assert.ok(moving>200,'Individual stars must move in addition to the camera');
-  if(name==='notes'){
+  }else{
     assert.equal(scene.galaxyCenters.length,112);
-    assert.ok(Math.max(...scene.galaxyRadii)<.10,'Cluster members should read as small distant galaxies');
-    assert.ok(Math.max(...scene.galaxyRadii)/scene.radius<.04);
+    assert.equal(meshes.length,112);
+    assert.ok(Math.max(...scene.galaxyRadii)<.10);
     const depths=scene.galaxyCenters.map(c=>c[2]);assert.ok(Math.max(...depths)-Math.min(...depths)>2);
   }
   scene.dispose();
 });
 
-test('the Milky Way has one bar and a single shared galactic center',()=>{
-  const scene=createCosmos('projects',{maps});assert.equal(scene.galaxyCount,1);
-  scene.root.traverse(o=>{if(!o.isPoints)return;assert.ok(o.geometry.attributes.orbitCenter.array.every(v=>v===0));});
+test('Earth and Moon have a clear gap throughout the default orbit',()=>{
+  const scene=createCosmos('hero',{maps}),bodies=[];
+  scene.root.traverse(o=>{if(o.isMesh)bodies.push(o);});
+  const [earth,moon]=bodies;
+  for(let t=0;t<130;t+=.5){scene.update(t);assert.ok(Math.hypot(earth.position.x-moon.position.x,earth.position.y-moon.position.y)>scene.bodyRadii[0]+scene.bodyRadii[1]+.20);}
+  const values=earth.geometry.attributes.facetValue.array;
+  assert.ok(Math.max(...values)-Math.min(...values)>.7,'Continental contrast survives the facet sampling');
   scene.dispose();
 });

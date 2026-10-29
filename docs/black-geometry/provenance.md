@@ -10,73 +10,63 @@ The source and tests define current sampling budgets and rendering parameters.
 
 ## Current homepage
 
-All seven pages use original grayscale scenes from `cosmos.js`. Their order
-moves from nearby worlds toward structures larger than a galaxy:
+All seven scenes share an authored tessellated style. `tessellation.js` expands
+actual triangles into flat facets with barycentric edge coordinates, an
+antialiased outline, and translucent mineral-color gradients. The planets use
+icosahedral subdivisions rather than a smooth photograph with an unrelated
+wire overlay. Surface-map values are sampled at each triangle's centroid; the
+mapped variation and the geometric pattern are therefore both visible.
 
-- **About:** Earth and an orbiting Moon. The detailed surface meshes, cloud and
-  atmospheric layers retain the earlier Earth–Moon scene's appearance. Earth uses
-  [NASA SVS's Blue Marble mosaic](https://svs.gsfc.nasa.gov/2915/), credited to
-  NASA/Goddard Space Flight Center Scientific Visualization Studio, with data
-  courtesy of Reto Stockli (NASA/GSFC) and NASA Earth Observatory. The Moon uses
-  the [NASA CGI Moon Kit](https://svs.gsfc.nasa.gov/4720/) LROC map. Both are
-  2048 × 1024 grayscale conversions with their original spatial mapping.
-- **Education:** one oblate Jupiter, with no satellites or rings. Cassini's
+- **About:** Earth and an orbiting Moon, slightly smaller and more widely
+  separated. Earth samples [NASA SVS's Blue Marble mosaic](https://svs.gsfc.nasa.gov/2915/),
+  credited to NASA/Goddard Space Flight Center Scientific Visualization Studio,
+  with data courtesy of Reto Stockli (NASA/GSFC) and NASA Earth Observatory.
+  The Moon samples the [NASA CGI Moon Kit](https://svs.gsfc.nasa.gov/4720/) LROC
+  map. Both retained fields are 2048 × 1024 grayscale derivatives. Their values
+  guide facet colors; slate, teal, and lunar gray are presentation choices.
+- **Education:** a smaller oblate Jupiter. Cassini's
   [cylindrical Jupiter map](https://science.nasa.gov/photojournal/cassinis-best-maps-of-jupiter-cylindrical-map/)
-  supplies cloud belts, storms, and the Great Red Spot. The 3600 × 1800 grayscale
-  derivative has mild contrast normalization and sharpening. Dark belts and
-  lighter zones retain the map's local variation. Layered clouds have slow
-  differential shear; atmospheric depth and motion are authored.
-  Credit: NASA/JPL/Space Science Institute.
-- **Industry experience:** the Sun, with a grayscale surface derived from an
-  [SDO/AIA 171 Å observation](https://sdo.gsfc.nasa.gov/data/) dated October 29,
-  2026, 16:26:22 UT. The visible solar disk is unprojected and reflected to
-  synthesize an unobserved reverse hemisphere. Flowing granulation, magnetic
-  loops anchored at two surface footpoints, and a restrained particle corona
-  are authored motion; this is not a time series or a measured three-dimensional
-  reconstruction. Credit: NASA/SDO and the AIA science team.
-- **Publications:** a neutron star with a granular core, 72 tubes following the
-  dipole relation `r = L sin²(theta)`, a tilted magnetic axis, and opposed polar
-  beams. Rotation and traveling opacity along the tubes illustrate magnetic
-  structure and sweeping emission. Reference: [NASA Goddard's neutron-star and
-  pulsar explanation](https://imagine.gsfc.nasa.gov/science/objects/neutron_stars1.html).
-  Geometry, dimensions, fields, and motion are authored; no source illustration
-  is redistributed.
-- **Teaching:** an unshaded, camera-facing black-hole shadow, a faint minimal
-  disk, and a three-dimensional warped grid behind it. The grid's authored
-  depth is `z = -.35 - 1.65/(1+(r/.92)²)` with a small traveling ripple, and
-  its central coordinates spread radially. A translucent membrane shows the
-  well's depth. This is a visual embedding metaphor for curvature, not a
-  relativistic spacetime metric, measured lensing field, or ray-traced solution.
-  The earlier Gargantua-inspired accretion renderer remains in source and its
-  tests, outside the active page build.
-- **Projects:** one three-dimensional Milky Way illustration. The central bar,
-  two dominant arms, fainter arms, and spurs follow the broad structure in
+  supplies cloud belts and storms through a 3600 × 1800 grayscale derivative.
+  Bronze and stone gradients are authored. Credit: NASA/JPL/Space Science Institute.
+- **Industry experience:** a tessellated Sun with nine triangular coronal loop
+  surfaces. Facet values derive from the retained
+  [SDO/AIA 171 Å observation](https://sdo.gsfc.nasa.gov/data/) of October 29, 2026,
+  16:26:22 UT. The observed disk was unprojected and reflected to synthesize the
+  reverse hemisphere. Warm colors, loop shapes, and motion are authored.
+  Credit: NASA/SDO and the AIA science team.
+- **Publications:** a faceted neutron-star core, 24 translucent magnetic ribbons
+  following `r = L sin²(theta)`, and two triangular polar beams. The magnetic
+  axis is tilted and sweeps with the star. Reference:
+  [NASA Goddard's neutron-star and pulsar explanation](https://imagine.gsfc.nasa.gov/science/objects/neutron_stars1.html).
+  Dimensions, colors, fields, and animation are illustrative.
+- **Teaching:** a dark triangular shadow surrounded by a warped, triangulated
+  accretion disk. A second curved ribbon suggests the lensed image of its far
+  side. Uniform rotation, bounded differential shear, and a traveling vertical
+  ripple create motion while keeping facet shapes legible over long sessions.
+  The silhouette references Gargantua in *Interstellar* and
+  [NASA's warped-disk illustration](https://www.nasa.gov/universe/nasa-visualization-shows-a-black-holes-warped-world/).
+  No film image is used. This is authored geometry, not a relativistic solution.
+  The earlier background grid and ray integrator are outside the active build.
+- **Projects:** one geometric Milky Way, with a bar, rounded bulge, a translucent
+  disk, two dominant spiral ribbons, and two fainter ribbons. Each arm has a
+  closed, thick cross section. The broad structure references
   [NASA's Milky Way illustration](https://science.nasa.gov/resource/the-milky-way-galaxy/).
-  The authored logarithmic spiral has a thick disk, a rounded bulge, soft cloud
-  volumes, and 300,000 stellar/cloud points. Irregular knots and angular spread
-  break up the arms, with an underlying stellar disk between them. Differential
-  orbital motion and continuous rotation reveal depth; there is no photographic
-  display plane, companion galaxy, or image-derived local stellar catalog.
-- **Personal notes:** a three-dimensional cluster inspired by [Abell 1689](https://science.nasa.gov/asset/hubble/hubble-wide-field-image-of-galaxy-cluster-and-gravitational-lens-abell-1689/).
-  Luminous features in the image supply 112 approximate sky positions. Each becomes
-  an independently oriented elliptical or spiral stellar volume, with an authored
-  depth, shape, and local orbital motion. Member radii are less than 0.1 display
-  units so they read as small, distant galaxies. The cluster has 136,000 stellar/cloud
-  points and soft ellipsoidal volume shells. Its depth and motion are illustrative,
-  not measured, and it does not reconstruct the image's gravitational lensing.
-  Credit: NASA, ESA, the Hubble Heritage Team (STScI/AURA), J. Blakeslee
-  (NRC Herzberg Astrophysics Program, Dominion Astrophysical Observatory),
-  and H. Ford (JHU).
+  Geometry, gradients, and motion are authored; this is not a measured stellar
+  catalog or a photographic reconstruction.
+- **Personal notes:** 112 small, independently oriented triangular galaxies
+  distributed through a volume. Approximate sky positions derive from luminous
+  features in [Hubble's Abell 1689 image](https://science.nasa.gov/asset/hubble/hubble-wide-field-image-of-galaxy-cluster-and-gravitational-lens-abell-1689/).
+  Elliptical bodies and miniature spiral-arm meshes share the other pages'
+  shading. Depth, morphology, colors, and rotation are authored. Credit: NASA,
+  ESA, the Hubble Heritage Team (STScI/AURA), J. Blakeslee (NRC Herzberg
+  Astrophysics Program, Dominion Astrophysical Observatory), and H. Ford (JHU).
 
-All scenes use grayscale. Surface maps, procedural noise, geometry, and seeds
-are deterministic. Motion changes uniforms and object transforms without
-rebuilding buffers. Tests check geometry, moving bounds, texture hashes, map
-compression parity, volumetric depth, individual particle orbits, dipole
-footpoints, and spacetime curvature. Retained ring and ray-field tests cover
-archived implementations. A deterministic software
-renderer creates detailed fallback posters from the same geometry and maps;
-its shading is an approximation of the live shader. Legacy mathematical and
-institutional factories below remain as tested source, outside active pages.
+Surface values, geometry, and seeds are deterministic. Tests verify triangle
+edge coordinates, constant per-face samples, finite geometry, transformed and
+deformed bounds, retained buffers, physical gaps, dipole footpoints, and bounded
+long-running disk shear. Software-rendered fallback posters use the same
+triangles and facet values. Legacy mathematical and institutional factories
+below remain as tested source outside the active pages.
 
 ## Retained algorithm illustrations
 

@@ -67,38 +67,42 @@ The STIX Two Text page stays readable with static SVGs when graphics fail or
 reduced motion is requested. Visitors can enable animation or retry; rendering
 failures retain content and native links. Print uses dark text on white.
 
-One WebGL context renders seven astronomical subjects: Earth and Moon (About),
-Jupiter (Education), the Sun (Industry experience), a neutron star (Publications),
-a black hole (Teaching), the Milky Way (Projects), and the Abell 1689 galaxy
-cluster (Personal notes). Distances and presentation sizes are compressed for
-the page. Dense indexed meshes, layered atmospheres, anchored coronal loops,
-magnetic field tubes, and stellar volumes stay resident on the GPU. Surface
-rotation, moving plasma, local stellar orbits, and volume rotation animate without
-rebuilding geometry. Opaque planetary surfaces write depth for coherent occlusion.
+One WebGL context renders seven tessellated astronomical sculptures: Earth and
+Moon (About), Jupiter (Education), the Sun (Industry experience), a neutron star
+(Publications), a black hole (Teaching), the Milky Way (Projects), and a galaxy
+cluster (Personal notes). Every visible surface uses the same triangle-edge
+shader, flat facet samples, translucent faces, and restrained color gradients.
+Edges follow the actual triangles using barycentric coordinates, with an
+antialiased width in screen pixels. There are no photographic display planes
+or point-cloud substitutes for the sculptures.
 
-Jupiter uses a 3600 × 1800 grayscale Cassini cloud map with fine belts, storms,
-and the Great Red Spot. The Sun combines an SDO active-region field with changing
-granulation and anchored loop bundles. The neutron star has 72 tilted magnetic
-field tubes and sweeping polar beams. The black hole is an unshaded circular
-shadow above a curved, gently moving spacetime grid with a minimal disk. This is
-an illustrative embedding, not a general-relativity simulation.
+Earth, Moon, Jupiter, and the Sun sample the existing NASA maps once per triangle.
+The continents, lunar terrain, cloud bands, and active regions become geometric
+mosaics. Earth and Moon have smaller radii and a wider orbit that keeps a visible
+gap in the default view. Jupiter occupies less of the art panel. Solar loops,
+magnetic ribbons, and polar beams use the same triangular material as the globes.
 
-The Milky Way is one authored barred spiral with two dominant arms, fainter arms
-and spurs, a thick disk, a central bulge, soft cloud volumes, and 300,000 moving
-stellar/cloud points. The cluster contains 112 small, independently oriented
-galaxies distributed through a volume, with 136,000 orbiting points. Neither scene
-contains a photographic display plane. Darkness represents brightness in the
-grayscale artwork. Credits and preparation details are in
-`assets/black-geometry/textures/CREDITS.txt`. Five active content-addressed maps
-have compressed equivalents; three earlier Saturn/ring/M51 fields and the old
-ray-integrated accretion renderer remain as tested references outside the active
-homepage build. The optional preparation tools are `prepare-astronomy.py` and
-`prepare-jupiter.py` in `tools/black-geometry/`.
+The black hole combines a dark faceted shadow, a warped accretion disk, and an
+arched image of the far disk. Rotation and bounded differential shear animate
+the lattice without stretching triangles indefinitely. There is no spacetime
+grid. The lensing shape is an authored illustration, not a geodesic solver.
+The Milky Way has four thick spiral ribbons, a translucent triangular disk, a
+bar, and a central bulge. The cluster contains 112 small triangular elliptical
+or spiral galaxies, distributed in depth and independently rotating.
+
+Geometry and facet values are prepared once and remain resident. Motion uses
+uniforms and object transforms. The black-hole shadow writes depth for coherent
+occlusion; other surfaces retain a faint view of their rear faces. Presentation
+sizes and rates are chosen for legibility, not physical scale or ephemerides.
+Credits and map preparation details are in
+`assets/black-geometry/textures/CREDITS.txt`. The former smooth-surface materials,
+ray-integrated accretion renderer, and spacetime grid remain in source outside
+the active homepage build. Archived texture fields are not fetched by the page.
 
 Static posters embed 1600 × 1200 deterministic software-rendered PNGs in SVG
-wrappers, using the same geometry and surface maps. The fallback stays detailed
-without shipping millions of SVG triangle paths. Each visit has its own orbit
-and drag state; reversal preserves a still-visible identity's state.
+wrappers. They use the same triangles, sampled facet colors, edge widths, and
+translucency. Each visit has its own orbit and drag state; reversal preserves a
+still-visible identity's state.
 
 Text, navigation, and a static poster appear immediately. Live artwork waits for
 fonts, surface maps, procedural scenes, shaders, uploaded GPU buffers, warm-up draws, and a GPU
@@ -107,7 +111,7 @@ retains fine detail. Resolution adapts separately for each scene, so slow frames
 on the black-hole page do not soften subsequent scenes; geometry detail stays fixed. Runtime and poster URLs carry content hashes so returning visitors receive the
 current visuals.
 
-The beige, grayscale homepage has seven links and no secondary navigation:
+The beige homepage has seven links and no secondary navigation:
 About, Education, Industry experience, Publications, Teaching, Projects, and
 Personal notes. Education and industry show locations; Notes shows each book
 with its author and edition. Its generated source block stays intact.
@@ -116,7 +120,7 @@ corresponding text and sculpture without document scrolling. If enlarged text
 exceeds the available height, overflow stays within the selected panel.
 Mouse/pen dragging rotates the artwork with inertia; horizontal touch dragging
 and pinch zoom remain available. Focused arrow keys rotate; Home resets.
-All artwork, including fallback posters, is presented in grayscale.
+Artwork and fallback posters share muted mineral palettes; text stays neutral.
 
 For local diagnostics, append `?bg-debug`. The read-only
 `window.__blackGeometry.snapshot()` reports scene, frame, draw, material, quality,

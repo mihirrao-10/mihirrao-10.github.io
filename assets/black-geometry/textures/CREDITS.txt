@@ -1,4 +1,6 @@
 Surface maps converted to grayscale from NASA imagery.
+The current artwork samples these fields per triangle and applies authored
+mineral-color gradients, visible edges, and translucency.
 
 Earth: NASA/Goddard Space Flight Center Scientific Visualization Studio.
 Blue Marble data courtesy of Reto Stockli (NASA/GSFC) and NASA Earth Observatory.
@@ -28,7 +30,7 @@ https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia
 Input SHA-256: 17512607755473debef169a8b74db8d3b3818df452ffeeaffc6d93e524b90c6b
 The cylindrical cloud map is resized to 3600 x 1800, converted to grayscale,
 autocontrasted at one percent, and lightly sharpened. Belts, zones, and storms
-come from the map; rotation, cloud shear, and atmospheric layers are authored.
+come from the map; facet colors and rotation are authored.
 Reproduce with tools/black-geometry/prepare-jupiter.py and the recorded input.
 Requires Pillow; not a website build dependency.
 
@@ -61,8 +63,8 @@ image-derived field. Its broad bar/arm structure references NASA's illustration:
 https://science.nasa.gov/resource/the-milky-way-galaxy/
 Luminous features in the Abell 1689 field seed a three-dimensional population of
 112 separate galaxies. No active galaxy scene displays an image on a surface.
-Depth, shapes, and orbital motion are authored, not measured. Dark ink represents
-emitted light. Source frames are not time series.
+Depth, triangular galaxy shapes, and rotation are authored, not measured.
+Darker facets emphasize dense regions. Source frames are not time series.
 
 Reproduction of Sun, archived Saturn/M51, and cluster fields: save the four inputs
 as sun.jpg, saturn.jpg, galaxy.jpg, cluster.jpg; verify the hashes above, then run
@@ -72,8 +74,9 @@ build does not. The active map manifest excludes archived fields.
 
 The current neutron star uses authored dipole geometry and polar beams:
 https://imagine.gsfc.nasa.gov/science/objects/neutron_stars1.html
-The current black hole uses an authored warped grid and unshaded shadow; it does
-not redistribute a photograph or film still. The earlier accretion renderer
-remains as source outside the active homepage build. Its silhouette referenced
+The current black hole uses a warped triangular disk and an arched ribbon
+around a dark shadow. No photograph or film still is redistributed. The earlier
+ray integrator and background grid remain outside the active build. The
+accretion silhouette references
 Gargantua from Interstellar and NASA's warped-world visualization:
 https://www.nasa.gov/universe/nasa-visualization-shows-a-black-holes-warped-world/

@@ -1,45 +1,29 @@
 import * as THREE from 'three';
-import { surfaceMaterial } from './astronomy-materials.js';
+import { facetGeometry, facetMesh, globe, triangleSurface, PALETTES, TAU } from './tessellation.js';
 
-function magneticMaterial(scene){
-  const material=new THREE.ShaderMaterial({transparent:true,depthWrite:false,depthTest:true,
-    uniforms:{...scene.uniforms,opacity:{value:.42}},
-    vertexShader:`varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}`,
-    fragmentShader:`uniform float time,presence,opacity;varying vec2 vUv;
-      void main(){float flow=.42+.58*pow(.5+.5*sin(vUv.x*13.0-time*1.25),2.0);
-      gl_FragColor=vec4(vec3(.02),flow*opacity*presence);}`});
-  scene.materials.add(material);return material;
-}
-export function dipolePoint(theta,azimuth,extent){
+export function dipolePoint(theta,azimuth,extent) {
   const r=extent*Math.sin(theta)**2;
   return new THREE.Vector3(r*Math.sin(theta)*Math.cos(azimuth),r*Math.cos(theta),r*Math.sin(theta)*Math.sin(azimuth));
 }
-export function createNeutronStar(scene,grid){
+export function createNeutronStar(scene) {
   const spin=new THREE.Group(),magnet=new THREE.Group();magnet.rotation.z=.47;spin.add(magnet);scene.root.add(spin);
-  const core=new THREE.Mesh(new THREE.SphereGeometry(.86,512,256),surfaceMaterial(scene,8,null,{opacity:1.16,detail:384}));
-  core.userData.posterKind='body';core.userData.surfaceKind=8;magnet.add(core);
-  const fieldMaterial=magneticMaterial(scene);
-  for(const extent of [1.35,1.9,2.55])for(let i=0;i<24;i++){
-    const azimuth=i/24*Math.PI*2,theta0=Math.asin(Math.sqrt(.86/extent)),path=[];
-    for(let j=0;j<=96;j++)path.push(dipolePoint(theta0+(Math.PI-2*theta0)*j/96,azimuth,extent));
-    const geometry=new THREE.TubeGeometry(new THREE.CatmullRomCurve3(path),192,.0035,6,false);
-    const uv=geometry.attributes.uv;for(let j=0;j<uv.count;j++)uv.setX(j,uv.getX(j)+i*.073);
-    const field=new THREE.Mesh(geometry,fieldMaterial);field.userData.posterKind='magnetic-field';magnet.add(field);
+  const core=globe(scene,magnet,.78,17,{palette:PALETTES.neutron,fill:.58,edge:.68,width:.48,back:.06,pulse:.08});
+  // Broad, translucent magnetic ribbons expose their triangular surface.
+  for(const extent of [1.55,2.35])for(let i=0;i<12;i++) {
+    const azimuth=i/12*TAU,theta0=Math.asin(Math.sqrt(.78/extent));
+    const geometry=triangleSurface((u,v)=>dipolePoint(theta0+(Math.PI-2*theta0)*u,azimuth+(v-.5)*.12,extent).toArray(),64,3);
+    const mesh=facetMesh(scene,magnet,facetGeometry(geometry,p=>.35+.3*Math.cos(p[1]*3+i)),{
+      palette:PALETTES.neutron,fill:.13,edge:.46,width:.48,back:.35,pulse:.12});
+    mesh.userData.role='magnetic-field';
   }
-  const beamMaterial=new THREE.ShaderMaterial({transparent:true,depthWrite:false,depthTest:true,side:THREE.DoubleSide,
-    uniforms:{...scene.uniforms,opacity:{value:.26}},
-    vertexShader:`varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}`,
-    fragmentShader:`uniform float time,presence,opacity;varying vec2 vUv;
-      void main(){float flow=.65+.35*sin(vUv.y*22.0-time*3.0);
-      gl_FragColor=vec4(vec3(.025),pow(1.0-vUv.y,1.5)*flow*opacity*presence);}`});
-  scene.materials.add(beamMaterial);
-  for(const sign of [-1,1])for(const width of [1,.34]){
-    const geometry=grid((u,v)=>{
-      const a=u*Math.PI*2,r=(.025+.18*v)*width;
-      return[r*Math.cos(a),sign*(.82+1.95*v),r*Math.sin(a)];
-    },128,96);
-    const beam=new THREE.Mesh(geometry,beamMaterial);beam.userData.posterKind='pulsar-beam';magnet.add(beam);
+  for(const sign of [-1,1]) {
+    const geometry=triangleSurface((u,v)=>{
+      const a=u*TAU,r=.05+.20*v;return[r*Math.cos(a),sign*(.75+1.86*v),r*Math.sin(a)];
+    },12,26,true);
+    const beam=facetMesh(scene,magnet,facetGeometry(geometry,p=>1-(Math.abs(p[1])-.75)/1.86),{
+      palette:PALETTES.neutron,fill:.16,edge:.40,width:.50,back:.30,pulse:.15});
+    beam.userData.role='pulsar-beam';
   }
-  scene.animate=t=>{spin.rotation.set(.10,t*.33,-.12);core.rotation.y=t*.72;};
-  scene.theme='Neutron star';scene.volumeKind='magnetosphere';scene.radius=3.0;
+  scene.animate=t=>{spin.rotation.set(.10,t*.26,-.12);core.rotation.y=t*.45;};
+  scene.theme='Neutron star';scene.volumeKind='magnetosphere';scene.radius=2.95;
 }
