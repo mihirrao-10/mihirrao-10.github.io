@@ -1,12 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { DEFAULTS, QUALITY, motionPolicy, renderingDpr, createResolutionBudget } from '../../src/black-geometry/preferences.js';
-test('highest-quality presentation preserves OS reduced motion', () => {
+import { DEFAULTS, QUALITY, renderingDpr, createResolutionBudget } from '../../src/black-geometry/preferences.js';
+test('highest-quality presentation defaults to animation', () => {
   assert.deepEqual(DEFAULTS, { motion: 'on', quality: 'high' });
   assert.equal(QUALITY.high.dpr, 2);
   assert.equal(QUALITY.high.fps, 60);
-  assert.equal(motionPolicy(false), 'full');
-  assert.equal(motionPolicy(true), 'reduced');
 });
 test('render resolution retains phone detail and bounds large high-DPI GPU work', () => {
   assert.equal(renderingDpr(390, 360, 3), 2);

@@ -47,7 +47,6 @@ button { padding: .2rem 0; border: 0; font: inherit; color: inherit; background:
 }
 .site-index a { padding: .5rem 0; color: var(--muted); }
 .site-index a[aria-current] { color: var(--text); text-decoration: underline; text-underline-offset: .35em; text-decoration-thickness: 1px; }
-.animation-action { position: fixed; right: 1.5rem; bottom: 1rem; z-index: 6; color: var(--muted); font-size: .74rem; }
 [data-scene] { display: none; }
 [data-scene][data-current-scene] { display: block; }
 .scene-page {
@@ -122,10 +121,6 @@ button { padding: .2rem 0; border: 0; font: inherit; color: inherit; background:
   .course-list { font-size: .76rem; line-height: 1.65; }
   .course-list span { font-size: .65rem; }
   .rotation-hint { display: none; }
-  .animation-action { right: 1rem; bottom: .3rem; }
-}
-@media (max-width: 599px) {
-  .hero .section-description { font-size: min(.78rem, calc(2.25vw - .9px)); white-space: nowrap; }
 }
 @media (max-width: 380px) {
   .site-index { column-gap: .7rem; }
@@ -156,7 +151,7 @@ button { padding: .2rem 0; border: 0; font: inherit; color: inherit; background:
 }
 @media print {
   html, body { height: auto; overflow: visible; background: white; }
-  .site-index, .world, .animation-action, .skip-link, .site-loader { display: none !important; }
+  .site-index, .world, .skip-link, .site-loader { display: none !important; }
   [data-boot="loading"] body > :not(.site-loader):not(script) { visibility: visible; }
   [data-scene], [data-scene][hidden] { display: block !important; position: static; width: 100%; margin: 1.5rem 0; max-height: none; overflow: visible; }
   .entry { break-inside: avoid; }

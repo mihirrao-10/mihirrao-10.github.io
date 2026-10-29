@@ -18,7 +18,7 @@ async function live(page, path = '/?bg-debug') {
 for (const [width, height] of [[320, 568], [390, 844], [768, 1024], [1024, 768], [1440, 900]]) {
   test(`every page fits without document scrolling at ${width} × ${height}`, async ({ page }) => {
     await page.setViewportSize({ width, height });
-    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.route('**/textures/*.bin*', route => route.abort());
     await page.goto('/?bg-debug');
     for (const [id, target] of scenes) {
       await select(page, id);
@@ -103,7 +103,7 @@ test('content and navigation remain usable while sculpture data is unavailable',
   await page.route('**/textures/*.bin*', route => route.abort());
   await page.goto('/?bg-debug');
   await expect(page.getByRole('heading', { name: 'Mihir Rao', exact: true })).toBeVisible();
-  await expect(page.getByRole('button', { name: 'Retry animation' })).toBeVisible();
+  await expect(page.locator('.animation-action')).toHaveCount(0);
   await select(page, 'notes');
   await expect(page.locator('#notes .note-link').first()).toBeVisible();
   await expect(page.locator('#sculpture-poster')).toHaveAttribute('src', /sculpture-notes\.svg\?v=/);

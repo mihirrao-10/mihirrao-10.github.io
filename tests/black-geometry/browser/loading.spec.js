@@ -49,24 +49,27 @@ for (const [port, width, height] of [[8000, 1440, 900], [8001, 390, 844]]) {
   });
 }
 
-test('reduced motion waits for the selected poster with still dots and no fade', async ({ page }) => {
+test('reduced motion keeps the loader still while automatically starting the sculpture', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
-  let release;
+  let release, requested = false;
   const pending = new Promise(resolve => { release = resolve; });
-  await page.route('**/sculpture-education.svg*', async route => {
+  await page.route('**/textures/*.bin*', async route => {
+    requested = true;
     await pending;
     await route.continue();
   });
   try {
     await page.goto('/#education', { waitUntil: 'domcontentloaded' });
+    await expect.poll(() => requested).toBe(true);
     await expect(page.getByRole('status')).toBeVisible();
     await expect(page.locator('.loader-dots span').first()).toHaveCSS('animation-name', 'none');
     release();
+    await expect(page.locator('body')).toHaveAttribute('data-experience-state', 'ready', { timeout: 30000 });
     await expect(page.getByRole('status')).toBeHidden();
     await expect(page.locator('#education')).toBeVisible();
     await expect(page.locator('.site-loader')).toHaveCSS('transition-duration', '0s');
-    expect(await page.locator('#sculpture-poster').evaluate(image => image.complete && image.naturalWidth > 0)).toBe(true);
-    await expect(page.locator('canvas')).toHaveCount(0);
+    await expect(page.locator('.world canvas')).toHaveCSS('opacity', '1');
+    await expect(page.locator('.animation-action')).toHaveCount(0);
   } finally { release(); }
 });
 
@@ -92,7 +95,7 @@ test('a stalled download reaches the static fallback instead of trapping visitor
     await page.clock.fastForward(31000);
     await expect(page.locator('html')).toHaveAttribute('data-boot', 'fallback');
     await expect(page.getByRole('heading', { name: 'Mihir Rao', exact: true })).toBeVisible();
-    await expect(page.getByRole('button', { name: 'Retry animation' })).toBeVisible();
+    await expect(page.locator('.animation-action')).toHaveCount(0);
   } finally { release(); }
 });
 

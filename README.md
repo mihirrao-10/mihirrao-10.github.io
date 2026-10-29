@@ -63,9 +63,9 @@ pushes require their own separate approvals.
 
 ## Runtime constraints
 
-The STIX Two Text page stays readable with static SVGs when graphics fail or
-reduced motion is requested. Visitors can enable animation or retry; rendering
-failures retain content and native links. Print uses dark text on white.
+The STIX Two Text page starts the animation automatically on supported devices.
+If graphics fail, static SVGs retain the content and native links. Print uses
+dark text on white.
 
 One WebGL context renders seven grayscale scenes: a fictional planet and moon
 (About), an uneven giant star (Education), a black hole (Industry experience),
@@ -107,8 +107,9 @@ drag state; reversal preserves a still-visible identity's state.
 An initial beige loading screen shows black text with three dots that bounce in
 sequence. It fades away after fonts, surface maps, procedural scenes, shaders,
 uploaded GPU buffers, warm-up draws, a GPU fence, and the first live frame are
-ready. Reduced-motion visitors get still dots and the static poster without a
-fade. Failed graphics or a 30-second loading deadline reveal the static site;
+ready. Reduced-motion preferences disable the loader animation and fade, while
+the sculpture still starts automatically. Failed graphics or a 30-second loading
+deadline reveal the static site;
 JavaScript-disabled visits skip the loader. A three-megapixel budget
 retains fine detail. Resolution adapts separately for each scene, so slow frames
 on the black-hole page do not soften subsequent scenes; geometry detail stays fixed. Runtime and poster URLs carry content hashes so returning visitors receive the

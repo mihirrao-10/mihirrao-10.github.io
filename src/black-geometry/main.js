@@ -1,4 +1,4 @@
-import { DEFAULTS, motionPolicy, QUALITY } from './preferences.js';
+import { DEFAULTS, QUALITY } from './preferences.js';
 import { cameraPose, createTransition, advanceTransition } from './scene-state.js';
 import { createInteraction } from './interaction.js';
 import { createNavigation } from './navigation.js';
@@ -8,8 +8,6 @@ const root = document.documentElement;
 const container = document.querySelector('.world');
 const poster = document.querySelector('#sculpture-poster');
 const posterVersions = typeof __SCULPTURE_POSTER_VERSIONS__ === 'object' ? __SCULPTURE_POSTER_VERSIONS__ : {};
-const animationAction = document.querySelector('.animation-action');
-const system = matchMedia('(prefers-reduced-motion: reduce)');
 const finePointer = matchMedia('(pointer: fine)');
 const sceneElements = [...document.querySelectorAll('[data-scene]')];
 const listeners = new AbortController();
@@ -17,8 +15,7 @@ const on = (target, event, callback, options = {}) => target.addEventListener(ev
 const debug = new URLSearchParams(location.search).has('bg-debug');
 const profile = 'high';
 const project = { shortcut: 'open', path: 1 };
-let motion = motionPolicy(system.matches);
-let motionOverride = false;
+const motion = 'full';
 let world, worldImport, enhancementPending;
 let failed = root.dataset.boot === 'fallback', disposed = false, active = !document.hidden;
 const entrance = { started: false, progress: 1 };
@@ -35,8 +32,6 @@ const interaction = createInteraction({
 });
 body.dataset.enhanced = 'true';
 body.dataset.motion = motion;
-animationAction.hidden = motion === 'full';
-animationAction.title = 'Your device requests reduced motion. Enable the rotating sculptures for this visit.';
 
 function finishBoot(status = 'complete') {
   if (bootFinished) return;
@@ -99,11 +94,7 @@ function fail(error) {
   showStatic('fallback');
   world?.dispose();
   world = undefined;
-  animationAction.textContent = 'Retry animation';
-  animationAction.title = 'The animation could not load. Try again.';
-  animationAction.hidden = false;
   if (debug) {
-    animationAction.title = String(error?.message || error);
     console.warn('Sculpture fallback:', error?.message || error);
   }
 }
@@ -187,23 +178,6 @@ function invalidate() {
   layoutDirty = true;
   if (motion !== 'full' || !world || failed) syncStatic();
 }
-on(system, 'change', () => {
-  motionOverride = false;
-  motion = motionPolicy(system.matches);
-  body.dataset.motion = motion;
-  animationAction.hidden = motion === 'full';
-  invalidate();
-  if (motion !== 'full') showStatic();
-  else enhance();
-});
-on(animationAction, 'click', () => {
-  if (failed) { location.reload(); return; }
-  motionOverride = true;
-  motion = 'full';
-  body.dataset.motion = motion;
-  animationAction.hidden = true;
-  enhance();
-});
 on(window, 'portfolio:boot-fallback', () => fail(new Error('Sculpture entry module failed')));
 on(window, 'resize', invalidate, { passive: true });
 on(document, 'pointermove', event => {
@@ -246,7 +220,7 @@ settlePresentation();
 if (motion !== 'full' || failed) showStatic(failed ? 'fallback' : 'static');
 if (debug) window.__blackGeometry = {
   snapshot: () => ({
-    motion, motionOverride, preferences: { ...DEFAULTS }, profile, state: { ...state }, visualState: { ...visualState },
+    motion, preferences: { ...DEFAULTS }, profile, state: { ...state }, visualState: { ...visualState },
     transition: { ...transition }, project: { ...project }, time, orbitTime,
     interaction: interaction.snapshot(), active, pendingFrame: !!frame, world: world?.snapshot() || null,
     page: navigation.current().id, entrance: { ...entrance },

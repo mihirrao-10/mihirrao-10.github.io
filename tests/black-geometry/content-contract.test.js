@@ -41,9 +41,7 @@ test('projects keep their direct links and the interface adds no detail buttons'
     assert.ok(attr(link, 'rel').split(/\s+/).includes('noopener'));
   }
   const buttons = all(doc, node => node.tagName === 'button');
-  assert.equal(buttons.length, 1);
-  assert.ok(hasClass(buttons[0], 'animation-action'));
-  assert.equal(attr(buttons[0], 'hidden'), '');
+  assert.equal(buttons.length, 0);
 });
 
 test('generated notes remain unique links to real PDFs in non-empty groups', async () => {

@@ -7,20 +7,18 @@ async function ready(page) {
   await expect(page.locator('.site-loader')).toBeHidden();
 }
 
-test('reduced-motion visitors can navigate posters and explicitly enable animation', async ({ page }) => {
-  await page.emulateMedia({ reducedMotion: 'reduce' });
-  await page.goto('/?bg-debug');
-  const enable = page.getByRole('button', { name: 'Enable animation' });
-  await expect(enable).toBeVisible();
-  await page.getByRole('navigation', { name: 'Main navigation' }).getByRole('link', { name: 'Personal notes', exact: true }).click();
-  await expect(page.locator('#sculpture-poster')).toHaveAttribute('src', /sculpture-notes\.svg\?v=/);
-  await enable.click();
-  await expect(page.locator('body')).toHaveAttribute('data-experience-state', 'ready', { timeout: 30000 });
-  await expect(enable).toBeHidden();
-  const before = await snapshot(page);
-  expect(before.world.warmedTargets).toBe(7);
-  await expect.poll(async () => (await snapshot(page)).orbitTime).toBeGreaterThan(before.orbitTime + .2);
-});
+for (const [width, height, motion] of [[390, 844, 'reduce'], [768, 1024, 'no-preference'], [1440, 900, 'reduce']]) {
+  test(`animation starts automatically at ${width}px with ${motion}`, async ({ page }) => {
+    await page.setViewportSize({ width, height });
+    await page.emulateMedia({ reducedMotion: motion });
+    await ready(page);
+    await expect(page.locator('.animation-action')).toHaveCount(0);
+    const before = await snapshot(page);
+    expect(before.motion).toBe('full');
+    expect(before.world.warmedTargets).toBe(7);
+    await expect.poll(async () => (await snapshot(page)).orbitTime).toBeGreaterThan(before.orbitTime + .2);
+  });
+}
 
 test('sculpture drag and keyboard rotation remain independent of page navigation', async ({ page }) => {
   await ready(page);
