@@ -1,5 +1,4 @@
 import * as THREE from 'three';
-import { RING_PROFILE_GLSL } from './ring-profile.js';
 
 export const NOISE = `
 float hash(vec3 p){p=fract(p*.3183099+vec3(.13,.27,.41));p*=17.0;return fract(p.x*p.y*p.z*(p.x+p.y+p.z));}
@@ -66,20 +65,28 @@ export function surfaceMaterial(scene,kind=0,map=null,{opacity=1,detail=256,dept
 }
 const RING_FRAGMENT=`
 uniform float time,presence,innerRadius,outerRadius,opacity;
+uniform sampler2D ringProfile;
 varying vec2 vUv;varying vec3 vNormal,vLocal,vView;
-${RING_PROFILE_GLSL}
+${NOISE}
 void main(){
  float r=length(vLocal.xz),u=(r-innerRadius)/(outerRadius-innerRadius);
- float density=ringOpticalDepth(u,fwidth(u));
+ float density=texture2D(ringProfile,vec2(clamp(u,0.0,1.0),.5)).r;
+ float angle=atan(vLocal.z,vLocal.x)-time*.24/pow(max(r,.5),1.5);
+ vec2 flow=vec2(cos(angle),sin(angle))*r;
+ float footprint=length(fwidth(flow));
+ float cloud=mix(.5,noise(vec3(flow*19.0,time*.035)),1.0-smoothstep(.25,.8,footprint*19.0));
+ float fine=mix(.5,noise(vec3(flow*75.0,time*.055)),1.0-smoothstep(.25,.8,footprint*75.0));
+ density*=.94+.14*(cloud-.5)+.06*(fine-.5);
  vec3 light=normalize(vec3(-.65,.65,.9));float along=dot(vLocal,light);
  float distanceToLightRay=length(vLocal-light*along),planetRadius=innerRadius*.82;
  float shadow=(1.0-smoothstep(planetRadius*.92,planetRadius*1.07,distanceToLightRay))*(1.0-smoothstep(-.1,.1,along));
  gl_FragColor=vec4(vec3(.025),density*(1.0-shadow*.85)*opacity*presence);
 }`;
-export function ringMaterial(scene,inner,outer,opacity=.9) {
+export function ringMaterial(scene,inner,outer,opacity=.9,map=null) {
+  if(!map){map=new THREE.DataTexture(new Uint8Array([100]),1,1,THREE.RedFormat);map.needsUpdate=true;map.userData={width:1,height:1,pixels:new Uint8Array([100])};scene.textures.add(map);}
   const material=new THREE.ShaderMaterial({vertexShader:VERTEX,fragmentShader:RING_FRAGMENT,
     side:THREE.DoubleSide,transparent:true,depthWrite:false,depthTest:true,
-    uniforms:{...scene.uniforms,innerRadius:{value:inner},outerRadius:{value:outer},opacity:{value:opacity}}});
+    uniforms:{...scene.uniforms,innerRadius:{value:inner},outerRadius:{value:outer},opacity:{value:opacity},ringProfile:{value:map}}});
   scene.materials.add(material);return material;
 }
 

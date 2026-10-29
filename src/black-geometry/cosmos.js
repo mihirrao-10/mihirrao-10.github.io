@@ -19,9 +19,9 @@ function body(scene,parent,radius,kind=4,{map,detail=384,opacity=1,scale=[1,1,1]
   const mesh=new THREE.Mesh(new THREE.SphereGeometry(radius,detail,Math.round(detail*.5)),material);
   mesh.scale.fromArray(scale);mesh.userData.posterKind='body';mesh.userData.surfaceKind=kind;parent.add(mesh);return mesh;
 }
-function annulus(scene,parent,inner,outer,{opacity=.9,columns=1024,rows=128}={}){
+function annulus(scene,parent,inner,outer,{opacity=.9,columns=1024,rows=128,map=null}={}){
   const geometry=grid((u,v)=>{const a=u*TAU,r=inner+(outer-inner)*v;return[r*Math.cos(a),0,r*Math.sin(a)];},columns,rows);
-  const mesh=new THREE.Mesh(geometry,ringMaterial(scene,inner,outer,opacity));mesh.renderOrder=1;
+  const mesh=new THREE.Mesh(geometry,ringMaterial(scene,inner,outer,opacity,map));mesh.renderOrder=1;
   mesh.userData.posterKind='ring';mesh.userData.innerRadius=inner;mesh.userData.outerRadius=outer;parent.add(mesh);return mesh;
 }
 function points(scene,parent,count,seed,sample,{soft=0}={}){
@@ -96,8 +96,8 @@ function earthMoon(scene,maps){
 function saturn(scene,maps){
   const content=new THREE.Group();content.rotation.set(.37,.1,-.28);scene.root.add(content);
   const planet=body(scene,content,1.13,2,{map:maps.saturn,detail:640,opacity:1.12,scale:[1,.90,1]});
-  annulus(scene,content,1.37,2.65,{columns:1536,rows:160,opacity:1});
-  scene.animate=t=>{planet.rotation.y=t*.055;content.rotation.y=.1+Math.sin(t*.07)*.045;};
+  annulus(scene,content,1.37,2.65,{columns:1536,rows:160,opacity:1,map:maps.rings});
+  scene.animate=t=>{planet.rotation.y=t*.075;content.rotation.set(.37+Math.sin(t*.055)*.10,.1+t*.018,-.28+Math.sin(t*.045)*.08);};
   scene.theme='Saturn';scene.radius=2.85;
 }
 function star(scene,maps){
@@ -114,7 +114,7 @@ function solarSystem(scene,maps){
     const orbitGroup=new THREE.Group();orbitGroup.rotation.z=(i%3-1)*.025;content.add(orbitGroup);orbit(scene,orbitGroup,radius);
     const group=new THREE.Group();orbitGroup.add(group);
     const planet=body(scene,group,sizes[i],i===2?0:i>3?2:4,{map:i===2?maps.earth:null,detail:i>3?160:128,opacity:1.2});
-    if(i===5){group.rotation.z=.4;annulus(scene,group,.25,.41,{columns:384,rows:32});}
+    if(i===5){group.rotation.z=.4;annulus(scene,group,.25,.41,{columns:384,rows:32,map:maps.rings});}
     return {group,planet,radius,phase:[.5,2.1,3.9,5.4,1.1,4.4,2.7,5.7][i],speed:.19/(radius**1.5)};
   });
   points(scene,content,16000,39173,rng=>{

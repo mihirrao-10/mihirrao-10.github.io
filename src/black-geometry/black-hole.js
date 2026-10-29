@@ -20,9 +20,12 @@ float disk(vec3 p,float footprint){
  // Differential orbital flow, with no periodic rings or one-sided brightness.
  float orbit=a-time*.34/pow(max(r,.75),1.5);
  vec2 flow=vec2(cos(orbit),sin(orbit));
- float eddies=diskNoise(vec3(flow*r*4.0,time*.075),max(.012,footprint)*4.0);
+ float pixel=max(.0015,footprint);
+ float eddies=diskNoise(vec3(flow*r*4.0,time*.075),pixel*4.0);
+ float stream=diskNoise(vec3(flow*r*19.0+vec2(eddies*.8),time*.12),pixel*19.0);
+ float fine=mix(.5,noise(vec3(flow*r*67.0,time*.17)),1.0-smoothstep(.25,.75,pixel*67.0));
  float heat=pow(.85/max(r,.75),.82);
- return fade*heat*(.20+1.20*eddies);
+ return fade*heat*(.10+.55*eddies+.78*smoothstep(.28,.70,stream)+.12*fine);
 }
 void main(){
  vec3 direction=normalize(vLocal-localCamera),p=vLocal+direction*.001;
@@ -92,7 +95,9 @@ export function traceBlackHole(px,py,pz,dx,dy,dz,time=0){
       const smooth=(a,b,x)=>{const t=Math.max(0,Math.min(1,(x-a)/(b-a)));return t*t*(3-2*t);};
       const fade=smooth(.73,.91,radius)*(1-smooth(2.65,3.08,radius));
       const eddies=fbm(Math.cos(angle)*radius*4,Math.sin(angle)*radius*4,time*.075);
-      const density=fade*(.85/Math.max(radius,.75))**.82*(.20+1.20*eddies),weight=mass*Math.max(.20,Math.abs(dy/step));
+      const stream=fbm(Math.cos(angle)*radius*19+eddies*.8,Math.sin(angle)*radius*19+eddies*.8,time*.12);
+      const fine=noise(Math.cos(angle)*radius*67,Math.sin(angle)*radius*67,time*.17);
+      const density=fade*(.85/Math.max(radius,.75))**.82*(.10+.55*eddies+.78*smooth(.28,.70,stream)+.12*fine),weight=mass*Math.max(.20,Math.abs(dy/step));
       emission+=transmission*density*weight;transmission*=Math.exp(-density*weight*.36);
     }
     dx=nx;dy=ny;dz=nz;px=qx;py=qy;pz=qz;

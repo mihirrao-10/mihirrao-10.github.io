@@ -26,8 +26,11 @@ Saturn: NASA/JPL-Caltech/Space Science Institute. Cassini PIA17474.
 https://science.nasa.gov/photojournal/jewel-of-the-solar-system/
 https://assets.science.nasa.gov/content/dam/science/psd/photojournal/pia/pia17/pia17474/PIA17474.jpg
 Input SHA-256: 2d3929333ec0207423af4c3e34d68adba36258a36531abe4ad8e2241d0d054e1
-The illuminated hemisphere supplies an approximate latitude profile. Ring optical
-bands and gaps are authored, aperiodic patterns informed by the photograph.
+The illuminated hemisphere supplies an approximate latitude profile. The 4096
+sample ring field is extracted from the photograph: an ellipse fit finds the
+outer ring, and median sampling across the illuminated arc retains observed
+bands and divisions. Brightness is normalized for inverse-grayscale presentation;
+it is not calibrated optical-depth data.
 
 Whirlpool galaxy (M51), heic0506a: NASA, ESA, S. Beckwith (STScI), and the
 Hubble Heritage Team (STScI/AURA).
@@ -46,8 +49,8 @@ Galaxy fields: grayscale luminance conversion, background removal, and soft edge
 feathering. The M51 field seeds a thick stellar disk and rounded bulges. Luminous
 features in the Abell 1689 field seed a three-dimensional population of separate
 galaxies. Neither live scene displays the image on a surface. Depth, shapes, and
-orbital motion are authored, not measured. The earlier ring raster remains an
-authoring reference; live rings use broad, analytically filtered bands.
+orbital motion are authored, not measured. The live ring field uses the
+Cassini-derived profile with mipmap filtering and authored differential flow.
 Dark ink represents emitted light in all scenes. Source frames are not time series.
 
 Reproduction: save the four inputs as sun.jpg, saturn.jpg, galaxy.jpg, cluster.jpg;

@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { QUALITY, renderingDpr } from "./preferences.js";
+import { QUALITY, renderingDpr, createResolutionBudget } from "./preferences.js";
 import { cameraPose } from "./scene-state.js";
 import { createCosmos, COSMIC_TARGETS } from "./cosmos.js";
 import { loadAstronomyMaps } from "./astronomy-maps.js";
@@ -104,8 +104,9 @@ export async function createWorld({container,quality='high',onFailure}) {
   }));
   let disposed=false,shaderFailed=false,frames=0,warmedTargets=0,currentQuality=quality;
   let width=1,height=1,lastDpr=devicePixelRatio,dprCeiling=QUALITY[quality].dpr;
+  let resolution=createResolutionBudget(dprCeiling),resolutionTarget='hero';resolution.select(resolutionTarget);
   let orbitClock=0,currentName='hero',nextName='hero',blend=0,activeNames=new Set();
-  let entranceProgress=1,entranceScale=1,fitScales=[],frameSamples=0,frameTotal=0;
+  let entranceProgress=1,entranceScale=1,fitScales=[];
   let userRotation=[0,0],userOrientation=[0,0,0,1],dragging=false;
   renderer.debug.onShaderError=(gl,program,vertex,fragment)=>{shaderFailed=[gl.getProgramInfoLog(program),gl.getShaderInfoLog(vertex),gl.getShaderInfoLog(fragment)].filter(Boolean).join('\n')||'Unknown shader error';};
   const contextLost=event=>{event.preventDefault();onFailure(new Error('WebGL context lost'));};
@@ -116,19 +117,18 @@ export async function createWorld({container,quality='high',onFailure}) {
     camera.aspect=width/height;camera.updateProjectionMatrix();
   }
   const world={
-    resize,setQuality(next){currentQuality=next;dprCeiling=QUALITY[next].dpr;resize();},
+    resize,setQuality(next){currentQuality=next;dprCeiling=QUALITY[next].dpr;resolution=createResolutionBudget(dprCeiling);resolution.select(resolutionTarget);resize();},
     recordFrame(milliseconds){
-      if(milliseconds<=0)return;
-      frameTotal+=Math.min(milliseconds,250);frameSamples++;
-      if(frameSamples<12||frameTotal<1500)return;
-      if(frameTotal/frameSamples>25&&renderer.getPixelRatio()>.85){dprCeiling=Math.max(.85,renderer.getPixelRatio()*.85);resize();}
-      frameTotal=frameSamples=0;
+      if(currentName!==nextName)return;
+      const next=resolution.record(milliseconds);
+      if(next!==undefined){dprCeiling=next;resize();}
     },
     entryOrientation:name=>activeNames.has(name)?models.get(name)?.orientation.slice():undefined,
     render({state,time,orbitTime=time,pointer=[0,0],interaction,interactionTarget=state.nextTarget||state.target,entrance=1}){
       if(disposed)return;
       orbitClock=orbitTime;currentName=state.target||'hero';nextName=state.nextTarget||currentName;
       blend=currentName===nextName?0:THREE.MathUtils.clamp(state.blend,0,1);
+      if(currentName===nextName&&resolutionTarget!==currentName){resolutionTarget=currentName;dprCeiling=resolution.select(currentName);resize();}
       entranceProgress=THREE.MathUtils.clamp(entrance,0,1);entranceScale=.08+.92*(1-(1-entranceProgress)**4);
       userRotation=interaction?.rotation||[0,0];userOrientation=interaction?.orientation||[0,0,0,1];dragging=!!interaction?.dragging;
       camera.position.set(0,0,12);camera.lookAt(0,0,0);

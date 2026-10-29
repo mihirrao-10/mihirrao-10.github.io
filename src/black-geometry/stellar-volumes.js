@@ -81,8 +81,8 @@ export function clusterFeatures(map){
   candidates.sort((a,b)=>b.value-a.value);
   const selected=[];
   for(const feature of candidates){
-    if(selected.every(p=>Math.hypot(p.u-feature.u,p.v-feature.v)>.065))selected.push(feature);
-    if(selected.length===76)break;
+    if(selected.every(p=>Math.hypot(p.u-feature.u,p.v-feature.v)>.051))selected.push(feature);
+    if(selected.length===112)break;
   }
   return selected;
 }
@@ -93,7 +93,7 @@ export function createClusterVolume(scene,maps,points){
   const galaxies=features.map((feature,i)=>{
     const x=(feature.u-.5)*4.55,y=(.5-feature.v)*4.55,r=Math.hypot(x,y),luminosity=feature.value/maximum;
     const z=normal(rng,.78)*Math.sqrt(Math.max(.12,1-r*r/10));
-    const radius=.055+.15*Math.sqrt(luminosity),spiral=i%7===0&&i>8;
+    const radius=.025+.072*Math.sqrt(luminosity),spiral=i%7===0&&i>8;
     const q=new THREE.Quaternion().setFromEuler(new THREE.Euler(rng()*2.2,rng()*TAU,rng()*TAU));
     const axis=new THREE.Vector3(0,1,0).applyQuaternion(q).toArray();
     const galaxy={center:[x,y,z],radius,spiral,q,axis,luminosity,phase:rng()*TAU};
@@ -112,14 +112,15 @@ export function createClusterVolume(scene,maps,points){
     }else p=new THREE.Vector3(normal(rng,g.radius*.65),normal(rng,g.radius*.50),normal(rng,g.radius*.65));
     p.applyQuaternion(g.q).add(new THREE.Vector3(...g.center));
     return {position:p.toArray(),center:g.center,axis:g.axis,rate:.055+g.luminosity*.035,
-      size:soft?2+rng()*6:.40+rng()*.70,strength:soft?.025+g.luminosity*.045:.16+g.luminosity*.32};
+      size:soft?1.2+rng()*2.8:.28+rng()*.40,strength:soft?.022+g.luminosity*.035:.20+g.luminosity*.38};
   };
-  points(scene,content,104000,11933,rng=>sample(rng));
+  points(scene,content,120000,11933,rng=>sample(rng));
   points(scene,content,16000,41833,rng=>sample(rng,true),{soft:1});
+  const spin=new THREE.Quaternion(),axisY=new THREE.Vector3(0,1,0);
   scene.animate=t=>{
     content.rotation.set(.12+Math.sin(t*.095)*.18,t*.050,.06+Math.sin(t*.07)*.07);
-    galaxies.forEach(g=>{if(g.mesh)g.mesh.quaternion.copy(g.q).multiply(new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0,1,0),t*(.055+g.luminosity*.035)));});
+    galaxies.forEach(g=>{if(g.mesh)g.mesh.quaternion.copy(g.q).multiply(spin.setFromAxisAngle(axisY,t*(.055+g.luminosity*.035)));});
   };
-  scene.theme='Galaxy cluster';scene.volumeKind='galaxy-population';scene.galaxyCenters=galaxies.map(g=>g.center);
+  scene.theme='Galaxy cluster';scene.volumeKind='galaxy-population';scene.galaxyCenters=galaxies.map(g=>g.center);scene.galaxyRadii=galaxies.map(g=>g.radius);
   fitVolume(scene);
 }

@@ -79,22 +79,23 @@ surfaces write depth so rings and moons have coherent occlusion.
 
 The quasar integrates bent viewing rays through a turbulent accretion disk,
 inspired by Gargantua in *Interstellar*. It is an authored approximation, not a
-Kerr geodesic solver. Saturn uses broad, analytically filtered optical-depth
-bands and a soft planetary shadow. Its rings contain no moving grain overlay.
+Kerr geodesic solver. Saturn's 4096-sample radial ring profile is extracted from
+Cassini imagery, retaining its irregular bands and divisions. Mipmap filtering,
+soft planetary shadows, and advected cloud detail give gradients and movement.
 The accretion disk integrates a finite vertical density profile along each ray
-segment, with filtered Cartesian turbulence instead of radial filaments.
+segment, with multiple scales of advected turbulence and fine density variation.
 NASA and Hubble images supply Earth and lunar surfaces, Saturn's latitude bands,
 solar active regions, and the structure of the extragalactic scenes. The galaxy
 has 226,000 orbiting stellar/cloud points, a thick disk, and rounded bulges. The
-cluster contains 76 independently oriented galaxies distributed through a volume,
-with 120,000 orbiting points. Neither scene contains a photographic display plane.
+cluster contains 112 small, independently oriented galaxies distributed through a
+volume, with 136,000 orbiting points. Neither scene contains a photographic display plane.
 Darkness represents brightness in the grayscale artwork. Credits and preparation
 details are in `assets/black-geometry/textures/CREDITS.txt`; the optional authoring
 tool is `tools/black-geometry/prepare-astronomy.py`. Seven content-addressed
-maps, with compressed equivalents, include the retained ring authoring profile. Legacy
+maps, with compressed equivalents, include the observed Cassini ring profile. Legacy
 factories remain tested in source, outside the active homepage build.
 
-Static posters embed deterministic software-rendered PNGs in SVG wrappers, using
+Static posters embed 1600 × 1200 deterministic software-rendered PNGs in SVG wrappers, using
 the same geometry and surface maps. The black-hole poster traces adaptive rays
 through the same disk boundaries. The fallback stays small and detailed without
 shipping millions of SVG triangle paths. Each visit has its own orbit and drag
@@ -102,8 +103,9 @@ state; reversal preserves a still-visible identity's state.
 
 Text, navigation, and a static poster appear immediately. Live artwork waits for
 fonts, surface maps, procedural scenes, shaders, uploaded GPU buffers, warm-up draws, and a GPU
-fence. Graphics preparation never blocks navigation. Resolution adapts to sustained
-frame cost; geometry detail stays fixed. Runtime and poster URLs carry content hashes so returning visitors receive the
+fence. Graphics preparation never blocks navigation. A three-megapixel budget
+retains fine detail. Resolution adapts separately for each scene, so slow frames
+on the black-hole page do not soften subsequent scenes; geometry detail stays fixed. Runtime and poster URLs carry content hashes so returning visitors receive the
 current visuals.
 
 The beige, grayscale homepage has seven links and no secondary navigation:

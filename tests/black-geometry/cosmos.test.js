@@ -100,7 +100,9 @@ for(const name of ['projects','notes'])test(`${name} has a moving stellar volume
   for(const values of ranges){values.sort((a,b)=>a-b);assert.ok(values[Math.floor(values.length*.95)]-values[Math.floor(values.length*.05)]>.20,'Depth must span a volume');}
   assert.ok(moving>200,'Individual stars must move in addition to the camera');
   if(name==='notes'){
-    assert.ok(scene.galaxyCenters.length>50);
+    assert.equal(scene.galaxyCenters.length,112);
+    assert.ok(Math.max(...scene.galaxyRadii)<.10,'Cluster members should read as small distant galaxies');
+    assert.ok(Math.max(...scene.galaxyRadii)/scene.radius<.04);
     const depths=scene.galaxyCenters.map(c=>c[2]);assert.ok(Math.max(...depths)-Math.min(...depths)>2);
   }
   scene.dispose();

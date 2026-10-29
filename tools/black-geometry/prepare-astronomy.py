@@ -50,15 +50,38 @@ profile = np.array(profile)
 profile = (profile - profile.min()) / max(.01, np.ptp(profile))
 save('saturn', np.tile(profile[:, None], (1, 512)))
 
-# Aperiodic optical-depth bands: C, B, Cassini division, A, Encke gap, F ring.
-rng = np.random.default_rng(81927)
-t = np.linspace(0, 1, 4096)
-profile = np.interp(t, [0, .08, .23, .27, .54, .61, .65, .69, .91, .95, .98, 1],
-                    [.05, .22, .28, .65, .85, .68, .02, .50, .62, .12, .26, 0])
-for count, amplitude in [(37, .10), (153, .055), (613, .025)]:
-    profile += amplitude * np.interp(t, np.linspace(0, 1, count), rng.uniform(-1, 1, count))
-profile *= 1 - .95 * np.exp(-((t - .645) / .014) ** 4)
-profile *= 1 - .85 * np.exp(-((t - .894) / .004) ** 2)
+# Fit the observed outer ring ellipse, then median-sample the illuminated arc.
+# The radial field retains Cassini's irregular bands and major/minor divisions.
+ring_frame = np.asarray(Image.open(inputs / 'saturn.jpg').convert('RGB'), dtype=float) / 255
+ring_frame = ring_frame @ np.array([.2126, .7152, .0722])
+cx, cy = 1800, 1350
+radii = np.linspace(1100, 1800, 1400)
+outline = []
+for angle in np.linspace(-1.45, 1.45, 240):
+    xx = np.clip((cx + radii * np.cos(angle)).astype(int), 0, 3599)
+    yy = np.clip((cy + radii * np.sin(angle)).astype(int), 0, 2699)
+    visible = np.where(ring_frame[yy, xx] > .025)[0]
+    if len(visible):
+        radius = radii[visible[-1]]
+        outline.append([radius * np.cos(angle), radius * np.sin(angle)])
+xx, yy = np.array(outline).T
+coefficients = np.linalg.lstsq(np.array([xx * xx, 2 * xx * yy, yy * yy]).T,
+                               np.ones(len(xx)), rcond=None)[0]
+eigenvalues, eigenvectors = np.linalg.eigh([[coefficients[0], coefficients[1]],
+                                           [coefficients[1], coefficients[2]]])
+transform = eigenvectors @ np.diag(1 / np.sqrt(eigenvalues))
+radii = np.linspace(.52, 1.015, 4096)
+samples = []
+for angle in np.linspace(-1.35, 1.35, 200):
+    coords = transform @ np.array([radii * np.cos(angle), radii * np.sin(angle)])
+    if coords[0, 2048] < 0:
+        coords = -coords
+    xx = np.clip((cx + coords[0]).astype(int), 0, 3599)
+    yy = np.clip((cy + coords[1]).astype(int), 0, 2699)
+    samples.append(ring_frame[yy, xx])
+profile = np.median(samples, axis=0)
+profile = np.clip(profile / np.percentile(profile, 99), 0, 1) ** .86 * .86
+profile *= np.clip(np.linspace(0, 1, 4096) / .012, 0, 1)
 save('rings', profile[None, :])
 
 for name in ['galaxy', 'cluster']:
