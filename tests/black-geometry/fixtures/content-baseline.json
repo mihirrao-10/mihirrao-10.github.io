@@ -64,8 +64,8 @@
       "id": "personal-projects",
       "heading": "Projects",
       "entries": [
-        "The Shortest Path Through a Curved World Find short paths across curved surfaces and explore the routes in an interactive 3D view. Algorithms · Geometry · Optimization",
-        "When Every Agent Finds the Shortcut Explore how learning agents choose routes, and why adding a shortcut can make traffic worse. Reinforcement Learning · Game Theory · Combinatorial Optimization"
+        "The Shortest Path Through a Curved World Find short paths across curved surfaces and explore the routes in an interactive 3D view.",
+        "When Every Agent Finds the Shortcut Explore how learning agents choose routes, and why adding a shortcut can make traffic worse."
       ],
       "links": [
         {
