@@ -67,39 +67,38 @@ The STIX Two Text page stays readable with static SVGs when graphics fail or
 reduced motion is requested. Visitors can enable animation or retry; rendering
 failures retain content and native links. Print uses dark text on white.
 
-One WebGL context renders seven astronomical subjects in increasing physical scale:
-Earth and Moon (About), Saturn (Education), the Sun (Industry experience),
-the solar system (Publications), a quasar / black hole (Teaching), the Whirlpool
-galaxy (Projects), and the Abell 1689 galaxy cluster (Personal notes). Distances
-and presentation sizes are compressed for the page. Dense indexed meshes,
-atmospheres, coronal loop bundles, and image-sampled stellar volumes
-stay resident on the GPU. Surface rotation, differential orbital flow, changing
-plasma, and continuous volume rotation animate without rebuilding geometry. Planetary
-surfaces write depth so rings and moons have coherent occlusion.
+One WebGL context renders seven astronomical subjects: Earth and Moon (About),
+Jupiter (Education), the Sun (Industry experience), a neutron star (Publications),
+a black hole (Teaching), the Milky Way (Projects), and the Abell 1689 galaxy
+cluster (Personal notes). Distances and presentation sizes are compressed for
+the page. Dense indexed meshes, layered atmospheres, anchored coronal loops,
+magnetic field tubes, and stellar volumes stay resident on the GPU. Surface
+rotation, moving plasma, local stellar orbits, and volume rotation animate without
+rebuilding geometry. Opaque planetary surfaces write depth for coherent occlusion.
 
-The quasar integrates bent viewing rays through a turbulent accretion disk,
-inspired by Gargantua in *Interstellar*. It is an authored approximation, not a
-Kerr geodesic solver. Saturn's 4096-sample radial ring profile is extracted from
-Cassini imagery, retaining its irregular bands and divisions. Mipmap filtering,
-soft planetary shadows, and advected cloud detail give gradients and movement.
-The accretion disk integrates a finite vertical density profile along each ray
-segment, with multiple scales of advected turbulence and fine density variation.
-NASA and Hubble images supply Earth and lunar surfaces, Saturn's latitude bands,
-solar active regions, and the structure of the extragalactic scenes. The galaxy
-has 226,000 orbiting stellar/cloud points, a thick disk, and rounded bulges. The
-cluster contains 112 small, independently oriented galaxies distributed through a
-volume, with 136,000 orbiting points. Neither scene contains a photographic display plane.
-Darkness represents brightness in the grayscale artwork. Credits and preparation
-details are in `assets/black-geometry/textures/CREDITS.txt`; the optional authoring
-tool is `tools/black-geometry/prepare-astronomy.py`. Seven content-addressed
-maps, with compressed equivalents, include the observed Cassini ring profile. Legacy
-factories remain tested in source, outside the active homepage build.
+Jupiter uses a 3600 × 1800 grayscale Cassini cloud map with fine belts, storms,
+and the Great Red Spot. The Sun combines an SDO active-region field with changing
+granulation and anchored loop bundles. The neutron star has 72 tilted magnetic
+field tubes and sweeping polar beams. The black hole is an unshaded circular
+shadow above a curved, gently moving spacetime grid with a minimal disk. This is
+an illustrative embedding, not a general-relativity simulation.
 
-Static posters embed 1600 × 1200 deterministic software-rendered PNGs in SVG wrappers, using
-the same geometry and surface maps. The black-hole poster traces adaptive rays
-through the same disk boundaries. The fallback stays small and detailed without
-shipping millions of SVG triangle paths. Each visit has its own orbit and drag
-state; reversal preserves a still-visible identity's state.
+The Milky Way is one authored barred spiral with two dominant arms, fainter arms
+and spurs, a thick disk, a central bulge, soft cloud volumes, and 300,000 moving
+stellar/cloud points. The cluster contains 112 small, independently oriented
+galaxies distributed through a volume, with 136,000 orbiting points. Neither scene
+contains a photographic display plane. Darkness represents brightness in the
+grayscale artwork. Credits and preparation details are in
+`assets/black-geometry/textures/CREDITS.txt`. Five active content-addressed maps
+have compressed equivalents; three earlier Saturn/ring/M51 fields and the old
+ray-integrated accretion renderer remain as tested references outside the active
+homepage build. The optional preparation tools are `prepare-astronomy.py` and
+`prepare-jupiter.py` in `tools/black-geometry/`.
+
+Static posters embed 1600 × 1200 deterministic software-rendered PNGs in SVG
+wrappers, using the same geometry and surface maps. The fallback stays detailed
+without shipping millions of SVG triangle paths. Each visit has its own orbit
+and drag state; reversal preserves a still-visible identity's state.
 
 Text, navigation, and a static poster appear immediately. Live artwork waits for
 fonts, surface maps, procedural scenes, shaders, uploaded GPU buffers, warm-up draws, and a GPU

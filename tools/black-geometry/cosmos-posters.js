@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { deflateSync } from 'node:zlib';
 import { traceBlackHole } from '../../src/black-geometry/black-hole.js';
 import { sampleRingProfile } from '../../src/black-geometry/ring-profile.js';
+import { valueNoise } from '../../src/black-geometry/astronomy-materials.js';
 
 function crc32(buffer){let crc=0xffffffff;for(const byte of buffer){crc^=byte;for(let i=0;i<8;i++)crc=(crc>>>1)^((crc&1)?0xedb88320:0);}return(crc^0xffffffff)>>>0;}
 function chunk(name,data){const type=Buffer.from(name),out=Buffer.alloc(data.length+12);out.writeUInt32BE(data.length);type.copy(out,4);data.copy(out,8);out.writeUInt32BE(crc32(Buffer.concat([type,data])),data.length+8);return out;}
@@ -11,7 +12,7 @@ function png(width,height,pixels){
   return Buffer.concat([Buffer.from([137,80,78,71,13,10,26,10]),chunk('IHDR',header),chunk('IDAT',deflateSync(rows,{level:9})),chunk('IEND',Buffer.alloc(0))]);
 }
 const clamp=(v,a=0,b=1)=>Math.max(a,Math.min(b,v));
-const grain=(x,y,z)=>.5+.18*Math.sin(x*23+y*17+z*13)+.17*Math.sin(x*51-y*41+z*37)+.12*Math.sin(x*109+y*97-z*83);
+const grain=(x,y,z)=>.62*valueNoise(x*28,y*28,z*28)+.27*valueNoise(x*57+7,y*57+3,z*57+1)+.11*valueNoise(x*116+2,y*116+8,z*116+6);
 function mapSample(texture,u,v){
   const data=texture?.userData;if(!data?.pixels)return .5;
   const x=Math.floor(((u%1+1)%1)*(data.width-1)),y=Math.floor(clamp(1-v)*(data.height-1));return data.pixels[y*data.width+x]/255;
@@ -25,16 +26,18 @@ function surfaceInk(object,u,v,x,y,z,nx,ny,nz){
   if(kind===7){const d=Math.sqrt(Math.max(0,1-nz*nz));return d>.65&&d<1?Math.max(0,1-Math.abs(d-.73)*5)*g*g*.12*opacity:0;}
   let density=.40+.52*sample;
   if(kind===1)density=.33+.6*sample+.1*g;
-  if(kind===2)density=.40+.32*sample+.10*g;
-  if(kind===3)density=.16+.70*sample+.12*g;
+  if(kind===2)density=.20+.73*(1-sample)+.055*g;
+  if(kind===3)density=.20+.80*sample+.15*g;
   if(kind===4)density=.35+.38*g;
-  return clamp(opacity*(density*(kind===3?.98:light)+.08),0,.94);
+  if(kind===8)density=.49+.38*g+.25*Math.abs(y/Math.hypot(x,y,z))**9;
+  if(kind===9)return Math.max(0,g-.38)*opacity*.45;
+  return clamp(opacity*(density*(kind===3||kind===8?.98:light)+.08),0,.94);
 }
 
 // A small deterministic software renderer keeps the fallback detailed without
 // shipping megabytes of triangle paths. It uses the live geometry and maps.
 export function cosmicPoster(scene){
-  scene.update(0);const blackHole=scene.theme==='Black hole';
+  scene.update(0);const blackHole=scene.renderMode==='bent-ray-accretion';
   const width=1600,height=1200;
   const pixels=Buffer.alloc(width*height*4),depth=new Float32Array(width*height).fill(-Infinity);
   const view=new THREE.Matrix4().makeRotationFromEuler(new THREE.Euler(.14,-.18,0));
@@ -67,7 +70,9 @@ export function cosmicPoster(scene){
     const objects=[];scene.root.traverse(o=>{if(o.geometry)objects.push(o);});objects.sort((a,b)=>a.renderOrder-b.renderOrder);
     for(const object of objects){
       const geometry=object.geometry,positions=geometry.attributes.position;
-      const matrix=new THREE.Matrix4().multiplyMatrices(view,new THREE.Matrix4().multiplyMatrices(scaleMatrix,object.matrixWorld));
+      let matrix=new THREE.Matrix4().multiplyMatrices(view,new THREE.Matrix4().multiplyMatrices(scaleMatrix,object.matrixWorld));
+      if(['event-horizon','photon-rim'].includes(object.userData.posterKind))matrix=scaleMatrix.clone();
+      const localCamera=new THREE.Vector3(0,0,12).applyMatrix4(matrix.clone().invert());
       const projected=new Float32Array(positions.count*3);
       for(let i=0;i<positions.count;i++)projected.set(project(positions,i,matrix),i*3);
       if(object.isMesh){
@@ -81,13 +86,22 @@ export function cosmicPoster(scene){
           if(object.material.side===THREE.FrontSide&&normal.z<0)continue;
           point.set(0,0,0);let u=0,v=0;for(const id of ids){u+=uv.getX(id)/3;v+=uv.getY(id)/3;point.x+=positions.getX(id)/3;point.y+=positions.getY(id)/3;point.z+=positions.getZ(id)/3;}
           let alpha;
-          if(object.userData.posterKind==='ring'){
+          if(['event-horizon','photon-rim','minimal-disk'].includes(object.userData.posterKind)){
+            alpha=object.material.opacity;
+          }else if(object.userData.posterKind==='spacetime-sheet'){
+            alpha=.035*clamp((3.35-Math.hypot(point.x,point.y))/.8);
+          }else if(object.userData.posterKind==='magnetic-field'){
+            alpha=(.42+.58*(.5+.5*Math.sin(u*13))**2)*object.material.uniforms.opacity.value;
+          }else if(object.userData.posterKind==='pulsar-beam'){
+            alpha=(1-v)**1.5*(.65+.35*Math.sin(v*22))*object.material.uniforms.opacity.value;
+          }else if(object.userData.posterKind==='ring'){
             const r=Math.hypot(point.x,point.z),fraction=(r-object.userData.innerRadius)/(object.userData.outerRadius-object.userData.innerRadius);
             const along=(-.65*point.x+.9*point.z)/Math.hypot(.65,.65,.9),distance=Math.sqrt(Math.max(0,point.lengthSq()-along*along));
             const shadow=along<0&&distance<object.userData.innerRadius*.82?.85:0;
             alpha=sampleRingProfile(object.material.uniforms.ringProfile.value,fraction,.0015)*(1-shadow)*object.material.uniforms.opacity.value;
           }else if(object.userData.posterKind==='volume'){
-            alpha=Math.max(0,normal.z)**1.8*object.material.uniforms.opacity.value*.85;
+            const path=point.clone().normalize().dot(localCamera.clone().sub(point).normalize());
+            alpha=Math.max(0,path)**2.2*object.material.uniforms.opacity.value*.85;
           }else if(object.userData.posterKind==='flare'){
             alpha=Math.exp(-(((v-.5)*5)**2))*(.55+.45*Math.sin(u*16+object.material.uniforms.phase.value))*.16;
           }else alpha=surfaceInk(object,u,v,point.x,point.y,point.z,normal.x,normal.y,normal.z);
@@ -112,7 +126,9 @@ export function cosmicPoster(scene){
       }else if(object.isLineSegments){
         for(let i=0;i<positions.count;i+=2){
           const a=i*3,b=a+3,dx=projected[b]-projected[a],dy=projected[b+1]-projected[a+1],steps=Math.max(1,Math.ceil(Math.hypot(dx,dy)));
-          for(let j=0;j<=steps;j++){const t=j/steps;blend(Math.round(projected[a]+dx*t),Math.round(projected[a+1]+dy*t),projected[a+2]*(1-t)+projected[b+2]*t,object.material.opacity*.55);}
+          const radius=Math.hypot(positions.getX(i),positions.getY(i));
+          const alpha=object.userData.posterKind==='spacetime-grid'?object.userData.posterOpacity*clamp((3.35-radius)/.8):object.material.opacity*.55;
+          for(let j=0;j<=steps;j++){const t=j/steps;blend(Math.round(projected[a]+dx*t),Math.round(projected[a+1]+dy*t),projected[a+2]*(1-t)+projected[b+2]*t,alpha);}
         }
       }
     }

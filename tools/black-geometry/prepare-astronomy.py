@@ -103,8 +103,10 @@ for name in ['galaxy', 'cluster']:
 
 path = root / 'src/black-geometry/astronomy-maps.js'
 source = path.read_text()
-start, end = source.index('export const MAP_FILES'), source.index('\n\nexport function decodeMap')
-existing = {'earth': 'earth-28448cc004a0.bin', 'moon': 'moon-d4139e619240.bin'}
-source = source[:start] + 'export const MAP_FILES = ' + json.dumps(existing | files, indent=2) + ';' + source[end:]
+start, end = source.index('export const MAP_FILES'), source.index('};', source.index('export const MAP_FILES')) + 2
+current = json.loads(source[source.index('=', start) + 1:end - 1])
+active = {'earth': current['earth'], 'moon': current['moon'], 'sun': files['sun'],
+          'jupiter': current['jupiter'], 'cluster': files['cluster']}
+source = source[:start] + 'export const MAP_FILES = ' + json.dumps(active, indent=2) + ';' + source[end:]
 path.write_text(source)
 print(json.dumps(files, indent=2))

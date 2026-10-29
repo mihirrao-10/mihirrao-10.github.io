@@ -22,7 +22,17 @@ Input SHA-256: 181879b00a174bacce35642243bb341d1bdc2b52a3aa861ce931a890b21437ad
 The observed disk is unprojected onto a sphere, with a reflected reverse hemisphere.
 Solar evolution, granulation, coronal loop geometry, and animation are authored.
 
-Saturn: NASA/JPL-Caltech/Space Science Institute. Cassini PIA17474.
+Jupiter: NASA/JPL/Space Science Institute. Cassini PIA07782.
+https://science.nasa.gov/photojournal/cassinis-best-maps-of-jupiter-cylindrical-map/
+https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia07/pia07782/PIA07782.jpg?w=3601&h=1801&fit=clip&crop=faces%2Cfocalpoint
+Input SHA-256: 17512607755473debef169a8b74db8d3b3818df452ffeeaffc6d93e524b90c6b
+The cylindrical cloud map is resized to 3600 x 1800, converted to grayscale,
+autocontrasted at one percent, and lightly sharpened. Belts, zones, and storms
+come from the map; rotation, cloud shear, and atmospheric layers are authored.
+Reproduce with tools/black-geometry/prepare-jupiter.py and the recorded input.
+Requires Pillow; not a website build dependency.
+
+Archived Saturn field (not loaded by the current homepage): NASA/JPL-Caltech/Space Science Institute. Cassini PIA17474.
 https://science.nasa.gov/photojournal/jewel-of-the-solar-system/
 https://assets.science.nasa.gov/content/dam/science/psd/photojournal/pia/pia17/pia17474/PIA17474.jpg
 Input SHA-256: 2d3929333ec0207423af4c3e34d68adba36258a36531abe4ad8e2241d0d054e1
@@ -32,7 +42,7 @@ outer ring, and median sampling across the illuminated arc retains observed
 bands and divisions. Brightness is normalized for inverse-grayscale presentation;
 it is not calibrated optical-depth data.
 
-Whirlpool galaxy (M51), heic0506a: NASA, ESA, S. Beckwith (STScI), and the
+Archived Whirlpool field (not loaded by the current homepage), heic0506a: NASA, ESA, S. Beckwith (STScI), and the
 Hubble Heritage Team (STScI/AURA).
 https://esahubble.org/images/heic0506a/
 https://science.nasa.gov/mission/hubble/science/explore-the-night-sky/hubble-messier-catalog/messier-51/
@@ -46,18 +56,24 @@ https://assets.science.nasa.gov/dynamicimage/assets/science/missions/hubble/rele
 Input SHA-256: 65ff216d962b9697f3bc3f2a94d919336708e82ba963f8a638533891856cdd26
 
 Galaxy fields: grayscale luminance conversion, background removal, and soft edge
-feathering. The M51 field seeds a thick stellar disk and rounded bulges. Luminous
-features in the Abell 1689 field seed a three-dimensional population of separate
-galaxies. Neither live scene displays the image on a surface. Depth, shapes, and
-orbital motion are authored, not measured. The live ring field uses the
-Cassini-derived profile with mipmap filtering and authored differential flow.
-Dark ink represents emitted light in all scenes. Source frames are not time series.
+feathering. The current Milky Way is authored procedural geometry rather than an
+image-derived field. Its broad bar/arm structure references NASA's illustration:
+https://science.nasa.gov/resource/the-milky-way-galaxy/
+Luminous features in the Abell 1689 field seed a three-dimensional population of
+112 separate galaxies. No active galaxy scene displays an image on a surface.
+Depth, shapes, and orbital motion are authored, not measured. Dark ink represents
+emitted light. Source frames are not time series.
 
-Reproduction: save the four inputs as sun.jpg, saturn.jpg, galaxy.jpg, cluster.jpg;
-verify the input hashes above, then run tools/black-geometry/prepare-astronomy.py
-with the input directory. The SDO latest URL is mutable: use the recorded frame.
-The prep tool requires Pillow and NumPy; the website build does not.
+Reproduction of Sun, archived Saturn/M51, and cluster fields: save the four inputs
+as sun.jpg, saturn.jpg, galaxy.jpg, cluster.jpg; verify the hashes above, then run
+tools/black-geometry/prepare-astronomy.py with the input directory. The SDO latest
+URL is mutable: use the recorded frame. Requires Pillow and NumPy; the website
+build does not. The active map manifest excludes archived fields.
 
-The black-hole silhouette references Gargantua from Interstellar and NASA's
-warped-world visualization. No copyrighted film still is included in the site.
+The current neutron star uses authored dipole geometry and polar beams:
+https://imagine.gsfc.nasa.gov/science/objects/neutron_stars1.html
+The current black hole uses an authored warped grid and unshaded shadow; it does
+not redistribute a photograph or film still. The earlier accretion renderer
+remains as source outside the active homepage build. Its silhouette referenced
+Gargantua from Interstellar and NASA's warped-world visualization:
 https://www.nasa.gov/universe/nasa-visualization-shows-a-black-holes-warped-world/

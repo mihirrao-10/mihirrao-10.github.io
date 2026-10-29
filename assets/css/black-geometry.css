@@ -60,7 +60,7 @@ button { padding: .2rem 0; border: 0; font: inherit; color: inherit; background:
 .course-list span { margin-left: .4rem; color: var(--muted); font-size: .7rem; white-space: nowrap; }
 .entry .entry-fields { margin-top: .6rem; color: var(--muted); font-size: .72rem; line-height: 1.5; }
 .world {
-  position: fixed; top: 13vh; right: .5vw; bottom: 8vh; left: 49.5%; z-index: 1;
+  position: fixed; top: 10vh; right: 0; bottom: 5vh; left: 47.5%; z-index: 1;
   overflow: hidden; pointer-events: none;
 }
 .world[data-interactive="true"] { pointer-events: auto; cursor: grab; touch-action: pinch-zoom; user-select: none; -webkit-user-select: none; }

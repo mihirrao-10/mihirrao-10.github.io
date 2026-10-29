@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import { MAP_FILES, decodeMap } from '../../src/black-geometry/astronomy-maps.js';
+import { ARCHIVE_MAP_FILES, decodeMap } from '../../src/black-geometry/astronomy-maps.js';
 import { sampleRingProfile } from '../../src/black-geometry/ring-profile.js';
-const map=decodeMap(fs.readFileSync(new URL(`../../assets/black-geometry/textures/${MAP_FILES.rings}`,import.meta.url)));
+const map=decodeMap(fs.readFileSync(new URL(`../../assets/black-geometry/textures/${ARCHIVE_MAP_FILES.rings}`,import.meta.url)));
 
 test('observed ring profile preserves optical depth and its main division across resolutions',()=>{
   const energies=[];

@@ -1,6 +1,7 @@
 import * as THREE from 'three';
-import { surfaceMaterial, ringMaterial, pointMaterial, flareMaterial, random, gaussian } from './astronomy-materials.js';
-import { createBlackHole } from './black-hole.js';
+import { surfaceMaterial, pointMaterial, flareMaterial, random, gaussian } from './astronomy-materials.js';
+import { createSpacetime } from './spacetime.js';
+import { createNeutronStar } from './neutron-star.js';
 import { createGalaxyVolume, createClusterVolume } from './stellar-volumes.js';
 
 export const COSMIC_TARGETS=Object.freeze(['hero','education','experience','publications','teaching','projects','notes']);
@@ -18,11 +19,6 @@ function body(scene,parent,radius,kind=4,{map,detail=384,opacity=1,scale=[1,1,1]
   const material=surfaceMaterial(scene,kind,map,{opacity,detail:Math.min(detail,320),depthWrite:kind<5});
   const mesh=new THREE.Mesh(new THREE.SphereGeometry(radius,detail,Math.round(detail*.5)),material);
   mesh.scale.fromArray(scale);mesh.userData.posterKind='body';mesh.userData.surfaceKind=kind;parent.add(mesh);return mesh;
-}
-function annulus(scene,parent,inner,outer,{opacity=.9,columns=1024,rows=128,map=null}={}){
-  const geometry=grid((u,v)=>{const a=u*TAU,r=inner+(outer-inner)*v;return[r*Math.cos(a),0,r*Math.sin(a)];},columns,rows);
-  const mesh=new THREE.Mesh(geometry,ringMaterial(scene,inner,outer,opacity,map));mesh.renderOrder=1;
-  mesh.userData.posterKind='ring';mesh.userData.innerRadius=inner;mesh.userData.outerRadius=outer;parent.add(mesh);return mesh;
 }
 function points(scene,parent,count,seed,sample,{soft=0}={}){
   const rng=random(seed),data={position:[],starSize:[],strength:[],phase:[],rate:[],orbitCenter:[],orbitAxis:[]};
@@ -46,39 +42,36 @@ function orbit(scene,parent,radius,inclination=0){
   const object=line(scene,parent,p,.3);object.rotation.x=inclination;return object;
 }
 function sunlight(scene,parent,radius,{detail=640,corona=true,map=null}={}){
-  const core=body(scene,parent,radius,3,{map,detail,opacity:1.04});
+  const core=body(scene,parent,radius,3,{map,detail,opacity:1.18});
   if(!corona)return core;
   const rng=random(72517),loops=new THREE.Group();parent.add(loops);
   // Bundles of nested magnetic loops, rooted on the sphere rather than a hair halo.
-  for(let region=0;region<9;region++){
+  for(let region=0;region<6;region++){
     const a=region*2.399,b=.55+rng()*2.0;
     const n=new THREE.Vector3(Math.sin(b)*Math.cos(a),Math.cos(b),Math.sin(b)*Math.sin(a));
     const tangent=new THREE.Vector3(-Math.sin(a),0,Math.cos(a));
     const side=new THREE.Vector3().crossVectors(n,tangent).normalize();
-    for(let strand=0;strand<7;strand++){
+    for(let strand=0;strand<5;strand++){
       const height=radius*(.10+region%3*.045+strand*.012),span=radius*(.10+strand*.009);
       const geometry=grid((u,v)=>{
         const arch=Math.sin(u*Math.PI),offset=(v-.5)*radius*.008;
-        return n.clone().multiplyScalar(radius+height*arch).addScaledVector(tangent,Math.cos(u*Math.PI)*span).addScaledVector(side,offset+(strand-3)*radius*.004).toArray();
+        const angle=Math.cos(u*Math.PI)*span/radius;
+        return n.clone().multiplyScalar(Math.cos(angle)).addScaledVector(tangent,Math.sin(angle)).multiplyScalar(radius+height*arch).addScaledVector(side,offset+(strand-2)*radius*.004).toArray();
       },192,6);
       const mesh=new THREE.Mesh(geometry,flareMaterial(scene,region*.9+strand*.16));
       mesh.userData.posterKind='flare';mesh.renderOrder=2;loops.add(mesh);
     }
   }
   points(scene,parent,20000,21937,rng=>{
-    const r=radius*(1.015+.50*rng()**2),p=sphere(rng,r);
-    return{position:p,size:2+rng()*7,strength:.022*(1-(r/radius-1)/.55),rate:.018};
+    const r=radius*(1.015+.38*rng()**2),p=sphere(rng,r);
+    return{position:p,size:2+rng()*7,strength:.047*(1-(r/radius-1)/.42),rate:.018};
   },{soft:1});
   body(scene,parent,radius*1.018,6,{detail:256,opacity:.20});
-  const coronaShell=body(scene,parent,radius*1.46,7,{detail:256,opacity:.75});coronaShell.renderOrder=1;
+  const coronaShell=body(scene,parent,radius*1.36,7,{detail:320,opacity:1.25});coronaShell.renderOrder=1;
   core.userData.loops=loops;return core;
 }
-function blackHole(scene){
-  const content=new THREE.Group();content.rotation.z=-.06;scene.root.add(content);
-  const mesh=createBlackHole(scene,content);
-  scene.animate=t=>{content.rotation.y=Math.sin(t*.025)*.055;mesh.rotation.z=Math.sin(t*.017)*.015;};
-  scene.theme='Black hole';scene.radius=3.4;
-}
+function blackHole(scene){createSpacetime(scene);}
+function neutronStar(scene){createNeutronStar(scene,grid);}
 function earthMoon(scene,maps){
   const content=new THREE.Group();content.rotation.z=-.08;scene.root.add(content);
   const earth=new THREE.Group();earth.position.x=-.35;content.add(earth);
@@ -93,40 +86,24 @@ function earthMoon(scene,maps){
   };
   scene.theme='Earth and Moon';scene.radius=2.9;
 }
-function saturn(scene,maps){
-  const content=new THREE.Group();content.rotation.set(.37,.1,-.28);scene.root.add(content);
-  const planet=body(scene,content,1.13,2,{map:maps.saturn,detail:640,opacity:1.12,scale:[1,.90,1]});
-  annulus(scene,content,1.37,2.65,{columns:1536,rows:160,opacity:1,map:maps.rings});
-  scene.animate=t=>{planet.rotation.y=t*.075;content.rotation.set(.37+Math.sin(t*.055)*.10,.1+t*.018,-.28+Math.sin(t*.045)*.08);};
-  scene.theme='Saturn';scene.radius=2.85;
+function jupiter(scene,maps){
+  const content=new THREE.Group();content.rotation.set(.10,0,-.10);scene.root.add(content);
+  const planet=body(scene,content,1.90,2,{map:maps.jupiter,detail:768,opacity:1.2,scale:[1,.935,1]});
+  const clouds=body(scene,content,1.914,9,{map:maps.jupiter,detail:384,opacity:.20,scale:[1,.935,1]});
+  body(scene,content,1.94,6,{detail:256,opacity:.13,scale:[1,.935,1]});
+  scene.animate=t=>{planet.rotation.y=-.58+t*.055;clouds.rotation.y=-.58+t*.059;content.rotation.z=-.10+Math.sin(t*.035)*.025;};
+  scene.theme='Jupiter';scene.radius=2.08;
 }
 function star(scene,maps){
   const content=new THREE.Group();content.rotation.set(.15,0,-.12);scene.root.add(content);
-  const sun=sunlight(scene,content,1.75,{map:maps.sun});
+  const sun=sunlight(scene,content,1.95,{map:maps.sun});
   scene.animate=t=>{sun.rotation.y=t*.04;sun.userData.loops.rotation.y=t*.04;content.rotation.z=-.12+Math.sin(t*.035)*.025;};
-  scene.theme='Sun';scene.radius=2.9;
-}
-function solarSystem(scene,maps){
-  const content=new THREE.Group();content.rotation.set(.70,.12,-.22);scene.root.add(content);
-  const sun=sunlight(scene,content,.42,{map:maps.sun,detail:256,corona:false});
-  const radii=[.72,1.02,1.30,1.58,1.91,2.25,2.59,2.93],sizes=[.055,.085,.09,.065,.23,.20,.145,.14];
-  const planets=radii.map((radius,i)=>{
-    const orbitGroup=new THREE.Group();orbitGroup.rotation.z=(i%3-1)*.025;content.add(orbitGroup);orbit(scene,orbitGroup,radius);
-    const group=new THREE.Group();orbitGroup.add(group);
-    const planet=body(scene,group,sizes[i],i===2?0:i>3?2:4,{map:i===2?maps.earth:null,detail:i>3?160:128,opacity:1.2});
-    if(i===5){group.rotation.z=.4;annulus(scene,group,.25,.41,{columns:384,rows:32,map:maps.rings});}
-    return {group,planet,radius,phase:[.5,2.1,3.9,5.4,1.1,4.4,2.7,5.7][i],speed:.19/(radius**1.5)};
-  });
-  points(scene,content,16000,39173,rng=>{
-    const a=rng()*TAU,r=1.70+rng()*.10;return{position:[r*Math.cos(a),gaussian(rng)*.015,r*Math.sin(a)],rate:.02,size:.3+rng()*.35,strength:.12+rng()*.22};
-  });
-  scene.animate=t=>{sun.rotation.y=t*.03;for(const p of planets){const a=p.phase+t*p.speed;p.group.position.set(p.radius*Math.cos(a),0,p.radius*Math.sin(a));p.planet.rotation.y=t*.05;}};
-  scene.theme='Solar system';scene.radius=3.17;
+  scene.theme='Sun';scene.radius=2.87;
 }
 function galaxy(scene,maps){createGalaxyVolume(scene,maps,points);}
 function cluster(scene,maps){createClusterVolume(scene,maps,points);}
 export function createCosmos(name,{maps={}}={}){
-  const factory={hero:earthMoon,education:saturn,experience:star,publications:solarSystem,teaching:blackHole,projects:galaxy,notes:cluster}[name];
+  const factory={hero:earthMoon,education:jupiter,experience:star,publications:neutronStar,teaching:blackHole,projects:galaxy,notes:cluster}[name];
   if(!factory)throw new Error(`Unknown cosmic scene: ${name}`);
   const scene={root:new THREE.Group(),materials:new Set(),textures:new Set(),uniforms:{time:{value:0},presence:{value:1},pixelRatio:{value:1}}};
   factory(scene,maps);scene.bounds=[{center:[0,0,0],radius:scene.radius}];scene.root.name=`cosmos-${name}`;

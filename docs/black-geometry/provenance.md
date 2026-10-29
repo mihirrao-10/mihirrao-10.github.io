@@ -20,44 +20,43 @@ moves from nearby worlds toward structures larger than a galaxy:
   courtesy of Reto Stockli (NASA/GSFC) and NASA Earth Observatory. The Moon uses
   the [NASA CGI Moon Kit](https://svs.gsfc.nasa.gov/4720/) LROC map. Both are
   2048 × 1024 grayscale conversions with their original spatial mapping.
-- **Education:** one oblate Saturn, with no satellite. A latitude profile derived
-  from Cassini's [Jewel of the Solar System](https://science.nasa.gov/photojournal/jewel-of-the-solar-system/)
-  informs the atmospheric bands. The 4096-sample radial ring field is now extracted
-  from that same photograph: an ellipse fit estimates the outer boundary, then
-  median samples across the illuminated arc retain irregular optical bands and
-  divisions. Its brightness is normalized for inverse-grayscale presentation;
-  this is an image-derived intensity field, not calibrated optical depth.
-  Mipmap filtering, soft planetary shadows, gentle precession, and advected
-  cloud/grain detail retain fine structure while avoiding regular interference
-  patterns. Credit: NASA/JPL-Caltech/Space Science Institute.
+- **Education:** one oblate Jupiter, with no satellites or rings. Cassini's
+  [cylindrical Jupiter map](https://science.nasa.gov/photojournal/cassinis-best-maps-of-jupiter-cylindrical-map/)
+  supplies cloud belts, storms, and the Great Red Spot. The 3600 × 1800 grayscale
+  derivative has mild contrast normalization and sharpening. Dark belts and
+  lighter zones retain the map's local variation. Layered clouds have slow
+  differential shear; atmospheric depth and motion are authored.
+  Credit: NASA/JPL/Space Science Institute.
 - **Industry experience:** the Sun, with a grayscale surface derived from an
   [SDO/AIA 171 Å observation](https://sdo.gsfc.nasa.gov/data/) dated October 29,
   2026, 16:26:22 UT. The visible solar disk is unprojected and reflected to
-  synthesize an unobserved reverse hemisphere. Flowing granulation, evolving
-  magnetic-loop ribbons, and a restrained particle corona are authored motion;
-  this is not a time series or a measured three-dimensional reconstruction.
-  Credit: NASA/SDO and the AIA science team.
-- **Publications:** eight orbiting planets, a granular central star, a ringed
-  Saturn, and an asteroid belt. Sizes, distances, and orbital rates are compressed
-  for legibility, rather than being a scale model or ephemeris.
-- **Teaching:** an inverse-grayscale hyper-luminous accretion disk and black-hole
-  shadow. Bent viewing rays produce the direct disk and its lensed images.
-  A finite vertical density profile is integrated along each curved ray segment.
-  Cartesian turbulent clouds follow differential orbital flow; filtering preserves
-  mean brightness as the footprint changes. Nested eddies, finer turbulent streams,
-  and filtered high-frequency grain give detail at several scales. Brightness is symmetric rather than
-  using a Doppler modulation. References: the silhouette of Gargantua in
-  *Interstellar* and [NASA's warped accretion-disk visualization](https://www.nasa.gov/universe/nasa-visualization-shows-a-black-holes-warped-world/).
-  No film still is redistributed. This is an authored deflection approximation,
-  not a relativistic geodesic solver or the film's renderer.
-- **Projects:** a fully three-dimensional Whirlpool galaxy and companion, using
-  [Hubble's M51 image](https://esahubble.org/images/heic0506a/) to sample the stellar
-  distribution. The display has a thick disk, rounded bulges, translucent volume
-  shells, and 226,000 stellar/cloud points with differential orbital motion. The
-  finer disk population retains the image's structure while a thicker cloud
-  population and the bulges give depth. There is no photographic display plane.
-  Depth, thickness, and motion are authored. Credit: NASA, ESA, S. Beckwith
-  (STScI), and the Hubble Heritage Team (STScI/AURA).
+  synthesize an unobserved reverse hemisphere. Flowing granulation, magnetic
+  loops anchored at two surface footpoints, and a restrained particle corona
+  are authored motion; this is not a time series or a measured three-dimensional
+  reconstruction. Credit: NASA/SDO and the AIA science team.
+- **Publications:** a neutron star with a granular core, 72 tubes following the
+  dipole relation `r = L sin²(theta)`, a tilted magnetic axis, and opposed polar
+  beams. Rotation and traveling opacity along the tubes illustrate magnetic
+  structure and sweeping emission. Reference: [NASA Goddard's neutron-star and
+  pulsar explanation](https://imagine.gsfc.nasa.gov/science/objects/neutron_stars1.html).
+  Geometry, dimensions, fields, and motion are authored; no source illustration
+  is redistributed.
+- **Teaching:** an unshaded, camera-facing black-hole shadow, a faint minimal
+  disk, and a three-dimensional warped grid behind it. The grid's authored
+  depth is `z = -.35 - 1.65/(1+(r/.92)²)` with a small traveling ripple, and
+  its central coordinates spread radially. A translucent membrane shows the
+  well's depth. This is a visual embedding metaphor for curvature, not a
+  relativistic spacetime metric, measured lensing field, or ray-traced solution.
+  The earlier Gargantua-inspired accretion renderer remains in source and its
+  tests, outside the active page build.
+- **Projects:** one three-dimensional Milky Way illustration. The central bar,
+  two dominant arms, fainter arms, and spurs follow the broad structure in
+  [NASA's Milky Way illustration](https://science.nasa.gov/resource/the-milky-way-galaxy/).
+  The authored logarithmic spiral has a thick disk, a rounded bulge, soft cloud
+  volumes, and 300,000 stellar/cloud points. Irregular knots and angular spread
+  break up the arms, with an underlying stellar disk between them. Differential
+  orbital motion and continuous rotation reveal depth; there is no photographic
+  display plane, companion galaxy, or image-derived local stellar catalog.
 - **Personal notes:** a three-dimensional cluster inspired by [Abell 1689](https://science.nasa.gov/asset/hubble/hubble-wide-field-image-of-galaxy-cluster-and-gravitational-lens-abell-1689/).
   Luminous features in the image supply 112 approximate sky positions. Each becomes
   an independently oriented elliptical or spiral stellar volume, with an authored
@@ -72,8 +71,9 @@ moves from nearby worlds toward structures larger than a galaxy:
 All scenes use grayscale. Surface maps, procedural noise, geometry, and seeds
 are deterministic. Motion changes uniforms and object transforms without
 rebuilding buffers. Tests check geometry, moving bounds, texture hashes, map
-compression parity, volumetric depth, individual particle orbits, filtered ring
-energy, and ray-field tonal variation. A deterministic software
+compression parity, volumetric depth, individual particle orbits, dipole
+footpoints, and spacetime curvature. Retained ring and ray-field tests cover
+archived implementations. A deterministic software
 renderer creates detailed fallback posters from the same geometry and maps;
 its shading is an approximation of the live shader. Legacy mathematical and
 institutional factories below remain as tested source, outside active pages.

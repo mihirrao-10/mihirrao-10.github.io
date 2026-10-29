@@ -5,19 +5,8 @@ const TAU=2*Math.PI;
 const limit=(value,low,high)=>Math.max(low,Math.min(high,value));
 const normal=(rng,scale=1)=>limit(gaussian(rng),-2.8,2.8)*scale;
 
-function imageSampler(map){
-  if(!map)throw new Error('Stellar volumes require their prepared reference map');
-  const {pixels,width,height}=map.userData,cdf=new Float64Array(pixels.length);
-  let total=0;for(let i=0;i<pixels.length;i++){total+=(pixels[i]/255)**1.35;cdf[i]=total;}
-  return rng=>{
-    let lo=0,hi=cdf.length-1;const target=rng()*total;
-    while(lo<hi){const mid=(lo+hi)>>>1;if(cdf[mid]<target)lo=mid+1;else hi=mid;}
-    return {u:(lo%width+rng())/width,v:(Math.floor(lo/width)+rng())/height,light:pixels[lo]/255};
-  };
-}
-
-function shells(scene,parent){
-  const geometry=new THREE.SphereGeometry(1,128,64),material=volumeMaterial(scene,.12);
+function shells(scene,parent,{detail=128,opacity=.26}={}){
+  const geometry=new THREE.SphereGeometry(1,detail,detail/2),material=volumeMaterial(scene,opacity);
   return (center,scale,quaternion)=>{
     const mesh=new THREE.Mesh(geometry,material);mesh.position.fromArray(center);mesh.scale.fromArray(scale);
     if(quaternion)mesh.quaternion.copy(quaternion);
@@ -41,29 +30,52 @@ function fitVolume(scene){
   scene.radius=radius*1.035;
 }
 
-export function createGalaxyVolume(scene,maps,points){
+export function createGalaxyVolume(scene,_maps,points){
   const content=new THREE.Group();scene.root.add(content);
-  const sample=imageSampler(maps.galaxy),shell=shells(scene,content);
-  const disk=(rng,soft=false)=>{
-    const {u,v,light}=sample(rng),x=(u-.415)*5.25,z=(v-.48)*3.65,r=Math.hypot(x,z);
-    const companion=u>.69&&v<.47,thickness=companion?.18:(soft?.10:.024)+.15*Math.exp(-r*r/.40);
-    const center=companion?[2.05,.24,-.72]:[0,0,0];
-    return {position:[x,normal(rng,thickness)+(companion?.24:0),z],
-      center,axis:[0,1,0],rate:companion?.022:.030/(.65+r)**.65,
-      size:soft?3+rng()*7:.45+rng()*.9,strength:soft?.035+light*.07:.18+light*.42};
+  const shell=shells(scene,content,{detail:64,opacity:.13});
+  const armPoint=(u,arm=0,minor=false)=>{
+    const r=(minor?1.0:.48)+(minor?1.82:2.50)*u;
+    const angle=arm*Math.PI+(minor?1.27:0)+2.5*Math.log(r/.48)+.06*Math.sin(u*19+arm);
+    return {r,angle};
   };
-  points(scene,content,190000,60827,rng=>disk(rng));
-  points(scene,content,18000,58271,rng=>disk(rng,true),{soft:1});
-  points(scene,content,18000,91283,rng=>{
-    const companion=rng()<.16,c=companion?[2.05,.24,-.72]:[0,0,0],r=companion?.115:.19;
-    return {position:[c[0]+normal(rng,r),c[1]+normal(rng,r*.8),c[2]+normal(rng,r)],center:c,
-      size:.6+rng()*.9,strength:.16+rng()*.3,rate:.045};
+  const arm=(rng,i,minor=false,soft=false)=>{
+    let u=rng()**.82;
+    if(rng()<.38)u=limit(Math.round(u*38)/38+normal(rng,.007),0,1);
+    const {r,angle}=armPoint(u,i%2,minor);
+    const a=angle+normal(rng,(minor?.23:.16)+u*.14)+(rng()<.12?.17:0);
+    return {position:[r*Math.cos(a),normal(rng,.025+.075*(1-u)),r*Math.sin(a)],
+      rate:.023/(r+.5)**.45,size:soft?5+rng()*8:.45+rng()*.95,
+      strength:soft?.07+rng()*.055:(minor?.18:.22)+rng()*.34};
+  };
+  points(scene,content,112000,60827,(rng,i)=>arm(rng,i));
+  points(scene,content,28000,52931,(rng,i)=>arm(rng,i,true));
+  points(scene,content,28000,58271,(rng,i)=>arm(rng,i,false,true),{soft:1});
+  points(scene,content,72000,91283,rng=>{
+    let r;do{r=-.72*Math.log(Math.max(1e-9,rng()*rng()));}while(r>3.03);const a=rng()*TAU;
+    return {position:[r*Math.cos(a),normal(rng,.075),r*Math.sin(a)],rate:.017/(r+.6)**.4,
+      size:.35+rng()*.6,strength:(.30+rng()*.30)*(1-r/3.3)};
   });
-  for(const radius of [.18,.30,.46,.68])shell([0,0,0],[radius,radius*.75,radius]);
-  for(const radius of [.15,.28])shell([2.05,.24,-.72],[radius,radius*.85,radius]);
-  // The stellar disk has real thickness; its round bulges remain visible edge-on.
-  scene.animate=t=>{content.rotation.set(.78+Math.sin(t*.085)*.24,t*.030,-.22+Math.sin(t*.06)*.07);};
-  scene.theme='Spiral galaxy';scene.volumeKind='stellar-disk';fitVolume(scene);
+  points(scene,content,40000,30193,rng=>({position:[normal(rng,.50),normal(rng,.12),normal(rng,.19)],
+    size:.55+rng()*.9,strength:.35+rng()*.35,rate:0}));
+  points(scene,content,20000,19137,rng=>({position:[normal(rng,.34),normal(rng,.23),normal(rng,.30)],
+    size:.8+rng()*1.2,strength:.35+rng()*.4,rate:.045}));
+  for(const radius of [.16,.27,.40,.59])shell([0,0,0],[radius*1.35,radius*.74,radius]);
+  shell([0,0,0],[.92,.14,.24]);
+  const starlight=shell([0,0,0],[3.04,.10,3.04]);starlight.material=volumeMaterial(scene,.09);
+  const movingClouds=[],axisY=new THREE.Vector3(0,1,0),turn=new THREE.Quaternion();
+  // Soft three-dimensional cloud volumes follow the two dominant arms.
+  for(let arm=0;arm<2;arm++)for(let j=0;j<24;j++){
+    const u=(j+.5)/24,{r,angle}=armPoint(u,arm),x=r*Math.cos(angle),z=r*Math.sin(angle);
+    const tangent=new THREE.Vector3(Math.cos(angle)-2.5*Math.sin(angle),0,Math.sin(angle)+2.5*Math.cos(angle)).normalize();
+    const q=new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(1,0,0),tangent);
+    const mesh=shell([x,0,z],[.20+.06*u,.055,.14+.04*u],q);
+    movingClouds.push({mesh,center:mesh.position.clone(),orientation:q,rate:.023/(r+.5)**.45});
+  }
+  scene.animate=t=>{
+    content.rotation.set(.80+Math.sin(t*.055)*.12,Math.sin(t*.035)*.30,-.27+Math.sin(t*.045)*.06);
+    for(const cloud of movingClouds){cloud.mesh.position.copy(cloud.center).applyAxisAngle(axisY,t*cloud.rate);cloud.mesh.quaternion.copy(turn.setFromAxisAngle(axisY,t*cloud.rate)).multiply(cloud.orientation);}
+  };
+  scene.theme='Milky Way';scene.volumeKind='stellar-disk';scene.galaxyCount=1;fitVolume(scene);
 }
 
 // Locate luminous objects in a coarse image field, then retain their sky positions.
@@ -112,7 +124,7 @@ export function createClusterVolume(scene,maps,points){
     }else p=new THREE.Vector3(normal(rng,g.radius*.65),normal(rng,g.radius*.50),normal(rng,g.radius*.65));
     p.applyQuaternion(g.q).add(new THREE.Vector3(...g.center));
     return {position:p.toArray(),center:g.center,axis:g.axis,rate:.055+g.luminosity*.035,
-      size:soft?1.2+rng()*2.8:.28+rng()*.40,strength:soft?.022+g.luminosity*.035:.20+g.luminosity*.38};
+      size:soft?2+rng()*4:.4+rng()*.55,strength:soft?.085+g.luminosity*.10:.50+g.luminosity*.45};
   };
   points(scene,content,120000,11933,rng=>sample(rng));
   points(scene,content,16000,41833,rng=>sample(rng,true),{soft:1});

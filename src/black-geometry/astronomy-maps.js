@@ -4,11 +4,12 @@ export const MAP_FILES = {
   "earth": "earth-28448cc004a0.bin",
   "moon": "moon-d4139e619240.bin",
   "sun": "sun-84afb4c32ecd.bin",
-  "saturn": "saturn-73e5f977646b.bin",
-  "rings": "rings-0354fe9b7f4f.bin",
-  "galaxy": "galaxy-f1a00ed7869c.bin",
+  "jupiter": "jupiter-c9363143c882.bin",
   "cluster": "cluster-001b58dbcf10.bin"
 };
+
+// Retained reference fields for the earlier scenes; never fetched by the page.
+export const ARCHIVE_MAP_FILES={saturn:'saturn-73e5f977646b.bin',rings:'rings-0354fe9b7f4f.bin',galaxy:'galaxy-f1a00ed7869c.bin'};
 
 export function decodeMap(buffer) {
   const view=new DataView(buffer.buffer,buffer.byteOffset,buffer.byteLength);

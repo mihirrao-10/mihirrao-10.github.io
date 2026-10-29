@@ -18,6 +18,7 @@ void main(){
  vec3 n=normalize(vNormal);float facing=abs(dot(n,normalize(vView)));
  float light=.30+.70*max(0.0,dot(n,normalize(vec3(-.65,.45,.9))));
  vec2 mapUv=vec2(vUv.x,1.0-vUv.y);
+ if(kind>1.5&&kind<2.5)mapUv.x+=time*.00045*sin(vUv.y*25.0);
  if(kind>2.5&&kind<3.5)mapUv.x+=.003*sin(time*.12+vUv.y*19.0);
  float sampleMap=texture2D(surfaceMap,mapUv).r;
  float grain=fbm(vLocal*28.0+vec3(time*.005,0,0));
@@ -25,12 +26,12 @@ void main(){
  if(kind>0.5&&kind<1.5)density=.33+.6*sampleMap+.1*grain;
  if(kind>1.5&&kind<2.5){
    float bands=mix(fbm(vec3(vLocal.y*18.0,0,0)),sampleMap,hasSurfaceMap);
-   density=.40+.32*bands+.10*fbm(vLocal*32.0+vec3(time*.025,0,0));}
+   density=.20+.73*(1.0-bands)+.055*fbm(vLocal*42.0+vec3(time*.025,0,0));}
  if(kind>2.5&&kind<3.5){
    vec3 p=normalize(vLocal)*45.0;
    float cells=fbm(p+vec3(fbm(p*1.7),time*.065,0));
    float activity=mix(cells,sampleMap,hasSurfaceMap);
-   density=.16+.70*activity+.12*cells;light=.94+.06*facing;}
+   density=.20+.80*activity+.15*cells;light=.94+.06*facing;}
  if(kind>3.5&&kind<4.5)density=.35+.38*grain;
  if(kind>4.5&&kind<5.5){
    float clouds=smoothstep(.49,.68,fbm(normalize(vLocal)*9.0+vec3(time*.006,0,0)));
@@ -38,19 +39,26 @@ void main(){
    gl_FragColor=vec4(vec3(.08),alpha);return;}
  if(kind>5.5&&kind<6.5){
    float rim=pow(1.0-facing,4.0);gl_FragColor=vec4(vec3(.06),rim*opacity*presence);return;}
- if(kind>6.5){
+ if(kind>6.5&&kind<7.5){
    float d=sqrt(max(0.0,1.0-facing*facing));
    float shell=smoothstep(.62,.70,d)*(1.0-smoothstep(.84,1.0,d));
    vec3 p=normalize(vLocal);
    float stream=pow(fbm(p*15.0+vec3(time*.025,0,0)),2.0);
    float falloff=exp(-max(0.0,d-.69)*8.0);
    gl_FragColor=vec4(vec3(.02),shell*stream*falloff*opacity*presence);return;}
+ if(kind>7.5&&kind<8.5){
+   vec3 p=normalize(vLocal);float cells=fbm(p*48.0+vec3(time*.08,0,0));
+   float poles=pow(abs(p.y),9.0);
+   density=.49+.38*cells+.25*poles;light=.78+.22*facing;}
+ if(kind>8.5){
+   float cloud=smoothstep(.38,.67,fbm(normalize(vLocal)*24.0+vec3(time*.018,0,0)));
+   gl_FragColor=vec4(vec3(.03),cloud*opacity*presence*.45);return;}
  vec2 cell=vUv*vec2(meshDensity,meshDensity*.5),f=fract(cell),w=max(fwidth(cell),vec2(.0001));
  float edge=min(min(f.x,1.0-f.x)/w.x,min(f.y,1.0-f.y)/w.y);
  float diagonal=abs(f.x-f.y)/max(w.x+w.y,.0001);
  float wire=1.0-smoothstep(.15,.65,min(edge,diagonal));
  wire*=smoothstep(.65,2.0,1.0/max(w.x,w.y));
- float wireInk=kind>2.5&&kind<3.5?.05:mix(.16,.24,step(.5,kind));
+ float wireInk=kind>1.5&&kind<3.5?.035:kind>7.5?.06:mix(.16,.24,step(.5,kind));
  float ink=opacity*(density*light+wireInk*wire+.09*pow(1.0-facing,3.0));
  gl_FragColor=vec4(vec3(.025),clamp(ink,0.0,.94)*presence);
 }`;
@@ -91,13 +99,21 @@ export function ringMaterial(scene,inner,outer,opacity=.9,map=null) {
 }
 
 export function volumeMaterial(scene,opacity=.12){
-  const material=new THREE.ShaderMaterial({vertexShader:VERTEX,fragmentShader:`
+  const material=new THREE.ShaderMaterial({vertexShader:`
+    varying vec3 vLocal,vLocalView;
+    void main(){vLocal=position;vec4 p=modelViewMatrix*vec4(position,1.0);vec3 view=-p.xyz;
+      vLocalView=vec3(dot(modelViewMatrix[0].xyz,view)/dot(modelViewMatrix[0].xyz,modelViewMatrix[0].xyz),
+        dot(modelViewMatrix[1].xyz,view)/dot(modelViewMatrix[1].xyz,modelViewMatrix[1].xyz),
+        dot(modelViewMatrix[2].xyz,view)/dot(modelViewMatrix[2].xyz,modelViewMatrix[2].xyz));
+      gl_Position=projectionMatrix*p;}`,fragmentShader:`
     uniform float time,presence,opacity;
-    varying vec3 vNormal,vView,vLocal;
+    varying vec3 vLocal,vLocalView;
     ${NOISE}
-    void main(){float facing=max(0.0,dot(normalize(vNormal),normalize(vView)));
+    void main(){
+      // Local ray length fades even very flat ellipsoids smoothly at their edge.
+      float path=max(0.0,dot(normalize(vLocal),normalize(vLocalView)));
       float cloud=.65+.35*fbm(vLocal*16.0+vec3(time*.04,0,0));
-      gl_FragColor=vec4(vec3(.015),pow(facing,1.8)*cloud*opacity*presence);}`,
+      gl_FragColor=vec4(vec3(.015),pow(path,2.2)*cloud*opacity*presence);}`,
     side:THREE.FrontSide,transparent:true,depthWrite:false,depthTest:true,
     uniforms:{...scene.uniforms,opacity:{value:opacity}}});
   scene.materials.add(material);return material;
@@ -139,3 +155,12 @@ export function pointMaterial(scene,soft=0) {
 }
 export function random(seed){let s=seed>>>0;return()=>{s^=s<<13;s^=s>>>17;s^=s<<5;return(s>>>0)/4294967296;};}
 export const gaussian=rng=>Math.sqrt(-2*Math.log(Math.max(1e-9,rng())))*Math.cos(2*Math.PI*rng());
+
+// Matching nonperiodic noise for the software-rendered fallback.
+export function valueNoise(x,y,z){
+  const fract=n=>n-Math.floor(n),mix=(a,b,t)=>a+(b-a)*t;
+  const hash=(x,y,z)=>{x=fract(x*.3183099+.13)*17;y=fract(y*.3183099+.27)*17;z=fract(z*.3183099+.41)*17;return fract(x*y*z*(x+y+z));};
+  const ix=Math.floor(x),iy=Math.floor(y),iz=Math.floor(z);
+  let fx=fract(x),fy=fract(y),fz=fract(z);fx=fx*fx*(3-2*fx);fy=fy*fy*(3-2*fy);fz=fz*fz*(3-2*fz);
+  return mix(mix(mix(hash(ix,iy,iz),hash(ix+1,iy,iz),fx),mix(hash(ix,iy+1,iz),hash(ix+1,iy+1,iz),fx),fy),mix(mix(hash(ix,iy,iz+1),hash(ix+1,iy,iz+1),fx),mix(hash(ix,iy+1,iz+1),hash(ix+1,iy+1,iz+1),fx),fy),fz);
+}

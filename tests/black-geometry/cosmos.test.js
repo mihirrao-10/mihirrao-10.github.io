@@ -16,10 +16,10 @@ for (const name of COSMIC_TARGETS) {
     };
     assert.deepEqual(positions(scene.root), positions(again.root));
     let triangles = 0, particles = 0;
-    const geometries = new Set();
+    const geometries = new Set(), materials = new Set();
     scene.root.traverse(object => {
       if (!object.geometry) return;
-      geometries.add(object.geometry);
+      geometries.add(object.geometry); materials.add(object.material);
       for (const attribute of Object.values(object.geometry.attributes)) assert.ok(attribute.array.every(Number.isFinite));
       if (object.isMesh) triangles += (object.geometry.index?.count || object.geometry.attributes.position.count) / 3;
       if (object.isPoints) particles += object.geometry.attributes.position.count;
@@ -28,7 +28,7 @@ for (const name of COSMIC_TARGETS) {
 
     });
     assert.ok(triangles > 10000 && triangles < 1000000);
-    assert.ok(['hero', 'education', 'teaching'].includes(name) ? particles === 0 : particles > 2000 && particles < (name==='projects'?260000:160000));
+    assert.ok(['hero', 'education', 'publications', 'teaching'].includes(name) ? particles === 0 : particles > 2000 && particles < (name==='projects'?330000:160000));
     const point = new THREE.Vector3();
     const first = [];
     scene.root.traverse(object => { if (object.isMesh) first.push(object.matrixWorld.elements.slice()); });
@@ -52,7 +52,7 @@ for (const name of COSMIC_TARGETS) {
     assert.notDeepEqual(last, first, 'At least one shell or satellite must move');
     scene.update(0, 1, 1);
     for (const material of scene.materials) if (material.userData.bodyDepth) assert.equal(material.depthWrite, true);
-    assert.ok(scene.materials.size <= geometries.size);
+    assert.deepEqual(scene.materials, materials, 'Every registered material must belong to a drawable object');
     scene.dispose(); again.dispose();
   });
 }
@@ -63,12 +63,12 @@ test('the mathematical introduction is lighter and the Notes opacity stays uncha
 });
 
 // The sequence travels from nearby bodies to structures beyond a single galaxy.
-test('navigation moves outward in scale and Saturn contains only its ringed planet',()=>{
-  const expected=['Earth and Moon','Saturn','Sun','Solar system','Black hole','Spiral galaxy','Galaxy cluster'];
+test('navigation uses the requested subjects and Jupiter replaces the ringed planet',()=>{
+  const expected=['Earth and Moon','Jupiter','Sun','Neutron star','Black hole','Milky Way','Galaxy cluster'];
   COSMIC_TARGETS.forEach((target,i)=>{
     const scene=createCosmos(target,{maps});assert.equal(scene.theme,expected[i]);
     if(target==='education'){
-      const bodies=[];scene.root.traverse(o=>{if(o.userData.posterKind==='body')bodies.push(o);});
+      const bodies=[];scene.root.traverse(o=>{if(o.userData.surfaceKind===2)bodies.push(o);});
       assert.equal(bodies.length,1);assert.equal(bodies[0].userData.surfaceKind,2);
     }
     scene.dispose();
@@ -105,5 +105,11 @@ for(const name of ['projects','notes'])test(`${name} has a moving stellar volume
     assert.ok(Math.max(...scene.galaxyRadii)/scene.radius<.04);
     const depths=scene.galaxyCenters.map(c=>c[2]);assert.ok(Math.max(...depths)-Math.min(...depths)>2);
   }
+  scene.dispose();
+});
+
+test('the Milky Way has one bar and a single shared galactic center',()=>{
+  const scene=createCosmos('projects',{maps});assert.equal(scene.galaxyCount,1);
+  scene.root.traverse(o=>{if(!o.isPoints)return;assert.ok(o.geometry.attributes.orbitCenter.array.every(v=>v===0));});
   scene.dispose();
 });
