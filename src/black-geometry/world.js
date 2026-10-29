@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { QUALITY, renderingDpr } from "./preferences.js";
 import { cameraPose } from "./scene-state.js";
 import { createCosmos, COSMIC_TARGETS } from "./cosmos.js";
+import { loadAstronomyMaps } from "./astronomy-maps.js";
 
 export const SCULPTURE_PALETTES = Object.freeze({
   education: ["#555555", "#888888", "#aaaaaa", "#dddddd"],
@@ -16,7 +17,7 @@ export const SCULPTURE_PALETTES = Object.freeze({
   congestion: ["#ae1425", "#f13b30", "#ff6729", "#ffb24b"],
   notes: ["#e8e2f7", "#ddeef9", "#ffe4d4", "#fafaff"],
 });
-export const SCULPTURE_STYLE = Object.freeze({ scale: .96, opacity: .88 });
+export const SCULPTURE_STYLE = Object.freeze({ scale: .99, opacity: .88 });
 export const sculptureOpacity = name => name === 'hero' ? .30 : name === 'notes' || COSMIC_TARGETS.includes(name) ? .32 : SCULPTURE_STYLE.opacity;
 
 /** Smooth coincident corners without rounding genuine creases or changing data positions. */
@@ -91,13 +92,14 @@ export class PreparedPath extends THREE.Curve {
 
 /** All pages share one renderer and keep their prepared cosmic buffers resident. */
 export async function createWorld({container,quality='high',onFailure}) {
+  const maps=await loadAstronomyMaps();
   const renderer=new THREE.WebGLRenderer({alpha:true,antialias:true,powerPreference:'high-performance'});
   renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.setClearColor(0xf5f2eb,0);
   const canvas=renderer.domElement;canvas.setAttribute('aria-hidden','true');container.append(canvas);
   const scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(35,1,.1,60);
   const viewCamera=new THREE.PerspectiveCamera(),rotation=new THREE.Quaternion(),drag=new THREE.Quaternion(),inverseView=new THREE.Quaternion();
   const models=new Map(COSMIC_TARGETS.map(name=>{
-    const cosmos=createCosmos(name);cosmos.root.visible=false;scene.add(cosmos.root);
+    const cosmos=createCosmos(name,{maps});cosmos.root.visible=false;scene.add(cosmos.root);
     return [name,{name,cosmos,orbitStart:0,orientation:[0,0,0,1]}];
   }));
   let disposed=false,shaderFailed=false,frames=0,warmedTargets=0,currentQuality=quality;
@@ -159,7 +161,8 @@ export async function createWorld({container,quality='high',onFailure}) {
       depthPrepass:false,activeInteriorMeshes:0,decodedTargets:models.size,packedTargets:0,
       cosmicTargets:COSMIC_TARGETS.filter(name=>models.get(name).cosmos.root.visible),
       cosmicAges:Object.fromEntries([...models].map(([name,model])=>[name,model.cosmos.uniforms.time.value])),
-      transparentCosmos:[...models.values()].every(model=>[...model.cosmos.materials].every(m=>m.transparent&&!m.depthWrite&&!m.depthTest)),
+      transparentCosmos:[...models.values()].every(model=>[...model.cosmos.materials].every(m=>m.transparent)),
+      coherentDepth:[...models.values()].some(model=>[...model.cosmos.materials].some(m=>m.userData.bodyDepth&&m.depthTest)),
       finiteActiveBuffers:true,presentationScale:SCULPTURE_STYLE.scale,entranceProgress,entranceScale,
       orbitAges:[...activeNames].map(name=>Math.max(0,orbitClock-models.get(name).orbitStart)),
       camera:camera.position.toArray(),cameraOrientation:camera.quaternion.toArray(),
@@ -168,7 +171,7 @@ export async function createWorld({container,quality='high',onFailure}) {
     }),
     dispose(){
       if(disposed)return;disposed=true;canvas.removeEventListener('webglcontextlost',contextLost);
-      for(const model of models.values())model.cosmos.dispose();models.clear();renderer.dispose();canvas.remove();
+      for(const model of models.values())model.cosmos.dispose();models.clear();Object.values(maps).forEach(map=>map.dispose());renderer.dispose();canvas.remove();
     },
   };
   resize();

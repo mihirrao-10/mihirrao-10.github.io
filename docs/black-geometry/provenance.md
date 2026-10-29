@@ -11,32 +11,44 @@ The source and tests define current sampling budgets and rendering parameters.
 
 All seven pages use original grayscale scenes from `cosmos.js`:
 
-- **About:** a quasar-like accretion form inspired by the halo and flattened disk
-  of Gargantua in *Interstellar*. Two fine, flowing disk sheets meet an upright
-  annular lens image, a narrow inner rim, and a foreground half-disk. A beige
-  sphere masks the central shadow. The [film imagery discussed by AIP](https://www.aip.org/inside-science/interstellars-black-hole-once-seen-as-pure-speculation)
-  informed the silhouette; no film pixels or meshes are redistributed.
-- **Education:** a banded spherical lattice, three annular rings, and three moons
-  following differently inclined paths. Ring dust moves independently.
-- **Industry experience:** a pair of rotating neutron-star forms, fine magnetic
-  loops, and two polar cones.
-- **Publications:** a single pulsar, twelve magnetic meridians, and polar beams.
-- **Teaching:** a dense, seeded globular star cluster and intersecting orbital
-  traces. Density increases toward the center.
-- **Projects:** two broad logarithmic arms with irregular secondary spurs, diffuse
-  dust, and a concentrated stellar bulge. Inverted luminance makes the core dark;
-  star density and opacity fade toward the outskirts. Arms and stars share their
-  slow angular speed so the spiral remains coherent throughout a visit.
-- **Personal notes:** four overlapping, corrugated nebular veils surrounding a
-  small central star and a seeded star field.
+- **About:** a black hole rendered by integrating viewing rays through a central
+  deflection field and sampling disk-plane crossings. Turbulent density, radial
+  filaments, and repeated crossings form the direct disk and lensed images. This
+  replaces the earlier upright annulus. The scene is inspired by the [NASA
+  accretion-disk visualization](https://www.nasa.gov/universe/nasa-visualization-shows-a-black-holes-warped-world/)
+  and the silhouette of Gargantua in *Interstellar*. The deflection law is an
+  authored visual approximation, not a relativistic geodesic solution or a
+  reproduction of the film's renderer.
+- **Education:** Earth and an orbiting Moon, with dense indexed spheres, layered
+  atmosphere and clouds, triangular surface lines, and actual surface maps.
+  Earth uses [NASA SVS's Blue Marble mosaic](https://svs.gsfc.nasa.gov/2915/),
+  credited to NASA/Goddard Space Flight Center Scientific Visualization Studio,
+  with data courtesy of Reto Stockli (NASA/GSFC) and NASA Earth Observatory.
+  The Moon uses the [NASA CGI Moon Kit](https://svs.gsfc.nasa.gov/4720/) LROC
+  color map. Both are converted to 2048 × 1024 grayscale, without altering their
+  spatial mapping. Source links and format details accompany the assets.
+- **Industry experience:** an oblate, banded Saturn-like planet, a finely sampled
+  ring plane with major and minor gaps, ring grains, and a small orbiting moon.
+  Bands and gaps are authored visual patterns, not a reconstruction of a
+  particular observation.
+- **Publications:** a granular stellar surface, fine magnetic arches, coronal
+  threads, and a diffuse particle corona. Dark ink represents emitted light.
+- **Teaching:** eight orbiting planets, a granular central star, a ringed Saturn,
+  and an asteroid belt. Distances, planet sizes, and orbital rates are deliberately
+  compressed for legibility; this is not a scale model or ephemeris.
+- **Projects:** four irregular logarithmic arms, dense stellar points, diffuse
+  clouds, inter-arm stars, and a concentrated central bulge. Brighter structures
+  are represented by greater ink density. Fine mesh ribbons follow the arms.
+- **Personal notes:** a seeded spherical stellar cluster with a Plummer-like
+  radial distribution, a dense core, diffuse starlight, and larger resolved stars.
 
-These are authored abstract artworks, not reconstructions of observed objects,
-orbital mechanics, or relativistic simulations. Shells have antialiased triangle
-edges, textured accretion bands, and nearly clear faces. Particle motion is
-computed in shaders and shell buffers remain fixed. Tests check finite geometry,
-deterministic seeds, moving bounds, transparency, and buffer reuse. Static SVGs
-project the same geometry and initial pose. The former quintic and Klein meshes
-remain as tested source factories below and are no longer active homepage art.
+All scenes use grayscale. Surface maps, procedural noise, geometry, and seeds
+are deterministic. Motion changes uniforms and object transforms without
+rebuilding buffers. Tests check geometry, moving bounds, texture hashes, map
+compression parity, and ray-field tonal variation. A deterministic software
+renderer creates detailed fallback posters from the same geometry and maps;
+its shading is an approximation of the live shader. Legacy mathematical and
+institutional factories below remain as tested source, outside active pages.
 
 ## Retained algorithm illustrations
 

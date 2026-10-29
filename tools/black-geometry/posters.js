@@ -1,4 +1,6 @@
 import * as THREE from "three";
+import fs from "node:fs";
+import { MAP_FILES, decodeMap } from "../../src/black-geometry/astronomy-maps.js";
 import { createCosmos, COSMIC_TARGETS } from "../../src/black-geometry/cosmos.js";
 import { cosmicPoster } from "./cosmos-posters.js";
 import { SCULPTURE_STYLE, sculptureOpacity } from "../../src/black-geometry/world.js";
@@ -43,12 +45,20 @@ export function sculpturePoster(model,{shortcut="open"}={}) {
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" fill="none" aria-hidden="true"><defs><filter id="glow" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="4"/></filter></defs><use href="#surface" filter="url(#glow)" opacity=".42"/><g opacity="${sculptureOpacity(model.name)}">${body}</g></svg>\n`;
 }
 
+let cosmicPosters;
 export function posterOutputs(models = []) {
   const files=new Map(models.map(model=>[`sculpture-${model.name}.svg`,sculpturePoster(model)]));
-  for (const name of COSMIC_TARGETS) {
-    const scene = createCosmos(name);
-    files.set(`sculpture-${name}.svg`, cosmicPoster(scene));
-    scene.dispose();
+  if (!cosmicPosters) {
+    cosmicPosters = new Map();
+    const maps = Object.fromEntries(Object.entries(MAP_FILES).map(([name, file]) =>
+      [name, decodeMap(fs.readFileSync(new URL(`../../assets/black-geometry/textures/${file}`, import.meta.url)))]));
+    for (const name of COSMIC_TARGETS) {
+      const scene = createCosmos(name, { maps });
+      cosmicPosters.set(`sculpture-${name}.svg`, cosmicPoster(scene));
+      scene.dispose();
+    }
+    Object.values(maps).forEach(map => map.dispose());
   }
+  for (const [name, svg] of cosmicPosters) files.set(name, svg);
   return files;
 }

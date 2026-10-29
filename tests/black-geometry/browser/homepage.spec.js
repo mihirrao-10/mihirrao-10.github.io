@@ -57,6 +57,7 @@ test('menu switches seven translucent cosmic scenes and supports rapid reversals
     const cosmic = true;
     expect(world.depthPrepass).toBe(!cosmic);
     expect(world.transparentCosmos).toBe(true);
+    expect(world.coherentDepth).toBe(true);
     expect(world.cosmicTargets).toEqual(cosmic ? [target] : []);
     expect(world.activeInteriorMeshes).toBe(0);
   }
@@ -98,7 +99,7 @@ test('each section shows both entries with no secondary navigation or detail con
 });
 
 test('content and navigation remain usable while sculpture data is unavailable', async ({ page }) => {
-  await page.route('**/world-*.js', route => route.abort());
+  await page.route('**/textures/*.bin*', route => route.abort());
   await page.goto('/?bg-debug');
   await expect(page.getByRole('heading', { name: 'Mihir Rao', exact: true })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Retry animation' })).toBeVisible();

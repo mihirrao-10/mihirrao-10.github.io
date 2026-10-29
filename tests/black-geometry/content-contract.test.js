@@ -27,7 +27,7 @@ test('the seven main links reach one complete page each, without secondary contr
   for (const id of ['education', 'experience', 'personal-projects']) {
     const page = scenes.find(node => attr(node, 'id') === id);
     assert.equal(all(page, node => hasClass(node, 'entry')).length, 2);
-    assert.ok(normalize(text(page)).split(/\s+/).length < (id === 'personal-projects' ? 100 : 65), `${id} remains a short page`);
+    assert.ok(normalize(text(page)).split(/\s+/).length < (id === 'personal-projects' ? 115 : 85), `${id} remains a short page`);
   }
 });
 
@@ -90,4 +90,15 @@ test('new sections include publication status, teaching courses, locations, and 
   assert.equal(all(doc, node => hasClass(node, 'section-description')).length, 7);
   for (const note of all(doc, node => hasClass(node, 'note')))
     assert.ok(normalize(text(all(note, node => hasClass(node, 'note-byline'))[0])).length > 10);
+});
+
+test('each location sits with its dates in a separate metadata column', async () => {
+  const doc = await document();
+  const columns = all(doc, node => hasClass(node, 'entry-meta'));
+  assert.equal(columns.length, 4);
+  for (const column of columns) {
+    assert.equal(all(column, node => hasClass(node, 'entry-dates')).length, 1);
+    assert.equal(all(column, node => hasClass(node, 'entry-location')).length, 1);
+  }
+  assert.equal(all(doc, node => hasClass(node, 'entry-summary')).length, 4);
 });

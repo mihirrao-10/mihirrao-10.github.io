@@ -5,7 +5,7 @@ import { createCosmos, COSMIC_TARGETS } from '../../src/black-geometry/cosmos.js
 import { sculptureOpacity } from '../../src/black-geometry/world.js';
 
 for (const name of COSMIC_TARGETS) {
-  test(`${name} has a detailed transparent mesh, stable orbits, and deterministic star fields`, () => {
+  test(`${name} has a detailed finite geometry, stable motion, and deterministic sampling`, () => {
     const scene = createCosmos(name), again = createCosmos(name);
     const positions = root => {
       const arrays = []; root.traverse(object => { if (object.geometry) arrays.push(object.geometry.attributes.position.array); });
@@ -18,18 +18,14 @@ for (const name of COSMIC_TARGETS) {
       if (!object.geometry) return;
       geometries.add(object.geometry);
       for (const attribute of Object.values(object.geometry.attributes)) assert.ok(attribute.array.every(Number.isFinite));
-      if (object.isMesh) triangles += object.geometry.attributes.position.count / 3;
+      if (object.isMesh) triangles += (object.geometry.index?.count || object.geometry.attributes.position.count) / 3;
       if (object.isPoints) particles += object.geometry.attributes.position.count;
       assert.equal(object.material.transparent, true);
-      assert.equal(object.material.depthWrite, false);
-      assert.equal(object.material.depthTest, false, 'Rear shells must remain visible through front shells');
-      if (object.material.uniforms?.lineOpacity) {
-        assert.ok(object.material.uniforms.lineOpacity.value <= .30);
-        assert.ok(object.material.uniforms.fillOpacity.value <= .15);
-      }
+      assert.equal(object.material.depthWrite, !!object.material.userData.bodyDepth, 'Only coherent planetary surfaces write depth');
+
     });
-    assert.ok(triangles > 15000 && triangles < 160000);
-    assert.ok(particles > 2000 && particles < 40000);
+    assert.ok(triangles > 10000 && triangles < 1000000);
+    assert.ok(['hero', 'education'].includes(name) ? particles === 0 : particles > 2000 && particles < 160000);
     const point = new THREE.Vector3();
     const first = [];
     scene.root.traverse(object => { if (object.isMesh) first.push(object.matrixWorld.elements.slice()); });
@@ -51,6 +47,8 @@ for (const name of COSMIC_TARGETS) {
     const last = [];
     scene.root.traverse(object => { if (object.isMesh) last.push(object.matrixWorld.elements.slice()); });
     assert.notDeepEqual(last, first, 'At least one shell or satellite must move');
+    scene.update(0, 1, 1);
+    for (const material of scene.materials) if (material.userData.bodyDepth) assert.equal(material.depthWrite, true);
     assert.ok(scene.materials.size <= geometries.size);
     scene.dispose(); again.dispose();
   });

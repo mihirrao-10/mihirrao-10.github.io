@@ -1,0 +1,14 @@
+Surface maps converted to grayscale from NASA imagery.
+
+Earth: NASA/Goddard Space Flight Center Scientific Visualization Studio.
+Blue Marble data courtesy of Reto Stockli (NASA/GSFC) and NASA Earth Observatory.
+https://svs.gsfc.nasa.gov/2915/
+https://svs.gsfc.nasa.gov/vis/a000000/a002900/a002915/bluemarble-2048.png
+
+Moon: NASA/Goddard Space Flight Center Scientific Visualization Studio, CGI Moon Kit.
+Lunar Reconnaissance Orbiter Camera / Lunar Reconnaissance Orbiter.
+https://svs.gsfc.nasa.gov/4720/
+https://svs.gsfc.nasa.gov/vis/a000000/a004700/a004720/lroc_color_2k.jpg
+
+Files: 4-byte little-endian uint16 width and height, followed by 8-bit grayscale pixels.
+Gzip files preserve exactly the same payload.

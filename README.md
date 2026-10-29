@@ -67,23 +67,29 @@ The STIX Two Text page stays readable with static SVGs when graphics fail or
 reduced motion is requested. Visitors can enable animation or retry; rendering
 failures retain content and native links. Print uses dark text on white.
 
-One WebGL context renders seven original space-inspired scenes: a lensed quasar,
-ringed worlds, binary neutron stars, a pulsar, a globular cluster, a spiral galaxy,
-and a stellar nebula. Deterministic parametric shells and seeded star fields are
-prepared once at startup. Shaders animate stars and fine accretion textures while
-shell and satellite transforms reuse existing GPU buffers. No geometry packet is
-fetched. The older mathematical, institutional, algorithm, and project factories
-remain in source with their tests, outside the active homepage build.
+One WebGL context renders seven astronomical subjects: a black hole (About),
+Earth and Moon (Education), Saturn (Industry experience), the Sun (Publications),
+the solar system (Teaching), a spiral galaxy (Projects), and a globular cluster
+(Personal notes). Indexed planet meshes, layered atmospheres, ring grains,
+coronal filaments, and dense star fields stay resident on the GPU. Shaders add
+fine triangular meshes, surface texture, ring gaps, granulation, and slow flow.
+Planetary surfaces write depth so rings and moons have coherent occlusion.
 
-Cosmic shells use antialiased mesh lines, nearly clear faces, and alpha transitions
-without depth occlusion. About adds a beige event-horizon mask and foreground
-accretion sheet. These are abstract artworks inspired by space, not physical
-simulations. Every page has a static SVG generated from the same scene and pose.
-Prepared targets stay resident. Each visit has its own orbit start and drag state;
-reversal preserves a still-visible identity's state.
+The black hole integrates bent viewing rays through a turbulent accretion disk.
+It is an authored approximation, not a Kerr geodesic solver. Earth and lunar
+surfaces use NASA grayscale maps in `assets/black-geometry/textures/`, with credits
+beside them. Surface files have content-addressed names and compressed equivalents;
+the runtime shares two textures across all scenes. Older factories remain tested
+in source, outside the active homepage build.
+
+Static posters embed deterministic software-rendered PNGs in SVG wrappers, using
+the same geometry and surface maps. The black-hole poster traces adaptive rays
+through the same disk boundaries. The fallback stays small and detailed without
+shipping millions of SVG triangle paths. Each visit has its own orbit and drag
+state; reversal preserves a still-visible identity's state.
 
 Text, navigation, and a static poster appear immediately. Live artwork waits for
-fonts, procedural scenes, shaders, uploaded GPU buffers, warm-up draws, and a GPU
+fonts, surface maps, procedural scenes, shaders, uploaded GPU buffers, warm-up draws, and a GPU
 fence. Graphics preparation never blocks navigation. Resolution adapts to sustained
 frame cost; geometry detail stays fixed. Runtime and poster URLs carry content hashes so returning visitors receive the
 current visuals.
