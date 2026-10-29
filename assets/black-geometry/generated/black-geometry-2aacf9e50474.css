@@ -61,7 +61,10 @@ button { padding: .2rem 0; border: 0; font: inherit; color: inherit; background:
 .hero-links a { padding: .3rem 0; }
 .section-heading { margin: 0 0 .5rem; color: var(--muted); font-size: .84rem; font-weight: 400; }
 .section-description { margin: 0 0 1.7rem; color: #7b7870; font-size: .83rem; line-height: 1.6; }
-.hero .section-description { margin: .9rem 0 0; max-width: 25rem; }
+.hero .section-description { margin: .9rem 0 0; }
+@media (min-width: 800px) {
+  .hero { width: min(38rem, calc(100vw - var(--content-left) - 1.25rem)); }
+}
 .coming-soon { margin: 0; font-size: 1.1rem; }
 .entry + .entry { margin-top: 1.6rem; }
 .entry-title { margin: 0; font-size: 1.1rem; line-height: 1.4; font-weight: 400; }
@@ -120,6 +123,9 @@ button { padding: .2rem 0; border: 0; font: inherit; color: inherit; background:
   .course-list span { font-size: .65rem; }
   .rotation-hint { display: none; }
   .animation-action { right: 1rem; bottom: .3rem; }
+}
+@media (max-width: 599px) {
+  .hero .section-description { font-size: min(.78rem, calc(2.25vw - .9px)); white-space: nowrap; }
 }
 @media (max-width: 380px) {
   .site-index { column-gap: .7rem; }
