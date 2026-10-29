@@ -69,7 +69,7 @@ failures retain content and native links. Print uses dark text on white.
 
 One WebGL context renders seven grayscale scenes: a fictional planet and moon
 (About), an uneven giant star (Education), a black hole (Industry experience),
-a neutron star (Publications), the Milky Way (Teaching), two colliding
+a neutron star (Publications), the Milky Way (Teaching assistant), two colliding
 galaxies (Projects), and a globular star cluster (Personal notes). Detailed
 surface fields, volumetric particles, and bent-ray integration suit each subject;
 there are no visible wireframes or tessellated surface treatments. A shared
@@ -115,7 +115,7 @@ on the black-hole page do not soften subsequent scenes; geometry detail stays fi
 current visuals.
 
 The beige homepage has seven links and no secondary navigation:
-About, Education, Industry experience, Publications, Teaching, Projects, and
+About, Education, Industry experience, Publications, Teaching assistant, Projects, and
 Personal notes. Education and industry show locations; Notes shows each book
 with its author. Its generated source block stays intact.
 Native hash links, old section aliases, reload, and browser history select the
