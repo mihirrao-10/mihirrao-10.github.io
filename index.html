@@ -3,6 +3,35 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    html { background: #f5f2eb; }
+    .site-loader { display: none; }
+    [data-boot="loading"] body > :not(.site-loader):not(script) { visibility: hidden; }
+    [data-boot="loading"] .site-loader {
+      position: fixed; inset: 0; z-index: 30; display: grid; place-items: center;
+      margin: 0; background: #f5f2eb; color: #000;
+    }
+  </style>
+  <script>
+    (() => {
+      const root = document.documentElement;
+      root.dataset.boot = 'loading';
+      const fallback = () => {
+        if (root.dataset.boot !== 'loading') return;
+        root.dataset.boot = 'fallback';
+        window.dispatchEvent(new Event('portfolio:boot-fallback'));
+      };
+      // Keep the site available if its module or graphics never finish loading.
+      const deadline = setTimeout(fallback, 30000);
+      window.addEventListener('portfolio:boot-complete', () => clearTimeout(deadline), { once: true });
+      document.addEventListener('error', event => {
+        if (event.target.matches?.('script[data-experience-entry]')) {
+          clearTimeout(deadline);
+          fallback();
+        }
+      }, true);
+    })();
+  </script>
   <title>Mihir Rao</title>
   <link rel="icon" href="assets/images/profile.svg" type="image/svg+xml" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -11,10 +40,13 @@
     href="https://fonts.googleapis.com/css2?family=STIX+Two+Text:ital,opsz,wght@0,400..700;1,400..700&amp;display=swap"
     rel="stylesheet"
   />
-  <link rel="stylesheet" href="assets/black-geometry/generated/black-geometry-e557307f3ead.css" />
+  <link rel="stylesheet" href="assets/black-geometry/generated/black-geometry-ec9f2d2b161e.css" />
   <meta name="description" content="Mihir Rao — Computer Scientist. Education, teaching, industry, mathematical projects, and personal notes." />
 </head>
 <body data-experience-state="static">
+  <div class="site-loader" role="status" aria-live="polite" aria-atomic="true">
+    <span class="loader-label">Loading<span class="loader-dots" aria-hidden="true"><span>.</span><span>.</span><span>.</span></span></span>
+  </div>
   <button class="animation-action" hidden type="button">Enable animation</button>
   <a class="skip-link" href="#main">Skip to content</a>
   <nav class="site-index" aria-label="Main navigation">
@@ -43,8 +75,7 @@
   </section>
   <main id="main" tabindex="-1">
     <section id="education" class="scene-page" data-scene="education" data-target="education">
-      <h2 class="section-heading">Education</h2>
-      <p class="section-description">My degrees in computer science and mathematics, from undergraduate study through graduate school.</p>
+      <h2 class="sr-only">Education</h2>
       <article class="entry">
         <div class="entry-heading">
           <div class="entry-summary">
@@ -56,6 +87,7 @@
             <p class="entry-location">Chicago, IL</p>
           </div>
         </div>
+        <p class="entry-detail">Specialization: Foundations of Artificial Intelligence</p>
       </article>
       <article class="entry">
         <div class="entry-heading">
@@ -68,46 +100,44 @@
             <p class="entry-location">Philadelphia, PA</p>
           </div>
         </div>
+        <p class="entry-detail">Specialization: Algorithms &amp; Data Structures, Artificial Intelligence</p>
       </article>
     </section>
     <section id="experience" class="scene-page" data-scene="experience" data-target="experience">
-      <h2 class="section-heading">Industry experience</h2>
-      <p class="section-description">Internships in software engineering and data science, working on numerical tools and financial data.</p>
+      <h2 class="sr-only">Industry experience</h2>
       <article class="entry">
         <div class="entry-heading">
           <div class="entry-summary">
             <h3 class="entry-title"><a href="https://www.mathworks.com/?s_tid=gn_logo">MathWorks</a></h3>
             <p>Software Engineering Intern</p>
-            <p class="entry-detail">MATLAB Data Analysis team</p>
           </div>
           <div class="entry-meta">
             <p class="entry-dates"><time datetime="2026-06">Jun 2026</time> - <time datetime="2026-09">Sept 2026</time></p>
             <p class="entry-location">Boston, MA</p>
           </div>
         </div>
+        <p class="entry-detail">Team: MATLAB Data Analysis</p>
       </article>
       <article class="entry">
         <div class="entry-heading">
           <div class="entry-summary">
             <h3 class="entry-title"><a href="https://www.resolutionlife.com">Resolution Life US</a></h3>
             <p>Data Science Intern</p>
-            <p class="entry-detail">Investment Process Engineering team</p>
           </div>
           <div class="entry-meta">
             <p class="entry-dates"><time datetime="2024-04">Apr 2024</time> - <time datetime="2024-09">Sept 2024</time></p>
             <p class="entry-location">Philadelphia, PA</p>
           </div>
         </div>
+        <p class="entry-detail">Team: Investment Process Engineering, Portfolio Analytics</p>
       </article>
     </section>
     <section id="publications" class="scene-page" data-scene="publications" data-target="publications">
-      <h2 class="section-heading">Publications</h2>
-      <p class="section-description">Papers and preprints will appear here as the work becomes ready to share.</p>
+      <h2 class="sr-only">Publications</h2>
       <p class="coming-soon">Coming soon...</p>
     </section>
     <section id="teaching" class="scene-page" data-scene="teaching" data-target="teaching">
-      <h2 class="section-heading">Teaching</h2>
-      <p class="section-description">I have worked as a teaching assistant for courses in algorithms, discrete mathematics, and machine learning.</p>
+      <h2 class="sr-only">Teaching</h2>
       <article class="entry">
         <h3 class="entry-title">University of Chicago</h3>
         <ul class="course-list">
@@ -127,8 +157,7 @@
       </article>
     </section>
     <section id="personal-projects" class="scene-page" data-scene="projects" data-target="projects">
-      <h2 class="section-heading">Projects</h2>
-      <p class="section-description">Interactive explorations of geometry, optimization, and learning, with code and visual explanations.</p>
+      <h2 class="sr-only">Projects</h2>
       <article class="entry">
         <h3 class="entry-title"><a href="https://mihirrao-10.github.io/shortest-path-through-a-curved-world/" target="_blank" rel="noopener">The Shortest Path Through a Curved World</a></h3>
         <p class="entry-detail">Find short paths across curved surfaces and explore the routes in an interactive 3D view.</p>
@@ -141,8 +170,7 @@
       </article>
     </section>
     <section id="notes" class="scene-page" data-scene="notes" data-target="notes">
-      <h2 class="section-heading">Personal notes</h2>
-      <p class="section-description">Chapter summaries, worked examples, and explanations I write while reading books in computer science and mathematics.</p>
+      <h2 class="sr-only">Personal notes</h2>
       <!-- notes:begin (generated by learning/course-notes/tools/render-notes.py; do not edit) -->
       <div class="entry notes-shelf">
         <p class="notes-summary">3 books · 3 chapters written</p>
@@ -173,6 +201,6 @@
       <!-- notes:end -->
     </section>
   </main>
-  <script type="module" data-experience-entry src="assets/black-geometry/generated/main.js?v=b2ca5145a968"></script>
+  <script type="module" data-experience-entry src="assets/black-geometry/generated/main.js?v=c92179187204"></script>
 </body>
 </html>

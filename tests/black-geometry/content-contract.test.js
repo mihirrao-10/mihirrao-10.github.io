@@ -74,10 +74,13 @@ test('education and employment use separate month ranges and the requested teams
   for (const date of dates) assert.equal(all(date, node => node.tagName === 'time').length, 2);
   assert.equal(all(doc, node => hasClass(node, 'hero-description')).length, 0);
   const education = all(doc, node => attr(node, 'id') === 'education')[0];
-  assert.doesNotMatch(text(education), /Foundations|specialization/i);
+  assert.deepEqual(all(education, node => hasClass(node, 'entry-detail')).map(node => normalize(text(node))), [
+    'Specialization: Foundations of Artificial Intelligence',
+    'Specialization: Algorithms & Data Structures, Artificial Intelligence',
+  ]);
   const experience = all(doc, node => attr(node, 'id') === 'experience')[0];
   assert.deepEqual(all(experience, node => hasClass(node, 'entry-detail')).map(node => normalize(text(node))),
-    ['MATLAB Data Analysis team', 'Investment Process Engineering team']);
+    ['Team: MATLAB Data Analysis', 'Team: Investment Process Engineering, Portfolio Analytics']);
 });
 
 test('new sections include publication status, teaching courses, locations, and book subtitles', async () => {
@@ -87,7 +90,10 @@ test('new sections include publication status, teaching courses, locations, and 
   assert.equal(all(doc, node => hasClass(node, 'entry-location')).length, 4);
   const teaching = all(doc, node => attr(node, 'id') === 'teaching')[0];
   assert.equal(all(teaching, node => node.tagName === 'li').length, 7);
-  assert.equal(all(doc, node => hasClass(node, 'section-description')).length, 7);
+  const main = all(doc, node => node.tagName === 'main')[0];
+  assert.equal(all(main, node => hasClass(node, 'section-description')).length, 0);
+  for (const heading of all(main, node => node.tagName === 'h2'))
+    assert.ok(hasClass(heading, 'sr-only'));
   for (const note of all(doc, node => hasClass(node, 'note')))
     assert.ok(normalize(text(all(note, node => hasClass(node, 'note-byline'))[0])).length > 10);
 });

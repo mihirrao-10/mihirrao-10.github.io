@@ -104,9 +104,12 @@ wrappers, using the same geometry, surface fields, and black-hole ray model.
 Their shading approximates the live rendering. Each visit has its own orbit and
 drag state; reversal preserves a still-visible identity's state.
 
-Text, navigation, and a static poster appear immediately. Live artwork waits for
-fonts, surface maps, procedural scenes, shaders, uploaded GPU buffers, warm-up draws, and a GPU
-fence. Graphics preparation never blocks navigation. A three-megapixel budget
+An initial beige loading screen shows black text with three dots that bounce in
+sequence. It fades away after fonts, surface maps, procedural scenes, shaders,
+uploaded GPU buffers, warm-up draws, a GPU fence, and the first live frame are
+ready. Reduced-motion visitors get still dots and the static poster without a
+fade. Failed graphics or a 30-second loading deadline reveal the static site;
+JavaScript-disabled visits skip the loader. A three-megapixel budget
 retains fine detail. Resolution adapts separately for each scene, so slow frames
 on the black-hole page do not soften subsequent scenes; geometry detail stays fixed. Runtime and poster URLs carry content hashes so returning visitors receive the
 current visuals.

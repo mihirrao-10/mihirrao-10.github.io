@@ -4,6 +4,7 @@ const snapshot = page => page.evaluate(() => window.__blackGeometry.snapshot());
 async function ready(page) {
   await page.goto('/?bg-debug');
   await expect(page.locator('body')).toHaveAttribute('data-experience-state', 'ready', { timeout: 30000 });
+  await expect(page.locator('.site-loader')).toBeHidden();
 }
 
 test('reduced-motion visitors can navigate posters and explicitly enable animation', async ({ page }) => {

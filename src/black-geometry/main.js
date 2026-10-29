@@ -22,6 +22,7 @@ let motionOverride = false;
 let world, worldImport, enhancementPending;
 let failed = root.dataset.boot === 'fallback', disposed = false, active = !document.hidden;
 const entrance = { started: false, progress: 1 };
+let bootFinished = false;
 let frame = 0, syncFrame = 0, lastFrame = 0, time = 0, orbitTime = 0;
 let width = innerWidth, height = innerHeight, layoutDirty = true;
 let pointer = [0, 0], pointerTarget = [0, 0];
@@ -38,8 +39,13 @@ animationAction.hidden = motion === 'full';
 animationAction.title = 'Your device requests reduced motion. Enable the rotating sculptures for this visit.';
 
 function finishBoot(status = 'complete') {
-  root.dataset.boot = status;
-  window.dispatchEvent(new Event('portfolio:boot-complete'));
+  if (bootFinished) return;
+  bootFinished = true;
+  // Reveal on the next frame so the prepared canvas has reached the screen.
+  requestAnimationFrame(() => {
+    root.dataset.boot = failed ? 'fallback' : status;
+    window.dispatchEvent(new Event('portfolio:boot-complete'));
+  });
 }
 
 function measure() {
@@ -77,7 +83,6 @@ function settlePresentation() {
 }
 function showStatic(reason = 'static') {
   entrance.progress = 1;
-  finishBoot(reason === 'fallback' ? 'fallback' : 'complete');
   interaction.setEnabled(false);
   cancelAnimationFrame(frame);
   frame = lastFrame = 0;
@@ -85,6 +90,9 @@ function showStatic(reason = 'static') {
   if (layoutDirty) measure();
   updateScene();
   settlePresentation();
+  Promise.allSettled([document.fonts?.ready, poster.decode()]).then(() => {
+    finishBoot(reason === 'fallback' ? 'fallback' : 'complete');
+  });
 }
 function fail(error) {
   failed = true;
