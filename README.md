@@ -67,20 +67,27 @@ The STIX Two Text page stays readable with static SVGs when graphics fail or
 reduced motion is requested. Visitors can enable animation or retry; rendering
 failures retain content and native links. Print uses dark text on white.
 
-One WebGL context renders seven astronomical subjects: a black hole (About),
-Earth and Moon (Education), Saturn (Industry experience), the Sun (Publications),
-the solar system (Teaching), a spiral galaxy (Projects), and a globular cluster
-(Personal notes). Indexed planet meshes, layered atmospheres, ring grains,
-coronal filaments, and dense star fields stay resident on the GPU. Shaders add
-fine triangular meshes, surface texture, ring gaps, granulation, and slow flow.
-Planetary surfaces write depth so rings and moons have coherent occlusion.
+One WebGL context renders seven astronomical subjects in increasing physical scale:
+Earth and Moon (About), Saturn (Education), the Sun (Industry experience),
+the solar system (Publications), a quasar / black hole (Teaching), the Whirlpool
+galaxy (Projects), and the Abell 1689 galaxy cluster (Personal notes). Distances
+and presentation sizes are compressed for the page. Dense indexed meshes,
+atmospheres, ring grains, coronal loop bundles, and image-sampled star fields
+stay resident on the GPU. Surface rotation, differential orbital flow, changing
+plasma, and gentle depth parallax animate without rebuilding geometry. Planetary
+surfaces write depth so rings and moons have coherent occlusion.
 
-The black hole integrates bent viewing rays through a turbulent accretion disk.
-It is an authored approximation, not a Kerr geodesic solver. Earth and lunar
-surfaces use NASA grayscale maps in `assets/black-geometry/textures/`, with credits
-beside them. Surface files have content-addressed names and compressed equivalents;
-the runtime shares two textures across all scenes. Older factories remain tested
-in source, outside the active homepage build.
+The quasar integrates bent viewing rays through a turbulent accretion disk,
+inspired by Gargantua in *Interstellar*. It is an authored approximation, not a
+Kerr geodesic solver. Mipmapped optical-depth profiles replace periodic ring
+patterns; screen-footprint filtering limits shimmer in the accretion disk.
+NASA and Hubble images supply Earth and lunar surfaces, Saturn's latitude bands,
+solar active regions, and the spatial structure of both extragalactic fields.
+Darkness represents brightness in the grayscale artwork. Credits and preparation
+details are in `assets/black-geometry/textures/CREDITS.txt`; the optional authoring
+tool is `tools/black-geometry/prepare-astronomy.py`. Seven content-addressed
+textures, with compressed equivalents, are shared across the scenes. Legacy
+factories remain tested in source, outside the active homepage build.
 
 Static posters embed deterministic software-rendered PNGs in SVG wrappers, using
 the same geometry and surface maps. The black-hole poster traces adaptive rays

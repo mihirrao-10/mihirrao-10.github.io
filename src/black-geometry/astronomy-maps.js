@@ -2,7 +2,12 @@ import * as THREE from 'three';
 
 export const MAP_FILES = {
   "earth": "earth-28448cc004a0.bin",
-  "moon": "moon-d4139e619240.bin"
+  "moon": "moon-d4139e619240.bin",
+  "sun": "sun-84afb4c32ecd.bin",
+  "saturn": "saturn-73e5f977646b.bin",
+  "rings": "rings-e4c3434656b2.bin",
+  "galaxy": "galaxy-f1a00ed7869c.bin",
+  "cluster": "cluster-001b58dbcf10.bin"
 };
 
 export function decodeMap(buffer) {

@@ -21,10 +21,11 @@ function surfaceInk(object,u,v,x,y,z,nx,ny,nz){
   const sample=mapSample(material.uniforms.surfaceMap.value,u,v),g=grain(x,y,z);
   if(kind===5)return Math.max(0,(grain(x*.4,y*.4,z*.4)-.48)*2)*opacity;
   if(kind===6)return (1-Math.abs(nz))**4*opacity;
+  if(kind===7){const d=Math.sqrt(Math.max(0,1-nz*nz));return d>.65&&d<1?Math.max(0,1-Math.abs(d-.73)*5)*g*g*.12*opacity:0;}
   let density=.40+.52*sample;
   if(kind===1)density=.33+.6*sample+.1*g;
-  if(kind===2)density=.38+.28*(.5+.5*Math.sin(y*58+grain(x*.2,y*.2,z*.2)*3.5))+.22*g;
-  if(kind===3)density=.5+.35*g;
+  if(kind===2)density=.40+.32*sample+.10*g;
+  if(kind===3)density=.16+.70*sample+.12*g;
   if(kind===4)density=.35+.38*g;
   return clamp(opacity*(density*(kind===3?.98:light)+.08),0,.94);
 }
@@ -81,8 +82,11 @@ export function cosmicPoster(scene){
           let alpha;
           if(object.userData.posterKind==='ring'){
             const r=Math.hypot(point.x,point.z),fraction=(r-object.userData.innerRadius)/(object.userData.outerRadius-object.userData.innerRadius);
-            const gap=Math.abs(fraction-.63)<.013?.06:1;
-            alpha=(.25+.42*(.5+.5*Math.sin(r*134+Math.sin(r*37)*4))+.28*(.5+.5*Math.sin(r*1250)))*gap*object.material.uniforms.opacity.value;
+            alpha=mapSample(object.material.uniforms.ringProfile.value,fraction,.5)*.93*object.material.uniforms.opacity.value;
+          }else if(object.userData.posterKind==='field'){
+            alpha=mapSample(object.material.uniforms.surfaceMap.value,u,1-v)**.85*object.material.uniforms.opacity.value;
+          }else if(object.userData.posterKind==='flare'){
+            alpha=Math.exp(-(((v-.5)*5)**2))*(.55+.45*Math.sin(u*16+object.material.uniforms.phase.value))*.16;
           }else alpha=surfaceInk(object,u,v,point.x,point.y,point.z,normal.x,normal.y,normal.z);
           const xmin=Math.max(0,Math.floor(Math.min(ax,bx,cx))),xmax=Math.min(width-1,Math.ceil(Math.max(ax,bx,cx)));
           const ymin=Math.max(0,Math.floor(Math.min(ay,by,cy))),ymax=Math.min(height-1,Math.ceil(Math.max(ay,by,cy)));

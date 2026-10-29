@@ -10,25 +10,27 @@ const VERTEX=`
 varying vec2 vUv;varying vec3 vNormal;varying vec3 vLocal;varying vec3 vView;
 void main(){vUv=uv;vLocal=position;vNormal=normalize(normalMatrix*normal);vec4 p=modelViewMatrix*vec4(position,1.0);vView=-p.xyz;gl_Position=projectionMatrix*p;}`;
 const FRAGMENT=`
-uniform float time,presence,kind,opacity,meshDensity;
+uniform float time,presence,kind,opacity,meshDensity,hasSurfaceMap;
 uniform sampler2D surfaceMap;
 varying vec2 vUv;varying vec3 vNormal,vLocal,vView;
 ${NOISE}
 void main(){
  vec3 n=normalize(vNormal);float facing=abs(dot(n,normalize(vView)));
  float light=.30+.70*max(0.0,dot(n,normalize(vec3(-.65,.45,.9))));
- float sampleMap=texture2D(surfaceMap,vec2(vUv.x,1.0-vUv.y)).r;
+ vec2 mapUv=vec2(vUv.x,1.0-vUv.y);
+ if(kind>2.5&&kind<3.5)mapUv.x+=.003*sin(time*.12+vUv.y*19.0);
+ float sampleMap=texture2D(surfaceMap,mapUv).r;
  float grain=fbm(vLocal*28.0+vec3(time*.005,0,0));
  float density=.18+.82*smoothstep(.10,.65,sampleMap);
  if(kind>0.5&&kind<1.5)density=.33+.6*sampleMap+.1*grain;
  if(kind>1.5&&kind<2.5){
-   float bands=.5+.5*sin(vLocal.y*58.0+fbm(vLocal*7.0)*3.5);
-   density=.38+.28*bands+.22*fbm(vLocal*38.0);}
+   float bands=mix(fbm(vec3(vLocal.y*18.0,0,0)),sampleMap,hasSurfaceMap);
+   density=.40+.32*bands+.10*fbm(vLocal*32.0+vec3(time*.025,0,0));}
  if(kind>2.5&&kind<3.5){
    vec3 p=normalize(vLocal)*45.0;
-   float cells=fbm(p+vec3(fbm(p*1.7),time*.008,0));
-   float spots=smoothstep(.55,.74,fbm(normalize(vLocal)*8.0));
-   density=.38+.45*cells+.2*spots;light=.9+.1*facing;}
+   float cells=fbm(p+vec3(fbm(p*1.7),time*.065,0));
+   float activity=mix(cells,sampleMap,hasSurfaceMap);
+   density=.16+.70*activity+.12*cells;light=.94+.06*facing;}
  if(kind>3.5&&kind<4.5)density=.35+.38*grain;
  if(kind>4.5&&kind<5.5){
    float clouds=smoothstep(.49,.68,fbm(normalize(vLocal)*9.0+vec3(time*.006,0,0)));
@@ -36,42 +38,82 @@ void main(){
    gl_FragColor=vec4(vec3(.08),alpha);return;}
  if(kind>5.5&&kind<6.5){
    float rim=pow(1.0-facing,4.0);gl_FragColor=vec4(vec3(.06),rim*opacity*presence);return;}
+ if(kind>6.5){
+   float d=sqrt(max(0.0,1.0-facing*facing));
+   float shell=smoothstep(.62,.70,d)*(1.0-smoothstep(.84,1.0,d));
+   vec3 p=normalize(vLocal);
+   float stream=pow(fbm(p*15.0+vec3(time*.025,0,0)),2.0);
+   float falloff=exp(-max(0.0,d-.69)*8.0);
+   gl_FragColor=vec4(vec3(.02),shell*stream*falloff*opacity*presence);return;}
  vec2 cell=vUv*vec2(meshDensity,meshDensity*.5),f=fract(cell),w=max(fwidth(cell),vec2(.0001));
  float edge=min(min(f.x,1.0-f.x)/w.x,min(f.y,1.0-f.y)/w.y);
  float diagonal=abs(f.x-f.y)/max(w.x+w.y,.0001);
  float wire=1.0-smoothstep(.15,.65,min(edge,diagonal));
  wire*=smoothstep(.65,2.0,1.0/max(w.x,w.y));
- float ink=opacity*(density*light+mix(.16,.24,step(.5,kind))*wire+.09*pow(1.0-facing,3.0));
+ float wireInk=kind>2.5&&kind<3.5?.05:mix(.16,.24,step(.5,kind));
+ float ink=opacity*(density*light+wireInk*wire+.09*pow(1.0-facing,3.0));
  gl_FragColor=vec4(vec3(.025),clamp(ink,0.0,.94)*presence);
 }`;
 export function surfaceMaterial(scene,kind=0,map=null,{opacity=1,detail=256,depthWrite=true}={}) {
+  const hasSurfaceMap=map?1:0;
   const fallback=new THREE.DataTexture(new Uint8Array([128]),1,1,THREE.RedFormat);fallback.needsUpdate=true;
   if(!map){map=fallback;scene.textures.add(fallback);}else fallback.dispose();
   const material=new THREE.ShaderMaterial({vertexShader:VERTEX,fragmentShader:FRAGMENT,
     side:THREE.FrontSide,transparent:true,depthWrite,depthTest:true,
-    uniforms:{...scene.uniforms,kind:{value:kind},opacity:{value:opacity},meshDensity:{value:detail},surfaceMap:{value:map}}});
+    uniforms:{...scene.uniforms,kind:{value:kind},opacity:{value:opacity},meshDensity:{value:detail},surfaceMap:{value:map},hasSurfaceMap:{value:hasSurfaceMap}}});
   material.userData.bodyDepth=depthWrite;scene.materials.add(material);return material;
 }
 const RING_FRAGMENT=`
 uniform float time,presence,innerRadius,outerRadius,opacity;
+uniform sampler2D ringProfile;
 varying vec2 vUv;varying vec3 vNormal,vLocal,vView;
 ${NOISE}
 void main(){
  float r=length(vLocal.xz),u=(r-innerRadius)/(outerRadius-innerRadius);
  float a=atan(vLocal.z,vLocal.x);
- float gap=1.0-smoothstep(.007,.014,abs(u-.63));
- float fine=.5+.5*sin(r*1250.0+noise(vec3(r*31.0,0,0))*12.0);
- float bands=.5+.5*sin(r*134.0+sin(r*37.0)*4.0);
+ // Mipmapped aperiodic optical depth avoids moving interference fringes.
+ float bands=texture2D(ringProfile,vec2(u,.5)).r;
+ vec2 flow=vec2(cos(a-time*.055/pow(max(r,1.0),1.5)),sin(a-time*.055/pow(max(r,1.0),1.5)));
+ float grain=noise(vec3(flow*r*45.0,r*18.0));
  float fade=smoothstep(0.0,.025,u)*(1.0-smoothstep(.96,1.0,u));
- float density=(.25+.42*bands+.28*fine)*(1.0-gap*.96);
- density*=1.0-.8*exp(-pow((u-.87)/.006,2.0));
- float lighting=.75+.25*cos(a-.6);
- gl_FragColor=vec4(vec3(.025),density*lighting*fade*opacity*presence);
+ float density=bands*(.86+.14*grain);
+ gl_FragColor=vec4(vec3(.025),density*fade*opacity*presence);
 }`;
-export function ringMaterial(scene,inner,outer,opacity=.9) {
+export function ringMaterial(scene,inner,outer,opacity=.9,map=null) {
+  if(!map){
+    const pixels=new Uint8Array(256);
+    for(let i=0;i<256;i++){const u=i/255;pixels[i]=Math.round(180*(1-.95*Math.exp(-(((u-.645)/.015)**4))));}
+    map=new THREE.DataTexture(pixels,256,1,THREE.RedFormat);map.magFilter=THREE.LinearFilter;map.minFilter=THREE.LinearMipmapLinearFilter;map.generateMipmaps=true;map.needsUpdate=true;scene.textures.add(map);
+    map.userData={width:256,height:1,pixels};
+  }
   const material=new THREE.ShaderMaterial({vertexShader:VERTEX,fragmentShader:RING_FRAGMENT,
     side:THREE.DoubleSide,transparent:true,depthWrite:false,depthTest:true,
-    uniforms:{...scene.uniforms,innerRadius:{value:inner},outerRadius:{value:outer},opacity:{value:opacity}}});
+    uniforms:{...scene.uniforms,innerRadius:{value:inner},outerRadius:{value:outer},opacity:{value:opacity},ringProfile:{value:map}}});
+  scene.materials.add(material);return material;
+}
+
+export function fieldMaterial(scene,map,opacity=.7){
+  const material=new THREE.ShaderMaterial({vertexShader:VERTEX,fragmentShader:`
+    uniform sampler2D surfaceMap;uniform float time,presence,opacity;
+    varying vec2 vUv;varying vec3 vLocal;
+    ${NOISE}
+    void main(){float light=texture2D(surfaceMap,vUv).r;
+      float flow=.94+.06*fbm(vec3(vUv*90.0,time*.04));
+      gl_FragColor=vec4(vec3(.015),pow(light,.85)*opacity*flow*presence);}`,
+    side:THREE.DoubleSide,transparent:true,depthWrite:false,depthTest:true,
+    uniforms:{...scene.uniforms,surfaceMap:{value:map},opacity:{value:opacity}}});
+  scene.materials.add(material);return material;
+}
+
+export function flareMaterial(scene,phase){
+  const material=new THREE.ShaderMaterial({vertexShader:VERTEX,fragmentShader:`
+    uniform float time,presence,phase;varying vec2 vUv;
+    void main(){float width=exp(-pow((vUv.y-.5)*5.0,2.0));
+      float flow=.55+.45*sin(vUv.x*16.0-time*.7+phase);
+      float envelope=.55+.45*sin(time*.17+phase);
+      gl_FragColor=vec4(vec3(.02),width*flow*envelope*.24*presence);}`,
+    side:THREE.DoubleSide,transparent:true,depthWrite:false,depthTest:true,
+    uniforms:{...scene.uniforms,phase:{value:phase}}});
   scene.materials.add(material);return material;
 }
 const POINT_VERTEX=`

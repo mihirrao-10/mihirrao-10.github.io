@@ -7,17 +7,27 @@ uniform float time,presence;
 uniform vec3 localCamera;
 varying vec3 vLocal;
 ${NOISE}
-float disk(vec3 p){
+float diskNoise(vec3 p,float footprint){
+ float value=0.0,amplitude=.5;
+ for(int j=0;j<5;j++){
+   value+=amplitude*noise(p)*(1.0-smoothstep(.3,.9,footprint));
+   p=p*2.03+vec3(7.1,3.7,1.3);footprint*=2.03;amplitude*=.5;
+ }return value;
+}
+float disk(vec3 p,float footprint){
  float r=length(p.xz),a=atan(p.z,p.x);
  float fade=smoothstep(.73,.91,r)*(1.0-smoothstep(2.65,3.08,r));
- float warp=fbm(vec3(p.xz*8.0,time*.035));
- float filaments=.5+.5*sin(r*151.0+a*11.0+warp*24.0-time*.1);
- float eddies=fbm(vec3(p.xz*32.0+vec2(warp*3.0),time*.025));
+ // Differential orbital flow, with no periodic rings or one-sided brightness.
+ float orbit=a-time*.34/pow(max(r,.75),1.5);
+ vec2 flow=vec2(cos(orbit),sin(orbit));
+ float eddies=diskNoise(vec3(flow*r*9.0,time*.055),footprint*9.0);
+ float filaments=diskNoise(vec3(r*48.0,flow*8.0),footprint*48.0);
  float heat=pow(.85/max(r,.75),.82);
- return fade*heat*(.18+.30*filaments+.95*eddies)*(.78+.22*cos(a-.5));
+ return fade*heat*(.19+.94*eddies+.34*filaments);
 }
 void main(){
  vec3 direction=normalize(vLocal-localCamera),p=vLocal+direction*.001;
+ float pixelCone=length(fwidth(direction));
  float emission=0.0,transmission=1.0;
  for(int i=0;i<144;i++){
    float r=length(p);if(r<.43||r>3.34)break;
@@ -28,7 +38,7 @@ void main(){
    vec3 next=p+(direction+nextDirection)*(.5*stepSize);
    if(p.y*next.y<0.0){
      vec3 hit=mix(p,next,p.y/(p.y-next.y));
-     float density=disk(hit);
+     float density=disk(hit,pixelCone*length(hit-localCamera));
      emission+=transmission*density;transmission*=1.0-density*.36;
    }
    direction=nextDirection;p=next;
@@ -50,8 +60,17 @@ export function createBlackHole(scene,parent){
   mesh.userData.posterKind='black-hole';parent.add(mesh);scene.materials.add(material);
   return mesh;
 }
-// The static poster follows the same adaptive ray path and accretion crossings.
-export function traceBlackHole(px,py,pz,dx,dy,dz){
+// CPU noise matches the live shader; posters keep the same continuous disk flow.
+const fract=x=>x-Math.floor(x);
+function noise(x,y,z){
+  const ix=Math.floor(x),iy=Math.floor(y),iz=Math.floor(z);
+  let fx=fract(x),fy=fract(y),fz=fract(z);fx=fx*fx*(3-2*fx);fy=fy*fy*(3-2*fy);fz=fz*fz*(3-2*fz);
+  const hash=(x,y,z)=>{x=fract(x*.3183099+.13)*17;y=fract(y*.3183099+.27)*17;z=fract(z*.3183099+.41)*17;return fract(x*y*z*(x+y+z));};
+  const mix=(a,b,t)=>a+(b-a)*t;
+  return mix(mix(mix(hash(ix,iy,iz),hash(ix+1,iy,iz),fx),mix(hash(ix,iy+1,iz),hash(ix+1,iy+1,iz),fx),fy),mix(mix(hash(ix,iy,iz+1),hash(ix+1,iy,iz+1),fx),mix(hash(ix,iy+1,iz+1),hash(ix+1,iy+1,iz+1),fx),fy),fz);
+}
+function fbm(x,y,z){let v=0,a=.5;for(let i=0;i<5;i++){v+=a*noise(x,y,z);x=x*2.03+7.1;y=y*2.03+3.7;z=z*2.03+1.3;a*=.5;}return v;}
+export function traceBlackHole(px,py,pz,dx,dy,dz,time=0){
   let emission=0,transmission=1;
   for(let i=0;i<144;i++){
     const r=Math.hypot(px,py,pz);if(r<.43||r>3.34)break;
@@ -63,13 +82,12 @@ export function traceBlackHole(px,py,pz,dx,dy,dz){
     const qx=px+(dx+nx)*step*.5,qy=py+(dy+ny)*step*.5,qz=pz+(dz+nz)*step*.5;
     if(py*qy<0){
       const t=py/(py-qy),x=px+(qx-px)*t,z=pz+(qz-pz)*t;
-      const radius=Math.hypot(x,z),angle=Math.atan2(z,x);
+      const radius=Math.hypot(x,z),angle=Math.atan2(z,x)-time*.34/Math.max(radius,.75)**1.5;
       const smooth=(a,b,x)=>{const t=Math.max(0,Math.min(1,(x-a)/(b-a)));return t*t*(3-2*t);};
       const fade=smooth(.73,.91,radius)*(1-smooth(2.65,3.08,radius));
-      const warp=.5+.25*Math.sin(x*8+Math.sin(z*11))+.25*Math.sin(z*17+Math.sin(x*9));
-      const filaments=.5+.5*Math.sin(radius*151+angle*11+warp*24);
-      const eddies=.5+.25*Math.sin(x*31+z*47+warp*3)+.25*Math.sin(z*63-x*59);
-      const density=fade*(.85/Math.max(radius,.75))**.82*(.18+.30*filaments+.95*eddies)*(.78+.22*Math.cos(angle-.5));
+      const eddies=fbm(Math.cos(angle)*radius*9,Math.sin(angle)*radius*9,time*.055);
+      const filaments=fbm(radius*48,Math.cos(angle)*8,Math.sin(angle)*8);
+      const density=fade*(.85/Math.max(radius,.75))**.82*(.19+.94*eddies+.34*filaments);
       emission+=transmission*density;transmission*=1-density*.36;
     }
     dx=nx;dy=ny;dz=nz;px=qx;py=qy;pz=qz;

@@ -107,7 +107,7 @@ export async function createWorld({container,quality='high',onFailure}) {
   let orbitClock=0,currentName='hero',nextName='hero',blend=0,activeNames=new Set();
   let entranceProgress=1,entranceScale=1,fitScales=[],frameSamples=0,frameTotal=0;
   let userRotation=[0,0],userOrientation=[0,0,0,1],dragging=false;
-  renderer.debug.onShaderError=()=>{shaderFailed=true;};
+  renderer.debug.onShaderError=(gl,program,vertex,fragment)=>{shaderFailed=[gl.getProgramInfoLog(program),gl.getShaderInfoLog(vertex),gl.getShaderInfoLog(fragment)].filter(Boolean).join('\n')||'Unknown shader error';};
   const contextLost=event=>{event.preventDefault();onFailure(new Error('WebGL context lost'));};
   canvas.addEventListener('webglcontextlost',contextLost);
   function resize(_width,_height,dpr=lastDpr){
@@ -152,7 +152,7 @@ export async function createWorld({container,quality='high',onFailure}) {
         const root=model.cosmos.root;root.visible=true;root.quaternion.copy(rotation);root.scale.setScalar(scale);fitScales.push(scale);
         model.cosmos.update(age,presence,renderer.getPixelRatio());
       });
-      renderer.render(scene,camera);if(shaderFailed)throw new Error('Cosmic shader initialization failed');frames++;
+      renderer.render(scene,camera);if(shaderFailed)throw new Error(`Cosmic shader initialization failed: ${shaderFailed}`);frames++;
     },
     snapshot:()=>({
       frames,warmedTargets,drawCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles,

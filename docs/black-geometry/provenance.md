@@ -2,45 +2,61 @@
 
 Geometry factories live in `src/black-geometry/sculptures/`. The asset compiler
 prepares their output for the runtime and static posters. Institutional sculptures
-are independently authored interpretations. Reference photographs, logos, meshes,
-and proprietary implementations are not redistributed. Display colors and lighting
+are independently authored interpretations. Legacy institutional reference photographs, logos, meshes, and proprietary
+implementations are not redistributed. Current NASA/Hubble image derivatives
+are credited below and beside their assets. Display colors and lighting
 are presentation choices except where an official asset's colors are identified below.
 The source and tests define current sampling budgets and rendering parameters.
 
 ## Current homepage
 
-All seven pages use original grayscale scenes from `cosmos.js`:
+All seven pages use original grayscale scenes from `cosmos.js`. Their order
+moves from nearby worlds toward structures larger than a galaxy:
 
-- **About:** a black hole rendered by integrating viewing rays through a central
-  deflection field and sampling disk-plane crossings. Turbulent density, radial
-  filaments, and repeated crossings form the direct disk and lensed images. This
-  replaces the earlier upright annulus. The scene is inspired by the [NASA
-  accretion-disk visualization](https://www.nasa.gov/universe/nasa-visualization-shows-a-black-holes-warped-world/)
-  and the silhouette of Gargantua in *Interstellar*. The deflection law is an
-  authored visual approximation, not a relativistic geodesic solution or a
-  reproduction of the film's renderer.
-- **Education:** Earth and an orbiting Moon, with dense indexed spheres, layered
-  atmosphere and clouds, triangular surface lines, and actual surface maps.
-  Earth uses [NASA SVS's Blue Marble mosaic](https://svs.gsfc.nasa.gov/2915/),
-  credited to NASA/Goddard Space Flight Center Scientific Visualization Studio,
-  with data courtesy of Reto Stockli (NASA/GSFC) and NASA Earth Observatory.
-  The Moon uses the [NASA CGI Moon Kit](https://svs.gsfc.nasa.gov/4720/) LROC
-  color map. Both are converted to 2048 × 1024 grayscale, without altering their
-  spatial mapping. Source links and format details accompany the assets.
-- **Industry experience:** an oblate, banded Saturn-like planet, a finely sampled
-  ring plane with major and minor gaps, ring grains, and a small orbiting moon.
-  Bands and gaps are authored visual patterns, not a reconstruction of a
-  particular observation.
-- **Publications:** a granular stellar surface, fine magnetic arches, coronal
-  threads, and a diffuse particle corona. Dark ink represents emitted light.
-- **Teaching:** eight orbiting planets, a granular central star, a ringed Saturn,
-  and an asteroid belt. Distances, planet sizes, and orbital rates are deliberately
-  compressed for legibility; this is not a scale model or ephemeris.
-- **Projects:** four irregular logarithmic arms, dense stellar points, diffuse
-  clouds, inter-arm stars, and a concentrated central bulge. Brighter structures
-  are represented by greater ink density. Fine mesh ribbons follow the arms.
-- **Personal notes:** a seeded spherical stellar cluster with a Plummer-like
-  radial distribution, a dense core, diffuse starlight, and larger resolved stars.
+- **About:** Earth and an orbiting Moon. The detailed surface meshes, cloud and
+  atmospheric layers retain the earlier Earth–Moon scene's appearance. Earth uses
+  [NASA SVS's Blue Marble mosaic](https://svs.gsfc.nasa.gov/2915/), credited to
+  NASA/Goddard Space Flight Center Scientific Visualization Studio, with data
+  courtesy of Reto Stockli (NASA/GSFC) and NASA Earth Observatory. The Moon uses
+  the [NASA CGI Moon Kit](https://svs.gsfc.nasa.gov/4720/) LROC map. Both are
+  2048 × 1024 grayscale conversions with their original spatial mapping.
+- **Education:** one oblate Saturn, with no satellite. A latitude profile derived
+  from Cassini's [Jewel of the Solar System](https://science.nasa.gov/photojournal/jewel-of-the-solar-system/)
+  informs the atmospheric bands. The ring's aperiodic optical-depth profile has
+  broad C/B/A regions, the Cassini division, and a finer Encke gap. The profile
+  is authored from the reference's appearance, rather than calibrated optical
+  measurements. Mipmap filtering and orbiting grains avoid regular interference
+  patterns. Credit: NASA/JPL-Caltech/Space Science Institute.
+- **Industry experience:** the Sun, with a grayscale surface derived from an
+  [SDO/AIA 171 Å observation](https://sdo.gsfc.nasa.gov/data/) dated October 29,
+  2026, 16:26:22 UT. The visible solar disk is unprojected and reflected to
+  synthesize an unobserved reverse hemisphere. Flowing granulation, evolving
+  magnetic-loop ribbons, and a restrained particle corona are authored motion;
+  this is not a time series or a measured three-dimensional reconstruction.
+  Credit: NASA/SDO and the AIA science team.
+- **Publications:** eight orbiting planets, a granular central star, a ringed
+  Saturn, and an asteroid belt. Sizes, distances, and orbital rates are compressed
+  for legibility, rather than being a scale model or ephemeris.
+- **Teaching:** an inverse-grayscale hyper-luminous accretion disk and black-hole
+  shadow. Bent viewing rays produce the direct disk and its lensed images.
+  Continuous turbulent noise follows differential orbital flow; high frequencies
+  are filtered using the pixel footprint. Brightness is symmetric rather than
+  using a Doppler modulation. References: the silhouette of Gargantua in
+  *Interstellar* and [NASA's warped accretion-disk visualization](https://www.nasa.gov/universe/nasa-visualization-shows-a-black-holes-warped-world/).
+  No film still is redistributed. This is an authored deflection approximation,
+  not a relativistic geodesic solver or the film's renderer.
+- **Projects:** the Whirlpool galaxy and its companion, built from
+  [Hubble's M51 image](https://esahubble.org/images/heic0506a/). A tessellated
+  translucent luminosity field and 118,000 image-weighted stellar/cloud points
+  preserve the observed irregular arms, dust lanes, and bright cores. Depth,
+  gentle rotation, and evolving cloud detail are authored. Credit: NASA, ESA,
+  S. Beckwith (STScI), and the Hubble Heritage Team (STScI/AURA).
+- **Personal notes:** the larger [Abell 1689 galaxy cluster](https://science.nasa.gov/asset/hubble/hubble-wide-field-image-of-galaxy-cluster-and-gravitational-lens-abell-1689/),
+  with a fine luminosity mesh and 104,000 image-weighted points. The galaxies and
+  lensing arcs follow the photograph; depth and motion are authored rather than
+  measured. Credit: NASA, ESA, the Hubble Heritage Team (STScI/AURA),
+  J. Blakeslee (NRC Herzberg Astrophysics Program, Dominion Astrophysical
+  Observatory), and H. Ford (JHU).
 
 All scenes use grayscale. Surface maps, procedural noise, geometry, and seeds
 are deterministic. Motion changes uniforms and object transforms without

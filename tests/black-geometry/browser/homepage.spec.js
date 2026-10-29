@@ -95,7 +95,7 @@ test('each section shows both entries with no secondary navigation or detail con
     await expect(page.locator(`#${id} .entry:visible`)).toHaveCount(2);
     await expect(page.locator(`#${id} button, .page-index`)).toHaveCount(0);
   }
-  await expect(page.locator('.site-index a')).toHaveCount(5);
+  await expect(page.locator('.site-index a')).toHaveCount(7);
 });
 
 test('content and navigation remain usable while sculpture data is unavailable', async ({ page }) => {
