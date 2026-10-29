@@ -114,7 +114,7 @@ current visuals.
 The beige homepage has seven links and no secondary navigation:
 About, Education, Industry experience, Publications, Teaching, Projects, and
 Personal notes. Education and industry show locations; Notes shows each book
-with its author and edition. Its generated source block stays intact.
+with its author. Its generated source block stays intact.
 Native hash links, old section aliases, reload, and browser history select the
 corresponding text and sculpture without document scrolling. If enlarged text
 exceeds the available height, overflow stays within the selected panel.
