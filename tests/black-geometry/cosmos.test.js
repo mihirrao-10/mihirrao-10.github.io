@@ -68,7 +68,7 @@ test('navigation preserves seven distinct cosmic subjects',()=>{
   assert.equal(new Set(themes).size,7);
 });
 
-for(const name of ['teaching','projects','notes'])test(`${name} contains stars distributed in three dimensions`,()=>{
+for(const name of ['hero','education','experience','publications'])test(`${name} contains stars distributed in three dimensions`,()=>{
   const scene=createCosmos(name,{maps}),clouds=[];
   scene.root.traverse(o=>{if(o.isPoints)clouds.push(o);});
   assert.ok(clouds.length>0);
@@ -78,4 +78,37 @@ for(const name of ['teaching','projects','notes'])test(`${name} contains stars d
     assert.ok(size.x>0&&size.y>0&&size.z>0);
   }
   scene.dispose();
+});
+
+
+test('the seven homepage scenes follow the requested visual order', () => {
+  const expected = ['Globular star cluster', 'Colliding galaxies', 'Milky Way', 'Nebula', 'Black hole', 'Seven-planet solar system', '2001 monolith'];
+  assert.deepEqual(COSMIC_TARGETS.map(name => { const scene = createCosmos(name, { maps }); const theme = scene.theme; scene.dispose(); return theme; }), expected);
+});
+
+test('the compact solar system has seven separate orbiting planets and one sun', () => {
+  const scene = createCosmos('projects', { maps });
+  const planets = [], sun = [], paths = [];
+  scene.root.traverse(object => {
+    if (object.userData.role === 'planet') planets.push(object);
+    if (object.userData.role === 'central-sun') sun.push(object);
+    if (object.userData.posterKind === 'orbit') paths.push(object);
+  });
+  assert.equal(scene.planetCount, 7); assert.equal(planets.length, 7); assert.equal(paths.length, 7); assert.equal(sun.length, 1);
+  assert.ok(scene.orbitRadii.every((r, i, list) => i === 0 || r > list[i - 1]));
+  const positions = planets.map(object => object.getWorldPosition(new THREE.Vector3()));
+  scene.update(10);
+  for (const [i, planet] of planets.entries()) {
+    assert.ok(planet.getWorldPosition(new THREE.Vector3()).distanceTo(positions[i]) > .1);
+    assert.ok(planet.getWorldPosition(new THREE.Vector3()).length() < scene.radius * .8);
+  }
+  scene.dispose();
+});
+
+test('the final monolith is a solid rectangular slab with 1:4:9 proportions', () => {
+  const scene = createCosmos('notes', { maps }); let slab;
+  scene.root.traverse(object => { if (object.userData.role === 'monolith') slab = object; });
+  assert.ok(slab?.isMesh); const { width, height, depth } = slab.geometry.parameters;
+  assert.equal(width / depth, 4); assert.equal(height / depth, 9);
+  assert.equal(slab.material.depthWrite, true); scene.dispose();
 });

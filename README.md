@@ -67,37 +67,22 @@ The STIX Two Text page starts the animation automatically on supported devices.
 If graphics fail, static SVGs retain the content and native links. Print uses
 dark text on white.
 
-One WebGL context renders seven grayscale scenes: a fictional planet and moon
-(About), an uneven giant star (Education), a black hole (Industry experience),
-a neutron star (Publications), the Milky Way (Teaching), two colliding
-galaxies (Projects), and a globular star cluster (Personal notes). Detailed
-surface fields, volumetric particles, and bent-ray integration suit each subject;
-there are no visible wireframes or tessellated surface treatments. A shared
-presentation factor enlarges the previous grayscale artwork by about 8%, while
-keeping space around it.
+One WebGL context renders seven grayscale scenes in tab order: a globular star
+cluster (About), colliding galaxies (Education), the Milky Way (Industry
+experience), a nebula (Publications), a black hole (Teaching), a compact
+seven-planet solar system (Projects), and a black 2001-inspired monolith
+(Personal notes). The slab uses 1:4:9 proportions and flat, unadorned faces.
 
-The invented planet has authored terrain and clouds; its orbiting moon uses the
-retained NASA lunar map and a wider orbit. The giant star combines a slightly
-uneven surface, SDO-derived activity, and fine evolving convection. Its dark
-center fades toward a pale limb, without an outer haze or particle corona. The black
-hole traces deflected rays through a turbulent disk, producing a dark circular
-shadow, a lighter foreground band, and a lensed arch. This is an illustrative
-ray model, not a relativistic solver.
+Stars and nebular filaments occupy three dimensions. The solar system has seven
+independently orbiting planets, thin orbital paths, and one ringed planet; its
+sizes and speeds are illustrative. Extra framing keeps the system compact.
+All scenes share unrestricted mouse and touch rotation, with bounds that retain
+the entire object. The black hole uses an approximate bent-ray accretion model.
+Geometry stays resident while animation updates transforms and uniforms.
 
-The neutron star has a compact core, curved dipole fields, and two narrow polar
-beams that sweep with its tilted magnetic axis. The galaxy scenes contain stars distributed in three dimensions,
-with individual orbital motion and slowly changing views. The colliding pair has
-two tilted disks, a stellar bridge, and tidal tails. The final scene is a globular
-cluster of stars with a dense core and an extended halo. The stars, cloud fields,
-orbital rates, and interaction are authored, not observational reconstructions
-or gravitational simulations. Darkness represents luminous density on the beige
-page. Geometry stays resident; motion uses uniforms and object transforms.
-
-Only the Moon and Sun image fields are loaded by the current page. Other NASA
-and Hubble derivatives, together with earlier scene implementations, remain as
-archived references. Credits and preparation details are in
-`assets/black-geometry/textures/CREDITS.txt`. The two user-supplied inspiration
-images guide composition only and are not redistributed.
+Only the Moon and Sun image fields are loaded, for solar-system surface detail.
+Other NASA/Hubble derivatives and earlier scene factories remain as archived
+references. Credits are in `assets/black-geometry/textures/CREDITS.txt`.
 
 Static posters embed 1600 × 1200 deterministic software-rendered PNGs in SVG
 wrappers, using the same geometry, surface fields, and black-hole ray model.

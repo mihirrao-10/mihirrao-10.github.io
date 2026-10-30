@@ -196,3 +196,35 @@ export function clusterFeatures(map) {
   for (const feature of candidates) { if (selected.every(p => Math.hypot(p.u - feature.u, p.v - feature.v) > .051)) selected.push(feature);if (selected.length === 112) break; }
   return selected;
 }
+
+export function createNebulaVolume(scene) {
+  const content = new THREE.Group(); scene.root.add(content);
+  // Overlapping irregular filaments occupy real depth. Gaps and thinner edges
+  // leave open cavities instead of forming a solid sphere or flat photograph.
+  stars(scene, content, 62000, 741923, (rng, i) => {
+    const u = rng() * 2 - 1, branch = i % 3;
+    const x = u * 2.35;
+    const wave = .5 * Math.sin(u * 3.4 + branch * .7);
+    const width = .16 + .30 * (.5 + .5 * Math.sin(u * 5.7 + branch));
+    const y = wave + (branch - 1) * .43 + normal(rng, width);
+    const z = .43 * Math.sin(u * 4.1 + branch * 1.8) + normal(rng, width * .82);
+    const knot = valueNoise(x * 3.8 + 9, y * 3.8, z * 3.8);
+    const edge = Math.max(.08, (1 - u * u) ** .65);
+    return { position: [x + normal(rng, .09), y, z],
+      size: 7 + rng() * 17, strength: (.008 + knot ** 2 * .052) * edge, rate: 0 };
+  }, 1);
+  // Fine dusty knots add detail without turning the cloud into a star cluster.
+  stars(scene, content, 24000, 623819, rng => {
+    const u = rng() * 2 - 1, x = u * 2.20, y = .55 * Math.sin(u * 3.2) + normal(rng, .22), z = normal(rng, .32);
+    const knots = valueNoise(x * 7 + 3, y * 7, z * 7);
+    return { position: [x, y, z], size: 1.5 + rng() * 3.5, strength: .014 + .10 * knots ** 3, rate: 0 };
+  }, 1);
+  stars(scene, content, 1600, 281421, rng => ({
+    position: [normal(rng, .9), normal(rng, .6), normal(rng, .65)],
+    size: .5 + rng() ** 4 * 2.1, strength: .16 + rng() * .36, rate: .002,
+  }));
+  const veil = cloud(scene, content, [1.30, .38, .42], .045, [-.35, .15, .05]); veil.rotation.z = .22;
+  const second = cloud(scene, content, [.90, .30, .37], .035, [.8, -.18, -.05]); second.rotation.z = -.45;
+  scene.animate = time => content.rotation.set(.30 + Math.sin(time * .03) * .07, time * .019, -.20);
+  scene.theme = 'Nebula'; scene.volumeKind = 'filament-nebula'; fitVolume(scene);
+}

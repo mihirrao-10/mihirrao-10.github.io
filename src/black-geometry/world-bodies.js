@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { surfaceMaterial, valueNoise } from './astronomy-materials.js';
+import { surfaceMaterial, ringMaterial, valueNoise } from './astronomy-materials.js';
 
 const TAU = Math.PI * 2;
 const clamp = x => THREE.MathUtils.clamp(x, 0, 1);
@@ -13,8 +13,8 @@ function fbm(x, y, z, octaves = 5) {
 }
 
 // A spherical field gives this invented world its own geography without a UV seam.
-function planetMap(scene) {
-  const width = 1536, height = 768, pixels = new Uint8Array(width * height);
+function planetMap(scene, width = 1536, height = 768) {
+  const pixels = new Uint8Array(width * height);
   for (let j = 0; j < height; j++) {
     const latitude = Math.PI * j / (height - 1), y = Math.cos(latitude), radial = Math.sin(latitude);
     for (let i = 0; i < width; i++) {
@@ -79,4 +79,51 @@ export function createStar(scene, maps) {
     const breath = 1 + .004 * Math.sin(t * .18);star.scale.setScalar(breath);
   };
   scene.theme = 'Giant star';scene.radius = 2.95;scene.volumeKind = 'convective-star';
+}
+
+// A compact, illustrative system with seven distinct planets. Distances, sizes,
+// inclinations and orbital periods are chosen for readability, not to scale.
+export function createSolarSystem(scene, maps) {
+  const content = new THREE.Group(); content.rotation.set(.77, -.12, -.23); scene.root.add(content);
+  const sun = body(scene, content, .34, 3, { map: maps.sun, detail: 128, opacity: 1.18 });
+  sun.userData.role = 'central-sun';
+  const radii = [.09, .13, .14, .105, .24, .205, .155];
+  const orbits = [.74, 1.10, 1.50, 1.94, 2.50, 3.12, 3.78];
+  const phases = [.15, 2.3, 4.4, .95, 3.8, 5.7, 2.85];
+  const kinds = [1, 4, 0, 4, 2, 2, 4], planets = [];
+  const terrain = planetMap(scene, 512, 256);
+  const orbitMaterial = new THREE.LineBasicMaterial({ color: 0x474747, transparent: true, opacity: .16, depthWrite: false });
+  orbitMaterial.userData.baseOpacity = .16; scene.materials.add(orbitMaterial);
+  for (let i = 0; i < 7; i++) {
+    const plane = new THREE.Group(); plane.rotation.x = (i - 3) * .018; content.add(plane);
+    const points = [];
+    for (let j = 0; j < 192; j++) {
+      const a = j * TAU / 192, b = (j + 1) * TAU / 192;
+      points.push(orbits[i] * Math.cos(a), 0, orbits[i] * Math.sin(a), orbits[i] * Math.cos(b), 0, orbits[i] * Math.sin(b));
+    }
+    const path = new THREE.LineSegments(new THREE.BufferGeometry().setAttribute('position', new THREE.Float32BufferAttribute(points, 3)), orbitMaterial);
+    path.userData.posterKind = 'orbit'; plane.add(path);
+    const planet = new THREE.Group(); plane.add(planet);
+    const surface = body(scene, planet, radii[i], kinds[i], { map: i === 0 ? maps.moon : i === 2 ? terrain : null, detail: 96, opacity: 1.05 });
+    surface.userData.role = 'planet'; surface.userData.planetIndex = i;
+    surface.rotation.z = i * .13;
+    if (i === 5) {
+      const inner = radii[i] * 1.35, outer = radii[i] * 2.05;
+      const ring = new THREE.Mesh(new THREE.RingGeometry(inner, outer, 128).rotateX(-Math.PI / 2), ringMaterial(scene, inner, outer, .5));
+      ring.rotation.z = .3; ring.userData = { posterKind: 'ring', innerRadius: inner, outerRadius: outer }; planet.add(ring);
+    }
+    planets.push({ planet, surface, orbit: orbits[i], phase: phases[i], speed: .21 / orbits[i] ** 1.2 });
+  }
+  scene.animate = time => {
+    sun.rotation.y = time * .04;
+    for (const { planet, surface, orbit, phase, speed } of planets) {
+      const angle = phase + time * speed;
+      planet.position.set(orbit * Math.cos(angle), 0, orbit * Math.sin(angle));
+      surface.rotation.y = time * .09;
+    }
+  };
+  scene.theme = 'Seven-planet solar system'; scene.volumeKind = 'solar-system';
+  scene.planetCount = 7; scene.orbitRadii = orbits; scene.bodyRadii = [.34, ...radii];
+  // Extra framing room makes this scene intentionally smaller than the galaxies.
+  scene.radius = 5.15;
 }

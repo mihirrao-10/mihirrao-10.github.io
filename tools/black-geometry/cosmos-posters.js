@@ -90,7 +90,10 @@ export function cosmicPoster(scene){
           if(object.material.side===THREE.FrontSide&&normal.z<0)continue;
           point.set(0,0,0);let u=0,v=0;for(const id of ids){u+=uv.getX(id)/3;v+=uv.getY(id)/3;point.x+=positions.getX(id)/3;point.y+=positions.getY(id)/3;point.z+=positions.getZ(id)/3;}
           let alpha;
-          if(['event-horizon','photon-rim','minimal-disk'].includes(object.userData.posterKind)){
+          if(object.userData.posterKind==='monolith'){
+            const light=Math.max(0,normal.dot(new THREE.Vector3(-.7,.8,1).normalize()));
+            alpha=.98*(1-(.012+.055*light)/.975);
+          }else if(['event-horizon','photon-rim','minimal-disk'].includes(object.userData.posterKind)){
             alpha=object.material.opacity;
           }else if(object.userData.posterKind==='spacetime-sheet'){
             alpha=.035*clamp((3.35-Math.hypot(point.x,point.y))/.8);
