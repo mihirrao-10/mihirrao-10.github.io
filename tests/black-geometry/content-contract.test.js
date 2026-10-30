@@ -50,13 +50,21 @@ test('generated notes remain unique links to real PDFs in non-empty groups', asy
   assert.equal(all(doc, node => node.tagName === 'main').length, 1);
   const notes = all(doc, node => attr(node, 'id') === 'notes')[0];
   const cards = all(notes, node => hasClass(node, 'note'));
-  const links = all(notes, node => node.tagName === 'a');
+  const links = all(notes, node => node.tagName === 'a' && hasClass(node, 'note-link'));
   assert.equal(links.length, cards.length);
   assert.equal(new Set(links.map(node => attr(node, 'href'))).size, links.length);
   for (const link of links) {
     assert.ok(hasClass(link, 'note-link'));
     assert.match(attr(link, 'href'), /^notes\/[a-z0-9-]+\.pdf$/);
     await fs.access(new URL(attr(link, 'href'), root));
+  }
+  const courseGroup = all(notes, node => attr(node, 'aria-labelledby') === 'notes-courses')[0];
+  for (const card of courseGroup ? all(courseGroup, node => hasClass(node, 'note')) : []) {
+    const sources = all(card, node => node.tagName === 'a' && hasClass(node, 'course-source'));
+    assert.equal(sources.length, 1);
+    assert.match(attr(sources[0], 'href'), /^https?:\/\//);
+    assert.match(attr(sources[0], 'aria-label'), /^Course website: .+/);
+    assert.equal(normalize(text(sources[0])), 'Course ↗');
   }
   for (const group of all(notes, node => hasClass(node, 'notes-group')))
     assert.ok(all(group, node => hasClass(node, 'note')).length > 0);
