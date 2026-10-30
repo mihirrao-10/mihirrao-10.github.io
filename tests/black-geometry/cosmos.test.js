@@ -5,6 +5,7 @@ import fs from 'node:fs';
 import { MAP_FILES, decodeMap } from '../../src/black-geometry/astronomy-maps.js';
 const maps=Object.fromEntries(Object.entries(MAP_FILES).map(([name,file])=>[name,decodeMap(fs.readFileSync(new URL(`../../assets/black-geometry/textures/${file}`,import.meta.url)))]));
 import { createCosmos, COSMIC_TARGETS } from '../../src/black-geometry/cosmos.js';
+import { nebulaDensity, traceNebula } from '../../src/black-geometry/nebula-cloud.js';
 import { sculptureOpacity } from '../../src/black-geometry/world.js';
 
 for (const name of COSMIC_TARGETS) {
@@ -132,13 +133,29 @@ test('travel streaks move through space while staying parallel to the monolith i
   assert.notDeepEqual(geometry.attributes.position.array,initial);scene.dispose();
 });
 
-test('the Horsehead pillar has a detailed elongated surface and small resolved dust grains', () => {
-  const scene=createCosmos('publications',{maps});let pillar,dust;
-  scene.root.traverse(object=>{if(object.userData.role==='nebula-pillar')pillar=object;if(object.userData.role==='nebula-dust')dust=object;});
-  assert.ok(pillar?.isMesh);assert.ok(pillar.geometry.attributes.position.count>30000);
-  pillar.geometry.computeBoundingBox();const size=pillar.geometry.boundingBox.getSize(new THREE.Vector3());
-  assert.ok(size.y>size.x*1.6&&size.y>size.z*3);
-  assert.ok(dust.geometry.attributes.starSize.array.every(size=>size<=.029));
-  assert.ok(dust.geometry.attributes.position.count>=150000);
+test('the nebula is a high-resolution turbulent volume with empty cavities and no sculpted silhouette', () => {
+  const scene=createCosmos('publications',{maps});let volume;
+  scene.root.traverse(object=>{if(object.userData.role==='nebula-volume')volume=object;});
+  assert.ok(volume?.isMesh);assert.equal(volume.material.side,THREE.BackSide);
+  const density=nebulaDensity();assert.ok(density.data.length>2000000);
+  assert.ok(new Set(density.data).size>120);
+  const samples=[];
+  for(let y=-2;y<=2;y+=.25)for(let x=-3.5;x<=3.5;x+=.25){
+    const direction=new THREE.Vector3(x,y,-12).normalize().toArray();
+    samples.push(traceNebula([0,0,12],direction,density));
+  }
+  assert.ok(samples.every(v=>Number.isFinite(v)&&v>=0&&v<=1));
+  assert.ok(samples.filter(v=>v<.02).length>100);
+  assert.ok(samples.filter(v=>v>.25).length>20);
   scene.dispose();
+});
+
+test('monolith travel streaks advance at the faster travel speed', () => {
+  const scene=createCosmos('notes',{maps});let streaks;
+  scene.root.traverse(object=>{if(object.userData.role==='travel-streaks')streaks=object;});
+  const before=streaks.geometry.attributes.position.array.slice();scene.update(.01);
+  const after=streaks.geometry.attributes.position.array,velocities=[];
+  for(let i=1;i<before.length;i+=6)if(before[i]>after[i])velocities.push((before[i]-after[i])/.01);
+  assert.ok(velocities.length>60);
+  assert.ok(velocities.every(v=>v>=2.09&&v<=4.81));scene.dispose();
 });

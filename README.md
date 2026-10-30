@@ -72,10 +72,11 @@ cluster (About), colliding galaxies (Education), the Milky Way (Industry
 experience), a nebula (Publications), a black hole (Teaching), a compact
 seven-planet solar system (Projects), and a black 2001-inspired monolith
 (Personal notes). The slab uses 1:4:9 proportions, subtly beveled edges, a glossy black finish, and
-animated travel streaks parallel to its long axis.
+fast animated travel streaks parallel to its long axis.
 
-The Horsehead-inspired nebula has a continuous three-dimensional pillar with a
-hooked head, resolved dust ridges, and fine surface grains. Stars occupy three
+The nebula is a ray-marched three-dimensional cloud with irregular branching
+wisps, turbulent knots, and eroded cavities. A high-resolution density texture
+and fine procedural detail retain structure through rotation. Stars occupy three
 dimensions. The solar system has seven
 independently orbiting planets, thin orbital paths, and one ringed planet; its
 sizes and speeds are illustrative. Extra framing keeps the system compact.

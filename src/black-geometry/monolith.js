@@ -28,7 +28,7 @@ export function createMonolith(scene) {
   const paths = Array.from({ length: count }, () => {
     const angle = rng() * Math.PI * 2, radius = 1.35 + rng() * .9;
     return { x: Math.cos(angle) * radius, z: Math.sin(angle) * radius * .65,
-      phase: rng() * 5.6, length: .22 + rng() * .66, speed: .7 + rng() * .9, strength: .35 + rng() * .65 };
+      phase: rng() * 5.6, length: .22 + rng() * .66, speed: 2.1 + rng() * 2.7, strength: .35 + rng() * .65 };
   });
   const geometry = new THREE.BufferGeometry();
   geometry.setAttribute('position', new THREE.BufferAttribute(data, 3).setUsage(THREE.DynamicDrawUsage));

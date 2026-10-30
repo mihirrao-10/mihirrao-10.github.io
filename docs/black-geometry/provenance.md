@@ -26,11 +26,10 @@ identified. Dark ink represents luminous density against the beige page.
   spiral arms, disk, bar, and bulge. Broad structure references
   [NASA's Milky Way illustration](https://science.nasa.gov/resource/the-milky-way-galaxy/).
   The stars are procedural samples, not a measured catalog.
-- **Publications:** a Horsehead-inspired elongated dust pillar, referencing
-  [NASA's Euclid, Hubble, and Webb views](https://science.nasa.gov/asset/webb/horsehead-nebula-euclid-hubble-and-webb-images/).
-  An independently authored implicit surface joins the trunk, neck, and hooked
-  head; fine procedural ridges and surface grains provide detail. It is a freely
-  rotatable interpretation, not a measured reconstruction or a mapped photograph.
+- **Publications:** an original irregular nebula cloud, authored as a seeded
+  three-dimensional density field. Curved branches, turbulent knots, and eroded
+  cavities emerge through ray integration. Fine procedural structure adds detail
+  at screen resolution. It does not depict a named astronomical object.
 - **Teaching:** rays deflect through a turbulent accretion disk around an absorbing
   center. The silhouette references Gargantua in *Interstellar* and
   [NASA's warped-disk illustration](https://www.nasa.gov/universe/nasa-visualization-shows-a-black-holes-warped-world/).
