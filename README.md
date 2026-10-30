@@ -74,19 +74,18 @@ seven-planet solar system (Projects), and a black 2001-inspired monolith
 (Personal notes). The slab uses 1:4:9 proportions, subtly beveled edges, a glossy black finish, and
 fast animated travel streaks parallel to its long axis.
 
-The nebula follows the Pillars of Creation reference, with three dust towers,
-illuminated rims, and Hubble-derived grayscale detail. An authored density field
-gives the pillars curved, varying depth; ray integration retains translucent
-edges through unrestricted rotation. Its depth is illustrative, not measured. Stars occupy three
-dimensions. The solar system has seven
-independently orbiting planets, thin orbital paths, and one ringed planet; its
+The nebula is a loose cloud of 238,000 fine dust grains, curling filaments,
+and faint haze particles. Grains swirl around local knots and drift on
+independent phases; the cloud continuously changes internally while remaining
+freely rotatable. Its spread and grain echo the introductory star cluster.
+Stars occupy three dimensions. The solar system has seven independently
+orbiting planets, thin orbital paths, and one ringed planet; its
 sizes and speeds are illustrative. Extra framing keeps the system compact.
 All scenes share unrestricted mouse and touch rotation, with bounds that retain
 the entire object. The black hole uses an approximate bent-ray accretion model.
 Geometry stays resident while animation updates transforms and uniforms.
 
-The Moon and Sun image fields supply solar-system surface detail. Two small
-Hubble-derived fields supply the nebula silhouette and fine dust detail.
+Only the Moon and Sun image fields are loaded, for solar-system surface detail.
 Other NASA/Hubble derivatives and earlier scene factories remain as archived
 references. Credits are in `assets/black-geometry/textures/CREDITS.txt`.
 

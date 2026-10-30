@@ -5,7 +5,7 @@ import fs from 'node:fs';
 import { MAP_FILES, decodeMap } from '../../src/black-geometry/astronomy-maps.js';
 const maps=Object.fromEntries(Object.entries(MAP_FILES).map(([name,file])=>[name,decodeMap(fs.readFileSync(new URL(`../../assets/black-geometry/textures/${file}`,import.meta.url)))]));
 import { createCosmos, COSMIC_TARGETS } from '../../src/black-geometry/cosmos.js';
-import { nebulaDensity, traceNebula, sampleNebula } from '../../src/black-geometry/nebula-cloud.js';
+import { nebulaParticle } from '../../src/black-geometry/nebula-cloud.js';
 import { sculptureOpacity } from '../../src/black-geometry/world.js';
 
 for (const name of COSMIC_TARGETS) {
@@ -133,30 +133,29 @@ test('travel streaks move through space while staying parallel to the monolith i
   assert.notDeepEqual(geometry.attributes.position.array,initial);scene.dispose();
 });
 
-test('the nebula retains high-resolution dust pillars and real depth around its gaps', () => {
-  const scene=createCosmos('publications',{maps});let volume;
-  scene.root.traverse(object=>{if(object.userData.role==='nebula-volume')volume=object;});
-  assert.ok(volume?.isMesh);assert.equal(volume.material.side,THREE.BackSide);
-  const density=nebulaDensity(maps);assert.ok(density.data.length>2000000);
-  assert.equal(density.reference.width,1024);
-  assert.ok(new Set(density.data).size>120);
-  const occupiedDepth=[];
-  for(let z=-1.5;z<=1.5;z+=.1){
-    let occupied=false;
-    for(let y=-1;y<=2&&!occupied;y+=.2)for(let x=-1.5;x<=1.5;x+=.2){
-      if(sampleNebula(density,x,y,z)>.25){occupied=true;break;}
-    }
-    if(occupied)occupiedDepth.push(z);
-  }
-  assert.ok(occupiedDepth.at(-1)-occupiedDepth[0]>.7,'The pillars must retain actual depth rather than an image plane');
+test('the nebula is a dispersed three-dimensional particle cloud with internal motion', () => {
+  const scene=createCosmos('publications',{maps}),clouds=[];
+  scene.root.traverse(object=>{if(object.isPoints)clouds.push(object);assert.ok(!object.isMesh,'Gas must not form a solid surface');});
+  assert.equal(scene.particleCount,238000);assert.equal(clouds.length,3);
   const samples=[];
-  for(let y=-2;y<=2;y+=.25)for(let x=-3.5;x<=3.5;x+=.25){
-    const direction=new THREE.Vector3(x,y,-12).normalize().toArray();
-    samples.push(traceNebula([0,0,12],direction,density));
+  for(const cloud of clouds){
+    const a=cloud.geometry.attributes;
+    cloud.geometry.computeBoundingBox();const size=cloud.geometry.boundingBox.getSize(new THREE.Vector3());
+    assert.ok(size.x>3&&size.y>1.5&&size.z>1,'Dust must occupy depth and spread around open space');
+    assert.equal(cloud.material.depthWrite,false);
+    for(let i=0;i<a.position.count;i+=997){
+      const get=name=>[a[name].getX(i),a[name].getY(i),a[name].getZ(i)];
+      const p=get('position'),center=get('orbitCenter'),axis=get('orbitAxis'),rate=a.rate.getX(i),phase=a.phase.getX(i);
+      const at=t=>nebulaParticle(p,center,axis,rate,phase,t);
+      assert.ok(new THREE.Vector3(...at(0)).distanceTo(new THREE.Vector3(...p))<1e-6);
+      assert.ok(new THREE.Vector3(...at(.01)).distanceTo(new THREE.Vector3(...at(0)))<.02,'Dust must drift smoothly');
+      for(const t of [4,20,1000])assert.ok(Math.hypot(...at(t))<scene.radius,'Flow must stay inside rotation-safe bounds');
+      samples.push([at(0),at(4)]);
+    }
   }
-  assert.ok(samples.every(v=>Number.isFinite(v)&&v>=0&&v<=1));
-  assert.ok(samples.filter(v=>v<.02).length>100);
-  assert.ok(samples.filter(v=>v>.25).length>20);
+  assert.ok(samples.filter(([a,b])=>new THREE.Vector3(...a).distanceTo(new THREE.Vector3(...b))>.1).length>samples.length*.8);
+  const distance=(a,b)=>new THREE.Vector3(...a).distanceTo(new THREE.Vector3(...b));
+  assert.ok(samples.slice(1).some((sample,i)=>Math.abs(distance(samples[i][0],sample[0])-distance(samples[i][1],sample[1]))>.05),'The cloud must change internally, beyond rotating as a rigid object');
   scene.dispose();
 });
 

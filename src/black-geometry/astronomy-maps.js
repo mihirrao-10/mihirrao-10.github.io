@@ -3,12 +3,11 @@ import * as THREE from 'three';
 export const MAP_FILES = {
   moon: 'moon-d4139e619240.bin',
   sun: 'sun-84afb4c32ecd.bin',
-  nebula: 'nebula-7bd45e2fc655.bin',
-  'nebula-mask': 'nebula-mask-547d32930345.bin',
 };
 
 // Retained reference fields are not fetched by the current page.
 export const ARCHIVE_MAP_FILES = {
+  nebula: 'nebula-7bd45e2fc655.bin', 'nebula-mask': 'nebula-mask-547d32930345.bin',
   earth: 'earth-28448cc004a0.bin', jupiter: 'jupiter-c9363143c882.bin',
   cluster: 'cluster-001b58dbcf10.bin', saturn: 'saturn-73e5f977646b.bin',
   rings: 'rings-0354fe9b7f4f.bin', galaxy: 'galaxy-f1a00ed7869c.bin',

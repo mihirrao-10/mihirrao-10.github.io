@@ -26,14 +26,11 @@ identified. Dark ink represents luminous density against the beige page.
   spiral arms, disk, bar, and bulge. Broad structure references
   [NASA's Milky Way illustration](https://science.nasa.gov/resource/the-milky-way-galaxy/).
   The stars are procedural samples, not a measured catalog.
-- **Publications:** a Pillars of Creation interpretation using the user's reference
-  composition and [Hubble's visible-light image](https://science.nasa.gov/missions/hubble/hubble-goes-high-def-to-revisit-the-iconic-pillars-of-creation/).
-  A grayscale luminance field supplies fine dust structure; an authored outline
-  with image-guided edge refinement supplies the projected silhouette. Curved,
-  varying thickness and spatial turbulence create a true three-dimensional
-  density field, integrated with gradient lighting. Depth and reverse-side
-  structure are authored, not a scientific reconstruction. Image credit:
-  NASA, ESA, and the Hubble Heritage Team (STScI/AURA).
+- **Publications:** an authored particle nebula inspired by the loose gas and
+  dust in the user's reference. Fine grains, narrow filaments, and faint haze
+  occupy real depth around open gaps. Independent local orbits and phased drift
+  animate the particles themselves. Shape, density, and flow are illustrative.
+  No photographic silhouette, texture, or solid surface is active.
 - **Teaching:** rays deflect through a turbulent accretion disk around an absorbing
   center. The silhouette references Gargantua in *Interstellar* and
   [NASA's warped-disk illustration](https://www.nasa.gov/universe/nasa-visualization-shows-a-black-holes-warped-world/).
@@ -54,7 +51,7 @@ identified. Dark ink represents luminous density against the beige page.
 
 The images supplied by the user in Documents are composition references for
 the black hole, globular cluster, and nebula. These reference files are not copied
-into the site or redistributed. The lunar, solar, and two Hubble nebula fields are active image-derived fields;
+into the site or redistributed. Only the lunar and solar maps are active image-derived fields;
 archived Earth, Jupiter, Saturn, Whirlpool, and Abell 1689 derivatives retain
 their original credits and hashes in `assets/black-geometry/textures/CREDITS.txt`.
 

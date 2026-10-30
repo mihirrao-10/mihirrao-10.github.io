@@ -1,7 +1,6 @@
 import * as THREE from 'three';
 import { deflateSync } from 'node:zlib';
 import { traceBlackHole } from '../../src/black-geometry/black-hole.js';
-import { traceNebula } from '../../src/black-geometry/nebula-cloud.js';
 import { sampleRingProfile } from '../../src/black-geometry/ring-profile.js';
 import { valueNoise } from '../../src/black-geometry/astronomy-materials.js';
 
@@ -52,7 +51,7 @@ function monolithAlpha(nx,ny,nz,x,y,z){
 // A small deterministic software renderer keeps the fallback detailed without
 // shipping megabytes of triangle paths. It uses the live geometry and maps.
 export function cosmicPoster(scene){
-  scene.update(0);const blackHole=scene.renderMode==='bent-ray-accretion',nebula=scene.renderMode==='nebula-raymarch';
+  scene.update(0);const blackHole=scene.renderMode==='bent-ray-accretion';
   const width=1600,height=1200;
   const pixels=Buffer.alloc(width*height*4),depth=new Float32Array(width*height).fill(-Infinity);
   const view=new THREE.Matrix4().makeRotationFromEuler(new THREE.Euler(.14,-.18,0));
@@ -70,23 +69,13 @@ export function cosmicPoster(scene){
     point.fromBufferAttribute(position,i).applyMatrix4(matrix);
     return [width*.5+point.x/(12-point.z)*focal,height*.5-point.y/(12-point.z)*focal,point.z];
   };
-  if(blackHole||nebula){
-    let volume;scene.root.traverse(o=>{if(o.userData.posterKind===(nebula?'nebula-volume':'black-hole'))volume=o;});
+  if(blackHole){
+    let volume;scene.root.traverse(o=>{if(o.userData.posterKind==='black-hole')volume=o;});
     const inverse=new THREE.Matrix4().multiplyMatrices(view,new THREE.Matrix4().multiplyMatrices(scaleMatrix,volume.matrixWorld)).invert();
     const origin=new THREE.Vector3(0,0,12).applyMatrix4(inverse),direction=new THREE.Vector3();
     let xmin=0,xmax=width-1,ymin=0,ymax=height-1;
-    const originArray=origin.toArray(),directionArray=[0,0,0],density=nebula?volume.userData.density:null;
-    if(nebula){
-      xmin=width;xmax=0;ymin=height;ymax=0;
-      const matrix=new THREE.Matrix4().multiplyMatrices(view,new THREE.Matrix4().multiplyMatrices(scaleMatrix,volume.matrixWorld));
-      for(let i=0;i<volume.geometry.attributes.position.count;i++){
-        const p=project(volume.geometry.attributes.position,i,matrix);xmin=Math.min(xmin,Math.floor(p[0]));xmax=Math.max(xmax,Math.ceil(p[0]));ymin=Math.min(ymin,Math.floor(p[1]));ymax=Math.max(ymax,Math.ceil(p[1]));
-      }
-      xmin=Math.max(0,xmin);xmax=Math.min(width-1,xmax);ymin=Math.max(0,ymin);ymax=Math.min(height-1,ymax);
-    }
     for(let y=ymin;y<=ymax;y++)for(let x=xmin;x<=xmax;x++){
       direction.set((x+.5-width*.5)/focal,(height*.5-y-.5)/focal,-1).normalize().transformDirection(inverse);
-      if(nebula){direction.toArray(directionArray);blend(x,y,0,traceNebula(originArray,directionArray,density));continue;}
       const b=origin.dot(direction),c=origin.lengthSq()-3.3**2,discriminant=b*b-c;
       if(discriminant<=0)continue;
       const distance=-b-Math.sqrt(discriminant),p=origin.clone().addScaledVector(direction,distance+.001);
@@ -95,7 +84,7 @@ export function cosmicPoster(scene){
     }
   }
   if(!blackHole){
-    const objects=[];scene.root.traverse(o=>{if(o.geometry&&o.userData.posterKind!=='nebula-volume')objects.push(o);});objects.sort((a,b)=>a.renderOrder-b.renderOrder);
+    const objects=[];scene.root.traverse(o=>{if(o.geometry)objects.push(o);});objects.sort((a,b)=>a.renderOrder-b.renderOrder);
     for(const object of objects){
       const geometry=object.geometry,positions=geometry.attributes.position;
       let matrix=new THREE.Matrix4().multiplyMatrices(view,new THREE.Matrix4().multiplyMatrices(scaleMatrix,object.matrixWorld));

@@ -1,5 +1,5 @@
 Surface maps converted to grayscale from NASA imagery.
-The Moon, Sun, and two Hubble nebula fields are active on the current homepage. All artwork
+Only the Moon and Sun fields are active on the current homepage. All artwork
 is grayscale, without visible wireframes or tessellated surface treatments.
 The fictional planet uses an authored terrain/cloud field, not an Earth map.
 
@@ -91,7 +91,7 @@ the website or redistributed. The archived radial stellar cloud, Milky Way,
 colliding galaxy pair, and globular cluster are authored particle populations;
 their depth, orbital rates, and interaction are not measured or simulated gravity.
 
-Pillars of Creation nebula fields (active):
+Pillars of Creation nebula fields (archived, not loaded):
 Source: Hubble visible-light image, released January 2015.
 Credit: NASA, ESA, and the Hubble Heritage Team (STScI/AURA).
 Page: https://science.nasa.gov/missions/hubble/hubble-goes-high-def-to-revisit-the-iconic-pillars-of-creation/
@@ -103,6 +103,6 @@ Authoring requires Pillow, NumPy, and SciPy; normal builds do not.
 The luminance field preserves fine dust structure in grayscale. A hand-authored
 outline and color-guided edges supply a signed-distance silhouette. The actual
 cloud's depth is not measured: curved thickness and spatial turbulence are
-independently authored. These fields drive a volumetric, freely rotatable
-illustration, not an image display plane. The user's watermarked reference is
+independently authored. These fields supplied a prior volume illustration. The active nebula now uses
+authored moving particles, without a photographic silhouette or image field. The user's watermarked reference is
 not included in the website.
