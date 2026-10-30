@@ -206,6 +206,13 @@ button { padding: .2rem 0; border: 0; font: inherit; color: inherit; background:
 .rotation-hint { position: absolute; bottom: 0; left: 0; right: 0; margin: 0; text-align: center; font-size: .7rem; color: var(--muted); pointer-events: none; }
 .world:focus-visible .rotation-hint { color: var(--text); }
 .world:focus-visible .rotation-hint::after { content: " · Arrow keys · Home to reset"; }
+/* Reserve space below the notes list for a clear scroll cue. */
+#notes { max-height: calc(100dvh - var(--reading-top) - 6rem); }
+.notes-scroll-hint {
+  position: fixed; top: calc(100dvh - 5rem); left: var(--content-left);
+  margin: 0; color: var(--muted); font-size: .75rem; line-height: 1.4; pointer-events: none;
+}
+.notes-scroll-hint span { margin-left: .15rem; }
 /* Keep the publishing source intact while presenting only the book links. */
 .notes-summary, .notes-category, .notes-institution, .note-format, .note-progress { display: none; }
 .note-byline { display: block; margin: .05rem 0 0; color: var(--muted); font-size: .78rem; }
@@ -226,6 +233,8 @@ button { padding: .2rem 0; border: 0; font: inherit; color: inherit; background:
   .hero-links { margin-top: 1.2rem; }
   .section-description { margin-bottom: 1rem; font-size: .78rem; }
   .scene-page { max-height: calc(66dvh - var(--reading-top) - .5rem); }
+  #notes { max-height: calc(66dvh - var(--reading-top) - 2.5rem); }
+  .notes-scroll-hint { top: calc(66dvh - 2rem); }
   .entry + .entry { margin-top: 1.3rem; }
   .entry-heading { gap: .3rem .8rem; margin-bottom: .55rem; }
   .entry-heading .entry-dates { margin-top: 0; font-size: .71rem; }
@@ -264,7 +273,7 @@ button { padding: .2rem 0; border: 0; font: inherit; color: inherit; background:
 }
 @media print {
   html, body { height: auto; overflow: visible; background: white; }
-  .site-index, .world, .skip-link, .site-loader, .navigation-hint { display: none !important; }
+  .site-index, .world, .skip-link, .site-loader, .navigation-hint, .notes-scroll-hint { display: none !important; }
   [data-boot="loading"] body > :not(.site-loader):not(script) { visibility: visible; }
   [data-scene], [data-scene][hidden] { display: block !important; position: static; width: 100%; margin: 1.5rem 0; max-height: none; overflow: visible; }
   .entry { break-inside: avoid; }

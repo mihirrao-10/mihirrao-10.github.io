@@ -17,6 +17,13 @@ export function createNavigation({ scenes, onChange, signal }) {
   const ids = scenes.map(scene => scene.id);
   let current;
   const hint = document.querySelector('.navigation-hint');
+  const notes = scenes.find(scene => scene.id === 'notes');
+  const scrollHint = notes?.querySelector('.notes-scroll-hint');
+  const updateScrollHint = () => {
+    if (!scrollHint || !notes) return;
+    const remaining = notes.scrollHeight - notes.clientHeight - notes.scrollTop;
+    scrollHint.hidden = current !== notes || remaining <= 1;
+  };
   if (hint) hint.hidden = false;
   const on = (target, name, handler) => target.addEventListener(name, handler, { signal });
   function select() {
@@ -24,6 +31,7 @@ export function createNavigation({ scenes, onChange, signal }) {
     const selected = scenes.find(scene => scene.id === id);
     const page = id === 'top' ? 'about' : id === 'personal-projects' ? 'projects' : id;
     const previous = current;
+    const moveFocus = previous?.contains(document.activeElement);
     current = selected;
     for (const scene of scenes) {
       const active = scene === selected;
@@ -39,11 +47,12 @@ export function createNavigation({ scenes, onChange, signal }) {
     if (previous !== selected) {
       selected.scrollTop = 0;
       document.title = page === 'about' ? 'Mihir Rao' : `${selected.querySelector('h2')?.textContent || page} · Mihir Rao`;
-      if (previous?.contains(document.activeElement)) {
-        selected.tabIndex = -1;
+      if (moveFocus) {
+        if (!selected.hasAttribute('tabindex')) selected.tabIndex = -1;
         selected.focus({ preventScroll: true });
       }
       onChange?.(selected);
+      requestAnimationFrame(updateScrollHint);
     }
   }
   on(document, 'click', event => {
@@ -76,6 +85,15 @@ export function createNavigation({ scenes, onChange, signal }) {
     event.preventDefault();
     if (step(event.key === 'ArrowRight' ? 1 : -1) && hint) hint.hidden = true;
   });
+  if (notes && scrollHint) {
+    on(notes, 'scroll', updateScrollHint);
+    on(window, 'resize', updateScrollHint);
+    const observer = new ResizeObserver(updateScrollHint);
+    observer.observe(notes);
+    const content = notes.querySelector('.notes-shelf');
+    if (content) observer.observe(content);
+    signal.addEventListener('abort', () => observer.disconnect(), { once: true });
+  }
   on(window, 'hashchange', select);
   on(window, 'popstate', select);
   select();
