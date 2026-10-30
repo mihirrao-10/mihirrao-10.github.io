@@ -18,11 +18,13 @@ export function createNavigation({ scenes, onChange, signal }) {
   let current;
   const hint = document.querySelector('.navigation-hint');
   const notes = scenes.find(scene => scene.id === 'notes');
-  const scrollHint = notes?.querySelector('.notes-scroll-hint');
+  const scrollHint = document.querySelector('.notes-scroll-hint');
   const updateScrollHint = () => {
     if (!scrollHint || !notes) return;
     const remaining = notes.scrollHeight - notes.clientHeight - notes.scrollTop;
-    scrollHint.hidden = current !== notes || remaining <= 1;
+    const hasMore = current === notes && remaining > 1;
+    scrollHint.hidden = !hasMore;
+    notes.toggleAttribute('data-has-more', hasMore);
   };
   if (hint) hint.hidden = false;
   const on = (target, name, handler) => target.addEventListener(name, handler, { signal });

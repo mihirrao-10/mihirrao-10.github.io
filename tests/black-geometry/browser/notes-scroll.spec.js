@@ -8,9 +8,10 @@ for (const [width, height] of [[1440, 900], [390, 844], [320, 568]]) {
     const notes = page.locator('#notes');
     const cue = page.locator('.notes-scroll-hint');
     await expect(cue).toBeVisible();
+    await expect(notes).toHaveAttribute('data-has-more', '');
     const bounds = await notes.evaluate(element => {
       const panel = element.getBoundingClientRect();
-      const cue = element.querySelector('.notes-scroll-hint').getBoundingClientRect();
+      const cue = document.querySelector('.notes-scroll-hint').getBoundingClientRect();
       return { bottom: panel.bottom, cueTop: cue.top, cueBottom: cue.bottom, viewport: innerHeight };
     });
     expect(bounds.cueTop).toBeGreaterThan(bounds.bottom);
@@ -21,6 +22,7 @@ for (const [width, height] of [[1440, 900], [390, 844], [320, 568]]) {
     await expect(notes).toHaveAttribute('tabindex', '0');
     await page.keyboard.press('End');
     await expect(cue).toBeHidden();
+    await expect(notes).not.toHaveAttribute('data-has-more', '');
     await page.keyboard.press('Home');
     await expect(cue).toBeVisible();
     await page.locator('.site-index a[href="#top"]').click();

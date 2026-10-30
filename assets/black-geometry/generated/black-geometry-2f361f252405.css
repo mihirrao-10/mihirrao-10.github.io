@@ -208,11 +208,15 @@ button { padding: .2rem 0; border: 0; font: inherit; color: inherit; background:
 .world:focus-visible .rotation-hint::after { content: " · Arrow keys · Home to reset"; }
 /* Reserve space below the notes list for a clear scroll cue. */
 #notes { max-height: calc(100dvh - var(--reading-top) - 6rem); }
+#notes[data-has-more] {
+  -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 2rem), transparent);
+  mask-image: linear-gradient(to bottom, #000 calc(100% - 2rem), transparent);
+}
 .notes-scroll-hint {
   position: fixed; top: calc(100dvh - 5rem); left: var(--content-left);
-  margin: 0; color: var(--muted); font-size: .75rem; line-height: 1.4; pointer-events: none;
+  margin: 0; color: var(--text); font-size: .9rem; font-weight: 500; line-height: 1.4; pointer-events: none;
 }
-.notes-scroll-hint span { margin-left: .15rem; }
+.notes-scroll-hint span { margin-right: .25rem; }
 /* Keep the publishing source intact while presenting only the book links. */
 .notes-summary, .notes-category, .notes-institution, .note-format, .note-progress { display: none; }
 .note-byline { display: block; margin: .05rem 0 0; color: var(--muted); font-size: .78rem; }
