@@ -1,5 +1,5 @@
 Surface maps converted to grayscale from NASA imagery.
-Only the Moon and Sun fields are active on the current homepage. All artwork
+The Moon, Sun, and two Hubble nebula fields are active on the current homepage. All artwork
 is grayscale, without visible wireframes or tessellated surface treatments.
 The fictional planet uses an authored terrain/cloud field, not an Earth map.
 
@@ -67,7 +67,7 @@ https://science.nasa.gov/resource/the-milky-way-galaxy/
 Luminous features in the Abell 1689 field supplied the earlier population of
 112 galaxies, retained outside the active build. Current galaxy scenes use
 authored three-dimensional star populations, not photographic display planes.
-The final scene is now a globular star cluster. Its radial profile, stellar
+The About scene is a globular star cluster. Its radial profile, stellar
 positions, and motion are authored. Dark ink represents luminous density.
 Source frames are not time series.
 
@@ -77,7 +77,7 @@ tools/black-geometry/prepare-astronomy.py with the input directory. The SDO late
 URL is mutable: use the recorded frame. Requires Pillow and NumPy; the website
 build does not. The active map manifest excludes archived fields.
 
-The current neutron star uses authored dipole geometry and polar beams:
+The archived neutron star uses authored dipole geometry and polar beams:
 https://imagine.gsfc.nasa.gov/science/objects/neutron_stars1.html
 The current black hole traces deflected rays through an authored turbulent
 accretion disk around an absorbing center. It is an approximate illustration,
@@ -85,8 +85,24 @@ not a relativistic geodesic solver. The accretion silhouette references
 Gargantua from Interstellar and NASA's warped-world visualization:
 https://www.nasa.gov/universe/nasa-visualization-shows-a-black-holes-warped-world/
 
-The two user-supplied images in Documents guide the black-hole and globular-
-cluster compositions only. Neither reference image nor any film still is
-copied into the website or redistributed. The archived radial stellar cloud, Milky Way,
+User-supplied images in Documents guide the black-hole, globular-cluster, and
+nebula compositions. These reference files and film stills are not copied into
+the website or redistributed. The archived radial stellar cloud, Milky Way,
 colliding galaxy pair, and globular cluster are authored particle populations;
 their depth, orbital rates, and interaction are not measured or simulated gravity.
+
+Pillars of Creation nebula fields (active):
+Source: Hubble visible-light image, released January 2015.
+Credit: NASA, ESA, and the Hubble Heritage Team (STScI/AURA).
+Page: https://science.nasa.gov/missions/hubble/hubble-goes-high-def-to-revisit-the-iconic-pillars-of-creation/
+Downloaded derivative: https://assets.science.nasa.gov/dynamicimage/assets/science/missions/hubble/releases/2015/01/STScI-01EVT2RBPDHYADWQX62QR1ABJ2.tif?fit=constrain&width=2048&format=jpeg&quality=90
+Input SHA-256: 8a180e8f6704b9435b96f773e89597ccda1498ee3e8d9c67bd4bff8873bbf6c4
+Fields: nebula-7bd45e2fc655.bin and nebula-mask-547d32930345.bin.
+Preparation: python tools/black-geometry/prepare-nebula.py pillars-hubble.jpg
+Authoring requires Pillow, NumPy, and SciPy; normal builds do not.
+The luminance field preserves fine dust structure in grayscale. A hand-authored
+outline and color-guided edges supply a signed-distance silhouette. The actual
+cloud's depth is not measured: curved thickness and spatial turbulence are
+independently authored. These fields drive a volumetric, freely rotatable
+illustration, not an image display plane. The user's watermarked reference is
+not included in the website.

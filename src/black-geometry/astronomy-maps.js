@@ -3,6 +3,8 @@ import * as THREE from 'three';
 export const MAP_FILES = {
   moon: 'moon-d4139e619240.bin',
   sun: 'sun-84afb4c32ecd.bin',
+  nebula: 'nebula-7bd45e2fc655.bin',
+  'nebula-mask': 'nebula-mask-547d32930345.bin',
 };
 
 // Retained reference fields are not fetched by the current page.

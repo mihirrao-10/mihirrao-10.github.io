@@ -11,7 +11,7 @@ for (const [name,file] of Object.entries({...MAP_FILES,...ARCHIVE_MAP_FILES})) t
   assert.ok(file.includes(createHash('sha256').update(bytes).digest('hex').slice(0,12)));
   assert.deepEqual(gunzipSync(fs.readFileSync(new URL(`${url}.gz`))),bytes);
   const map=decodeMap(bytes),{width,height,pixels}=map.userData;
-  const dimensions={earth:[2048,1024],moon:[2048,1024],sun:[2048,1024],saturn:[512,1024],rings:[4096,1],galaxy:[1536,1068],cluster:[1536,1482],jupiter:[3600,1800]};
+  const dimensions={nebula:[1024,1068],'nebula-mask':[1024,1068],earth:[2048,1024],moon:[2048,1024],sun:[2048,1024],saturn:[512,1024],rings:[4096,1],galaxy:[1536,1068],cluster:[1536,1482],jupiter:[3600,1800]};
   assert.deepEqual([width,height],dimensions[name]);assert.equal(pixels.length,width*height);
   const values=new Set(pixels);assert.ok(values.size>128, 'Terrain shading must retain a broad grayscale range');
   map.dispose();

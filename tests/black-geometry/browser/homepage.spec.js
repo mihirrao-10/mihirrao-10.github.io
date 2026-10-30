@@ -34,7 +34,20 @@ for (const [width, height] of [[320, 568], [390, 844], [768, 1024], [1024, 768],
       expect(dimensions.right).toBeLessThanOrEqual(width);
       expect(dimensions.scrollWidth).toBeLessThanOrEqual(width);
       expect(dimensions.y).toBe(0);
-      expect(dimensions.overflow).toBe(false);
+      if (dimensions.overflow) {
+        // Longer notes lists scroll inside the panel while the document stays fixed.
+        expect(id).toBe('notes');
+        const panel = page.locator(`#${id}`);
+        await expect(panel).toHaveCSS('overflow-y', 'auto');
+        const scroll = await panel.evaluate(element => {
+          element.scrollTop = element.scrollHeight;
+          return { top: element.scrollTop, max: element.scrollHeight - element.clientHeight };
+        });
+        expect(scroll.top).toBeGreaterThan(0);
+        expect(Math.abs(scroll.top - scroll.max)).toBeLessThanOrEqual(1);
+        expect(await page.evaluate(() => scrollY)).toBe(0);
+        await panel.evaluate(element => { element.scrollTop = 0; });
+      }
       await page.mouse.wheel(0, 900);
       expect(await page.evaluate(() => scrollY)).toBe(0);
       await expect(page.locator('[data-current-scene]')).toHaveCount(1);

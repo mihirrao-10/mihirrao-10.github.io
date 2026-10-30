@@ -5,7 +5,7 @@ import fs from 'node:fs';
 import { MAP_FILES, decodeMap } from '../../src/black-geometry/astronomy-maps.js';
 const maps=Object.fromEntries(Object.entries(MAP_FILES).map(([name,file])=>[name,decodeMap(fs.readFileSync(new URL(`../../assets/black-geometry/textures/${file}`,import.meta.url)))]));
 import { createCosmos, COSMIC_TARGETS } from '../../src/black-geometry/cosmos.js';
-import { nebulaDensity, traceNebula } from '../../src/black-geometry/nebula-cloud.js';
+import { nebulaDensity, traceNebula, sampleNebula } from '../../src/black-geometry/nebula-cloud.js';
 import { sculptureOpacity } from '../../src/black-geometry/world.js';
 
 for (const name of COSMIC_TARGETS) {
@@ -133,12 +133,22 @@ test('travel streaks move through space while staying parallel to the monolith i
   assert.notDeepEqual(geometry.attributes.position.array,initial);scene.dispose();
 });
 
-test('the nebula is a high-resolution turbulent volume with empty cavities and no sculpted silhouette', () => {
+test('the nebula retains high-resolution dust pillars and real depth around its gaps', () => {
   const scene=createCosmos('publications',{maps});let volume;
   scene.root.traverse(object=>{if(object.userData.role==='nebula-volume')volume=object;});
   assert.ok(volume?.isMesh);assert.equal(volume.material.side,THREE.BackSide);
-  const density=nebulaDensity();assert.ok(density.data.length>2000000);
+  const density=nebulaDensity(maps);assert.ok(density.data.length>2000000);
+  assert.equal(density.reference.width,1024);
   assert.ok(new Set(density.data).size>120);
+  const occupiedDepth=[];
+  for(let z=-1.5;z<=1.5;z+=.1){
+    let occupied=false;
+    for(let y=-1;y<=2&&!occupied;y+=.2)for(let x=-1.5;x<=1.5;x+=.2){
+      if(sampleNebula(density,x,y,z)>.25){occupied=true;break;}
+    }
+    if(occupied)occupiedDepth.push(z);
+  }
+  assert.ok(occupiedDepth.at(-1)-occupiedDepth[0]>.7,'The pillars must retain actual depth rather than an image plane');
   const samples=[];
   for(let y=-2;y<=2;y+=.25)for(let x=-3.5;x<=3.5;x+=.25){
     const direction=new THREE.Vector3(x,y,-12).normalize().toArray();

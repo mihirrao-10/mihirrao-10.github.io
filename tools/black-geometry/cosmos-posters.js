@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { deflateSync } from 'node:zlib';
 import { traceBlackHole } from '../../src/black-geometry/black-hole.js';
-import { traceNebula, nebulaDensity } from '../../src/black-geometry/nebula-cloud.js';
+import { traceNebula } from '../../src/black-geometry/nebula-cloud.js';
 import { sampleRingProfile } from '../../src/black-geometry/ring-profile.js';
 import { valueNoise } from '../../src/black-geometry/astronomy-materials.js';
 
@@ -75,7 +75,7 @@ export function cosmicPoster(scene){
     const inverse=new THREE.Matrix4().multiplyMatrices(view,new THREE.Matrix4().multiplyMatrices(scaleMatrix,volume.matrixWorld)).invert();
     const origin=new THREE.Vector3(0,0,12).applyMatrix4(inverse),direction=new THREE.Vector3();
     let xmin=0,xmax=width-1,ymin=0,ymax=height-1;
-    const originArray=origin.toArray(),directionArray=[0,0,0],density=nebula?nebulaDensity():null;
+    const originArray=origin.toArray(),directionArray=[0,0,0],density=nebula?volume.userData.density:null;
     if(nebula){
       xmin=width;xmax=0;ymin=height;ymax=0;
       const matrix=new THREE.Matrix4().multiplyMatrices(view,new THREE.Matrix4().multiplyMatrices(scaleMatrix,volume.matrixWorld));

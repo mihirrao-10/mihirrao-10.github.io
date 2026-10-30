@@ -26,10 +26,14 @@ identified. Dark ink represents luminous density against the beige page.
   spiral arms, disk, bar, and bulge. Broad structure references
   [NASA's Milky Way illustration](https://science.nasa.gov/resource/the-milky-way-galaxy/).
   The stars are procedural samples, not a measured catalog.
-- **Publications:** an original irregular nebula cloud, authored as a seeded
-  three-dimensional density field. Curved branches, turbulent knots, and eroded
-  cavities emerge through ray integration. Fine procedural structure adds detail
-  at screen resolution. It does not depict a named astronomical object.
+- **Publications:** a Pillars of Creation interpretation using the user's reference
+  composition and [Hubble's visible-light image](https://science.nasa.gov/missions/hubble/hubble-goes-high-def-to-revisit-the-iconic-pillars-of-creation/).
+  A grayscale luminance field supplies fine dust structure; an authored outline
+  with image-guided edge refinement supplies the projected silhouette. Curved,
+  varying thickness and spatial turbulence create a true three-dimensional
+  density field, integrated with gradient lighting. Depth and reverse-side
+  structure are authored, not a scientific reconstruction. Image credit:
+  NASA, ESA, and the Hubble Heritage Team (STScI/AURA).
 - **Teaching:** rays deflect through a turbulent accretion disk around an absorbing
   center. The silhouette references Gargantua in *Interstellar* and
   [NASA's warped-disk illustration](https://www.nasa.gov/universe/nasa-visualization-shows-a-black-holes-warped-world/).
@@ -48,9 +52,9 @@ identified. Dark ink represents luminous density against the beige page.
   its local coordinate system and remain parallel to its long edges through
   every rotation. No film frame, downloaded mesh, or movie texture is used.
 
-The two images supplied by the user in Documents are composition references for
-the black hole and globular cluster only. Neither is copied into the site or
-redistributed. Only the lunar and solar maps are active image-derived fields;
+The images supplied by the user in Documents are composition references for
+the black hole, globular cluster, and nebula. These reference files are not copied
+into the site or redistributed. The lunar, solar, and two Hubble nebula fields are active image-derived fields;
 archived Earth, Jupiter, Saturn, Whirlpool, and Abell 1689 derivatives retain
 their original credits and hashes in `assets/black-geometry/textures/CREDITS.txt`.
 
