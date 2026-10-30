@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 async function openStatic(page, path = '/') {
-  await page.route('**/textures/*.bin*', route => route.abort());
+  await page.route('**/textures/*', route => route.abort());
   await page.goto(path);
   await expect(page.locator('html')).toHaveAttribute('data-boot', 'fallback', { timeout: 30000 });
 }

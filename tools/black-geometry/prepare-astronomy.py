@@ -14,6 +14,8 @@ import sys
 import numpy as np
 from PIL import Image
 
+from map_manifest import update_map_files
+
 root = Path(__file__).resolve().parents[2]
 inputs = Path(sys.argv[1])
 output = root / 'assets/black-geometry/textures'
@@ -103,10 +105,6 @@ for name in ['galaxy', 'cluster']:
 
 path = root / 'src/black-geometry/astronomy-maps.js'
 source = path.read_text()
-start, end = source.index('export const MAP_FILES'), source.index('};', source.index('export const MAP_FILES')) + 2
-current = json.loads(source[source.index('=', start) + 1:end - 1])
-active = {'earth': current['earth'], 'moon': current['moon'], 'sun': files['sun'],
-          'jupiter': current['jupiter'], 'cluster': files['cluster']}
-source = source[:start] + 'export const MAP_FILES = ' + json.dumps(active, indent=2) + ';' + source[end:]
+source = update_map_files(source, files)
 path.write_text(source)
 print(json.dumps(files, indent=2))

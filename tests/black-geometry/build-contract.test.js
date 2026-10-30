@@ -9,6 +9,7 @@ import {
   fingerprintedStylesheet,
   withStylesheetReference,
   withEntryReference,
+  withWorldPreload,
   posterVersions,
   withPosterReferences,
   ROOT,
@@ -29,6 +30,8 @@ test("generated assets are deterministic and every browser import resolves to a 
     "The homepage must reference the current generated stylesheet; run build:experience after CSS edits");
   assert.equal(withEntryReference(html, a.get('main.js')), html,
     'Returning visitors must fetch the current entry module rather than stale chunk references');
+  assert.equal(withWorldPreload(html, a.get('main.js')), html,
+    'The large graphics chunk should be discovered with the document, using its current content hash');
   assert.equal(withPosterReferences(html, posterVersions(a)), html, 'Static and live poster URLs must use the same content hash');
   assert.ok(!a.has('sculpture-data.bin'), 'All active scenes are procedural; no legacy mesh packet is shipped');
   for (const [name, contents] of a) {
@@ -54,6 +57,15 @@ test('entry module versions change with runtime bytes and preserve the surroundi
   assert.equal(updated, html.replace('main.js', 'main.js?v=ba7816bf8f01'));
   assert.equal(withEntryReference(updated, Buffer.from('abc')), updated);
   assert.notEqual(withEntryReference(updated, Buffer.from('changed')), updated);
+});
+test('world preload follows the dynamic import and preserves surrounding markup', () => {
+  const html = '<p>Keep me</p><link rel="modulepreload" data-experience-preload href="assets/black-geometry/generated/world-OLD.js" />';
+  const entry = Buffer.from('const load = () => import("./world-NEW123.js");');
+  const updated = withWorldPreload(html, entry);
+  assert.equal(updated, html.replace('world-OLD.js', 'world-NEW123.js'));
+  assert.equal(withWorldPreload(updated, entry), updated);
+  assert.throws(() => withWorldPreload(html, Buffer.from('no import')), /one dynamic world import/);
+  assert.throws(() => withWorldPreload('<p>No preload</p>', entry), /one world module preload/);
 });
 test("verification detects a missing, stale or extra asset without overwriting it", () => {
   const expected = new Map([

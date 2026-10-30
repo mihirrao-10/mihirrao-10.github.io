@@ -42,44 +42,50 @@ function dustMaterial(scene,soft) {
   scene.materials.add(material);return material;
 }
 
-function centerline(u,branch) {
+function centerline(u,branch,target) {
   const x=u*2.35;
-  return [x+.18*Math.sin(u*6+branch),
-    .62*Math.sin(u*2.8+branch*.7)+(branch-1.5)*.48,
-    .60*Math.sin(u*3.2+branch*1.6)];
+  target[0]=x+.18*Math.sin(u*6+branch);
+  target[1]=.62*Math.sin(u*2.8+branch*.7)+(branch-1.5)*.48;
+  target[2]=.60*Math.sin(u*3.2+branch*1.6);
 }
 
 export function createNebulaCloud(scene) {
   const content=new THREE.Group();scene.root.add(content);
-  let bound=0;const drawingSize=new THREE.Vector2();
+  let bound=0;const drawingSize=new THREE.Vector2(),axis=new THREE.Vector3();
+  const center=[0,0,0],offset=[0,0,0],p=[0,0,0];
   const layers=[
     {count:166000,seed:87129,role:'nebula-dust',soft:0},
     {count:54000,seed:57237,role:'nebula-filaments',soft:0},
     {count:18000,seed:13733,role:'nebula-haze',soft:1},
   ];
   for(const layer of layers){
-    const rng=random(layer.seed),data={position:[],starSize:[],strength:[],phase:[],rate:[],orbitCenter:[],orbitAxis:[]};
+    // Retain only the final typed buffers; reuse sampling scratch space below.
+    const rng=random(layer.seed),count=layer.count,data={
+      position:new Float32Array(count*3),starSize:new Float32Array(count),strength:new Float32Array(count),
+      phase:new Float32Array(count),rate:new Float32Array(count),
+      orbitCenter:new Float32Array(count*3),orbitAxis:new Float32Array(count*3),
+    };
     const filament=layer.role==='nebula-filaments',haze=layer.soft===1;
     for(let i=0;i<layer.count;i++){
-      const branch=i%4,u=rng()*2-1,center=centerline(u,branch);
+      const branch=i%4,u=rng()*2-1;centerline(u,branch,center);
       const knot=valueNoise(u*8+branch*3,branch+4,2.7);
       const width=filament?.045+.085*knot:haze?.20+.24*knot:.10+.37*knot;
       const spread=width*(.4+.6*Math.sqrt(Math.max(0,1-u*u)));
-      const offset=[0,1,2].map(()=>clamp(gaussian(rng),-2.4,2.4)*spread);
+      for(let k=0;k<3;k++)offset[k]=clamp(gaussian(rng),-2.4,2.4)*spread;
       if(filament){offset[1]+=.14*Math.sin(u*15+branch);offset[2]+=.10*Math.cos(u*18+branch);}
-      const p=center.map((v,k)=>v+offset[k]);
+      for(let k=0;k<3;k++)p[k]=center[k]+offset[k];
       const texture=valueNoise(p[0]*5+3,p[1]*5,p[2]*5+8);
       const density=(.18+.82*texture**2)*(.3+.7*knot);
       const edge=(1-u*u)**.35;
-      const axis=new THREE.Vector3(rng()-.5,.35+rng(),rng()-.5).normalize().toArray();
-      data.position.push(...p);data.orbitCenter.push(...center);data.orbitAxis.push(...axis);
-      data.starSize.push(haze?4+rng()*8:filament?.8+rng()**2*2.0:.7+rng()**2*2.0);
-      data.strength.push((haze?.010+rng()*.013:filament?.65+rng()*.35:.48+rng()*.42)*density*edge);
-      data.phase.push(rng()*TAU);data.rate.push((.08+rng()*.13)*(filament?1.1:1));
+      axis.set(rng()-.5,.35+rng(),rng()-.5).normalize();
+      data.position.set(p,i*3);data.orbitCenter.set(center,i*3);axis.toArray(data.orbitAxis,i*3);
+      data.starSize[i]=haze?4+rng()*8:filament?.8+rng()**2*2.0:.7+rng()**2*2.0;
+      data.strength[i]=(haze?.010+rng()*.013:filament?.65+rng()*.35:.48+rng()*.42)*density*edge;
+      data.phase[i]=rng()*TAU;data.rate[i]=(.08+rng()*.13)*(filament?1.1:1);
       bound=Math.max(bound,Math.hypot(...center)+Math.hypot(...offset)+FLOW_REACH);
     }
     const geometry=new THREE.BufferGeometry();
-    for(const [name,values] of Object.entries(data))geometry.setAttribute(name,new THREE.Float32BufferAttribute(values,['position','orbitCenter','orbitAxis'].includes(name)?3:1));
+    for(const [name,values] of Object.entries(data))geometry.setAttribute(name,new THREE.BufferAttribute(values,['position','orbitCenter','orbitAxis'].includes(name)?3:1));
     const points=new THREE.Points(geometry,dustMaterial(scene,layer.soft));points.frustumCulled=false;
     // Keep optical density consistent when the same cloud fits a small screen.
     points.onBeforeRender=renderer=>{points.material.uniforms.viewportHeight.value=renderer.getDrawingBufferSize(drawingSize).y;};

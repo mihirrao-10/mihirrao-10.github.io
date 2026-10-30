@@ -1,12 +1,74 @@
 import { test, expect } from '@playwright/test';
 
+test('graphics warmup uploads every scene in a small buffer and restores full resolution before reveal', async ({ page }) => {
+  await page.addInitScript(() => {
+    const buffers = [], originals = new Map();
+    for (const method of ['drawArrays', 'drawElements']) {
+      const original = WebGL2RenderingContext.prototype[method];
+      originals.set(method, original);
+      WebGL2RenderingContext.prototype[method] = function (...args) {
+        buffers.push([this.drawingBufferWidth, this.drawingBufferHeight]);
+        return original.apply(this, args);
+      };
+    }
+    window.addEventListener('portfolio:boot-complete', () => {
+      for (const [method, original] of originals) WebGL2RenderingContext.prototype[method] = original;
+      const canvas = document.querySelector('.world canvas');
+      window.preparedBuffers = { draws: buffers, width: canvas.width, height: canvas.height,
+        world: window.__blackGeometry.snapshot().world };
+    }, { once: true });
+  });
+  await page.goto('/?bg-debug');
+  await expect.poll(() => page.evaluate(() => !!window.preparedBuffers)).toBe(true);
+  const { draws, width, height, world } = await page.evaluate(() => window.preparedBuffers);
+  expect(world.warmedTargets).toBe(7);
+  expect(draws[0]).toEqual([64, 64]);
+  expect(draws.at(-1)).toEqual([width, height]);
+  expect(width).toBe(Math.floor(world.width * world.dpr));
+  expect(height).toBe(Math.floor(world.height * world.dpr));
+  expect(Math.min(width, height)).toBeGreaterThan(64);
+  await expect(page.locator('.site-loader')).toBeHidden();
+  await page.evaluate(() => {
+    const canvas = document.querySelector('.world canvas');
+    window.bufferResizes = 0;
+    for (const property of ['width', 'height']) {
+      const descriptor = Object.getOwnPropertyDescriptor(HTMLCanvasElement.prototype, property);
+      Object.defineProperty(canvas, property, { get: descriptor.get, set(value) {
+        window.bufferResizes++;
+        descriptor.set.call(this, value);
+      } });
+    }
+  });
+  await page.locator('.site-index a[href="#education"]').click();
+  await expect.poll(() => page.evaluate(() => {
+    const world = window.__blackGeometry.snapshot().world;
+    return [world.target, world.nextTarget, world.blend];
+  })).toEqual(['education', 'education', 0]);
+  expect(await page.evaluate(() => window.bufferResizes)).toBe(0);
+  const repeatedAttributes = await page.evaluate(async () => {
+    const changes = [], start = window.__blackGeometry.snapshot().world.frames;
+    const observer = new MutationObserver(records => changes.push(...records.map(record => record.attributeName)));
+    observer.observe(document.body, { attributes: true });
+    await new Promise(resolve => {
+      function sample() {
+        if (window.__blackGeometry.snapshot().world.frames >= start + 6) resolve();
+        else requestAnimationFrame(sample);
+      }
+      requestAnimationFrame(sample);
+    });
+    observer.disconnect();
+    return changes;
+  });
+  expect(repeatedAttributes).toEqual([]);
+});
+
 for (const [port, width, height] of [[8000, 1440, 900], [8001, 390, 844]]) {
   test(`loading screen waits for prepared graphics and fades into the site on ${port}`, async ({ page }, testInfo) => {
     await page.setViewportSize({ width, height });
     await page.emulateMedia({ reducedMotion: 'no-preference' });
     let release, requested = false;
     const pending = new Promise(resolve => { release = resolve; });
-    await page.route('**/textures/*.bin*', async route => {
+    await page.route('**/textures/*', async route => {
       requested = true;
       await pending;
       await route.continue();
@@ -53,7 +115,7 @@ test('reduced motion keeps the loader still while automatically starting the scu
   await page.emulateMedia({ reducedMotion: 'reduce' });
   let release, requested = false;
   const pending = new Promise(resolve => { release = resolve; });
-  await page.route('**/textures/*.bin*', async route => {
+  await page.route('**/textures/*', async route => {
     requested = true;
     await pending;
     await route.continue();

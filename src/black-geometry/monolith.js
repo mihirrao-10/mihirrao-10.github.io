@@ -46,12 +46,15 @@ export function createMonolith(scene) {
   streaks.userData = { role: 'travel-streaks', posterKind: 'travel-streaks' }; content.add(streaks);
   scene.animate = time => {
     content.rotation.set(.08 + .025 * Math.sin(time * .04), -.32 + time * .025, -.08 + Math.sin(time * .055) * .045);
-    paths.forEach((path, i) => {
+    for (let i = 0; i < paths.length; i++) {
+      const path = paths[i], offset = i * 6;
       const top = 2.8 - (time * path.speed + path.phase) % 5.6, bottom = Math.max(-2.8, top - path.length);
-      data.set([path.x, top, path.z, path.x, bottom, path.z], i * 6);
+      data[offset] = data[offset + 3] = path.x;
+      data[offset + 1] = top;data[offset + 4] = bottom;
+      data[offset + 2] = data[offset + 5] = path.z;
       const fade = Math.max(0, Math.min(1, (2.8 - top) * 4, (bottom + 2.8) * 4));
       strength[i * 2] = strength[i * 2 + 1] = path.strength * fade;
-    });
+    }
     geometry.attributes.position.needsUpdate = geometry.attributes.strength.needsUpdate = true;
   };
   scene.theme = '2001 monolith'; scene.volumeKind = 'monolith'; scene.radius = 4.05;

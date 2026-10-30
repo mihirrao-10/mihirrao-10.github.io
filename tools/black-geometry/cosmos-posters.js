@@ -6,9 +6,19 @@ import { valueNoise } from '../../src/black-geometry/astronomy-materials.js';
 
 function crc32(buffer){let crc=0xffffffff;for(const byte of buffer){crc^=byte;for(let i=0;i<8;i++)crc=(crc>>>1)^((crc&1)?0xedb88320:0);}return(crc^0xffffffff)>>>0;}
 function chunk(name,data){const type=Buffer.from(name),out=Buffer.alloc(data.length+12);out.writeUInt32BE(data.length);type.copy(out,4);data.copy(out,8);out.writeUInt32BE(crc32(Buffer.concat([type,data])),data.length+8);return out;}
-function png(width,height,pixels){
-  const header=Buffer.alloc(13);header.writeUInt32BE(width);header.writeUInt32BE(height,4);header[8]=8;header[9]=6;
-  const rows=Buffer.alloc(height*(width*4+1));for(let y=0;y<height;y++)pixels.copy(rows,y*(width*4+1)+1,y*width*4,(y+1)*width*4);
+export function posterPNG(width,height,pixels){
+  // Grayscale plus alpha stores the same pixels with half the color-channel
+  // bytes. Retain RGBA for any future colored poster, including transparent RGB.
+  let grayscale=true;
+  for(let i=0;i<pixels.length;i+=4)if(pixels[i]!==pixels[i+1]||pixels[i]!==pixels[i+2]){grayscale=false;break;}
+  const channels=grayscale?2:4,stride=width*channels+1;
+  const header=Buffer.alloc(13);header.writeUInt32BE(width);header.writeUInt32BE(height,4);header[8]=8;header[9]=grayscale?4:6;
+  const rows=Buffer.alloc(height*stride);
+  for(let y=0;y<height;y++){
+    if(grayscale)for(let x=0;x<width;x++){
+      const from=(y*width+x)*4,to=y*stride+1+x*2;rows[to]=pixels[from];rows[to+1]=pixels[from+3];
+    }else pixels.copy(rows,y*stride+1,y*width*4,(y+1)*width*4);
+  }
   return Buffer.concat([Buffer.from([137,80,78,71,13,10,26,10]),chunk('IHDR',header),chunk('IDAT',deflateSync(rows,{level:9})),chunk('IEND',Buffer.alloc(0))]);
 }
 const clamp=(v,a=0,b=1)=>Math.max(a,Math.min(b,v));
@@ -155,6 +165,6 @@ export function cosmicPoster(scene){
       }
     }
   }
-  const data=png(width,height,pixels).toString('base64');
+  const data=posterPNG(width,height,pixels).toString('base64');
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}" aria-hidden="true"><image width="${width}" height="${height}" href="data:image/png;base64,${data}"/></svg>\n`;
 }

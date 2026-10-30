@@ -126,11 +126,12 @@ export function createInteraction({ element, hint, onChange = () => {} }) {
   }
   return {
     snapshot,
+    isDragging: () => dragging,
     setEnabled,
     cancel,
     reset,
     step(delta) {
-      if (!enabled || dragging || pending || !Number.isFinite(delta) || delta <= 0) return;
+      if (!enabled || dragging || pending || (!velocity[0] && !velocity[1]) || !Number.isFinite(delta) || delta <= 0) return;
       const decay = Math.exp(-DRAG_DECAY * delta);
       const distance = (1 - decay) / DRAG_DECAY;
       addRotation(velocity[0] * distance, velocity[1] * distance);

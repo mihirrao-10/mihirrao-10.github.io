@@ -47,6 +47,17 @@ export function withEntryReference(html, contents) {
   return updated;
 }
 
+/** Discover the dynamic chunk in the built entry instead of hard-coding its hash. */
+export function withWorldPreload(html, contents) {
+  const imports = [...Buffer.from(contents).toString().matchAll(/\bimport\(["']\.\/(world-[A-Za-z0-9_-]+\.js)["']\)/g)];
+  if (imports.length !== 1) throw new Error(`Expected exactly one dynamic world import; found ${imports.length}.`);
+  let references = 0;
+  const updated = html.replace(/(<link\b[^>]*\bdata-experience-preload\b[^>]*\bhref=")assets\/black-geometry\/generated\/world-[A-Za-z0-9_-]+\.js(")/g,
+    (_, before, after) => { references++; return `${before}assets/black-geometry/generated/${imports[0][1]}${after}`; });
+  if (references !== 1) throw new Error(`Expected exactly one world module preload; found ${references}.`);
+  return updated;
+}
+
 export function posterVersions(files) {
   return Object.fromEntries([...files].filter(([name]) => /^sculpture-.*\.svg$/.test(name))
     .map(([name, contents]) => [name.slice(10, -4), createHash('sha256').update(contents).digest('hex').slice(0, 12)]));
@@ -77,7 +88,6 @@ export async function expectedOutputs() {
     write: false,
     legalComments: "external",
     chunkNames: "[name]-[hash]",
-    metafile: true,
   });
   const files = new Map(
     result.outputFiles.map((file) => [path.basename(file.path), file.contents]),
@@ -125,8 +135,8 @@ export async function buildExperience({ check = false } = {}) {
   const indexPath = path.join(ROOT, "index.html");
   const html = await fs.readFile(indexPath, "utf8");
   const stylesheetName = [...expected.keys()].find(name => STYLESHEET_NAME.test(name));
-  const updatedHTML = withPosterReferences(
-    withEntryReference(withStylesheetReference(html, stylesheetName), expected.get('main.js')), posterVersions(expected));
+  const updatedHTML = withPosterReferences(withWorldPreload(
+    withEntryReference(withStylesheetReference(html, stylesheetName), expected.get('main.js')), expected.get('main.js')), posterVersions(expected));
   const stylesheetChanged = updatedHTML !== html;
   const stale = [...differences, ...(stylesheetChanged ? ["index.html asset references"] : [])];
   if (check && stale.length)

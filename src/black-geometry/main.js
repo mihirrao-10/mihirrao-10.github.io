@@ -1,5 +1,5 @@
 import { DEFAULTS, QUALITY } from './preferences.js';
-import { cameraPose, createTransition, advanceTransition } from './scene-state.js';
+import { createTransition, advanceTransition } from './scene-state.js';
 import { createInteraction } from './interaction.js';
 import { createNavigation } from './navigation.js';
 
@@ -50,21 +50,19 @@ function measure() {
   layoutDirty = false;
 }
 function updateScene() {
-  const previousTarget = state.target;
   const selected = navigation.current();
-  state = { chapter: selected.dataset.scene, target: selected.dataset.target,
-    nextTarget: selected.dataset.target, blend: 0, progress: 0 };
-  if (lastChapter !== state.chapter) {
+  if (lastChapter !== selected.dataset.scene) {
+    const previousTarget = state.target;
+    state = { chapter: selected.dataset.scene, target: selected.dataset.target,
+      nextTarget: selected.dataset.target, blend: 0, progress: 0 };
     if (lastChapter) {
       if (previousTarget !== state.target) interaction.reset(world?.entryOrientation(state.target));
       else interaction.cancel();
     }
     lastChapter = state.chapter;
     body.dataset.chapter = state.chapter;
-    for (const element of sceneElements)
-      element.toggleAttribute('data-current-scene', element.dataset.scene === state.chapter);
+    body.dataset.sculpture = state.target;
   }
-  body.dataset.sculpture = state.target;
   // Load a poster only while it is serving as the artwork.
   if (lastPoster !== state.target && (motion !== 'full' || !world || failed)) {
     lastPoster = state.target;
@@ -114,22 +112,25 @@ function draw(now) {
   interaction.step(delta);
   const grab = interaction.snapshot();
   if (!grab.dragging) orbitTime += delta;
-  pointer = pointer.map((value, i) => value + (pointerTarget[i] - value) * (1 - Math.exp(-delta * 5)));
+  const follow = 1 - Math.exp(-delta * 5);
+  pointer[0] += (pointerTarget[0] - pointer[0]) * follow;
+  pointer[1] += (pointerTarget[1] - pointer[1]) * follow;
   // Real elapsed time completes the selected sculpture after the page selection.
-  transition = advanceTransition(transition, state.target, elapsed / 1000);
-  visualState = { ...state, target: transition.from, nextTarget: transition.to, blend: transition.blend };
+  if (transition.to !== state.target || transition.from !== transition.to)
+    transition = advanceTransition(transition, state.target, elapsed / 1000);
+  visualState = transition.from === transition.to ? state :
+    { ...state, target: transition.from, nextTarget: transition.to, blend: transition.blend };
   if (state.target !== 'hero') entrance.progress = 1;
   else if (entrance.started) entrance.progress = Math.min(1, entrance.progress + delta / 1.1);
   try {
     world.recordFrame(elapsed);
     world.render({ state: visualState,
-      pose: cameraPose(visualState, { time: orbitTime, pointer, fullMotion: true }),
-      time, orbitTime, pointer, project, interactionTarget: state.target,
+      time, orbitTime, pointer, interactionTarget: state.target,
       entrance: entrance.progress,
       interaction: { orientation: grab.orientation, rotation: grab.rotation, dragging: grab.dragging },
     });
-    body.dataset.experienceState = 'ready';
     if (!entrance.started) {
+      body.dataset.experienceState = 'ready';
       entrance.started = true;
       // Shader compilation can take time. Start the visible animation after
       // that first successful frame, not while it is still being prepared.
@@ -150,9 +151,13 @@ async function enhance() {
   enhancementPending = (async () => {
     try {
       worldImport ||= import('./world.js');
-      const [module] = await Promise.all([worldImport, document.fonts?.ready]);
+      const module = await worldImport;
       if (disposed || failed || motion !== 'full') return;
-      const created = await module.createWorld({ container, quality: profile, onFailure: fail });
+      // Prepare graphics while the font loads; both must be ready before reveal.
+      const [created] = await Promise.all([
+        module.createWorld({ container, quality: profile, onFailure: fail }),
+        document.fonts?.ready,
+      ]);
       if (disposed || failed) { created?.dispose(); return; }
       world = created;
       if (motion !== 'full') { showStatic(); return; }
@@ -181,10 +186,10 @@ function invalidate() {
 on(window, 'portfolio:boot-fallback', () => fail(new Error('Sculpture entry module failed')));
 on(window, 'resize', invalidate, { passive: true });
 on(document, 'pointermove', event => {
-  if (motion === 'full' && finePointer.matches && event.pointerType !== 'touch' && !interaction.snapshot().dragging)
+  if (motion === 'full' && finePointer.matches && event.pointerType !== 'touch' && !interaction.isDragging())
     pointerTarget = [(event.clientX / width) * 2 - 1, (event.clientY / height) * 2 - 1];
 }, { passive: true });
-on(document.documentElement, 'pointerleave', () => { if (!interaction.snapshot().dragging) pointerTarget = [0, 0]; });
+on(document.documentElement, 'pointerleave', () => { if (!interaction.isDragging()) pointerTarget = [0, 0]; });
 const observer = new ResizeObserver(invalidate);
 for (const element of [document.querySelector('main'), document.querySelector('#top'), container]) observer.observe(element);
 document.fonts?.ready.then(() => { if (!disposed) invalidate(); });

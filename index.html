@@ -34,13 +34,9 @@
   </script>
   <title>Mihir Rao</title>
   <link rel="icon" href="assets/images/profile.svg" type="image/svg+xml" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=STIX+Two+Text:ital,wght@0,400..700;1,400..700&amp;display=swap"
-    rel="stylesheet"
-  />
-  <link rel="stylesheet" href="assets/black-geometry/generated/black-geometry-9b8b0c68a5f8.css" />
+  <link rel="preload" href="assets/fonts/stix-two-text-normal-latin-889d958dfc63.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="modulepreload" data-experience-preload href="assets/black-geometry/generated/world-2PPIFGEG.js" />
+  <link rel="stylesheet" href="assets/black-geometry/generated/black-geometry-b56dd2557f17.css" />
   <meta name="description" content="Mihir Rao — Theoretical Computer Scientist. Education, teaching, industry, mathematical projects, and personal notes." />
 </head>
 <body data-experience-state="static">
@@ -59,7 +55,7 @@
   </nav>
   <p class="navigation-hint" hidden><span aria-hidden="true">← →</span> Use arrow keys to navigate</p>
   <div class="world" role="group" aria-label="Interactive sculpture" aria-describedby="rotation-instructions" aria-keyshortcuts="ArrowUp ArrowDown ArrowLeft ArrowRight Home" aria-hidden="true">
-    <img id="sculpture-poster" src="assets/black-geometry/generated/sculpture-hero.svg?v=6de282ab83ab" width="1000" height="850" alt="" />
+    <img id="sculpture-poster" fetchpriority="low" src="assets/black-geometry/generated/sculpture-hero.svg?v=351ec0f3003e" width="1000" height="850" alt="" />
     <p id="rotation-hint" class="rotation-hint" hidden>Drag to rotate</p>
     <span id="rotation-instructions" class="sr-only">Drag to rotate. Use arrow keys to rotate or Home to reset the view.</span>
   </div>
@@ -206,6 +202,6 @@
       <!-- notes:end -->
     </section>
   </main>
-  <script type="module" data-experience-entry src="assets/black-geometry/generated/main.js?v=7c57d8437f88"></script>
+  <script type="module" data-experience-entry src="assets/black-geometry/generated/main.js?v=bc19542cada4"></script>
 </body>
 </html>

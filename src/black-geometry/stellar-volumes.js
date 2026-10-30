@@ -6,16 +6,23 @@ const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 const normal = (rng, scale = 1) => clamp(gaussian(rng), -3, 3) * scale;
 
 function stars(scene, parent, count, seed, sample, soft = 0) {
-  const rng = random(seed), data = { position: [], starSize: [], strength: [], phase: [], rate: [], orbitCenter: [], orbitAxis: [] };
+  // Fill the final GPU buffers directly instead of growing and copying JS arrays.
+  const rng = random(seed), data = {
+    position: new Float32Array(count * 3), starSize: new Float32Array(count),
+    strength: new Float32Array(count), phase: new Float32Array(count), rate: new Float32Array(count),
+    orbitCenter: new Float32Array(count * 3), orbitAxis: new Float32Array(count * 3),
+  };
   for (let i = 0; i < count; i++) {
-    const p = sample(rng, i);
-    data.position.push(...p.position);data.starSize.push(p.size ?? .5 + rng());
-    data.strength.push(p.strength ?? .2 + rng() * .4);data.phase.push(rng() * TAU);
-    data.rate.push(p.rate ?? 0);data.orbitCenter.push(...(p.center ?? [0, 0, 0]));
-    data.orbitAxis.push(...(p.axis ?? [0, 1, 0]));
+    const p = sample(rng, i), offset = i * 3;
+    data.position.set(p.position, offset);data.starSize[i] = p.size ?? .5 + rng();
+    data.strength[i] = p.strength ?? .2 + rng() * .4;data.phase[i] = rng() * TAU;
+    data.rate[i] = p.rate ?? 0;
+    if (p.center) data.orbitCenter.set(p.center, offset);
+    if (p.axis) data.orbitAxis.set(p.axis, offset);
+    else data.orbitAxis[offset + 1] = 1;
   }
   const geometry = new THREE.BufferGeometry();
-  for (const [name, values] of Object.entries(data)) geometry.setAttribute(name, new THREE.Float32BufferAttribute(values, ['position', 'orbitCenter', 'orbitAxis'].includes(name) ? 3 : 1));
+  for (const [name, values] of Object.entries(data)) geometry.setAttribute(name, new THREE.BufferAttribute(values, ['position', 'orbitCenter', 'orbitAxis'].includes(name) ? 3 : 1));
   const points = new THREE.Points(geometry, pointMaterial(scene, soft));
   points.frustumCulled = false;points.renderOrder = 2;points.userData.posterSoft = soft;
   points.userData.posterKind = 'stars';parent.add(points);return points;

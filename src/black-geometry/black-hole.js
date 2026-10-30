@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { NOISE } from './astronomy-materials.js';
+import { NOISE, valueNoise as noise } from './astronomy-materials.js';
 
 const VERTEX=`varying vec3 vLocal;void main(){vLocal=position;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}`;
 const FRAGMENT=`
@@ -72,14 +72,6 @@ export function createBlackHole(scene,parent){
   return mesh;
 }
 // CPU noise matches the live shader; posters keep the same continuous disk flow.
-const fract=x=>x-Math.floor(x);
-function noise(x,y,z){
-  const ix=Math.floor(x),iy=Math.floor(y),iz=Math.floor(z);
-  let fx=fract(x),fy=fract(y),fz=fract(z);fx=fx*fx*(3-2*fx);fy=fy*fy*(3-2*fy);fz=fz*fz*(3-2*fz);
-  const hash=(x,y,z)=>{x=fract(x*.3183099+.13)*17;y=fract(y*.3183099+.27)*17;z=fract(z*.3183099+.41)*17;return fract(x*y*z*(x+y+z));};
-  const mix=(a,b,t)=>a+(b-a)*t;
-  return mix(mix(mix(hash(ix,iy,iz),hash(ix+1,iy,iz),fx),mix(hash(ix,iy+1,iz),hash(ix+1,iy+1,iz),fx),fy),mix(mix(hash(ix,iy,iz+1),hash(ix+1,iy,iz+1),fx),mix(hash(ix,iy+1,iz+1),hash(ix+1,iy+1,iz+1),fx),fy),fz);
-}
 function fbm(x,y,z){let v=0,a=.5;for(let i=0;i<4;i++){v+=a*noise(x,y,z);x=x*2.03+7.1;y=y*2.03+3.7;z=z*2.03+1.3;a*=.5;}return v;}
 export function traceBlackHole(px,py,pz,dx,dy,dz,time=0){
   let emission=0,transmission=1,captured=false;

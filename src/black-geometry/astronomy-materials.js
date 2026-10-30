@@ -64,8 +64,13 @@ void main(){
 }`;
 export function surfaceMaterial(scene,kind=0,map=null,{opacity=1,detail=256,depthWrite=true}={}) {
   const hasSurfaceMap=map?1:0;
-  const fallback=new THREE.DataTexture(new Uint8Array([128]),1,1,THREE.RedFormat);fallback.needsUpdate=true;
-  if(!map){map=fallback;scene.textures.add(fallback);}else fallback.dispose();
+  if(!map){
+    if(!scene.fallbackSurfaceMap){
+      scene.fallbackSurfaceMap=new THREE.DataTexture(new Uint8Array([128]),1,1,THREE.RedFormat);
+      scene.fallbackSurfaceMap.needsUpdate=true;scene.textures.add(scene.fallbackSurfaceMap);
+    }
+    map=scene.fallbackSurfaceMap;
+  }
   const material=new THREE.ShaderMaterial({vertexShader:VERTEX,fragmentShader:FRAGMENT,
     side:THREE.FrontSide,transparent:true,depthWrite,depthTest:true,
     uniforms:{...scene.uniforms,kind:{value:kind},opacity:{value:opacity},meshDensity:{value:detail},surfaceMap:{value:map},hasSurfaceMap:{value:hasSurfaceMap}}});

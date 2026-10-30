@@ -69,12 +69,13 @@ export function surfaceFitBounds(position, extraPositions = []) {
 }
 export function fitSurfaceDistance(bounds, cameraSpaceRotation, aspect, margin = 1.035) {
   const vertical=Math.tan(35*Math.PI/360), horizontal=vertical*Math.max(.05,aspect);
+  const horizontalRadius=Math.hypot(1,1/horizontal),verticalRadius=Math.hypot(1,1/vertical);
   const point=new THREE.Vector3();let distance=0;
   for(const sphere of bounds){
     point.fromArray(sphere.center).applyQuaternion(cameraSpaceRotation);
     distance=Math.max(distance,
-      point.z+Math.abs(point.x)/horizontal+sphere.radius*Math.hypot(1,1/horizontal),
-      point.z+Math.abs(point.y)/vertical+sphere.radius*Math.hypot(1,1/vertical));
+      point.z+Math.abs(point.x)/horizontal+sphere.radius*horizontalRadius,
+      point.z+Math.abs(point.y)/vertical+sphere.radius*verticalRadius);
   }
   return Math.max(4,distance*margin);
 }
@@ -93,19 +94,33 @@ export class PreparedPath extends THREE.Curve {
 /** All pages share one renderer and keep their prepared cosmic buffers resident. */
 export async function createWorld({container,quality='high',onFailure}) {
   const maps=await loadAstronomyMaps();
-  const renderer=new THREE.WebGLRenderer({alpha:true,antialias:true,powerPreference:'high-performance'});
+  let renderer;
+  try{renderer=new THREE.WebGLRenderer({alpha:true,antialias:true,powerPreference:'high-performance'});}
+  catch(error){Object.values(maps).forEach(map=>map.dispose());throw error;}
   renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.setClearColor(0xf5f2eb,0);
   const canvas=renderer.domElement;canvas.setAttribute('aria-hidden','true');container.append(canvas);
   const scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(35,1,.1,60);
+  // Each visible cosmos updates its own matrices after animation. Avoid a second
+  // traversal of every scene, including hidden ones, inside renderer.render().
+  scene.matrixWorldAutoUpdate=false;
+  camera.position.set(0,0,12);camera.lookAt(0,0,0);
   const viewCamera=new THREE.PerspectiveCamera(),rotation=new THREE.Quaternion(),drag=new THREE.Quaternion(),inverseView=new THREE.Quaternion();
-  const models=new Map(COSMIC_TARGETS.map(name=>{
-    const cosmos=createCosmos(name,{maps});cosmos.root.visible=false;scene.add(cosmos.root);
-    return [name,{name,cosmos,orbitStart:0,orientation:[0,0,0,1]}];
-  }));
-  let disposed=false,shaderFailed=false,frames=0,warmedTargets=0,currentQuality=quality;
+  const models=new Map();
+  function disposeResources(){
+    for(const model of models.values())model.cosmos.dispose();
+    models.clear();Object.values(maps).forEach(map=>map.dispose());renderer.dispose();canvas.remove();
+  }
+  try{
+    for(const name of COSMIC_TARGETS){
+      const cosmos=createCosmos(name,{maps});cosmos.root.visible=false;scene.add(cosmos.root);
+      models.set(name,{name,cosmos,orbitStart:0,orientation:[0,0,0,1]});
+    }
+  }catch(error){disposeResources();throw error;}
+  let disposed=false,shaderFailed=false,frames=0,warmedTargets=0,currentQuality=quality,preparing=true;
   let width=1,height=1,lastDpr=devicePixelRatio,dprCeiling=QUALITY[quality].dpr;
+  let bufferWidth=0,bufferHeight=0,bufferDpr=0;
   let resolution=createResolutionBudget(dprCeiling),resolutionTarget='hero';resolution.select(resolutionTarget);
-  let orbitClock=0,currentName='hero',nextName='hero',blend=0,activeNames=new Set();
+  let orbitClock=0,currentName='hero',nextName='hero',blend=0,activeNames=new Set(),nextActiveNames=new Set();
   let entranceProgress=1,entranceScale=1,fitScales=[];
   let userRotation=[0,0],userOrientation=[0,0,0,1],dragging=false;
   renderer.debug.onShaderError=(gl,program,vertex,fragment)=>{shaderFailed=[gl.getProgramInfoLog(program),gl.getShaderInfoLog(vertex),gl.getShaderInfoLog(fragment)].filter(Boolean).join('\n')||'Unknown shader error';};
@@ -113,8 +128,13 @@ export async function createWorld({container,quality='high',onFailure}) {
   canvas.addEventListener('webglcontextlost',contextLost);
   function resize(_width,_height,dpr=lastDpr){
     width=Math.max(1,container.clientWidth);height=Math.max(1,container.clientHeight);lastDpr=dpr;
-    renderer.setPixelRatio(renderingDpr(width,height,dpr,dprCeiling));renderer.setSize(width,height,false);
-    camera.aspect=width/height;camera.updateProjectionMatrix();
+    const nextWidth=preparing?64:width,nextHeight=preparing?64:height;
+    const nextDpr=preparing?1:renderingDpr(width,height,dpr,dprCeiling);
+    if(nextWidth!==bufferWidth||nextHeight!==bufferHeight||nextDpr!==bufferDpr){
+      renderer.setDrawingBufferSize(nextWidth,nextHeight,nextDpr);
+      bufferWidth=nextWidth;bufferHeight=nextHeight;bufferDpr=nextDpr;
+    }
+    if(camera.aspect!==width/height){camera.aspect=width/height;camera.updateProjectionMatrix();}
   }
   const world={
     resize,setQuality(next){currentQuality=next;dprCeiling=QUALITY[next].dpr;resolution=createResolutionBudget(dprCeiling);resolution.select(resolutionTarget);resize();},
@@ -128,22 +148,22 @@ export async function createWorld({container,quality='high',onFailure}) {
       if(disposed)return;
       orbitClock=orbitTime;currentName=state.target||'hero';nextName=state.nextTarget||currentName;
       blend=currentName===nextName?0:THREE.MathUtils.clamp(state.blend,0,1);
-      if(currentName===nextName&&resolutionTarget!==currentName){resolutionTarget=currentName;dprCeiling=resolution.select(currentName);resize();}
+      if(currentName===nextName&&resolutionTarget!==currentName){resolutionTarget=currentName;dprCeiling=resolution.select(currentName);if(!preparing)resize();}
       entranceProgress=THREE.MathUtils.clamp(entrance,0,1);entranceScale=.08+.92*(1-(1-entranceProgress)**4);
       userRotation=interaction?.rotation||[0,0];userOrientation=interaction?.orientation||[0,0,0,1];dragging=!!interaction?.dragging;
-      camera.position.set(0,0,12);camera.lookAt(0,0,0);
-      const names=new Set([currentName,nextName]);
-      for(const name of names){
+      nextActiveNames.clear();nextActiveNames.add(currentName);nextActiveNames.add(nextName);
+      for(const name of nextActiveNames){
         if(!models.has(name))throw new Error(`Unknown cosmic scene: ${name}`);
         if(!activeNames.has(name)){const model=models.get(name);model.orbitStart=orbitClock;model.orientation=[0,0,0,1];}
       }
-      activeNames=names;fitScales=[];
+      const previousActiveNames=activeNames;activeNames=nextActiveNames;nextActiveNames=previousActiveNames;fitScales.length=0;
       for(const model of models.values())model.cosmos.root.visible=false;
-      [currentName,nextName].forEach((name,index)=>{
+      for(let index=0;index<2;index++){
+        const name=index===0?currentName:nextName;
         const presence=index===0?1-blend:currentName!==nextName?blend:0;
-        if(presence<=0)return;
+        if(presence<=0)continue;
         const model=models.get(name),age=Math.max(0,orbitClock-model.orbitStart);
-        if(name===interactionTarget)model.orientation=[...userOrientation];
+        if(name===interactionTarget)for(let i=0;i<4;i++)model.orientation[i]=userOrientation[i];
         const pose=cameraPose({target:name,nextTarget:name,blend:0},{time:age,pointer});
         viewCamera.position.set(Math.cos(pose[3])*Math.sin(pose[4]),Math.sin(pose[3]),Math.cos(pose[3])*Math.cos(pose[4]));
         viewCamera.lookAt(0,0,0);viewCamera.rotateZ(pose[5]);
@@ -151,7 +171,7 @@ export async function createWorld({container,quality='high',onFailure}) {
         const scale=entranceScale*SCULPTURE_STYLE.scale*12/fitSurfaceDistance(model.cosmos.bounds,rotation,camera.aspect);
         const root=model.cosmos.root;root.visible=true;root.quaternion.copy(rotation);root.scale.setScalar(scale);fitScales.push(scale);
         model.cosmos.update(age,presence,renderer.getPixelRatio());
-      });
+      }
       renderer.render(scene,camera);if(shaderFailed)throw new Error(`Cosmic shader initialization failed: ${shaderFailed}`);frames++;
     },
     snapshot:()=>({
@@ -167,21 +187,25 @@ export async function createWorld({container,quality='high',onFailure}) {
       orbitAges:[...activeNames].map(name=>Math.max(0,orbitClock-models.get(name).orbitStart)),
       camera:camera.position.toArray(),cameraOrientation:camera.quaternion.toArray(),
       rotation:[...userRotation],userOrientation:[...userOrientation],orientation:models.get(currentName).cosmos.root.quaternion.toArray(),
-      dragging,width,height,orbitRadius:12,fitScales,
+      dragging,width,height,orbitRadius:12,fitScales:[...fitScales],
     }),
     dispose(){
       if(disposed)return;disposed=true;canvas.removeEventListener('webglcontextlost',contextLost);
-      for(const model of models.values())model.cosmos.dispose();models.clear();Object.values(maps).forEach(map=>map.dispose());renderer.dispose();canvas.remove();
+      disposeResources();
     },
   };
-  resize();
   try{
+    resize();
     await renderer.compileAsync(scene,camera);
+    // Warm shaders and upload the complete resident geometry without shading a
+    // full screen of hidden particles and bent rays. Restore the display buffer
+    // before the final frame and fence, so reveal retains its normal resolution.
     for(const name of COSMIC_TARGETS){
       if(disposed||renderer.getContext().isContextLost())throw new Error('Graphics preparation interrupted');
       world.render({state:{target:name,nextTarget:name,blend:0},time:0});warmedTargets++;
       await new Promise(resolve=>setTimeout(resolve,0));
     }
+    preparing=false;resize();
     world.render({state:{target:'hero',nextTarget:'hero',blend:0},time:0,entrance:0});
     const gl=renderer.getContext(),fence=gl.fenceSync(gl.SYNC_GPU_COMMANDS_COMPLETE,0);
     if(!fence)throw new Error('Graphics preparation could not be synchronized');

@@ -18,7 +18,7 @@ async function live(page, path = '/?bg-debug') {
 for (const [width, height] of [[320, 568], [390, 844], [768, 1024], [1024, 768], [1440, 900]]) {
   test(`every page fits without document scrolling at ${width} × ${height}`, async ({ page }) => {
     await page.setViewportSize({ width, height });
-    await page.route('**/textures/*.bin*', route => route.abort());
+    await page.route('**/textures/*', route => route.abort());
     await page.goto('/?bg-debug');
     for (const [id, target] of scenes) {
       await select(page, id);
@@ -113,7 +113,7 @@ test('each section shows both entries with no secondary navigation or detail con
 });
 
 test('content and navigation remain usable while sculpture data is unavailable', async ({ page }) => {
-  await page.route('**/textures/*.bin*', route => route.abort());
+  await page.route('**/textures/*', route => route.abort());
   await page.goto('/?bg-debug');
   await expect(page.getByRole('heading', { name: 'Mihir Rao', exact: true })).toBeVisible();
   await expect(page.locator('.animation-action')).toHaveCount(0);

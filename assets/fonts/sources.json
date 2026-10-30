@@ -1,0 +1,101 @@
+{
+  "stylesheet": "https://fonts.googleapis.com/css2?family=STIX+Two+Text:ital,wght@0,400..700;1,400..700&display=swap",
+  "files": [
+    {
+      "style": "italic",
+      "subset": "cyrillic-ext",
+      "file": "stix-two-text-italic-cyrillic-ext-50d91eda5367.woff2",
+      "sha256": "50d91eda53671f1fe6f01a1ce3ffd32035b91962b4f9c9133ea2aa471a92e3f6",
+      "source": "https://fonts.gstatic.com/s/stixtwotext/v18/YA9Lr02F12Xkf5whdwKf11l0p7u8hNfU39NkYhCp.woff2",
+      "bytes": 3280
+    },
+    {
+      "style": "italic",
+      "subset": "cyrillic",
+      "file": "stix-two-text-italic-cyrillic-29471c786aed.woff2",
+      "sha256": "29471c786aedd982a0f49117a0b12c0ea60e137136403ba6fc23619a968466a9",
+      "source": "https://fonts.gstatic.com/s/stixtwotext/v18/YA9Lr02F12Xkf5whdwKf11l0p7u8jdfU39NkYhCp.woff2",
+      "bytes": 20632
+    },
+    {
+      "style": "italic",
+      "subset": "greek",
+      "file": "stix-two-text-italic-greek-c9a13b0c30c8.woff2",
+      "sha256": "c9a13b0c30c89c0b41d4a4e057831a5fef87bb6da9e9edcda483a1c11303a0aa",
+      "source": "https://fonts.gstatic.com/s/stixtwotext/v18/YA9Lr02F12Xkf5whdwKf11l0p7u8itfU39NkYhCp.woff2",
+      "bytes": 16508
+    },
+    {
+      "style": "italic",
+      "subset": "vietnamese",
+      "file": "stix-two-text-italic-vietnamese-66013ea5d984.woff2",
+      "sha256": "66013ea5d9847982908369aa8f406d85a17926d8ad9880cece92ce0d84e790d9",
+      "source": "https://fonts.gstatic.com/s/stixtwotext/v18/YA9Lr02F12Xkf5whdwKf11l0p7u8htfU39NkYhCp.woff2",
+      "bytes": 9936
+    },
+    {
+      "style": "italic",
+      "subset": "latin-ext",
+      "file": "stix-two-text-italic-latin-ext-f054dce68f72.woff2",
+      "sha256": "f054dce68f72ffc85348f7c92ef3dfb1f21f0cab1b043a719e6cde7f45fbd487",
+      "source": "https://fonts.gstatic.com/s/stixtwotext/v18/YA9Lr02F12Xkf5whdwKf11l0p7u8h9fU39NkYhCp.woff2",
+      "bytes": 60564
+    },
+    {
+      "style": "italic",
+      "subset": "latin",
+      "file": "stix-two-text-italic-latin-c0ed908ab067.woff2",
+      "sha256": "c0ed908ab0671fce3f822a3b5f60d96565a3822a752bb38597acd28f185ca208",
+      "source": "https://fonts.gstatic.com/s/stixtwotext/v18/YA9Lr02F12Xkf5whdwKf11l0p7u8idfU39NkYg.woff2",
+      "bytes": 31016
+    },
+    {
+      "style": "normal",
+      "subset": "cyrillic-ext",
+      "file": "stix-two-text-normal-cyrillic-ext-f0ff79a89ad8.woff2",
+      "sha256": "f0ff79a89ad868268a71b5138c4b21c150b7a6f4feb7eb5357722e95dec13b5f",
+      "source": "https://fonts.gstatic.com/s/stixtwotext/v18/YA9Vr02F12Xkf5whdwKf11l0p7OMi93T_dFUYw.woff2",
+      "bytes": 3144
+    },
+    {
+      "style": "normal",
+      "subset": "cyrillic",
+      "file": "stix-two-text-normal-cyrillic-459edfd8d40c.woff2",
+      "sha256": "459edfd8d40c3527844884b6cc024ef8f05bbd2c8a7dfd4ad8dcb68b89bac2e9",
+      "source": "https://fonts.gstatic.com/s/stixtwotext/v18/YA9Vr02F12Xkf5whdwKf11l0p7qMi93T_dFUYw.woff2",
+      "bytes": 17208
+    },
+    {
+      "style": "normal",
+      "subset": "greek",
+      "file": "stix-two-text-normal-greek-250c068ab814.woff2",
+      "sha256": "250c068ab814fb5e5654799f660b720bfcc487c811223e2b5d0398e9c8bd1a5b",
+      "source": "https://fonts.gstatic.com/s/stixtwotext/v18/YA9Vr02F12Xkf5whdwKf11l0p72Mi93T_dFUYw.woff2",
+      "bytes": 15256
+    },
+    {
+      "style": "normal",
+      "subset": "vietnamese",
+      "file": "stix-two-text-normal-vietnamese-41a295eb087e.woff2",
+      "sha256": "41a295eb087e35f07cb82dbade1d621f57678158033e06684cad599685ab598a",
+      "source": "https://fonts.gstatic.com/s/stixtwotext/v18/YA9Vr02F12Xkf5whdwKf11l0p7GMi93T_dFUYw.woff2",
+      "bytes": 9148
+    },
+    {
+      "style": "normal",
+      "subset": "latin-ext",
+      "file": "stix-two-text-normal-latin-ext-22cbe1d46c5c.woff2",
+      "sha256": "22cbe1d46c5c9de19c80d2d2b6eda896e3489a0013add5c1904cc61d013911e0",
+      "source": "https://fonts.gstatic.com/s/stixtwotext/v18/YA9Vr02F12Xkf5whdwKf11l0p7CMi93T_dFUYw.woff2",
+      "bytes": 54988
+    },
+    {
+      "style": "normal",
+      "subset": "latin",
+      "file": "stix-two-text-normal-latin-889d958dfc63.woff2",
+      "sha256": "889d958dfc639d2b89fc1873ad3cf74e00c86551f133227c79357e829d4058c9",
+      "source": "https://fonts.gstatic.com/s/stixtwotext/v18/YA9Vr02F12Xkf5whdwKf11l0p76Mi93T_dE.woff2",
+      "bytes": 28448
+    }
+  ]
+}

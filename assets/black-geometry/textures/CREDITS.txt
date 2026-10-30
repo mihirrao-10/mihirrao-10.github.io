@@ -15,6 +15,8 @@ https://svs.gsfc.nasa.gov/vis/a000000/a004700/a004720/lroc_color_2k.jpg
 
 Files: 4-byte little-endian uint16 width and height, followed by 8-bit grayscale pixels.
 Gzip files preserve exactly the same payload.
+The active Moon and Sun WebP derivatives preserve every grayscale pixel.
+Reproduce them with tools/black-geometry/prepare-map-images.py (requires Pillow).
 
 Additional image-derived fields (prepared October 29, 2026):
 

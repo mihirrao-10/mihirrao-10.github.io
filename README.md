@@ -9,7 +9,8 @@ The two research projects deploy from their own sibling repositories.
 | Path | Purpose |
 |---|---|
 | `index.html` | All homepage content, native links, and generated Notes. |
-| `assets/css/black-geometry.css` | Styles. |
+| `assets/css/black-geometry.css` | Styles and local font declarations. |
+| `assets/fonts/` | Original STIX Two Text subsets, provenance, and OFL license. |
 | `src/black-geometry/` | Runtime and sculpture source. |
 | `tools/black-geometry/` | Asset build and verification. |
 | `assets/black-geometry/generated/` | Committed JavaScript, posters, licenses, and hashed stylesheet. |
@@ -48,6 +49,13 @@ sculpture interaction, fallback, and browser history. Browser evidence is ignore
 under `.artifacts/`. Chromium and WebKit tests cover simulated gestures; physical
 trackpad/Safari/iPhone behavior requires separate hands-on review.
 
+With the local server running, the maintenance tools use the same seven page
+entries as the runtime. Set `PLAYWRIGHT_BROWSERS_PATH=./node_modules/.cache/ms-playwright`
+and run `node tools/black-geometry/diagnostics.js` for Chromium frame timings,
+`node tools/black-geometry/profile-webkit.js` for WebKit, or
+`node tools/black-geometry/review.js` for desktop/mobile screenshots.
+`BG_BASE_URL` overrides the local server URL. Reports stay under `.artifacts/`.
+
 ## Content and notes
 
 Education, Experience, and Projects derive from the résumé. Deliberate edits to
@@ -62,6 +70,12 @@ regenerate the block from status metadata, and check consistency. Commits and
 pushes require their own separate approvals.
 
 ## Runtime constraints
+
+The original STIX Two Text v18 variable WOFF2 files are served locally. The
+normal Latin subset is preloaded; other Unicode subsets and italic styles load
+only when needed. `assets/fonts/sources.json` records their original URLs and
+SHA-256 hashes, and `assets/fonts/OFL.txt` retains the license. No external font
+service is needed to display the page.
 
 The STIX Two Text page starts the animation automatically on supported devices.
 If graphics fail, static SVGs retain the content and native links. Print uses
@@ -86,6 +100,11 @@ the entire object. The black hole uses an approximate bent-ray accretion model.
 Geometry stays resident while animation updates transforms and uniforms.
 
 Only the Moon and Sun image fields are loaded, for solar-system surface detail.
+Their browser downloads use lossless WebP with raw compressed fields as a
+fallback; both paths reconstruct the same grayscale samples. After changing an
+active raw field, run `python3 tools/black-geometry/prepare-map-images.py` before
+building to regenerate its image derivative and content hash. Pillow is an
+authoring dependency, not a website build dependency.
 Other NASA/Hubble derivatives and earlier scene factories remain as archived
 references. Credits are in `assets/black-geometry/textures/CREDITS.txt`.
 
@@ -97,7 +116,11 @@ drag state; reversal preserves a still-visible identity's state.
 An initial beige loading screen shows black text with three dots that bounce in
 sequence. It fades away after fonts, surface maps, procedural scenes, shaders,
 uploaded GPU buffers, warm-up draws, a GPU fence, and the first live frame are
-ready. Reduced-motion preferences disable the loader animation and fade, while
+ready. The graphics chunk is preloaded with the document, and graphics/font
+preparation runs concurrently. All seven scenes warm their complete geometry
+and shaders in a small hidden buffer before the normal display resolution is
+restored for the final frame and GPU fence. Reduced-motion preferences disable
+the loader animation and fade, while
 the sculpture still starts automatically. Failed graphics or a 30-second loading
 deadline reveal the static site;
 JavaScript-disabled visits skip the loader. A three-megapixel budget

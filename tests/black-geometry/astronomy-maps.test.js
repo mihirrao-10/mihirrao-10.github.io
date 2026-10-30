@@ -3,8 +3,19 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { createHash } from 'node:crypto';
 import { gunzipSync } from 'node:zlib';
-import { MAP_FILES, ARCHIVE_MAP_FILES, decodeMap } from '../../src/black-geometry/astronomy-maps.js';
+import { MAP_FILES, MAP_IMAGE_FILES, ARCHIVE_MAP_FILES, decodeMap } from '../../src/black-geometry/astronomy-maps.js';
 import { traceBlackHole } from '../../src/black-geometry/black-hole.js';
+
+test('lossless browser map files are fingerprinted and smaller than binary downloads',()=>{
+  assert.deepEqual(Object.keys(MAP_IMAGE_FILES),Object.keys(MAP_FILES));
+  for(const [name,file] of Object.entries(MAP_IMAGE_FILES)){
+    const image=fs.readFileSync(new URL(`../../assets/black-geometry/textures/${file}`,import.meta.url));
+    const binary=fs.readFileSync(new URL(`../../assets/black-geometry/textures/${MAP_FILES[name]}.gz`,import.meta.url));
+    assert.ok(file.includes(createHash('sha256').update(image).digest('hex').slice(0,12)));
+    assert.equal(image.subarray(0,4).toString(),'RIFF');assert.equal(image.subarray(8,12).toString(),'WEBP');
+    assert.ok(image.length<binary.length*.8,'Lossless maps must reduce the cold download size');
+  }
+});
 
 for (const [name,file] of Object.entries({...MAP_FILES,...ARCHIVE_MAP_FILES})) test(`${name} map retains its dimensions, content hash, and compressed fallback parity`,()=>{
   const url=new URL(`../../assets/black-geometry/textures/${file}`,import.meta.url),bytes=fs.readFileSync(url);
