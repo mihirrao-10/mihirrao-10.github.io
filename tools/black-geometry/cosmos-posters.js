@@ -37,6 +37,17 @@ function surfaceInk(object,u,v,x,y,z,nx,ny,nz){
   return clamp(opacity*(density*(kind===3||kind===8?.98:light)+.08),0,.94);
 }
 
+function monolithAlpha(nx,ny,nz,x,y,z){
+  const length=Math.hypot(x,y,12-z),vx=-x/length,vy=-y/length,vz=(12-z)/length;
+  const dot=Math.max(0,nx*vx+ny*vy+nz*vz),rx=-vx+2*dot*nx;
+  const lx=-.7/Math.sqrt(2.13),ly=.8/Math.sqrt(2.13),lz=1/Math.sqrt(2.13);
+  const diffuse=Math.max(0,nx*lx+ny*ly+nz*lz),hy=vy+ly,hx=vx+lx,hz=vz+lz;
+  const spec=Math.max(0,(nx*hx+ny*hy+nz*hz)/Math.hypot(hx,hy,hz))**90;
+  const ry=-vy+2*dot*ny,strip=Math.exp(-(((rx+.78)/.035)**4))*(.62+.38*THREE.MathUtils.smoothstep(ry,-.8,.8));
+  const other=Math.exp(-(((rx-.65)/.10)**4))*.45;
+  return 1-(.012+.035*diffuse+.38*strip+.18*other+.22*spec+.10*(1-dot)**4)/.975;
+}
+
 // A small deterministic software renderer keeps the fallback detailed without
 // shipping megabytes of triangle paths. It uses the live geometry and maps.
 export function cosmicPoster(scene){
@@ -91,8 +102,13 @@ export function cosmicPoster(scene){
           point.set(0,0,0);let u=0,v=0;for(const id of ids){u+=uv.getX(id)/3;v+=uv.getY(id)/3;point.x+=positions.getX(id)/3;point.y+=positions.getY(id)/3;point.z+=positions.getZ(id)/3;}
           let alpha;
           if(object.userData.posterKind==='monolith'){
+            alpha=1;
+          }else if(object.userData.posterKind==='horsehead-nebula'){
+            const fbm=(x,y,z)=>{let sum=0,a=.5;for(let k=0;k<5;k++){sum+=a*valueNoise(x,y,z);x=x*2.03+7.1;y=y*2.03+3.7;z=z*2.03+1.3;a*=.5;}return sum;};
+            const p=point,knots=fbm(p.x*13+4,p.y*13,p.z*13+9),fine=valueNoise(p.x*85,p.y*85,p.z*85);
+            const flow=fbm(p.x*24+knots*2,p.y*4,p.z*24),veins=THREE.MathUtils.smoothstep(flow,.44,.65);
             const light=Math.max(0,normal.dot(new THREE.Vector3(-.7,.8,1).normalize()));
-            alpha=.98*(1-(.012+.055*light)/.975);
+            alpha=clamp(.045+.12*knots+.075*veins+.025*fine-.05*light-.04*(1-Math.abs(normal.z))**1.5,.025,.25)*THREE.MathUtils.smoothstep(p.y,-2.6,-1.9);
           }else if(['event-horizon','photon-rim','minimal-disk'].includes(object.userData.posterKind)){
             alpha=object.material.opacity;
           }else if(object.userData.posterKind==='spacetime-sheet'){
@@ -118,14 +134,17 @@ export function cosmicPoster(scene){
             const w1=((bx-x-.5)*(cy-y-.5)-(by-y-.5)*(cx-x-.5))/area;
             const w2=((cx-x-.5)*(ay-y-.5)-(cy-y-.5)*(ax-x-.5))/area,w3=1-w1-w2;
             if(w1<0||w2<0||w3<0)continue;
-            blend(x,y,w1*az+w2*bz+w3*cz,alpha,object.material.userData.bodyDepth);
+            const z=w1*az+w2*bz+w3*cz;
+            const ink=object.userData.posterKind==='monolith'?monolithAlpha(normal.x,normal.y,normal.z,(x+.5-width*.5)*(12-z)/focal,(height*.5-y-.5)*(12-z)/focal,z):alpha;
+            blend(x,y,z,ink,object.material.userData.bodyDepth);
           }
         }
       }else if(object.isPoints){
         const sizes=geometry.attributes.starSize,strengths=geometry.attributes.strength,soft=object.userData.posterSoft;
         for(let i=0;i<positions.count;i++){
           const x=projected[i*3],y=projected[i*3+1],z=projected[i*3+2];
-          const radius=Math.max(.4,Math.min(soft?18:4,sizes.getX(i)*.7)),strength=strengths.getX(i);
+          const natural=object.userData.posterWorldSize?sizes.getX(i)*focal*new THREE.Vector3().setFromMatrixScale(matrix).x/(12-z)*.5:Math.min(soft?18:4,sizes.getX(i)*.7);
+          const radius=Math.max(.4,natural),strength=strengths.getX(i)*(object.userData.posterWorldSize?Math.min(1,natural*natural/(radius*radius)):1);
           for(let yy=Math.floor(y-radius);yy<=Math.ceil(y+radius);yy++)for(let xx=Math.floor(x-radius);xx<=Math.ceil(x+radius);xx++){
             const d=((xx+.5-x)**2+(yy+.5-y)**2)/(radius*radius);if(d>1)continue;blend(xx,yy,z,Math.exp(-d*(soft?5:4))*strength);
           }
@@ -134,7 +153,7 @@ export function cosmicPoster(scene){
         for(let i=0;i<positions.count;i+=2){
           const a=i*3,b=a+3,dx=projected[b]-projected[a],dy=projected[b+1]-projected[a+1],steps=Math.max(1,Math.ceil(Math.hypot(dx,dy)));
           const radius=Math.hypot(positions.getX(i),positions.getY(i));
-          const alpha=object.userData.posterKind==='spacetime-grid'?object.userData.posterOpacity*clamp((3.35-radius)/.8):object.material.opacity*.55;
+          const alpha=object.userData.posterKind==='spacetime-grid'?object.userData.posterOpacity*clamp((3.35-radius)/.8):object.material.opacity*.55*(geometry.attributes.strength?.getX(i)??1);
           for(let j=0;j<=steps;j++){const t=j/steps;blend(Math.round(projected[a]+dx*t),Math.round(projected[a+1]+dy*t),projected[a+2]*(1-t)+projected[b+2]*t,alpha);}
         }
       }

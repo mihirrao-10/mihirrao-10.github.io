@@ -112,3 +112,33 @@ test('the final monolith is a solid rectangular slab with 1:4:9 proportions', ()
   assert.equal(width / depth, 4); assert.equal(height / depth, 9);
   assert.equal(slab.material.depthWrite, true); scene.dispose();
 });
+
+test('travel streaks move through space while staying parallel to the monolith in every orientation', () => {
+  const scene=createCosmos('notes',{maps});let slab,streaks;
+  scene.root.traverse(object=>{if(object.userData.role==='monolith')slab=object;if(object.userData.role==='travel-streaks')streaks=object;});
+  assert.ok(streaks?.isLineSegments);const geometry=streaks.geometry,initial=geometry.attributes.position.array.slice();
+  assert.ok(geometry.attributes.position.count>=100);
+  for(const time of [0,1,10,100]){
+    scene.root.quaternion.setFromEuler(new THREE.Euler(time*.19,time*.23,time*.37));scene.update(time);
+    assert.equal(streaks.geometry,geometry);
+    const axis=new THREE.Vector3(0,1,0).transformDirection(slab.matrixWorld);
+    const p=new THREE.Vector3(),q=new THREE.Vector3();
+    for(let i=0;i<geometry.attributes.position.count;i+=2){
+      p.fromBufferAttribute(geometry.attributes.position,i).applyMatrix4(streaks.matrixWorld);
+      q.fromBufferAttribute(geometry.attributes.position,i+1).applyMatrix4(streaks.matrixWorld);
+      const direction=p.sub(q).normalize();assert.ok(direction.clone().cross(axis).length()<1e-6);
+    }
+  }
+  assert.notDeepEqual(geometry.attributes.position.array,initial);scene.dispose();
+});
+
+test('the Horsehead pillar has a detailed elongated surface and small resolved dust grains', () => {
+  const scene=createCosmos('publications',{maps});let pillar,dust;
+  scene.root.traverse(object=>{if(object.userData.role==='nebula-pillar')pillar=object;if(object.userData.role==='nebula-dust')dust=object;});
+  assert.ok(pillar?.isMesh);assert.ok(pillar.geometry.attributes.position.count>30000);
+  pillar.geometry.computeBoundingBox();const size=pillar.geometry.boundingBox.getSize(new THREE.Vector3());
+  assert.ok(size.y>size.x*1.6&&size.y>size.z*3);
+  assert.ok(dust.geometry.attributes.starSize.array.every(size=>size<=.029));
+  assert.ok(dust.geometry.attributes.position.count>=150000);
+  scene.dispose();
+});

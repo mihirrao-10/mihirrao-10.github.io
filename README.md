@@ -71,9 +71,12 @@ One WebGL context renders seven grayscale scenes in tab order: a globular star
 cluster (About), colliding galaxies (Education), the Milky Way (Industry
 experience), a nebula (Publications), a black hole (Teaching), a compact
 seven-planet solar system (Projects), and a black 2001-inspired monolith
-(Personal notes). The slab uses 1:4:9 proportions and flat, unadorned faces.
+(Personal notes). The slab uses 1:4:9 proportions, subtly beveled edges, a glossy black finish, and
+animated travel streaks parallel to its long axis.
 
-Stars and nebular filaments occupy three dimensions. The solar system has seven
+The Horsehead-inspired nebula has a continuous three-dimensional pillar with a
+hooked head, resolved dust ridges, and fine surface grains. Stars occupy three
+dimensions. The solar system has seven
 independently orbiting planets, thin orbital paths, and one ringed planet; its
 sizes and speeds are illustrative. Extra framing keeps the system compact.
 All scenes share unrestricted mouse and touch rotation, with bounds that retain

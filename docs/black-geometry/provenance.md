@@ -26,9 +26,11 @@ identified. Dark ink represents luminous density against the beige page.
   spiral arms, disk, bar, and bulge. Broad structure references
   [NASA's Milky Way illustration](https://science.nasa.gov/resource/the-milky-way-galaxy/).
   The stars are procedural samples, not a measured catalog.
-- **Publications:** an original filamentary nebula with overlapping gas and dust
-  structures, open cavities, and a sparse stellar population. Seeded spatial
-  fields produce its shape; it is not a reconstruction of a named nebula.
+- **Publications:** a Horsehead-inspired elongated dust pillar, referencing
+  [NASA's Euclid, Hubble, and Webb views](https://science.nasa.gov/asset/webb/horsehead-nebula-euclid-hubble-and-webb-images/).
+  An independently authored implicit surface joins the trunk, neck, and hooked
+  head; fine procedural ridges and surface grains provide detail. It is a freely
+  rotatable interpretation, not a measured reconstruction or a mapped photograph.
 - **Teaching:** rays deflect through a turbulent accretion disk around an absorbing
   center. The silhouette references Gargantua in *Interstellar* and
   [NASA's warped-disk illustration](https://www.nasa.gov/universe/nasa-visualization-shows-a-black-holes-warped-world/).
@@ -42,8 +44,10 @@ identified. Dark ink represents luminous density against the beige page.
   from October 29, 2026, credited to NASA/SDO and the AIA science team. The star's
   reverse hemisphere and motion are authored.
 - **Personal notes:** a plain, black rectangular monolith inspired by *2001:
-  A Space Odyssey*, independently modeled from a box with 1:4:9 proportions.
-  No film frame, downloaded mesh, or movie texture is used.
+  A Space Odyssey*, with 1:4:9 proportions. Narrow beveled edges and procedural
+  softbox reflections give the black slab its gloss. Animated line segments share
+  its local coordinate system and remain parallel to its long edges through
+  every rotation. No film frame, downloaded mesh, or movie texture is used.
 
 The two images supplied by the user in Documents are composition references for
 the black hole and globular cluster only. Neither is copied into the site or
