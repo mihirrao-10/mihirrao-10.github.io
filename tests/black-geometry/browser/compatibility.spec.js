@@ -52,3 +52,60 @@ for (const [width, height] of [[390, 844], [768, 1024]]) test(`touch layout at $
     expect((await snapshot(page)).world.dpr).toBeLessThanOrEqual(2);
   } finally { await context.close(); }
 });
+
+for (const touch of [false, true]) test(`all seven sculptures accept full 3D ${touch ? 'touch' : 'mouse'} rotation`, async ({ browser }) => {
+  test.setTimeout(120000);
+  const context = await browser.newContext({ viewport: touch ? { width: 390, height: 844 } : { width: 1440, height: 900 }, hasTouch: touch, isMobile: touch });
+  const page = await context.newPage();
+  try {
+    await ready(page);
+    const world = page.locator('.world');
+    for (const [id, target] of [['top', 'hero'], ['education', 'education'], ['experience', 'experience'], ['publications', 'publications'], ['teaching', 'teaching'], ['personal-projects', 'projects'], ['notes', 'notes']]) {
+      await page.locator(`.site-index a[href="#${id}"]`).click();
+      await expect.poll(async () => {
+        const { world } = await snapshot(page);
+        return [world.target, world.nextTarget, world.blend];
+      }).toEqual([target, target, 0]);
+      await world.focus();
+      await page.keyboard.press('Home');
+      const box = await world.boundingBox(), x = box.x + box.width * .65, y = box.y + box.height * .4;
+      if (touch) {
+        await world.dispatchEvent('pointerdown', { pointerId: 1, pointerType: 'touch', isPrimary: true, clientX: x, clientY: y });
+        await world.dispatchEvent('pointermove', { pointerId: 1, pointerType: 'touch', isPrimary: true, clientX: x, clientY: y + 35 });
+      } else {
+        await page.mouse.move(x, y); await page.mouse.down();
+        await page.mouse.move(x, y + 35, { steps: 4 });
+      }
+      expect((await snapshot(page)).interaction.rotation[0]).toBeGreaterThan(0);
+      if (touch) await world.dispatchEvent('pointermove', { pointerId: 1, pointerType: 'touch', isPrimary: true, clientX: x + 35, clientY: y + 35 });
+      else await page.mouse.move(x + 35, y + 35, { steps: 4 });
+      const held = (await snapshot(page)).interaction;
+      expect(held.rotation[1]).toBeGreaterThan(0);
+      expect(Math.abs(Math.hypot(...held.orientation) - 1)).toBeLessThan(1e-8);
+      await expect.poll(async () => (await snapshot(page)).world.userOrientation).toEqual(held.orientation);
+      expect((await snapshot(page)).world.contextLost).toBe(false);
+      await expect(page.locator('[data-current-scene]')).toHaveAttribute('id', id);
+      if (touch) await world.dispatchEvent('pointerup', { pointerId: 1, pointerType: 'touch', isPrimary: true });
+      else await page.mouse.up();
+    }
+  } finally { await context.close(); }
+});
+
+test('native phone touch drags rotate vertically and horizontally without navigating', async ({ browser, browserName }) => {
+  test.skip(browserName !== 'chromium', 'Native touch movement uses the Chromium input protocol.');
+  const context = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+  const page = await context.newPage();
+  try {
+    await ready(page);
+    const client = await context.newCDPSession(page);
+    const box = await page.locator('.world').boundingBox();
+    const x = box.x + box.width * .5, y = box.y + box.height * .4;
+    await client.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x, y }] });
+    for (let i = 1; i <= 5; i++) await client.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x, y: y + i * 8 }] });
+    expect((await snapshot(page)).interaction.rotation[0]).toBeGreaterThan(0);
+    for (let i = 1; i <= 5; i++) await client.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: x + i * 8, y: y + 40 }] });
+    expect((await snapshot(page)).interaction.rotation[1]).toBeGreaterThan(0);
+    await client.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+    await expect(page.locator('[data-current-scene]')).toHaveAttribute('id', 'top');
+  } finally { await context.close(); }
+});

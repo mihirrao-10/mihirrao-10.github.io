@@ -96,25 +96,39 @@ test("entering another sculpture releases a held drag and clears its inherited o
   assert.equal(control.snapshot().enabled, true);
 });
 
-test("touch reserves vertical gestures for page scrolling and captures horizontal rotation", () => {
-  const { control, element, send } = setup();
-  control.setEnabled(true);
-  assert.equal(send("pointerdown", { pointerType: "touch" }).defaultPrevented, false);
-  assert.equal(element.captures.size, 0);
-  const vertical = send("pointermove", { pointerType: "touch", clientX: 202, clientY: 240, timeStamp: 30 });
-  assert.equal(vertical.defaultPrevented, false);
-  assert.equal(control.snapshot().pointerId, null);
-  assert.deepEqual(control.snapshot().rotation, [0, 0]);
-  assert.deepEqual(control.snapshot().orientation, [0, 0, 0, 1]);
-  send("pointerdown", { pointerType: "touch", timeStamp: 60 });
-  const horizontal = send("pointermove", { pointerType: "touch", clientX: 255, clientY: 208, timeStamp: 90 });
-  assert.equal(horizontal.defaultPrevented, true);
-  assert.equal(control.snapshot().dragging, true);
-  assert.equal(element.hasPointerCapture(1), true);
-  assert.equal(control.snapshot().rotation[0], 0);
-  assert.ok(control.snapshot().rotation[1] > 0);
-  const surface = new THREE.Vector3(0, 0, 1).applyQuaternion(new THREE.Quaternion(...control.snapshot().orientation));
-  assert.ok(surface.x > 0 && surface.y === 0, 'Horizontal touch turns the front surface right without vertical rotation');
+test("touch rotates vertically, horizontally and diagonally on the artwork", () => {
+  for (const [dx, dy] of [[0, 40], [40, 0], [40, 30], [-40, -30]]) {
+    const { control, element, send } = setup();
+    control.setEnabled(true);
+    assert.equal(send("pointerdown", { pointerType: "touch" }).defaultPrevented, false);
+    assert.equal(element.captures.size, 0);
+    const move = send("pointermove", { pointerType: "touch", clientX: 200 + dx, clientY: 200 + dy, timeStamp: 30 });
+    assert.equal(move.defaultPrevented, true);
+    assert.equal(control.snapshot().dragging, true);
+    assert.equal(element.hasPointerCapture(1), true);
+    const surface = new THREE.Vector3(0, 0, 1).applyQuaternion(new THREE.Quaternion(...control.snapshot().orientation));
+    if (dx) assert.ok(surface.x * dx > 0);
+    else assert.ok(Math.abs(surface.x) < 1e-12);
+    if (dy) assert.ok(surface.y * dy < 0);
+    else assert.ok(Math.abs(surface.y) < 1e-12);
+    control.dispose();
+  }
+});
+
+// Two unrestricted screen axes span all spatial orientations, including roll.
+for (const pointerType of ['mouse', 'touch']) test(`${pointerType} drags compose a pure roll around the viewing axis`, () => {
+  const { control, send } = setup(); control.setEnabled(true);
+  let x = 200, y = 200;
+  send('pointerdown', { pointerType, clientX: x, clientY: y });
+  for (const [dx, dy, timeStamp] of [[0, -300, 30], [300, 0, 60], [0, 300, 90]]) {
+    x += dx; y += dy;
+    send('pointermove', { pointerType, clientX: x, clientY: y, timeStamp });
+  }
+  const result = new THREE.Quaternion(...control.snapshot().orientation);
+  const expected = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 0, 1), Math.PI / 2);
+  assert.ok(result.angleTo(expected) < 1e-6);
+  assert.ok(Math.abs(result.length() - 1) < 1e-12);
+  control.dispose();
 });
 
 test("secondary buttons, non-primary pointers and unrelated releases cannot disturb a drag", () => {

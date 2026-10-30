@@ -120,12 +120,13 @@ About, Education, Industry experience, Publications, Teaching, Projects, and
 Personal notes. Education and industry show locations; Notes shows each book
 with its author. Its generated source block stays intact.
 Native hash links, old section aliases, reload, and browser history select the
-corresponding text and sculpture without document scrolling. Horizontal trackpad
-swipes, mouse drags outside the sculpture, and left/right arrow keys move between
-pages and start each destination at the top. If enlarged text
+corresponding text and sculpture without document scrolling. Tabs and left/right
+arrow keys move between pages and start each destination at the top. The small
+arrow-key hint stays visible through tab clicks and disappears after the first
+keyboard page change until the next reload. Swipes do not change pages. If enlarged text
 exceeds the available height, overflow stays within the selected panel.
-Mouse/pen dragging rotates the artwork with inertia; horizontal touch dragging
-and pinch zoom remain available. Focused arrow keys rotate; Home resets.
+Mouse, pen, and single-finger drags rotate the artwork freely in every direction
+with inertia; pinch zoom remains available. Focused arrow keys rotate; Home resets.
 Artwork and fallback posters are strictly grayscale; the beige page and neutral text remain.
 
 For local diagnostics, append `?bg-debug`. The read-only

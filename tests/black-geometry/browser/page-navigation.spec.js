@@ -10,36 +10,47 @@ async function current(page, id) {
   await expect(page.locator('[data-current-scene]')).toHaveAttribute('id', id);
 }
 
-test('trackpad gestures advance once per swipe and vertical scrolling does not change pages', async ({ page }) => {
+test('trackpad scrolling and mouse drags outside the artwork do not change pages', async ({ page }) => {
   await openStatic(page);
+  await expect(page.locator('.site-loader')).toBeHidden();
   await page.mouse.move(100, 600);
-  await page.mouse.wheel(100, 0);
-  await current(page, 'education');
-  await page.mouse.wheel(100, 0);
-  await page.mouse.wheel(100, 0);
-  await current(page, 'education');
-  await page.waitForTimeout(350);
+  await page.mouse.wheel(200, 0);
+  await page.mouse.wheel(-200, 0);
   await page.mouse.wheel(0, 250);
-  await current(page, 'education');
-  await page.mouse.wheel(-100, 0);
-  await current(page, 'top');
-});
-
-test('mouse drags and arrow keys navigate in order and history restores the previous page', async ({ page }) => {
-  await openStatic(page);
   await page.mouse.move(400, 650);
   await page.mouse.down();
   await page.mouse.move(180, 650, { steps: 5 });
   await page.mouse.up();
-  await current(page, 'education');
-  await page.keyboard.press('ArrowRight');
-  await current(page, 'experience');
+  await page.waitForTimeout(300);
+  await current(page, 'top');
+  await expect(page.locator('.navigation-hint')).toBeVisible();
+});
+
+test('tabs keep the hint until a successful arrow-key page change, then only reload restores it', async ({ page }) => {
+  await openStatic(page);
+  const hint = page.locator('.navigation-hint');
+  await expect(hint).toBeVisible();
   await page.keyboard.press('ArrowLeft');
+  await expect(hint).toBeVisible();
+  await page.locator('.site-index a[href="#education"]').click();
   await current(page, 'education');
-  await page.goBack();
-  await current(page, 'experience');
-  await page.goBack();
+  await expect(hint).toBeVisible();
+  await page.locator('.site-index a[href="#top"]').click();
+  await expect(hint).toBeVisible();
+  await page.keyboard.press('ArrowRight');
   await current(page, 'education');
+  await expect(hint).toBeHidden();
+  await page.locator('.site-index a[href="#teaching"]').click();
+  await expect(hint).toBeHidden();
+  await page.keyboard.press('ArrowLeft');
+  await current(page, 'publications');
+  await page.goBack();
+  await current(page, 'teaching');
+  await expect(hint).toBeHidden();
+  await page.locator('.site-index a[href="#top"]').click();
+  await expect(hint).toBeHidden();
+  await page.reload();
+  await expect(hint).toBeVisible();
 });
 
 test('every destination resets to the top after navigation', async ({ page }) => {
@@ -72,4 +83,5 @@ test('the sculpture retains its own mouse and keyboard controls', async ({ page 
   const after = await page.evaluate(() => window.__blackGeometry.snapshot().interaction.orientation);
   expect(after).not.toEqual(before);
   await current(page, 'top');
+  await expect(page.locator('.navigation-hint')).toBeVisible();
 });

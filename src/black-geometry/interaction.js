@@ -2,8 +2,8 @@ const TAU = Math.PI * 2;
 const DRAG_DECAY = 7.5;
 const clamp = (value, lower, upper) => Math.max(lower, Math.min(upper, value));
 
-// The stage owns these listeners; page-level arrow keys and native vertical
-// touch scrolling remain with the document. No animation loop is created here.
+// The stage owns these listeners; page navigation and scrolling outside the
+// artwork remain with the document. No animation loop is created here.
 export function createInteraction({ element, hint, onChange = () => {} }) {
   const listeners = new AbortController();
   const on = (type, handler) => element.addEventListener(type, handler, { signal: listeners.signal });
@@ -70,7 +70,6 @@ export function createInteraction({ element, hint, onChange = () => {} }) {
     if (pending) {
       const dx = Math.abs(event.clientX - origin[0]), dy = Math.abs(event.clientY - origin[1]);
       if (Math.max(dx, dy) < 8) return;
-      if (dy >= dx) { cancel(); return; }
       capture();
     }
     if (!dragging) return;
@@ -81,7 +80,7 @@ export function createInteraction({ element, hint, onChange = () => {} }) {
     // Positive X rotation moves the front (+Z) surface toward negative Y,
     // following a downward drag. Both axes use the same pixel scale so a
     // diagonal drag moves the surface along the same screen-space diagonal.
-    const pitch = touch ? 0 : dy * radiansPerPixel;
+    const pitch = dy * radiansPerPixel;
     const yaw = dx * radiansPerPixel;
     const delta = clamp((event.timeStamp - lastMove) / 1000, 0.008, 0.08);
     velocity = [pitch, yaw].map((angle, index) => velocity[index] * 0.25 + clamp(angle / delta, -8, 8) * 0.75);

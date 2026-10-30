@@ -47,6 +47,8 @@ button { padding: .2rem 0; border: 0; font: inherit; color: inherit; background:
 }
 .site-index a { padding: .5rem 0; color: var(--muted); }
 .site-index a[aria-current] { color: var(--text); text-decoration: underline; text-underline-offset: .35em; text-decoration-thickness: 1px; }
+.navigation-hint { position: fixed; bottom: max(.7rem, env(safe-area-inset-bottom)); left: var(--content-left); z-index: 5; margin: 0; color: var(--muted); font-size: .7rem; pointer-events: none; }
+.navigation-hint span { margin-right: .35rem; }
 [data-scene] { display: none; }
 [data-scene][data-current-scene] { display: block; }
 .scene-page {
@@ -152,7 +154,7 @@ button { padding: .2rem 0; border: 0; font: inherit; color: inherit; background:
 }
 @media print {
   html, body { height: auto; overflow: visible; background: white; }
-  .site-index, .world, .skip-link, .site-loader { display: none !important; }
+  .site-index, .world, .skip-link, .site-loader, .navigation-hint { display: none !important; }
   [data-boot="loading"] body > :not(.site-loader):not(script) { visibility: visible; }
   [data-scene], [data-scene][hidden] { display: block !important; position: static; width: 100%; margin: 1.5rem 0; max-height: none; overflow: visible; }
   .entry { break-inside: avoid; }
