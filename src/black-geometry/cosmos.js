@@ -24,7 +24,6 @@ export function createCosmos(name, { maps = {} } = {}) {
   scene.update = (time=0, presence=1, pixelRatio=1) => {
     scene.uniforms.time.value=time; scene.uniforms.presence.value=presence; scene.uniforms.pixelRatio.value=pixelRatio;
     for (const material of scene.materials) {
-      if (material.userData.bodyDepth) material.depthWrite=presence>.999;
       if (material.userData.baseOpacity!==undefined) material.opacity=presence*material.userData.baseOpacity;
     }
     scene.animate(time); scene.root.updateMatrixWorld(true);

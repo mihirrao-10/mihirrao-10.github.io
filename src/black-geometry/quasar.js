@@ -19,10 +19,10 @@ export function quasarJetPosition(u, angle, shell, side, time = 0, rate = .075) 
 function jetMaterial(scene) {
   const material = new THREE.ShaderMaterial({
     transparent: true, depthWrite: false, depthTest: true,
-    uniforms: { ...scene.uniforms },
+    uniforms: { ...scene.uniforms, viewportHeight: { value: 765 } },
     vertexShader: `
       attribute float along,angle,shell,side,rate,starSize,density;
-      uniform float time,pixelRatio;
+      uniform float time,pixelRatio,viewportHeight;
       varying float alpha;
       void main(){
         float u=fract(along+time*rate);
@@ -31,10 +31,11 @@ function jetMaterial(scene) {
         vec3 p=vec3(cos(a)*width*shell+.025*sin(u*13.0+side)*u,
           side*(.12+u*3.2),sin(a)*width*shell+.020*sin(u*10.0+2.0)*u);
         vec4 view=modelViewMatrix*vec4(p,1.0);gl_Position=projectionMatrix*view;
-        gl_PointSize=clamp(starSize*pixelRatio*12.0/max(1.0,-view.z),.65,8.0*pixelRatio);
+        float natural=starSize*viewportHeight/765.0*12.0/max(1.0,-view.z);
+        gl_PointSize=clamp(natural,.65*pixelRatio,8.0*pixelRatio);
         float fade=smoothstep(.0,.025,u)*(1.0-smoothstep(.88,1.0,u));
         float shocks=.64+.36*pow(.5+.5*cos(u*40.0-time*.7),4.0);
-        alpha=density*fade*shocks;
+        alpha=density*fade*shocks*min(1.0,natural*natural/(gl_PointSize*gl_PointSize));
       }`,
     fragmentShader: `
       uniform float presence;varying float alpha;
@@ -62,55 +63,93 @@ function addCloud(scene, parent, attributes, role, softness) {
     geometry.setAttribute(name, new THREE.BufferAttribute(data, ['position', 'orbitCenter', 'orbitAxis'].includes(name) ? 3 : 1));
   }
   const cloud = new THREE.Points(geometry, pointMaterial(scene, softness));
+  const viewport = new THREE.Vector2();
+  cloud.onBeforeRender = renderer => {
+    cloud.material.uniforms.viewportHeight.value = renderer.getDrawingBufferSize(viewport).y;
+  };
   cloud.frustumCulled = false;
   cloud.userData = { posterKind: 'stars', posterSoft: softness, role };
   parent.add(cloud);
 }
 
 function accretionDisk(scene, parent) {
-  const count = 104000, rng = random(678134), attributes = cloudAttributes(count);
+  const count = 88000, rng = random(678134), attributes = cloudAttributes(count);
   for (let i = 0; i < count; i++) {
-    const u = rng(), a = rng() * TAU, stream = i % 3 === 0;
-    const r = stream
-      ? .14 + 2 * (Math.floor(u * 9) + a / TAU) / 9 + gaussian(rng) * .014
-      : .045 + 2.22 * u ** 1.5;
-    const cloud = valueNoise(Math.cos(a) * r * 7, Math.sin(a) * r * 7, r * 5);
-    // Tight turbulent bands keep the disk continuous rather than forming galactic arms.
-    const streams = .5 + .5 * (.5 + .5 * Math.sin(a * 2 - r * 19 + cloud * 3)) ** 4;
-    const thickness = (.018 + .035 * r) * clamp(gaussian(rng), -2.5, 2.5);
-    attributes.position.set([r * Math.cos(a), thickness, r * Math.sin(a)], i * 3);
+    const u = rng(), a = rng() * TAU;
+    // Continuous radii avoid the old quantized, concentric grooves. The warped
+    // noise field makes broad eddies, broken streams and fine mottled dust.
+    const r = .045 + 2.16 * u ** 1.35;
+    const x = Math.cos(a) * r, z = Math.sin(a) * r;
+    const warp = valueNoise(x * 2.2, z * 2.2, 1.7);
+    const cloud = valueNoise(x * 5 + warp * 2, z * 5 - warp, r * 1.8);
+    const fine = valueNoise(x * 18, z * 18, warp * 3);
+    const stream = .5 + .5 * Math.sin(a * 3 - r * 7 + warp * 9);
+    const thickness = (.018 + .055 * r) * clamp(gaussian(rng), -2.5, 2.5)
+      + .045 * r * Math.sin(a * 3 + r * 2);
+    attributes.position.set([x, thickness, z], i * 3);
     attributes.orbitAxis[i * 3 + 1] = 1;
-    attributes.starSize[i] = .65 + rng() ** 2 * 1.65;
-    const edge = 1 - THREE.MathUtils.smoothstep(r, 1.65, 2.28);
-    attributes.strength[i] = ((stream ? .5 : .25) + rng() * .35) * (.55 + .45 * cloud)
-      * (stream ? 1 : streams) * (.35 + .65 * Math.exp(-r * .6)) * edge;
+    attributes.starSize[i] = .65 + rng() ** 2 * 1.75;
+    const edge = 1 - THREE.MathUtils.smoothstep(r, 1.55, 2.23);
+    attributes.strength[i] = (.36 + rng() * .40) * (.3 + .9 * cloud)
+      * (.5 + .5 * stream) * (.65 + .35 * fine) * edge;
     attributes.phase[i] = rng() * TAU;
-    attributes.rate[i] = .13 / (r + .3) ** 1.3;
+    attributes.rate[i] = .095 / (r + .3) ** 1.3;
   }
   addCloud(scene, parent, attributes, 'quasar-disk', 1);
 }
 
 function surroundingFilaments(scene, parent) {
-  const count = 56000, rng = random(431785), attributes = cloudAttributes(count);
+  const count = 64000, rng = random(431785), attributes = cloudAttributes(count);
+  // Independent ribbons overlap above and below the disk. Unequal lengths,
+  // pitch and thickness break rotational symmetry without adding draw calls.
+  const ribbons = Array.from({ length: 23 }, () => ({
+    angle: rng() * TAU, start: .35 + rng() * .7, span: 1.4 + rng() * .75,
+    pitch: .8 + rng() * 2.4, lift: (rng() - .5) * 1.15,
+    phase: rng() * TAU, width: .025 + rng() * .065,
+  }));
   for (let i = 0; i < count; i++) {
-    const u = rng(), r = .7 + 2.42 * u ** .7, arm = (i % 9) * TAU / 9;
-    const diffuse = i % 4 === 0;
-    const a = arm - 1.45 * Math.log(r + .1) + .16 * Math.sin(r * 3 + arm) + gaussian(rng) * (diffuse ? .32 : .035);
-    const height = .14 * r * Math.sin(a * 2 + arm) + .07 * r * Math.sin(r * 4 + arm)
-      + clamp(gaussian(rng), -2, 2) * (diffuse ? .16 : .035) * r;
-    attributes.position.set([r * Math.cos(a), height, r * Math.sin(a)], i * 3);
+    const ribbon = ribbons[i % ribbons.length], u = rng();
+    const diffuse = i % 3 === 0, r = ribbon.start + ribbon.span * u;
+    const a = ribbon.angle - ribbon.pitch * Math.log(r + .25)
+      + .22 * Math.sin(u * 7 + ribbon.phase);
+    const spread = clamp(gaussian(rng), -2.5, 2.5) * ribbon.width * (diffuse ? 3 : 1);
+    const height = ribbon.lift * Math.sin(u * Math.PI * .8)
+      + .17 * Math.sin(u * 9 + ribbon.phase) * u
+      + clamp(gaussian(rng), -2.5, 2.5) * (diffuse ? .14 : .025);
+    attributes.position.set([(r + spread) * Math.cos(a), height, (r + spread) * Math.sin(a)], i * 3);
     attributes.orbitAxis[i * 3 + 1] = 1;
-    attributes.starSize[i] = diffuse ? 1.5 + rng() * 2 : .55 + rng() * 1.1;
-    const edge = 1 - THREE.MathUtils.smoothstep(u, .65, 1);
-    attributes.strength[i] = (diffuse ? .035 : .12) * (.4 + rng() * .6) * edge;
+    attributes.starSize[i] = diffuse ? 2 + rng() * 3.8 : .65 + rng() * 1.5;
+    const edge = THREE.MathUtils.smoothstep(u, 0, .08) * (1 - THREE.MathUtils.smoothstep(u, .72, 1));
+    const knots = .45 + .55 * (.5 + .5 * Math.sin(u * 17 + ribbon.phase)) ** 2;
+    attributes.strength[i] = (diffuse ? .085 : .30) * (.4 + rng() * .6) * edge * knots;
     attributes.phase[i] = rng() * TAU;
-    attributes.rate[i] = .035 / (r + .3);
+    attributes.rate[i] = .018 / (r + .6);
   }
   addCloud(scene, parent, attributes, 'quasar-filaments', 1);
 }
 
+function turbulentEnvelope(scene, parent) {
+  const count = 20000, rng = random(310947), attributes = cloudAttributes(count);
+  for (let i = 0; i < count; i++) {
+    const r = .6 + rng() ** .65 * 2.45, a = rng() * TAU;
+    const x = r * Math.cos(a), z = r * Math.sin(a);
+    const warp = valueNoise(x * 1.8, z * 1.8, 2);
+    const height = .24 * Math.sin(a * 2 + r * 2) + (warp - .5) * .65
+      + clamp(gaussian(rng), -2.5, 2.5) * .18;
+    attributes.position.set([x, height, z], i * 3);
+    attributes.orbitAxis[i * 3 + 1] = 1;
+    attributes.starSize[i] = 3 + rng() * 5;
+    const cloud = valueNoise(x * 3 + warp * 2, z * 3 - warp, height * 3);
+    const edge = 1 - THREE.MathUtils.smoothstep(r, 1.8, 3.05);
+    attributes.strength[i] = (.018 + .060 * cloud ** 2) * edge;
+    attributes.phase[i] = rng() * TAU;
+    attributes.rate[i] = .012 / (r + .6);
+  }
+  addCloud(scene, parent, attributes, 'quasar-envelope', 1);
+}
+
 function bipolarJets(scene, parent) {
-  const count = 32000, rng = random(923473), data = {
+  const count = 20000, rng = random(923473), data = {
     position: new Float32Array(count * 3), starSize: new Float32Array(count), strength: new Float32Array(count),
     along: new Float32Array(count), angle: new Float32Array(count), shell: new Float32Array(count),
     side: new Float32Array(count), rate: new Float32Array(count), density: new Float32Array(count),
@@ -132,6 +171,10 @@ function bipolarJets(scene, parent) {
   for (const [name, values] of Object.entries(data)) geometry.setAttribute(name, new THREE.BufferAttribute(values, name === 'position' ? 3 : 1));
   const material = jetMaterial(scene);
   const jets = new THREE.Points(geometry, material);
+  const viewport = new THREE.Vector2();
+  jets.onBeforeRender = renderer => {
+    material.uniforms.viewportHeight.value = renderer.getDrawingBufferSize(viewport).y;
+  };
   jets.frustumCulled = false; jets.renderOrder = 1;
   jets.userData = { posterKind: 'stars', posterSoft: 0, role: 'quasar-jets' };
   parent.add(jets);
@@ -139,11 +182,12 @@ function bipolarJets(scene, parent) {
 
 export function createQuasar(scene) {
   const content = new THREE.Group(); scene.root.add(content);
+  turbulentEnvelope(scene, content);
   surroundingFilaments(scene, content);
   accretionDisk(scene, content);
   bipolarJets(scene, content);
-  const coreMaterial = surfaceMaterial(scene, 3, null, { opacity: .75, detail: 128 });
-  const core = new THREE.Mesh(new THREE.SphereGeometry(.085, 128, 64), coreMaterial);
+  const coreMaterial = surfaceMaterial(scene, 3, null, { opacity: .75, detail: 48 });
+  const core = new THREE.Mesh(new THREE.SphereGeometry(.085, 48, 24), coreMaterial);
   core.userData = { posterKind: 'body', surfaceKind: 3, role: 'quasar-core' }; content.add(core);
   scene.animate = time => {
     content.rotation.set(.62 + .025 * Math.sin(time * .04), .15 + time * .008, .48);

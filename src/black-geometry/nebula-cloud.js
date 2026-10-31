@@ -44,9 +44,9 @@ function dustMaterial(scene,soft) {
 
 function centerline(u,branch,target) {
   const x=u*2.35;
-  target[0]=x+.18*Math.sin(u*6+branch);
-  target[1]=.62*Math.sin(u*2.8+branch*.7)+(branch-1.5)*.48;
-  target[2]=.60*Math.sin(u*3.2+branch*1.6);
+  target[0]=x+.20*Math.sin(u*5.2+branch)+.06*Math.sin(u*13+branch*2);
+  target[1]=.57*Math.sin(u*2.8+branch*.7)+(branch-1.5)*.44+.16*Math.sin(u*7+branch*2.2);
+  target[2]=.60*Math.sin(u*3.2+branch*1.6)+.15*Math.sin(u*8+branch);
 }
 
 export function createNebulaCloud(scene) {
@@ -69,18 +69,26 @@ export function createNebulaCloud(scene) {
     for(let i=0;i<layer.count;i++){
       const branch=i%4,u=rng()*2-1;centerline(u,branch,center);
       const knot=valueNoise(u*8+branch*3,branch+4,2.7);
-      const width=filament?.045+.085*knot:haze?.20+.24*knot:.10+.37*knot;
+      const width=filament?.025+.075*knot:haze?.23+.28*knot:.085+.36*knot;
       const spread=width*(.4+.6*Math.sqrt(Math.max(0,1-u*u)));
       for(let k=0;k<3;k++)offset[k]=clamp(gaussian(rng),-2.4,2.4)*spread;
-      if(filament){offset[1]+=.14*Math.sin(u*15+branch);offset[2]+=.10*Math.cos(u*18+branch);}
+      if(filament){
+        // Several fine strands curl around each broad plume, splitting and
+        // rejoining at different depths rather than forming parallel tubes.
+        const strand=i%7,angle=u*(12+strand*.7)+strand*1.9+branch;
+        const curl=(.05+.09*knot)*Math.sin(u*3+strand);
+        offset[1]+=curl*Math.sin(angle);offset[2]+=curl*Math.cos(angle);
+      }
       for(let k=0;k<3;k++)p[k]=center[k]+offset[k];
       const texture=valueNoise(p[0]*5+3,p[1]*5,p[2]*5+8);
-      const density=(.18+.82*texture**2)*(.3+.7*knot);
+      const fine=valueNoise(p[0]*13+1,p[1]*13+4,p[2]*13);
+      const cavity=1-.80*Math.exp(-((p[0]+.4)**2/.48+(p[1]-.15)**2/.26+(p[2]-.10)**2/.50));
+      const density=(.12+.88*texture**2)*(.24+.76*knot)*(.55+.75*fine)*cavity;
       const edge=(1-u*u)**.35;
       axis.set(rng()-.5,.35+rng(),rng()-.5).normalize();
       data.position.set(p,i*3);data.orbitCenter.set(center,i*3);axis.toArray(data.orbitAxis,i*3);
-      data.starSize[i]=haze?4+rng()*8:filament?.8+rng()**2*2.0:.7+rng()**2*2.0;
-      data.strength[i]=(haze?.010+rng()*.013:filament?.65+rng()*.35:.48+rng()*.42)*density*edge;
+      data.starSize[i]=haze?5+rng()*10:filament?.7+rng()**2*1.8:.65+rng()**2*2.1;
+      data.strength[i]=(haze?.017+rng()*.022:filament?.72+rng()*.28:.48+rng()*.42)*density*edge;
       data.phase[i]=rng()*TAU;data.rate[i]=(.08+rng()*.13)*(filament?1.1:1);
       bound=Math.max(bound,Math.hypot(...center)+Math.hypot(...offset)+FLOW_REACH);
     }

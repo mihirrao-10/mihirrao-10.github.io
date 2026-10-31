@@ -92,7 +92,7 @@ export class PreparedPath extends THREE.Curve {
 
 
 /** All pages share one renderer and keep their prepared cosmic buffers resident. */
-export async function createWorld({container,quality='high',onFailure}) {
+export async function createWorld({container,quality='high',onFailure,initialTarget='hero'}) {
   const maps=await loadAstronomyMaps();
   let renderer;
   try{renderer=new THREE.WebGLRenderer({alpha:true,antialias:true,powerPreference:'high-performance'});}
@@ -105,10 +105,23 @@ export async function createWorld({container,quality='high',onFailure}) {
   scene.matrixWorldAutoUpdate=false;
   camera.position.set(0,0,12);camera.lookAt(0,0,0);
   const viewCamera=new THREE.PerspectiveCamera(),rotation=new THREE.Quaternion(),drag=new THREE.Quaternion(),inverseView=new THREE.Quaternion();
+  // Resolve each complete scene before fading. Fading particle opacities changes
+  // optical density nonlinearly; shared depth also makes solid bodies pop.
+  const layer=new THREE.WebGLRenderTarget(64,64,{samples:4,depthBuffer:true});
+  const composite=new THREE.Scene(),compositeCamera=new THREE.Camera();
+  const compositeMaterial=new THREE.ShaderMaterial({
+    uniforms:{image:{value:layer.texture},weight:{value:1}},
+    vertexShader:'varying vec2 vUv;void main(){vUv=uv;gl_Position=vec4(position.xy,0.0,1.0);}',
+    fragmentShader:'uniform sampler2D image;uniform float weight;varying vec2 vUv;void main(){gl_FragColor=texture2D(image,vUv)*weight;}',
+    transparent:true,depthTest:false,depthWrite:false,blending:THREE.CustomBlending,
+    blendSrc:THREE.OneFactor,blendDst:THREE.OneFactor,blendEquation:THREE.AddEquation,
+  });
+  const quad=new THREE.Mesh(new THREE.PlaneGeometry(2,2),compositeMaterial);quad.frustumCulled=false;composite.add(quad);
+  renderer.autoClear=false;
   const models=new Map();
   function disposeResources(){
     for(const model of models.values())model.cosmos.dispose();
-    models.clear();Object.values(maps).forEach(map=>map.dispose());renderer.dispose();canvas.remove();
+    models.clear();layer.dispose();quad.geometry.dispose();compositeMaterial.dispose();Object.values(maps).forEach(map=>map.dispose());renderer.dispose();canvas.remove();
   }
   try{
     for(const name of COSMIC_TARGETS){
@@ -121,7 +134,8 @@ export async function createWorld({container,quality='high',onFailure}) {
   let bufferWidth=0,bufferHeight=0,bufferDpr=0;
   let resolution=createResolutionBudget(dprCeiling),resolutionTarget='hero';resolution.select(resolutionTarget);
   let orbitClock=0,currentName='hero',nextName='hero',blend=0,activeNames=new Set(),nextActiveNames=new Set();
-  let entranceProgress=1,entranceScale=1,fitScales=[];
+  let entranceProgress=1,entranceScale=1,fitScales=[],sceneWeights={};
+  const preparedScenes=[];let gpuReady=false,liveFrameReady=false,drawCalls=0,triangles=0;
   let userRotation=[0,0],userOrientation=[0,0,0,1],dragging=false;
   renderer.debug.onShaderError=(gl,program,vertex,fragment)=>{shaderFailed=[gl.getProgramInfoLog(program),gl.getShaderInfoLog(vertex),gl.getShaderInfoLog(fragment)].filter(Boolean).join('\n')||'Unknown shader error';};
   const contextLost=event=>{event.preventDefault();onFailure(new Error('WebGL context lost'));};
@@ -132,14 +146,30 @@ export async function createWorld({container,quality='high',onFailure}) {
     const nextDpr=preparing?1:renderingDpr(width,height,dpr,dprCeiling);
     if(nextWidth!==bufferWidth||nextHeight!==bufferHeight||nextDpr!==bufferDpr){
       renderer.setDrawingBufferSize(nextWidth,nextHeight,nextDpr);
+      layer.setSize(Math.floor(nextWidth*nextDpr),Math.floor(nextHeight*nextDpr));
       bufferWidth=nextWidth;bufferHeight=nextHeight;bufferDpr=nextDpr;
     }
     if(camera.aspect!==width/height){camera.aspect=width/height;camera.updateProjectionMatrix();}
   }
+  async function waitForGpu(){
+    const gl=renderer.getContext(),fence=gl.fenceSync(gl.SYNC_GPU_COMMANDS_COMPLETE,0);
+    if(!fence)throw new Error('Graphics preparation could not be synchronized');
+    gl.flush();
+    try{await new Promise((resolve,reject)=>{
+      const poll=()=>{
+        if(disposed||gl.isContextLost()){reject(new Error('Graphics context lost during preparation'));return;}
+        const status=gl.clientWaitSync(fence,0,0);
+        if(status===gl.WAIT_FAILED)reject(new Error('Graphics preparation failed'));
+        else if(status===gl.TIMEOUT_EXPIRED)setTimeout(poll,8);
+        else resolve();
+      };poll();
+    });}finally{gl.deleteSync(fence);}
+  }
   const world={
+    async preparePresentation(){await waitForGpu();liveFrameReady=true;},
     resize,setQuality(next){currentQuality=next;dprCeiling=QUALITY[next].dpr;resolution=createResolutionBudget(dprCeiling);resolution.select(resolutionTarget);resize();},
     recordFrame(milliseconds){
-      if(currentName!==nextName)return;
+      if(Object.values(sceneWeights).filter(weight=>weight>0).length!==1)return;
       const next=resolution.record(milliseconds);
       if(next!==undefined){dprCeiling=next;resize();}
     },
@@ -147,21 +177,23 @@ export async function createWorld({container,quality='high',onFailure}) {
     render({state,time,orbitTime=time,pointer=[0,0],interaction,interactionTarget=state.nextTarget||state.target,entrance=1}){
       if(disposed)return;
       orbitClock=orbitTime;currentName=state.target||'hero';nextName=state.nextTarget||currentName;
-      blend=currentName===nextName?0:THREE.MathUtils.clamp(state.blend,0,1);
-      if(currentName===nextName&&resolutionTarget!==currentName){resolutionTarget=currentName;dprCeiling=resolution.select(currentName);if(!preparing)resize();}
+      blend=THREE.MathUtils.clamp(state.blend,0,1);
+      sceneWeights=state.weights || (currentName===nextName?{[currentName]:1}:{[currentName]:1-blend,[nextName]:blend});
+      if(Object.values(sceneWeights).filter(weight=>weight>0).length===1&&currentName===nextName&&resolutionTarget!==currentName){resolutionTarget=currentName;dprCeiling=resolution.select(currentName);if(!preparing)resize();}
       entranceProgress=THREE.MathUtils.clamp(entrance,0,1);entranceScale=.08+.92*(1-(1-entranceProgress)**4);
       userRotation=interaction?.rotation||[0,0];userOrientation=interaction?.orientation||[0,0,0,1];dragging=!!interaction?.dragging;
-      nextActiveNames.clear();nextActiveNames.add(currentName);nextActiveNames.add(nextName);
+      nextActiveNames.clear();
+      for(const [name,weight] of Object.entries(sceneWeights))if(weight>0)nextActiveNames.add(name);
       for(const name of nextActiveNames){
         if(!models.has(name))throw new Error(`Unknown cosmic scene: ${name}`);
         if(!activeNames.has(name)){const model=models.get(name);model.orbitStart=orbitClock;model.orientation=[0,0,0,1];}
       }
       const previousActiveNames=activeNames;activeNames=nextActiveNames;nextActiveNames=previousActiveNames;fitScales.length=0;
       for(const model of models.values())model.cosmos.root.visible=false;
-      for(let index=0;index<2;index++){
-        const name=index===0?currentName:nextName;
-        const presence=index===0?1-blend:currentName!==nextName?blend:0;
-        if(presence<=0)continue;
+      renderer.setRenderTarget(null);renderer.setClearColor(0x000000,0);renderer.clear();
+      drawCalls=triangles=0;
+      for(const name of activeNames){
+        const presence=sceneWeights[name];
         const model=models.get(name),age=Math.max(0,orbitClock-model.orbitStart);
         if(name===interactionTarget)for(let i=0;i<4;i++)model.orientation[i]=userOrientation[i];
         const pose=cameraPose({target:name,nextTarget:name,blend:0},{time:age,pointer});
@@ -170,16 +202,21 @@ export async function createWorld({container,quality='high',onFailure}) {
         drag.fromArray(model.orientation).normalize();rotation.copy(drag).multiply(inverseView.copy(viewCamera.quaternion).invert());
         const scale=entranceScale*SCULPTURE_STYLE.scale*12/fitSurfaceDistance(model.cosmos.bounds,rotation,camera.aspect);
         const root=model.cosmos.root;root.visible=true;root.quaternion.copy(rotation);root.scale.setScalar(scale);fitScales.push(scale);
-        model.cosmos.update(age,presence,renderer.getPixelRatio());
+        model.cosmos.update(age,1,renderer.getPixelRatio());
+        renderer.setRenderTarget(layer);renderer.clear();renderer.render(scene,camera);
+        drawCalls+=renderer.info.render.calls;triangles+=renderer.info.render.triangles;
+        renderer.setRenderTarget(null);compositeMaterial.uniforms.weight.value=presence;renderer.render(composite,compositeCamera);
+        drawCalls+=renderer.info.render.calls;triangles+=renderer.info.render.triangles;
+        root.visible=false;
       }
-      renderer.render(scene,camera);if(shaderFailed)throw new Error(`Cosmic shader initialization failed: ${shaderFailed}`);frames++;
+      if(shaderFailed)throw new Error(`Cosmic shader initialization failed: ${shaderFailed}`);frames++;
     },
     snapshot:()=>({
-      frames,warmedTargets,drawCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles,
+      frames,warmedTargets,preparedMaps:Object.keys(maps),programs:renderer.info.programs.length,preparedScenes:[...preparedScenes],gpuReady,liveFrameReady,sceneWeights:{...sceneWeights},drawCalls,triangles,
       quality:currentQuality,dpr:renderer.getPixelRatio(),geometries:renderer.info.memory.geometries,
       contextLost:renderer.getContext().isContextLost(),target:currentName,nextTarget:nextName,blend,
       depthPrepass:false,activeInteriorMeshes:0,decodedTargets:models.size,packedTargets:0,
-      cosmicTargets:COSMIC_TARGETS.filter(name=>models.get(name).cosmos.root.visible),
+      cosmicTargets:[...activeNames],
       cosmicAges:Object.fromEntries([...models].map(([name,model])=>[name,model.cosmos.uniforms.time.value])),
       transparentCosmos:[...models.values()].every(model=>[...model.cosmos.materials].every(m=>m.transparent)),
       coherentDepth:[...models.values()].some(model=>[...model.cosmos.materials].some(m=>m.userData.bodyDepth&&m.depthTest)),
@@ -196,29 +233,20 @@ export async function createWorld({container,quality='high',onFailure}) {
   };
   try{
     resize();
-    await renderer.compileAsync(scene,camera);
-    // Warm shaders and upload the complete resident geometry without shading a
-    // full screen of hidden particles and bent rays. Restore the display buffer
-    // before the final frame and fence, so reveal retains its normal resolution.
+    await renderer.compileAsync(composite,compositeCamera);
+    // Compile visible objects, then draw all geometry and maps into the same
+    // multisampled target used live. Invisible roots are skipped by compileAsync.
     for(const name of COSMIC_TARGETS){
       if(disposed||renderer.getContext().isContextLost())throw new Error('Graphics preparation interrupted');
-      world.render({state:{target:name,nextTarget:name,blend:0},time:0});warmedTargets++;
+      const root=models.get(name).cosmos.root;root.visible=true;
+      await renderer.compileAsync(scene,camera);root.visible=false;
+      world.render({state:{target:name,nextTarget:name,blend:0},time:0});
+      warmedTargets++;preparedScenes.push(name);
       await new Promise(resolve=>setTimeout(resolve,0));
     }
     preparing=false;resize();
-    world.render({state:{target:'hero',nextTarget:'hero',blend:0},time:0,entrance:0});
-    const gl=renderer.getContext(),fence=gl.fenceSync(gl.SYNC_GPU_COMMANDS_COMPLETE,0);
-    if(!fence)throw new Error('Graphics preparation could not be synchronized');
-    gl.flush();
-    try{await new Promise((resolve,reject)=>{
-      const poll=()=>{
-        if(disposed||gl.isContextLost()){reject(new Error('Graphics context lost during preparation'));return;}
-        const status=gl.clientWaitSync(fence,0,0);
-        if(status===gl.WAIT_FAILED)reject(new Error('Graphics preparation failed'));
-        else if(status===gl.TIMEOUT_EXPIRED)setTimeout(poll,16);
-        else resolve();
-      };poll();
-    });}finally{gl.deleteSync(fence);}
+    world.render({state:{target:initialTarget,nextTarget:initialTarget,blend:0},time:0});
+    await waitForGpu();gpuReady=true;
     return world;
   }catch(error){world.dispose();throw error;}
 }

@@ -58,3 +58,20 @@ test('accretion detail moves smoothly over time while the shadow stays clear',()
   assert.ok(difference(frames[0],frames[2])>.005,'Plasma should visibly evolve');
   assert.ok(difference(frames[0],frames[1])<.003,'Adjacent frames should not jump');
 });
+
+test('the lower shadow edge has continuous coverage through the inner disk cavity',()=>{
+  // Local rays from poster pixel (800,797) and its half-pixel neighbors.
+  // The middle ray formerly escaped with zero opacity, leaving a pale seam.
+  const rays=[
+    [[.6670991212363531,-.3061098073026516,3.2164022421378284],[-.10848991263234674,-.3099070654110912,-.944556800655901]],
+    [[.6676232274137235,-.3088544563557405,3.2160315562533075],[-.10842450073429909,-.3101482385837558,-.9444851495624015]],
+    [[.6681471406826691,-.3116004097695031,3.215658314632627],[-.10835908503923425,-.3103893777863194,-.944413438514553]],
+  ];
+  for(const time of [0,.01,4]){
+    const opacity=rays.map(([position,direction])=>traceBlackHole(...position,...direction,time));
+    assert.ok(opacity.every(value=>Number.isFinite(value)&&value>.3&&value<=.98),
+      'The shadow-to-disk boundary must not expose the page background');
+    for(let i=1;i<opacity.length;i++)assert.ok(Math.abs(opacity[i]-opacity[i-1])<.12,
+      'Neighboring rays must form a continuous edge instead of isolated pinpricks');
+  }
+});

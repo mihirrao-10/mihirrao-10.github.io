@@ -37,19 +37,29 @@ export function chapterState(scrollY, ranges) {
 }
 
 export const TRANSITION_SECONDS = 0.38;
-export const createTransition = (target = "hero") => ({ from: target, to: target, elapsed: 0, blend: 0 });
-// Eased elapsed time always finishes, independent of where scrolling stops.
-// Reversals reuse the same dissolve coverage; fast skips take the dominant mesh.
+export const createTransition = (target = "hero") => ({ from: target, to: target, elapsed: 0, blend: 0, weights: { [target]: 1 } });
+// Retain every visible contribution when navigation interrupts a dissolve.
+// A two-scene reversal follows the same curve backwards, without losing coverage.
 export function advanceTransition(previous, target, delta) {
   let state = previous;
   if (target !== state.to) {
-    if (target === state.from) state = { from: state.to, to: state.from, elapsed: TRANSITION_SECONDS-state.elapsed };
-    else state = { from: state.blend < 0.5 ? state.from : state.to, to: target, elapsed: 0 };
+    if (target === state.from && !state.origin) {
+      state = { from: state.to, to: state.from, elapsed: TRANSITION_SECONDS-state.elapsed };
+    } else {
+      const weights = state.weights || { [state.from]: 1-state.blend, [state.to]: state.blend };
+      const visible = Object.entries(weights).filter(([,weight])=>weight>0);
+      state = { from: visible.reduce((a,b)=>a[1]>b[1]?a:b)[0], to: target, elapsed: 0,
+        ...(visible.length > 1 ? { origin: { ...weights } } : {}) };
+    }
   }
-  if (state.from === state.to) return createTransition(target);
+  if (state.from === state.to && !state.origin) return createTransition(target);
   const elapsed = state.elapsed + (Number.isFinite(delta) ? Math.max(0,delta) : 0);
   if (elapsed >= TRANSITION_SECONDS) return createTransition(target);
-  return { ...state, elapsed, blend: ease(elapsed/TRANSITION_SECONDS) };
+  const blend = ease(elapsed/TRANSITION_SECONDS);
+  const weights = Object.fromEntries(Object.entries(state.origin || { [state.from]: 1 })
+    .map(([name,weight])=>[name,weight*(1-blend)]));
+  weights[state.to] = (weights[state.to] || 0) + blend;
+  return { ...state, elapsed, blend, weights };
 }
 
 // Geometry carries its authored presentation; each visit starts its own orbit.

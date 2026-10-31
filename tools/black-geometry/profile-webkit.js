@@ -1,6 +1,6 @@
 import fs from 'node:fs/promises';
 import { webkit } from '@playwright/test';
-import { ENTRIES, openPortfolio, selectPage, frameTimings } from './browser-utils.js';
+import { ENTRIES, openPortfolio, selectPage, frameTimings, rapidNavigationTimings } from './browser-utils.js';
 
 const output = '.artifacts/black-geometry/reports';
 await fs.mkdir(output, { recursive: true });
@@ -17,6 +17,8 @@ try {
     report.measurements.push({ chapter: entry.id, ...measurement });
     console.log(`${entry.id}: p95 ${measurement.p95Ms?.toFixed(2) ?? 'unavailable'} ms`);
   }
+  report.rapidNavigation = await rapidNavigationTimings(page);
+  console.log(JSON.stringify({ rapidNavigation: report.rapidNavigation }));
 } finally {
   await fs.writeFile(`${output}/webkit-performance.json`, JSON.stringify(report, null, 2) + '\n');
   await browser.close();

@@ -90,3 +90,15 @@ test("illustrative route follows the original surface with a small positive sepa
     assert.ok(distance > 0.016 && distance < 0.032);
   }
 });
+
+test("interrupted dissolves retain every visible scene with unit total coverage",()=>{
+  let state=createTransition("hero");
+  for(const target of ["education","projects","hero","notes","projects","publications","teaching"]){
+    state=advanceTransition(state,target,.08);
+    const changed=advanceTransition(state,targets[(targets.indexOf(target)+1)%targets.length],0);
+    for(const name of targets)assert.ok(Math.abs((state.weights[name]||0)-(changed.weights[name]||0))<1e-12);
+    assert.ok(Math.abs(Object.values(state.weights).reduce((a,b)=>a+b,0)-1)<1e-12);
+    assert.ok(Object.values(state.weights).every(weight=>weight>=0&&weight<=1));
+  }
+  assert.deepEqual(advanceTransition(state,"notes",TRANSITION_SECONDS),createTransition("notes"));
+});

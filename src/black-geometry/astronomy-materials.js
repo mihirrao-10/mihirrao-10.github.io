@@ -138,13 +138,15 @@ export function flareMaterial(scene,phase){
 const POINT_VERTEX=`
 attribute float starSize,strength,phase,rate;
 attribute vec3 orbitCenter,orbitAxis;
-uniform float time,pixelRatio,soft;
+uniform float time,pixelRatio,soft,viewportHeight;
 varying float alpha;
 void main(){vec3 p=position-orbitCenter;float a=time*rate;
 p=p*cos(a)+cross(orbitAxis,p)*sin(a)+orbitAxis*dot(orbitAxis,p)*(1.0-cos(a))+orbitCenter;
 vec4 v=modelViewMatrix*vec4(p,1.0);gl_Position=projectionMatrix*v;
-gl_PointSize=clamp(starSize*pixelRatio*12.0/max(1.0,-v.z),.65,mix(9.0,45.0,soft)*pixelRatio);
-alpha=strength*(.96+.04*sin(time*.35+phase));}`;
+float natural=starSize*viewportHeight/765.0*12.0/max(1.0,-v.z);
+gl_PointSize=clamp(natural,.65*pixelRatio,mix(9.0,45.0,soft)*pixelRatio);
+// Preserve integrated coverage when subpixel stars meet the raster size floor.
+alpha=strength*min(1.0,natural*natural/(gl_PointSize*gl_PointSize))*(.96+.04*sin(time*.35+phase));}`;
 const POINT_FRAGMENT=`
 uniform float presence,soft;
 varying float alpha;
@@ -155,7 +157,7 @@ float disc=mix(clamp(core*1.7+cross,0.0,1.0),core,soft);
 if(disc*alpha*presence<.001)discard;gl_FragColor=vec4(vec3(.015),disc*alpha*presence);}`;
 export function pointMaterial(scene,soft=0) {
   const material=new THREE.ShaderMaterial({vertexShader:POINT_VERTEX,fragmentShader:POINT_FRAGMENT,
-    transparent:true,depthWrite:false,depthTest:true,uniforms:{...scene.uniforms,soft:{value:soft}}});
+    transparent:true,depthWrite:false,depthTest:true,uniforms:{...scene.uniforms,soft:{value:soft},viewportHeight:{value:765}}});
   scene.materials.add(material);return material;
 }
 export function random(seed){let s=seed>>>0;return()=>{s^=s<<13;s^=s>>>17;s^=s<<5;return(s>>>0)/4294967296;};}

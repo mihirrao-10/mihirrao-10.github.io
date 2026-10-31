@@ -54,6 +54,11 @@ entries as the runtime. Set `PLAYWRIGHT_BROWSERS_PATH=./node_modules/.cache/ms-p
 and run `node tools/black-geometry/diagnostics.js` for Chromium frame timings,
 `node tools/black-geometry/profile-webkit.js` for WebKit, or
 `node tools/black-geometry/review.js` for desktop/mobile screenshots.
+`node tools/black-geometry/audit-transitions.js` captures first/repeat visits,
+rapid reversals, dragging and resize frames with canvas coverage measurements;
+set `BG_ENGINE=webkit` to repeat in WebKit. Diagnostics resolve the shuffled
+page-to-graphic assignment from the DOM. On macOS, `BG_ANGLE=metal` requests
+Chromium’s Metal backend for profiling; the report records the actual renderer.
 `BG_BASE_URL` overrides the local server URL. Reports stay under `.artifacts/`.
 
 ## Content and notes
@@ -86,7 +91,8 @@ colliding galaxies, the Milky Way, a nebula, a black hole, a quasar, and a solar
 system. Each page load shuffles a one-to-one assignment across the seven pages;
 the assignment stays fixed during navigation and browser history within that
 visit. Fallback posters follow the same assignment. The quasar has a tilted,
-turbulent accretion disk, loose filaments, and narrow animated bipolar jets.
+continuously sampled turbulent accretion disk, asymmetric filament ribbons,
+a soft surrounding gas envelope, and narrow animated bipolar jets.
 The eight-planet solar system starts at an oblique angle, with distinct planet
 sizes, Saturn's rings, and an asteroid
 belt. Its sizes, distances, and periods are illustrative.
@@ -95,7 +101,10 @@ The nebula is a loose cloud of 238,000 fine dust grains, curling filaments,
 and faint haze particles. Grains swirl around local knots and drift on
 independent phases; the cloud continuously changes internally while remaining
 freely rotatable. Its spread and grain echo the introductory star cluster.
-Stars occupy three dimensions. The solar system has eight independently
+Stars occupy three dimensions with a range of resolved sizes. The cluster has
+a broad core and diffuse halo; the galaxies have broken, branching arms,
+warped disks, and knotted tidal bridges. Point coverage follows viewport size
+so phone views retain the same relative density. The solar system has eight independently
 orbiting planets, thin orbital paths, and one ringed planet.
 All scenes share unrestricted mouse and touch rotation, with bounds that retain
 the entire object. The black hole uses an approximate bent-ray accretion model.
@@ -119,9 +128,15 @@ An initial beige loading screen shows black text with three dots that bounce in
 sequence. It fades away after fonts, surface maps, procedural scenes, shaders,
 uploaded GPU buffers, warm-up draws, a GPU fence, and the first live frame are
 ready. The graphics chunk is preloaded with the document, and graphics/font
-preparation runs concurrently. All seven scenes warm their complete geometry
-and shaders in a small hidden buffer before the normal display resolution is
-restored for the final frame and GPU fence. Reduced-motion preferences disable
+preparation runs concurrently. All seven scenes compile with visible roots and warm their complete geometry,
+textures, and shaders in a small hidden multisampled buffer. The same render
+path restores display resolution for the assigned initial scene and a GPU
+fence. A second fence completes the first live frame before the loader fades.
+Read-only diagnostics report prepared scene/map identities and both fence states.
+Each scene renders at full opacity with independent depth; premultiplied image
+compositing then dissolves the finished scenes. Interrupted transitions retain
+all visible weights, so rapid skips and reversals preserve coverage and orbit
+state without density changes or a depth-writing switch. Reduced-motion preferences disable
 the loader animation and fade, while
 the sculpture still starts automatically. Failed graphics or a 30-second loading
 deadline reveal the static site;

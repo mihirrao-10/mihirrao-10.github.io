@@ -21,7 +21,7 @@ const motion = 'full';
 let world, worldImport, enhancementPending;
 let failed = root.dataset.boot === 'fallback', disposed = false, active = !document.hidden;
 const entrance = { started: false, progress: 1 };
-let bootFinished = false;
+let bootFinished = false, presentationPending = false;
 let frame = 0, syncFrame = 0, lastFrame = 0, time = 0, orbitTime = 0;
 let width = innerWidth, height = innerHeight, layoutDirty = true;
 let pointer = [0, 0], pointerTarget = [0, 0];
@@ -100,7 +100,7 @@ function fail(error) {
 }
 function draw(now) {
   frame = 0;
-  if (disposed || !active || document.hidden || motion !== 'full' || !world || failed) return;
+  if (disposed || !active || document.hidden || motion !== 'full' || !world || failed || presentationPending) return;
   if (layoutDirty) measure();
   const elapsed = lastFrame ? now - lastFrame : 0;
   if (lastFrame && elapsed < 1000 / QUALITY.high.fps - 2) {
@@ -118,10 +118,10 @@ function draw(now) {
   pointer[0] += (pointerTarget[0] - pointer[0]) * follow;
   pointer[1] += (pointerTarget[1] - pointer[1]) * follow;
   // Real elapsed time completes the selected sculpture after the page selection.
-  if (transition.to !== state.target || transition.from !== transition.to)
+  if (transition.to !== state.target || transition.from !== transition.to || transition.origin)
     transition = advanceTransition(transition, state.target, elapsed / 1000);
-  visualState = transition.from === transition.to ? state :
-    { ...state, target: transition.from, nextTarget: transition.to, blend: transition.blend };
+  visualState = { ...state, target: transition.from, nextTarget: transition.to,
+    blend: transition.blend, weights: transition.weights };
   if (entrance.started) entrance.progress = Math.min(1, entrance.progress + delta / 1.1);
   try {
     world.recordFrame(elapsed);
@@ -131,13 +131,18 @@ function draw(now) {
       interaction: { orientation: grab.orientation, rotation: grab.rotation, dragging: grab.dragging },
     });
     if (!entrance.started) {
-      body.dataset.experienceState = 'ready';
       entrance.started = true;
-      // Shader compilation can take time. Start the visible animation after
-      // that first successful frame, not while it is still being prepared.
-      lastFrame = performance.now();
-      finishBoot(entrance.progress < 1 ? 'revealing' : 'complete');
-    } else if (entrance.progress === 1 && ['revealing', 'loading'].includes(root.dataset.boot)) finishBoot();
+      presentationPending = true;
+      world.preparePresentation().then(() => {
+        presentationPending = false;
+        if (failed || disposed) return;
+        body.dataset.experienceState = 'ready';
+        finishBoot('complete');
+        lastFrame = performance.now();
+        schedule();
+      }).catch(fail);
+      return;
+    }
     interaction.setEnabled(entrance.progress === 1);
   } catch (error) { fail(error); return; }
   frame = requestAnimationFrame(draw);
@@ -156,7 +161,7 @@ async function enhance() {
       if (disposed || failed || motion !== 'full') return;
       // Prepare graphics while the font loads; both must be ready before reveal.
       const [created] = await Promise.all([
-        module.createWorld({ container, quality: profile, onFailure: fail }),
+        module.createWorld({ container, quality: profile, onFailure: fail, initialTarget: state.target }),
         document.fonts?.ready,
       ]);
       if (disposed || failed) { created?.dispose(); return; }

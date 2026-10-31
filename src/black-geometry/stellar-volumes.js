@@ -23,7 +23,8 @@ function stars(scene, parent, count, seed, sample, soft = 0) {
   }
   const geometry = new THREE.BufferGeometry();
   for (const [name, values] of Object.entries(data)) geometry.setAttribute(name, new THREE.BufferAttribute(values, ['position', 'orbitCenter', 'orbitAxis'].includes(name) ? 3 : 1));
-  const points = new THREE.Points(geometry, pointMaterial(scene, soft));
+  const points = new THREE.Points(geometry, pointMaterial(scene, soft)), drawingSize = new THREE.Vector2();
+  points.onBeforeRender = renderer => { points.material.uniforms.viewportHeight.value = renderer.getDrawingBufferSize(drawingSize).y; };
   points.frustumCulled = false;points.renderOrder = 2;points.userData.posterSoft = soft;
   points.userData.posterKind = 'stars';parent.add(points);return points;
 }
@@ -57,24 +58,26 @@ function fitVolume(scene) {
 function spiral(scene, parent, seed, density = 1) {
   const identity = (seed % 101) * .071;
   const armPoint = (rng, i, soft = false) => {
-    const u = rng() ** .82, r = .42 + 2.38 * u, arm = i % 2, minor = i % 5 === 0;
-    const phase = arm * Math.PI + (minor ? .86 : 0) + identity * .09;
+    const u = rng() ** .82, r = .34 + 2.46 * u, arm = i % 2, minor = i % 5 === 0;
+    const phase = arm * Math.PI + (minor ? 1.05 + .22 * Math.sin(u * 5) : 0) + identity * .09;
     const winding = arm ? 1.72 : 1.94;
-    const theta = phase + winding * Math.log((r + .10) / .52) + .10 * Math.sin(u * 12 + phase);
+    const theta = phase + winding * Math.log((r + .10) / .52) + .16 * Math.sin(u * 11 + phase);
     const knot = valueNoise(u * 15 + identity, phase * 3, 2.4);
-    const width = (minor ? .22 : .09) + .14 * u + .10 * knot;
+    const width = (minor ? .15 : .065) + .13 * u + .13 * knot;
     let offset = normal(rng, width);
     // Spurs fan out from the main arms; breaks between stellar knots keep
     // the spiral from reading as two continuous dark circles.
-    if (u > .32 && rng() < .18) offset += .16 + .32 * (u - .32);
+    if (u > .28 && rng() < .25) offset += .12 + .38 * (u - .28);
+    // Broken secondary feathers share the arm's flow without tracing a ring.
+    offset += .045 * Math.sin(u * 37 + arm * 2 + identity);
     const a = theta + offset, rr = r + normal(rng, .035 + u * .07);
     const laneOffset = -.035 + .025 * Math.sin(u * 23 + identity);
     const dust = 1 - .72 * Math.exp(-(((offset - laneOffset) / (.023 + .018 * u)) ** 2));
-    const patch = .24 + .76 * clamp((knot - .13) / .62, 0, 1);
-    const bright = rng() < .014;
-    return { position: [rr * Math.cos(a), normal(rng, .025 + .06 * (1 - u)) + .025 * Math.sin(a * 3), rr * Math.sin(a)],
+    const patch = .12 + .88 * clamp((knot - .18) / .56, 0, 1);
+    const bright = rng() < .025;
+    return { position: [rr * Math.cos(a), normal(rng, .035 + .075 * (1 - u)) + .10 * u * u * Math.sin(a * 2 + identity), rr * Math.sin(a)],
       rate: .019 / (r + .5) ** .65,
-      size: soft ? 3 + rng() * 7 : bright ? 1.6 + rng() * 1.4 : .34 + rng() ** 2.8 * 1.55,
+      size: soft ? 3 + rng() * 7 : bright ? 2.1 + rng() ** 2 * 2.1 : .40 + rng() ** 2.8 * 1.45,
       strength: (soft ? .035 + rng() * .045 : .18 + rng() * .48) * patch * dust * (minor ? .65 : 1) };
   };
   stars(scene, parent, Math.round(106000 * density), seed, (rng, i) => armPoint(rng, i));
@@ -82,12 +85,12 @@ function spiral(scene, parent, seed, density = 1) {
   stars(scene, parent, Math.round(65000 * density), seed + 2, rng => {
     let r;do { r = rng() < .28 ? 2.85 * Math.sqrt(rng()) : -.56 * Math.log(Math.max(1e-9, rng() * rng())); } while (r > 2.85);
     const a = rng() * TAU, x = Math.cos(a) * r, z = Math.sin(a) * r;
-    const lane = .45 + .55 * valueNoise(x * 5 + identity, 2, z * 5);
-    return { position: [x, normal(rng, .085), z], rate: .015 / (r + .6) ** .6,
+    const lane = .24 + .76 * valueNoise(x * 5 + identity, 2, z * 5);
+    return { position: [x, normal(rng, .065 + .035 * r) + .075 * (r / 2.85) ** 2 * Math.sin(a * 2 + identity), z], rate: .015 / (r + .6) ** .6,
       size: .35 + rng() ** 2.5 * 1.15, strength: (.24 + rng() * .40) * (.4 + .6 * (1 - r / 3.15)) * lane };
   });
   stars(scene, parent, Math.round(24000 * density), seed + 3, rng => ({
-    position: [normal(rng, .31), normal(rng, .19), normal(rng, .28)], size: .45 + rng() ** 2.7 * 2.0,
+    position: [normal(rng, .35), normal(rng, .19), normal(rng, .25)], size: .50 + rng() ** 2.7 * 2.5,
     strength: .32 + rng() * .42, rate: .028 + rng() * .015,
   }));
   stars(scene, parent, Math.round(12000 * density), seed + 4, rng => ({
@@ -114,16 +117,19 @@ export function createCollisionVolume(scene) {
   stars(scene, content, 40000, 12397, (rng, i) => {
     const side = i % 2 ? 1 : -1, u = rng() ** .85, angle = side * ((side > 0 ? .35 : .60) + u * (side > 0 ? 1.95 : 2.3));
     const r = 1.05 + u * (side > 0 ? 2.05 : 1.83), spread = .035 + .18 * u;
-    const knot = .4 + .6 * valueNoise(u * 12, side + 1, 3.7);
+    const knot = .26 + .74 * valueNoise(u * 12, side + 1, 3.7);
+    const feather = (i % 5 === 0 ? 1 : 0) * .20 * Math.sin(u * Math.PI);
     return { position: [side * .45 + side * r * Math.cos(angle) + normal(rng, spread),
-      side * (.10 + .38 * u * u) + normal(rng, .06 + .10 * u),
+      side * (.10 + .38 * u * u) + feather + normal(rng, .045 + .10 * u),
       side * r * Math.sin(angle) * .68 + normal(rng, spread)],
-      size: .45 + rng() ** 2 * 1.0, strength: (.30 + rng() * .42) * (1 - .60 * u) * knot, rate: .007 };
+      size: .42 + rng() ** 3 * 2.0, strength: (.30 + rng() * .42) * (1 - .60 * u) * knot, rate: .007 };
   });
   stars(scene, content, 14000, 16199, rng => {
-    const u = rng(), x = -.81 + 1.73 * u;
-    return { position: [x + normal(rng, .08), .05 + .20 * Math.sin(u * Math.PI) + normal(rng, .08), .12 + normal(rng, .16)],
-      size: .6 + rng() * 1.3, strength: .24 + rng() * .32, rate: .011 };
+    const u = rng(), x = -.81 + 1.73 * u, ridge = Math.sin(u * Math.PI);
+    const knots = .35 + .65 * valueNoise(u * 15, 4.7, 1.3);
+    return { position: [x + normal(rng, .07), .05 + .25 * ridge + normal(rng, .045 + .05 * ridge),
+      .12 + .18 * Math.sin(u * 5) + normal(rng, .10)],
+      size: .55 + rng() ** 2.6 * 2.8, strength: (.28 + rng() * .42) * knots, rate: .008 };
   });
   scene.animate = t => {
     content.rotation.set(.65 + Math.sin(t * .04) * .09, t * .018, -.20);
@@ -142,17 +148,21 @@ export function createClusterVolume(scene) {
   // A truncated Plummer distribution gives the dense center and extended halo
   // of the supplied globular-cluster reference without copying its stars.
   stars(scene, content, 186000, 66327, rng => {
-    let r;do { r = .57 / Math.sqrt(Math.max(1e-9, rng() ** (-2 / 3) - 1)); } while (r > 3.05);
+    let r;do { r = .64 / Math.sqrt(Math.max(1e-9, rng() ** (-2 / 3) - 1)); } while (r > 3.05);
     const p = sphere(rng, r), giant = rng() < .018 + .014 * Math.exp(-r);
     p[1] *= .97;
-    const axis = new THREE.Vector3(...sphere(rng, 1)).normalize().toArray();
+    const axis = sphere(rng, 1);
     return { position: p, axis, rate: .008 + .015 / (r + .4),
-      size: giant ? 1.7 + rng() ** 1.4 * 2.9 : .32 + rng() ** 2.7 * 1.20,
+      size: giant ? 2.2 + rng() ** 1.8 * 3.8 : .38 + rng() ** 2.7 * 1.30,
       strength: giant ? .40 + rng() * .5 : .13 + rng() * .36 };
   });
-  stars(scene, content, 42000, 41833, rng => {
-    const r = 2.95 * rng() ** .55;
-    return { position: sphere(rng, r), size: .35 + rng() ** 2 * 1.25, strength: .15 + rng() * .25, rate: .013 };
+  stars(scene, content, 42000, 41833, (rng, i) => {
+    const r = 2.95 * rng() ** .55, p = sphere(rng, r), foreground = i % 19 === 0;
+    // Sparse resolved giants sit throughout the halo, among finer distant stars.
+    return { position: p, axis: sphere(rng, 1),
+      size: foreground ? 2.4 + rng() ** 2 * 3.0 : .38 + rng() ** 2.8 * 1.15,
+      strength: foreground ? .42 + rng() * .35 : (.10 + rng() * .24) * (1 - .50 * (r / 3) ** 4),
+      rate: .005 + .010 / (r + .5) };
   });
   cloud(scene, content, [.24, .24, .24], .15);
   cloud(scene, content, [.47, .47, .47], .055);
