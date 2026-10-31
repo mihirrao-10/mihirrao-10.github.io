@@ -1,10 +1,8 @@
 import { test, expect } from '@playwright/test';
 
 const snapshot = page => page.evaluate(() => window.__blackGeometry.snapshot());
-const scenes = [
-  ['top', 'hero'], ['education', 'education'], ['experience', 'experience'],
-  ['publications', 'publications'], ['teaching', 'teaching'], ['personal-projects', 'projects'], ['notes', 'notes'],
-];
+const scenes = ['top', 'education', 'experience', 'publications', 'teaching', 'personal-projects', 'notes'];
+const targetFor = (page, id) => page.locator(`#${id}`).getAttribute('data-target');
 async function select(page, id) {
   await page.locator(`.site-index a[href="#${id}"]`).click();
   await expect(page.locator('[data-current-scene]')).toHaveAttribute('id', id);
@@ -20,8 +18,9 @@ for (const [width, height] of [[320, 568], [390, 844], [768, 1024], [1024, 768],
     await page.setViewportSize({ width, height });
     await page.route('**/textures/*', route => route.abort());
     await page.goto('/?bg-debug');
-    for (const [id, target] of scenes) {
+    for (const id of scenes) {
       await select(page, id);
+      const target = await targetFor(page, id);
       await expect.poll(() => page.locator('#sculpture-poster').evaluate(image => new URL(image.src).pathname)).toBe(`/assets/black-geometry/generated/sculpture-${target}.svg`);
       const dimensions = await page.locator(`#${id}`).evaluate(element => {
         const box = element.getBoundingClientRect();
@@ -58,8 +57,9 @@ for (const [width, height] of [[320, 568], [390, 844], [768, 1024], [1024, 768],
 
 test('menu switches seven translucent cosmic scenes and supports rapid reversals', async ({ page }) => {
   await live(page);
-  for (const [id, target] of scenes) {
+  for (const id of scenes) {
     await select(page, id);
+    const target = await targetFor(page, id);
     await expect.poll(async () => {
       const { world } = await snapshot(page);
       return [world.target, world.nextTarget, world.blend];
@@ -78,7 +78,7 @@ test('menu switches seven translucent cosmic scenes and supports rapid reversals
   await select(page, 'personal-projects');
   await select(page, 'education');
   await select(page, 'top');
-  await expect.poll(async () => (await snapshot(page)).world.target).toBe('hero');
+  await expect.poll(async () => (await snapshot(page)).world.target).toBe(await targetFor(page, 'top'));
   await expect(page.locator('.world')).toHaveCSS('filter', 'none');
 });
 
@@ -119,7 +119,8 @@ test('content and navigation remain usable while sculpture data is unavailable',
   await expect(page.locator('.animation-action')).toHaveCount(0);
   await select(page, 'notes');
   await expect(page.locator('#notes .note-link').first()).toBeVisible();
-  await expect(page.locator('#sculpture-poster')).toHaveAttribute('src', /sculpture-notes\.svg\?v=/);
+  const target = await targetFor(page, 'notes');
+  await expect(page.locator('#sculpture-poster')).toHaveAttribute('src', new RegExp(`sculpture-${target}\\.svg\\?v=`));
 });
 
 for (const port of [8000, 8001]) test(`root/dist ${port} preserves PDF links and local assets`, async ({ page, request }) => {
@@ -135,8 +136,9 @@ for (const port of [8000, 8001]) test(`root/dist ${port} preserves PDF links and
 test('cosmic orbits advance smoothly while the prepared mesh count stays stable', async ({ page }) => {
   await live(page);
   await select(page, 'education');
-  await expect.poll(async () => (await snapshot(page)).world.cosmicTargets).toEqual(['education']);
+  const target = await targetFor(page, 'education');
+  await expect.poll(async () => (await snapshot(page)).world.cosmicTargets).toEqual([target]);
   const before = (await snapshot(page)).world;
-  await expect.poll(async () => (await snapshot(page)).world.cosmicAges.education).toBeGreaterThan(before.cosmicAges.education + .3);
+  await expect.poll(async () => (await snapshot(page)).world.cosmicAges[target]).toBeGreaterThan(before.cosmicAges[target] + .3);
   expect((await snapshot(page)).world.geometries).toBe(before.geometries);
 });

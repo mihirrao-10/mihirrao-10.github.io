@@ -6,6 +6,7 @@ import { MAP_FILES, decodeMap } from '../../src/black-geometry/astronomy-maps.js
 const maps=Object.fromEntries(Object.entries(MAP_FILES).map(([name,file])=>[name,decodeMap(fs.readFileSync(new URL(`../../assets/black-geometry/textures/${file}`,import.meta.url)))]));
 import { createCosmos, COSMIC_TARGETS } from '../../src/black-geometry/cosmos.js';
 import { nebulaParticle } from '../../src/black-geometry/nebula-cloud.js';
+import { quasarJetPosition } from '../../src/black-geometry/quasar.js';
 import { sculptureOpacity } from '../../src/black-geometry/world.js';
 
 for (const name of COSMIC_TARGETS) {
@@ -82,55 +83,28 @@ for(const name of ['hero','education','experience','publications'])test(`${name}
 });
 
 
-test('the seven homepage scenes follow the requested visual order', () => {
-  const expected = ['Globular star cluster', 'Colliding galaxies', 'Milky Way', 'Nebula', 'Black hole', 'Seven-planet solar system', '2001 monolith'];
+test('the graphic pool contains seven distinct cosmic subjects', () => {
+  const expected = ['Globular star cluster', 'Colliding galaxies', 'Milky Way', 'Nebula', 'Black hole', 'Quasar', 'Solar system'];
   assert.deepEqual(COSMIC_TARGETS.map(name => { const scene = createCosmos(name, { maps }); const theme = scene.theme; scene.dispose(); return theme; }), expected);
 });
 
-test('the compact solar system has seven separate orbiting planets and one sun', () => {
-  const scene = createCosmos('projects', { maps });
+test('the oblique solar system has eight separate orbiting planets and one sun', () => {
+  const scene = createCosmos('notes', { maps });
   const planets = [], sun = [], paths = [];
   scene.root.traverse(object => {
     if (object.userData.role === 'planet') planets.push(object);
     if (object.userData.role === 'central-sun') sun.push(object);
     if (object.userData.posterKind === 'orbit') paths.push(object);
   });
-  assert.equal(scene.planetCount, 7); assert.equal(planets.length, 7); assert.equal(paths.length, 7); assert.equal(sun.length, 1);
+  assert.equal(scene.planetCount, 8); assert.equal(planets.length, 8); assert.equal(paths.length, 8); assert.equal(sun.length, 1);
   assert.ok(scene.orbitRadii.every((r, i, list) => i === 0 || r > list[i - 1]));
   const positions = planets.map(object => object.getWorldPosition(new THREE.Vector3()));
   scene.update(10);
   for (const [i, planet] of planets.entries()) {
     assert.ok(planet.getWorldPosition(new THREE.Vector3()).distanceTo(positions[i]) > .1);
-    assert.ok(planet.getWorldPosition(new THREE.Vector3()).length() < scene.radius * .8);
+    assert.ok(planet.getWorldPosition(new THREE.Vector3()).length() < scene.radius);
   }
   scene.dispose();
-});
-
-test('the final monolith is a solid rectangular slab with 1:4:9 proportions', () => {
-  const scene = createCosmos('notes', { maps }); let slab;
-  scene.root.traverse(object => { if (object.userData.role === 'monolith') slab = object; });
-  assert.ok(slab?.isMesh); const { width, height, depth } = slab.geometry.parameters;
-  assert.equal(width / depth, 4); assert.equal(height / depth, 9);
-  assert.equal(slab.material.depthWrite, true); scene.dispose();
-});
-
-test('travel streaks move through space while staying parallel to the monolith in every orientation', () => {
-  const scene=createCosmos('notes',{maps});let slab,streaks;
-  scene.root.traverse(object=>{if(object.userData.role==='monolith')slab=object;if(object.userData.role==='travel-streaks')streaks=object;});
-  assert.ok(streaks?.isLineSegments);const geometry=streaks.geometry,initial=geometry.attributes.position.array.slice();
-  assert.ok(geometry.attributes.position.count>=100);
-  for(const time of [0,1,10,100]){
-    scene.root.quaternion.setFromEuler(new THREE.Euler(time*.19,time*.23,time*.37));scene.update(time);
-    assert.equal(streaks.geometry,geometry);
-    const axis=new THREE.Vector3(0,1,0).transformDirection(slab.matrixWorld);
-    const p=new THREE.Vector3(),q=new THREE.Vector3();
-    for(let i=0;i<geometry.attributes.position.count;i+=2){
-      p.fromBufferAttribute(geometry.attributes.position,i).applyMatrix4(streaks.matrixWorld);
-      q.fromBufferAttribute(geometry.attributes.position,i+1).applyMatrix4(streaks.matrixWorld);
-      const direction=p.sub(q).normalize();assert.ok(direction.clone().cross(axis).length()<1e-6);
-    }
-  }
-  assert.notDeepEqual(geometry.attributes.position.array,initial);scene.dispose();
 });
 
 test('the nebula is a dispersed three-dimensional particle cloud with internal motion', () => {
@@ -159,12 +133,17 @@ test('the nebula is a dispersed three-dimensional particle cloud with internal m
   scene.dispose();
 });
 
-test('monolith travel streaks advance at the faster travel speed', () => {
-  const scene=createCosmos('notes',{maps});let streaks;
-  scene.root.traverse(object=>{if(object.userData.role==='travel-streaks')streaks=object;});
-  const before=streaks.geometry.attributes.position.array.slice();scene.update(.01);
-  const after=streaks.geometry.attributes.position.array,velocities=[];
-  for(let i=1;i<before.length;i+=6)if(before[i]>after[i])velocities.push((before[i]-after[i])/.01);
-  assert.ok(velocities.length>60);
-  assert.ok(velocities.every(v=>v>=2.09&&v<=4.81));scene.dispose();
+
+test('quasar jets occupy both poles and flow inside the scene bounds', () => {
+  const scene = createCosmos('projects', { maps });
+  let jets; scene.root.traverse(object => { if (object.userData.role === 'quasar-jets') jets = object; });
+  assert.ok(jets?.isPoints);
+  for (const side of [-1, 1]) for (const u of [.1, .4, .8]) {
+    const a = quasarJetPosition(u, .8, .7, side, 0);
+    const b = quasarJetPosition(u, .8, .7, side, 1);
+    assert.equal(Math.sign(a[1]), side);
+    assert.ok(Math.abs(b[1]) > Math.abs(a[1]));
+    assert.ok(Math.hypot(...b) < scene.radius);
+  }
+  scene.dispose();
 });

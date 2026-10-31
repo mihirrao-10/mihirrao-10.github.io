@@ -2,6 +2,7 @@ import { DEFAULTS, QUALITY } from './preferences.js';
 import { createTransition, advanceTransition } from './scene-state.js';
 import { createInteraction } from './interaction.js';
 import { createNavigation } from './navigation.js';
+import { assignSceneTargets } from './scene-assignments.js';
 
 const body = document.body;
 const root = document.documentElement;
@@ -10,6 +11,7 @@ const poster = document.querySelector('#sculpture-poster');
 const posterVersions = typeof __SCULPTURE_POSTER_VERSIONS__ === 'object' ? __SCULPTURE_POSTER_VERSIONS__ : {};
 const finePointer = matchMedia('(pointer: fine)');
 const sceneElements = [...document.querySelectorAll('[data-scene]')];
+assignSceneTargets(sceneElements);
 const listeners = new AbortController();
 const on = (target, event, callback, options = {}) => target.addEventListener(event, callback, { ...options, signal: listeners.signal });
 const debug = new URLSearchParams(location.search).has('bg-debug');
@@ -120,8 +122,7 @@ function draw(now) {
     transition = advanceTransition(transition, state.target, elapsed / 1000);
   visualState = transition.from === transition.to ? state :
     { ...state, target: transition.from, nextTarget: transition.to, blend: transition.blend };
-  if (state.target !== 'hero') entrance.progress = 1;
-  else if (entrance.started) entrance.progress = Math.min(1, entrance.progress + delta / 1.1);
+  if (entrance.started) entrance.progress = Math.min(1, entrance.progress + delta / 1.1);
   try {
     world.recordFrame(elapsed);
     world.render({ state: visualState,
@@ -228,7 +229,7 @@ if (debug) window.__blackGeometry = {
     motion, preferences: { ...DEFAULTS }, profile, state: { ...state }, visualState: { ...visualState },
     transition: { ...transition }, project: { ...project }, time, orbitTime,
     interaction: interaction.snapshot(), active, pendingFrame: !!frame, world: world?.snapshot() || null,
-    page: navigation.current().id, entrance: { ...entrance },
+    page: navigation.current().id, assignments: Object.fromEntries(sceneElements.map(scene => [scene.id, scene.dataset.target])), entrance: { ...entrance },
   }),
 };
 enhance();

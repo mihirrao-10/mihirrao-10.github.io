@@ -60,8 +60,9 @@ for (const touch of [false, true]) test(`all seven sculptures accept full 3D ${t
   try {
     await ready(page);
     const world = page.locator('.world');
-    for (const [id, target] of [['top', 'hero'], ['education', 'education'], ['experience', 'experience'], ['publications', 'publications'], ['teaching', 'teaching'], ['personal-projects', 'projects'], ['notes', 'notes']]) {
+    for (const id of ['top', 'education', 'experience', 'publications', 'teaching', 'personal-projects', 'notes']) {
       await page.locator(`.site-index a[href="#${id}"]`).click();
+      const target = await page.locator(`#${id}`).getAttribute('data-target');
       await expect.poll(async () => {
         const { world } = await snapshot(page);
         return [world.target, world.nextTarget, world.blend];

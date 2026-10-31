@@ -81,20 +81,21 @@ The STIX Two Text page starts the animation automatically on supported devices.
 If graphics fail, static SVGs retain the content and native links. Print uses
 dark text on white.
 
-One WebGL context renders seven grayscale scenes in tab order: a globular star
-cluster (About), colliding galaxies (Education), the Milky Way (Industry
-experience), a nebula (Publications), a black hole (Teaching), a compact
-seven-planet solar system (Projects), and a black 2001-inspired monolith
-(Personal notes). The slab uses 1:4:9 proportions, subtly beveled edges, a glossy black finish, and
-fast animated travel streaks parallel to its long axis.
+One WebGL context renders seven grayscale subjects: a globular star cluster,
+colliding galaxies, the Milky Way, a nebula, a black hole, a quasar, and a solar
+system. Each page load shuffles a one-to-one assignment across the seven pages;
+the assignment stays fixed during navigation and browser history within that
+visit. Fallback posters follow the same assignment. The quasar has a tilted
+accretion disk and animated bipolar jets. The eight-planet solar system starts
+at an oblique angle, with distinct planet sizes, Saturn's rings, and an asteroid
+belt. Its sizes, distances, and periods are illustrative.
 
 The nebula is a loose cloud of 238,000 fine dust grains, curling filaments,
 and faint haze particles. Grains swirl around local knots and drift on
 independent phases; the cloud continuously changes internally while remaining
 freely rotatable. Its spread and grain echo the introductory star cluster.
-Stars occupy three dimensions. The solar system has seven independently
-orbiting planets, thin orbital paths, and one ringed planet; its
-sizes and speeds are illustrative. Extra framing keeps the system compact.
+Stars occupy three dimensions. The solar system has eight independently
+orbiting planets, thin orbital paths, and one ringed planet.
 All scenes share unrestricted mouse and touch rotation, with bounds that retain
 the entire object. The black hole uses an approximate bent-ray accretion model.
 Geometry stays resident while animation updates transforms and uniforms.

@@ -81,49 +81,72 @@ export function createStar(scene, maps) {
   scene.theme = 'Giant star';scene.radius = 2.95;scene.volumeKind = 'convective-star';
 }
 
-// A compact, illustrative system with seven distinct planets. Distances, sizes,
-// inclinations and orbital periods are chosen for readability, not to scale.
+// An illustrative eight-planet system. Sizes and spacing favor a readable
+// oblique view rather than astronomical scale.
 export function createSolarSystem(scene, maps) {
-  const content = new THREE.Group(); content.rotation.set(.77, -.12, -.23); scene.root.add(content);
-  const sun = body(scene, content, .34, 3, { map: maps.sun, detail: 128, opacity: 1.18 });
+  const content = new THREE.Group(); content.rotation.set(.34, -.18, -.32); scene.root.add(content);
+  const sun = body(scene, content, .44, 3, { map: maps.sun, detail: 160, opacity: 1.15 });
   sun.userData.role = 'central-sun';
-  const radii = [.09, .13, .14, .105, .24, .205, .155];
-  const orbits = [.74, 1.10, 1.50, 1.94, 2.50, 3.12, 3.78];
-  const phases = [.15, 2.3, 4.4, .95, 3.8, 5.7, 2.85];
-  const kinds = [1, 4, 0, 4, 2, 2, 4], planets = [];
+  const radii = [.075, .115, .13, .095, .31, .255, .18, .175];
+  const orbits = [.80, 1.14, 1.53, 1.95, 2.62, 3.30, 3.95, 4.57];
+  const phases = [2.20, 5.25, .35, 3.72, 1.20, 4.55, 2.64, 5.72];
+  const kinds = [1, 4, 0, 4, 2, 2, 4, 2], planets = [];
   const terrain = planetMap(scene, 512, 256);
-  const orbitMaterial = new THREE.LineBasicMaterial({ color: 0x474747, transparent: true, opacity: .16, depthWrite: false });
-  orbitMaterial.userData.baseOpacity = .16; scene.materials.add(orbitMaterial);
-  for (let i = 0; i < 7; i++) {
-    const plane = new THREE.Group(); plane.rotation.x = (i - 3) * .018; content.add(plane);
+  const orbitMaterial = new THREE.LineBasicMaterial({ color: 0x474747, transparent: true, opacity: .18, depthWrite: false });
+  orbitMaterial.userData.baseOpacity = .18; scene.materials.add(orbitMaterial);
+  const ringPixels = new Uint8Array(512);
+  for (let i = 0; i < ringPixels.length; i++) {
+    const u = i / (ringPixels.length - 1);
+    const gaps = 1 - .84 * Math.exp(-(((u - .61) / .026) ** 2)) - .45 * Math.exp(-(((u - .83) / .012) ** 2));
+    const edge = Math.min(1, u * 24, (1 - u) * 22);
+    ringPixels[i] = Math.round(255 * edge * Math.max(0, gaps) * (.53 + .15 * Math.sin(u * 185) ** 2));
+  }
+  const ringProfile = new THREE.DataTexture(ringPixels, 512, 1, THREE.RedFormat);
+  ringProfile.userData = { pixels: ringPixels, width: 512, height: 1, origin: 'Authored illustrative ring bands' };
+  ringProfile.magFilter = ringProfile.minFilter = THREE.LinearFilter;
+  ringProfile.needsUpdate = true; scene.textures.add(ringProfile);
+  for (let i = 0; i < orbits.length; i++) {
+    const plane = new THREE.Group(); plane.rotation.set((i - 3.5) * .012, 0, (i % 3 - 1) * .012); content.add(plane);
     const points = [];
-    for (let j = 0; j < 192; j++) {
-      const a = j * TAU / 192, b = (j + 1) * TAU / 192;
+    for (let j = 0; j < 256; j++) {
+      const a = j * TAU / 256, b = (j + 1) * TAU / 256;
       points.push(orbits[i] * Math.cos(a), 0, orbits[i] * Math.sin(a), orbits[i] * Math.cos(b), 0, orbits[i] * Math.sin(b));
     }
     const path = new THREE.LineSegments(new THREE.BufferGeometry().setAttribute('position', new THREE.Float32BufferAttribute(points, 3)), orbitMaterial);
     path.userData.posterKind = 'orbit'; plane.add(path);
     const planet = new THREE.Group(); plane.add(planet);
-    const surface = body(scene, planet, radii[i], kinds[i], { map: i === 0 ? maps.moon : i === 2 ? terrain : null, detail: 96, opacity: 1.05 });
+    const surface = body(scene, planet, radii[i], kinds[i], { map: i === 0 ? maps.moon : i === 2 ? terrain : null, detail: i >= 4 ? 128 : 96, opacity: i === 6 ? .80 : 1.08 });
     surface.userData.role = 'planet'; surface.userData.planetIndex = i;
-    surface.rotation.z = i * .13;
+    surface.rotation.z = [.05, .1, .41, .44, .06, .47, 1.45, .49][i];
     if (i === 5) {
-      const inner = radii[i] * 1.35, outer = radii[i] * 2.05;
-      const ring = new THREE.Mesh(new THREE.RingGeometry(inner, outer, 128).rotateX(-Math.PI / 2), ringMaterial(scene, inner, outer, .5));
-      ring.rotation.z = .3; ring.userData = { posterKind: 'ring', innerRadius: inner, outerRadius: outer }; planet.add(ring);
+      const inner = radii[i] * 1.32, outer = radii[i] * 2.10;
+      const ring = new THREE.Mesh(new THREE.RingGeometry(inner, outer, 192, 4).rotateX(-Math.PI / 2), ringMaterial(scene, inner, outer, .70, ringProfile));
+      ring.rotation.z = .47; ring.userData = { posterKind: 'ring', innerRadius: inner, outerRadius: outer }; planet.add(ring);
     }
-    planets.push({ planet, surface, orbit: orbits[i], phase: phases[i], speed: .21 / orbits[i] ** 1.2 });
+    planets.push({ planet, surface, orbit: orbits[i], phase: phases[i], speed: .24 / orbits[i] ** 1.2 });
   }
+  // Sparse grains suggest the belt while keeping each orbit easy to follow.
+  const beltPositions = [], sizes = [], strengths = [];
+  for (let i = 0; i < 720; i++) {
+    const angle = i * 2.399963229728653, r = 2.18 + .20 * valueNoise(i * 1.7, 4.3, 2.1);
+    beltPositions.push(r * Math.cos(angle), .045 * (valueNoise(i * 3.1, 2.2, 8.4) - .5), r * Math.sin(angle));
+    sizes.push(.8 + .5 * valueNoise(i, 7, 3)); strengths.push(.12 + .12 * valueNoise(i, 5, 9));
+  }
+  const beltGeometry = new THREE.BufferGeometry().setAttribute('position', new THREE.Float32BufferAttribute(beltPositions, 3));
+  beltGeometry.setAttribute('starSize', new THREE.Float32BufferAttribute(sizes, 1));
+  beltGeometry.setAttribute('strength', new THREE.Float32BufferAttribute(strengths, 1));
+  const beltMaterial = new THREE.PointsMaterial({ color: 0x555555, size: .014, transparent: true, opacity: .24, depthWrite: false });
+  beltMaterial.userData.baseOpacity = .24; scene.materials.add(beltMaterial);
+  const belt = new THREE.Points(beltGeometry, beltMaterial); belt.userData.role = 'asteroid-belt'; content.add(belt);
   scene.animate = time => {
-    sun.rotation.y = time * .04;
+    sun.rotation.y = time * .04; belt.rotation.y = time * .012;
     for (const { planet, surface, orbit, phase, speed } of planets) {
       const angle = phase + time * speed;
       planet.position.set(orbit * Math.cos(angle), 0, orbit * Math.sin(angle));
       surface.rotation.y = time * .09;
     }
   };
-  scene.theme = 'Seven-planet solar system'; scene.volumeKind = 'solar-system';
-  scene.planetCount = 7; scene.orbitRadii = orbits; scene.bodyRadii = [.34, ...radii];
-  // Extra framing room makes this scene intentionally smaller than the galaxies.
-  scene.radius = 5.15;
+  scene.theme = 'Solar system'; scene.volumeKind = 'solar-system';
+  scene.planetCount = 8; scene.orbitRadii = orbits; scene.bodyRadii = [.44, ...radii];
+  scene.radius = 4.92;
 }

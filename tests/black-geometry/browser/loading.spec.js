@@ -40,10 +40,11 @@ test('graphics warmup uploads every scene in a small buffer and restores full re
     }
   });
   await page.locator('.site-index a[href="#education"]').click();
+  const target = await page.locator('#education').getAttribute('data-target');
   await expect.poll(() => page.evaluate(() => {
     const world = window.__blackGeometry.snapshot().world;
     return [world.target, world.nextTarget, world.blend];
-  })).toEqual(['education', 'education', 0]);
+  })).toEqual([target, target, 0]);
   expect(await page.evaluate(() => window.bufferResizes)).toBe(0);
   const repeatedAttributes = await page.evaluate(async () => {
     const changes = [], start = window.__blackGeometry.snapshot().world.frames;

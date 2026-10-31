@@ -17,25 +17,28 @@ or wire overlays. All positions,
 dynamics, and scales are illustrative unless an image-derived field is explicitly
 identified. Dark ink represents luminous density against the beige page.
 
-- **About:** a globular star cluster with a dense central population and extended
+Each load shuffles these seven subjects across pages, preserving the assignment
+while navigating. The names below describe graphics rather than page assignments.
+
+- **Globular cluster:** a globular star cluster with a dense central population and extended
   halo. A truncated Plummer distribution supplies the radial profile; stellar
   positions, brightnesses, and orbits are authored.
-- **Education:** two tilted spiral galaxies with a bridge and tidal tails. The
+- **Colliding galaxies:** two tilted spiral galaxies with a bridge and tidal tails. The
   encounter is authored, not an observed pair or an N-body simulation.
-- **Industry experience:** a three-dimensional Milky Way illustration with
+- **Milky Way:** a three-dimensional Milky Way illustration with
   spiral arms, disk, bar, and bulge. Broad structure references
   [NASA's Milky Way illustration](https://science.nasa.gov/resource/the-milky-way-galaxy/).
   The stars are procedural samples, not a measured catalog.
-- **Publications:** an authored particle nebula inspired by the loose gas and
+- **Nebula:** an authored particle nebula inspired by the loose gas and
   dust in the user's reference. Fine grains, narrow filaments, and faint haze
   occupy real depth around open gaps. Independent local orbits and phased drift
   animate the particles themselves. Shape, density, and flow are illustrative.
   No photographic silhouette, texture, or solid surface is active.
-- **Teaching:** rays deflect through a turbulent accretion disk around an absorbing
+- **Black hole:** rays deflect through a turbulent accretion disk around an absorbing
   center. The silhouette references Gargantua in *Interstellar* and
   [NASA's warped-disk illustration](https://www.nasa.gov/universe/nasa-visualization-shows-a-black-holes-warped-world/).
   This is an approximate authored model, not a relativistic geodesic solution.
-- **Projects:** an illustrative seven-planet solar system, with independent
+- **Solar system:** an illustrative eight-planet solar system, with independent
   orbits and one ringed planet. Its distances, sizes, and periods are chosen
   for readability. A procedural field supplies one planet's terrain. The
   retained [NASA CGI Moon Kit](https://svs.gsfc.nasa.gov/4720/) grayscale LROC field
@@ -43,11 +46,10 @@ identified. Dark ink represents luminous density against the beige page.
   star uses the retained [SDO/AIA 171 Å field](https://sdo.gsfc.nasa.gov/data/)
   from October 29, 2026, credited to NASA/SDO and the AIA science team. The star's
   reverse hemisphere and motion are authored.
-- **Personal notes:** a plain, black rectangular monolith inspired by *2001:
-  A Space Odyssey*, with 1:4:9 proportions. Narrow beveled edges and procedural
-  softbox reflections give the black slab its gloss. Animated line segments share
-  its local coordinate system and remain parallel to its long edges through
-  every rotation. No film frame, downloaded mesh, or movie texture is used.
+- **Quasar:** an authored tilted accretion disk, compact active core, and bipolar
+  jets. Procedural particles flow outward along the jets, broadening into terminal
+  knots. Geometry and motion illustrate the structure without claiming measured
+  dimensions or a physical simulation. It uses no downloaded image or mesh.
 
 The images supplied by the user in Documents are composition references for
 the black hole, globular cluster, and nebula. These reference files are not copied
