@@ -47,13 +47,15 @@ while navigating. The names below describe graphics rather than page assignments
   from October 29, 2026, credited to NASA/SDO and the AIA science team. The star's
   reverse hemisphere and motion are authored.
 - **Quasar:** an authored tilted accretion disk, compact active core, and bipolar
-  jets. Procedural particles flow outward along the jets, broadening into terminal
-  knots. Geometry and motion illustrate the structure without claiming measured
-  dimensions or a physical simulation. It uses no downloaded image or mesh.
+  jets, with composition inspired by the user's quasar image. Tightly winding
+  bands and loose surrounding filaments frame the disk. A narrow jet extends
+  toward the upper left; its receding counterpart is fainter. Procedural
+  particles flow outward along both jets. Geometry and motion are illustrative.
+  The reference image is not embedded or published.
 
 The images supplied by the user in Documents are composition references for
-the black hole, globular cluster, and nebula. These reference files are not copied
-into the site or redistributed. Only the lunar and solar maps are active image-derived fields;
+the black hole, globular cluster, nebula, and quasar. These reference files are
+not copied into the site or redistributed. Only the lunar and solar maps are active image-derived fields;
 archived Earth, Jupiter, Saturn, Whirlpool, and Abell 1689 derivatives retain
 their original credits and hashes in `assets/black-geometry/textures/CREDITS.txt`.
 

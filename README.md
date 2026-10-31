@@ -85,9 +85,10 @@ One WebGL context renders seven grayscale subjects: a globular star cluster,
 colliding galaxies, the Milky Way, a nebula, a black hole, a quasar, and a solar
 system. Each page load shuffles a one-to-one assignment across the seven pages;
 the assignment stays fixed during navigation and browser history within that
-visit. Fallback posters follow the same assignment. The quasar has a tilted
-accretion disk and animated bipolar jets. The eight-planet solar system starts
-at an oblique angle, with distinct planet sizes, Saturn's rings, and an asteroid
+visit. Fallback posters follow the same assignment. The quasar has a tilted,
+turbulent accretion disk, loose filaments, and narrow animated bipolar jets.
+The eight-planet solar system starts at an oblique angle, with distinct planet
+sizes, Saturn's rings, and an asteroid
 belt. Its sizes, distances, and periods are illustrative.
 
 The nebula is a loose cloud of 238,000 fine dust grains, curling filaments,

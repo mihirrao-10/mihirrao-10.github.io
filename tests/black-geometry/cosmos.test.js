@@ -145,5 +145,17 @@ test('quasar jets occupy both poles and flow inside the scene bounds', () => {
     assert.ok(Math.abs(b[1]) > Math.abs(a[1]));
     assert.ok(Math.hypot(...b) < scene.radius);
   }
+  const attributes = jets.geometry.attributes;
+  for (let i = 0; i < attributes.position.count; i += 997) {
+    const at = time => quasarJetPosition(attributes.along.getX(i), attributes.angle.getX(i),
+      attributes.shell.getX(i), attributes.side.getX(i), time, attributes.rate.getX(i));
+    const initial = new THREE.Vector3().fromBufferAttribute(attributes.position, i);
+    assert.ok(initial.distanceTo(new THREE.Vector3(...at(0))) < 1e-6, 'Poster and live jets must start at the same positions');
+    for (const time of [0, .01, 1, 20, 100, 1000]) {
+      const position = at(time);
+      assert.ok(position.every(Number.isFinite), 'Animated jet particles must stay finite');
+      assert.ok(Math.hypot(...position) < scene.radius, 'Animated jet particles must stay inside rotation-safe bounds');
+    }
+  }
   scene.dispose();
 });
