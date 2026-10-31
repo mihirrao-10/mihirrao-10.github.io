@@ -69,7 +69,7 @@ for (const [port, width, height] of [[8000, 1440, 900], [8001, 390, 844]]) {
     await page.emulateMedia({ reducedMotion: 'no-preference' });
     let release, requested = false;
     const pending = new Promise(resolve => { release = resolve; });
-    await page.route('**/textures/*', async route => {
+    await page.route('**/generated/world-*.js', async route => {
       requested = true;
       await pending;
       await route.continue();
@@ -96,7 +96,8 @@ for (const [port, width, height] of [[8000, 1440, 900], [8001, 390, 844]]) {
         const style = getComputedStyle(dot);
         return [style.animationName, style.animationDelay];
       }))).toEqual([['loading-dot', '0s'], ['loading-dot', '0.16s'], ['loading-dot', '0.32s']]);
-      await page.screenshot({ path: testInfo.outputPath('loading.png') });
+      // WebKit can keep fonts.ready pending while the module preload is held.
+      // Verify the blocked loader above, then capture after releasing the resource.
       release();
       await expect(page.locator('html')).toHaveAttribute('data-boot', 'complete', { timeout: 30000 });
       const reveal = await page.evaluate(() => window.loaderReveal);
@@ -116,7 +117,7 @@ test('reduced motion keeps the loader still while automatically starting the scu
   await page.emulateMedia({ reducedMotion: 'reduce' });
   let release, requested = false;
   const pending = new Promise(resolve => { release = resolve; });
-  await page.route('**/textures/*', async route => {
+  await page.route('**/generated/world-*.js', async route => {
     requested = true;
     await pending;
     await route.continue();

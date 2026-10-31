@@ -1,9 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as THREE from 'three';
-import fs from 'node:fs';
-import { MAP_FILES, decodeMap } from '../../src/black-geometry/astronomy-maps.js';
-const maps=Object.fromEntries(Object.entries(MAP_FILES).map(([name,file])=>[name,decodeMap(fs.readFileSync(new URL(`../../assets/black-geometry/textures/${file}`,import.meta.url)))]));
 import { createCosmos, COSMIC_TARGETS } from '../../src/black-geometry/cosmos.js';
 import { nebulaParticle } from '../../src/black-geometry/nebula-cloud.js';
 import { quasarJetPosition } from '../../src/black-geometry/quasar.js';
@@ -11,7 +8,7 @@ import { sculptureOpacity } from '../../src/black-geometry/world.js';
 
 for (const name of COSMIC_TARGETS) {
   test(`${name} has a detailed finite geometry, stable motion, and deterministic sampling`, () => {
-    const scene = createCosmos(name,{maps}), again = createCosmos(name,{maps});
+    const scene = createCosmos(name), again = createCosmos(name);
     const positions = root => {
       const arrays = []; root.traverse(object => { if (object.geometry) arrays.push(object.geometry.attributes.position.array); });
       return arrays;
@@ -65,13 +62,13 @@ test('the mathematical introduction is lighter and the Notes opacity stays uncha
 
 test('navigation preserves seven distinct cosmic subjects',()=>{
   const themes = COSMIC_TARGETS.map(target=>{
-    const scene=createCosmos(target,{maps});const theme=scene.theme;scene.dispose();return theme;
+    const scene=createCosmos(target);const theme=scene.theme;scene.dispose();return theme;
   });
   assert.equal(new Set(themes).size,7);
 });
 
-for(const name of ['hero','education','experience','publications'])test(`${name} contains stars distributed in three dimensions`,()=>{
-  const scene=createCosmos(name,{maps}),clouds=[];
+for(const name of ['hero','education','experience','publications','notes'])test(`${name} contains stars distributed in three dimensions`,()=>{
+  const scene=createCosmos(name),clouds=[];
   scene.root.traverse(o=>{if(o.isPoints)clouds.push(o);});
   assert.ok(clouds.length>0);
   for(const cloud of clouds){
@@ -84,31 +81,12 @@ for(const name of ['hero','education','experience','publications'])test(`${name}
 
 
 test('the graphic pool contains seven distinct cosmic subjects', () => {
-  const expected = ['Globular star cluster', 'Colliding galaxies', 'Milky Way', 'Nebula', 'Black hole', 'Quasar', 'Solar system'];
-  assert.deepEqual(COSMIC_TARGETS.map(name => { const scene = createCosmos(name, { maps }); const theme = scene.theme; scene.dispose(); return theme; }), expected);
-});
-
-test('the oblique solar system has eight separate orbiting planets and one sun', () => {
-  const scene = createCosmos('notes', { maps });
-  const planets = [], sun = [], paths = [];
-  scene.root.traverse(object => {
-    if (object.userData.role === 'planet') planets.push(object);
-    if (object.userData.role === 'central-sun') sun.push(object);
-    if (object.userData.posterKind === 'orbit') paths.push(object);
-  });
-  assert.equal(scene.planetCount, 8); assert.equal(planets.length, 8); assert.equal(paths.length, 8); assert.equal(sun.length, 1);
-  assert.ok(scene.orbitRadii.every((r, i, list) => i === 0 || r > list[i - 1]));
-  const positions = planets.map(object => object.getWorldPosition(new THREE.Vector3()));
-  scene.update(10);
-  for (const [i, planet] of planets.entries()) {
-    assert.ok(planet.getWorldPosition(new THREE.Vector3()).distanceTo(positions[i]) > .1);
-    assert.ok(planet.getWorldPosition(new THREE.Vector3()).length() < scene.radius);
-  }
-  scene.dispose();
+  const expected = ['Globular star cluster', 'Colliding galaxies', 'Milky Way', 'Nebula', 'Black hole', 'Quasar', 'Galaxy cluster'];
+  assert.deepEqual(COSMIC_TARGETS.map(name => { const scene = createCosmos(name); const theme = scene.theme; scene.dispose(); return theme; }), expected);
 });
 
 test('the nebula is a dispersed three-dimensional particle cloud with internal motion', () => {
-  const scene=createCosmos('publications',{maps}),clouds=[];
+  const scene=createCosmos('publications'),clouds=[];
   scene.root.traverse(object=>{if(object.isPoints)clouds.push(object);assert.ok(!object.isMesh,'Gas must not form a solid surface');});
   assert.equal(scene.particleCount,238000);assert.equal(clouds.length,3);
   const samples=[];
@@ -135,7 +113,7 @@ test('the nebula is a dispersed three-dimensional particle cloud with internal m
 
 
 test('quasar jets occupy both poles and flow inside the scene bounds', () => {
-  const scene = createCosmos('projects', { maps });
+  const scene = createCosmos('projects');
   let jets; scene.root.traverse(object => { if (object.userData.role === 'quasar-jets') jets = object; });
   assert.ok(jets?.isPoints);
   for (const side of [-1, 1]) for (const u of [.1, .4, .8]) {
@@ -157,5 +135,39 @@ test('quasar jets occupy both poles and flow inside the scene bounds', () => {
       assert.ok(Math.hypot(...position) < scene.radius, 'Animated jet particles must stay inside rotation-safe bounds');
     }
   }
+  scene.dispose();
+});
+
+
+test('the galaxy cluster contains distinct galaxy populations across depth within a bounded draw budget', () => {
+  const scene = createCosmos('notes'), centers = scene.galaxies.map(galaxy => new THREE.Vector3(...galaxy.center));
+  assert.equal(scene.volumeKind, 'galaxy-cluster');
+  assert.equal(scene.galaxyCount, centers.length);
+  assert.ok(centers.length >= 20);
+  assert.ok(new Set(scene.galaxies.map(galaxy => galaxy.type)).size >= 3);
+  const spread = new THREE.Box3().setFromPoints(centers).getSize(new THREE.Vector3());
+  assert.ok(spread.x > 3 && spread.y > 2 && spread.z > 1, 'Member galaxies must fill real depth');
+  for (let i = 0; i < centers.length; i++) for (let j = i + 1; j < centers.length; j++)
+    assert.ok(centers[i].distanceTo(centers[j]) > .12, 'Galaxies must remain separate populations');
+  let particles = 0, draws = 0;
+  scene.root.traverse(object => {
+    if (!object.geometry) return;
+    draws++;
+    assert.ok(object.isPoints, 'The cluster must not retain planetary surfaces or orbit paths');
+    particles += object.geometry.attributes.position.count;
+    const a = object.geometry.attributes;
+    for (let i = 0; i < a.position.count; i += 997) {
+      const center = new THREE.Vector3().fromBufferAttribute(a.orbitCenter, i);
+      const local = new THREE.Vector3().fromBufferAttribute(a.position, i).sub(center);
+      const axis = new THREE.Vector3().fromBufferAttribute(a.orbitAxis, i);
+      for (const time of [0, .01, 10, 1000]) {
+        scene.update(time);
+        const position = local.clone().applyAxisAngle(axis, time * a.rate.getX(i)).add(center).applyMatrix4(object.matrixWorld);
+        assert.ok(position.length() < scene.radius, 'Internal galaxy rotation must stay inside the fit');
+      }
+    }
+  });
+  assert.ok(particles >= 50000 && particles <= 180000);
+  assert.ok(draws <= 10, 'Member galaxies should share batched buffers');
   scene.dispose();
 });

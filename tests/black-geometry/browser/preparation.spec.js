@@ -41,6 +41,7 @@ async function waitForReveal(page) {
   expect(reveal.fonts).toBe('loaded');
   expect(world.preparedScenes.slice().sort()).toEqual(targets);
   expect(world.warmedTargets).toBe(7);
+  expect(world.preparedMaps).toEqual([]);
   expect(world.gpuReady).toBe(true);
   expect(world.liveFrameReady).toBe(true);
   expect(world.target).toBe(snapshot.assignments[snapshot.page]);
@@ -63,7 +64,8 @@ async function settle(page, target) {
 test('all seven first visits and repeats reuse shaders, buffers, and uploaded maps after reveal', async ({ page }) => {
   test.setTimeout(120000);
   await instrumentPreparation(page);
-  const errors = []; page.on('pageerror', error => errors.push(error.message));
+  const errors = [], textureRequests = []; page.on('pageerror', error => errors.push(error.message));
+  page.on('request', request => { if (request.url().includes('/textures/')) textureRequests.push(request.url()); });
   try {
     await page.goto('/?bg-debug');
     const reveal = await waitForReveal(page);
@@ -77,6 +79,7 @@ test('all seven first visits and repeats reuse shaders, buffers, and uploaded ma
         .toEqual(reveal.counters);
     }
     expect(errors).toEqual([]);
+    expect(textureRequests).toEqual([]);
   } finally {
     await page.evaluate(() => window.restorePreparationInstrumentation?.());
   }

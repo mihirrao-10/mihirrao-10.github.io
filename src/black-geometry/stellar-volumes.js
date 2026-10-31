@@ -138,6 +138,96 @@ export function createCollisionVolume(scene) {
   scene.theme = 'Colliding galaxies';scene.volumeKind = 'interacting-galaxies';scene.galaxyCount = 2;fitVolume(scene);
 }
 
+// A galaxy cluster contains distinct extended galaxies, not individual stars
+// around one nucleus. Batch each depth group to keep the whole field inexpensive.
+export function createGalaxyClusterVolume(scene) {
+  const content = new THREE.Group();scene.root.add(content);
+  const rng = random(720431), members = [], layers = Array.from({ length: 3 }, () => new THREE.Group());
+  layers.forEach(layer => content.add(layer));
+  const anchors = [
+    { center: [-.42, .28, .20], size: .58, type: 'elliptical' },
+    { center: [.42, -.38, -.18], size: .42, type: 'elliptical' },
+    { center: [.94, .62, .65], size: .43, type: 'spiral' },
+    { center: [-1.05, -.65, .35], size: .34, type: 'lenticular' },
+  ];
+  for (let i = 0; i < 36; i++) {
+    let center, size, type;
+    if (i < anchors.length) ({ center, size, type } = anchors[i]);
+    else {
+      const u = (i - 3) / 33, angle = i * 2.39996323 + (rng() - .5) * .40;
+      const radius = .85 + 1.82 * Math.sqrt(u);
+      center = [Math.cos(angle) * radius, Math.sin(angle) * radius * .85, normal(rng, .64)];
+      size = .11 + .18 * rng() ** 1.25 + (i % 9 === 0 ? .08 : 0);
+      type = i % 5 === 0 ? 'spiral' : i % 4 === 0 ? 'lenticular' : 'elliptical';
+    }
+    const orientation = new THREE.Quaternion().setFromEuler(new THREE.Euler(.35 + rng() * 2.25, rng() * TAU, rng() * TAU));
+    const axis = new THREE.Vector3(0, 1, 0).applyQuaternion(orientation).toArray();
+    members.push({ center, size, type, orientation, axis, phase: rng() * TAU,
+      weight: size ** 1.4, layer: center[2] < -.32 ? 0 : center[2] > .32 ? 2 : 1 });
+  }
+  // A recognizable, oblique foreground spiral contrasts with the central ellipses.
+  members[2].orientation.setFromEuler(new THREE.Euler(.92, .15, -.30));
+  members[2].axis = new THREE.Vector3(0, 1, 0).applyQuaternion(members[2].orientation).toArray();
+  const point = new THREE.Vector3();
+  function sampleMember(member, random, index, soft) {
+    const { center, size, type, orientation, axis, phase } = member;
+    let x, y, z, density = 1;
+    if (type === 'elliptical') {
+      // A compact core and extended ellipsoidal envelope give each galaxy a
+      // continuous surface-brightness profile instead of a hard particle ball.
+      let radius;
+      do { radius = -.19 * Math.log(Math.max(1e-9, random() * random())); } while (radius > 1.45);
+      if (soft && random() < .40) radius = .28 + .95 * Math.sqrt(random());
+      const direction = sphere(random, radius);
+      [x, y, z] = [direction[0], direction[1] * .56, direction[2] * .66];
+    } else {
+      const bulge = random() < (type === 'spiral' ? .30 : .46);
+      if (bulge) {
+        x = normal(random, .15);y = normal(random, .10);z = normal(random, .15);
+      } else {
+        const radius = .12 + 1.02 * random() ** .72;
+        const arm = index % 2, scatter = normal(random, .13 + radius * .12);
+        const diffuse = type === 'lenticular' || random() < .25;
+        const angle = !diffuse ? arm * Math.PI + 1.9 * Math.log((radius + .10) / .30) + phase + scatter : random() * TAU;
+        x = Math.cos(angle) * radius;z = Math.sin(angle) * radius;
+        y = normal(random, .035 + .035 * (1 - radius));
+        const knots = valueNoise(radius * 12 + phase, arm, 4.1);
+        density = !diffuse ? (.42 + .58 * knots) * (1 - .48 * Math.exp(-(((scatter + .055) / .025) ** 2))) : .24 + .52 * (1 - radius / 1.2);
+      }
+    }
+    point.set(x * size, y * size, z * size).applyQuaternion(orientation);
+    return { position: [point.x + center[0], point.y + center[1], point.z + center[2]], center, axis,
+      rate: type === 'elliptical' ? .003 : .010 / (.7 + Math.hypot(x, z)),
+      size: soft ? 2.4 + random() * 4.5 : .36 + random() ** 2.3 * .88,
+      strength: (soft ? .020 + random() * .030 : .20 + random() * .38) * density * (.90 + center[2] * .045) };
+  }
+  const clusterWeight = members.reduce((sum, member) => sum + member.weight, 0);
+  for (let layer = 0; layer < layers.length; layer++) {
+    const galaxies = members.filter(member => member.layer === layer), total = galaxies.reduce((sum, member) => sum + member.weight, 0);
+    const choose = random => {
+      let weight = random() * total;
+      for (const member of galaxies) { weight -= member.weight;if (weight <= 0) return member; }
+      return galaxies.at(-1);
+    };
+    stars(scene, layers[layer], Math.round(132000 * total / clusterWeight), 12073 + layer * 7, (random, i) => sampleMember(choose(random), random, i, false));
+    stars(scene, layers[layer], Math.round(21000 * total / clusterWeight), 28031 + layer * 7, (random, i) => sampleMember(choose(random), random, i, true), 1);
+  }
+  // Faint intracluster light occupies the space between members without hiding
+  // their separate silhouettes or introducing visible connecting lines.
+  stars(scene, content, 5000, 65519, random => {
+    const p = sphere(random, 2.35 * random() ** .58);
+    return { position: [p[0], p[1] * .72, p[2] * .58], size: 5 + random() * 8,
+      strength: .0015 + random() * .004, rate: .0015 };
+  }, 1);
+  scene.animate = time => {
+    content.rotation.set(.08 + Math.sin(time * .025) * .035, time * .012, -.08);
+    layers.forEach((layer, i) => { layer.rotation.y = Math.sin(time * .018 + i) * .012; });
+  };
+  scene.theme = 'Galaxy cluster';scene.volumeKind = 'galaxy-cluster';scene.galaxyCount = members.length;
+  scene.galaxies = members.map(({ center, size, type }) => ({ center: [...center], size, type }));
+  fitVolume(scene);
+}
+
 function sphere(rng, radius) {
   const z = rng() * 2 - 1, a = rng() * TAU, s = Math.sqrt(1 - z * z);
   return [radius * s * Math.cos(a), radius * z, radius * s * Math.sin(a)];

@@ -1,9 +1,8 @@
 import * as THREE from 'three';
-import { createSolarSystem } from './world-bodies.js';
 import { createBlackHole } from './black-hole.js';
 import { createQuasar } from './quasar.js';
 import { createNebulaCloud } from './nebula-cloud.js';
-import { createGalaxyVolume, createClusterVolume, createCollisionVolume } from './stellar-volumes.js';
+import { createGalaxyVolume, createClusterVolume, createCollisionVolume, createGalaxyClusterVolume } from './stellar-volumes.js';
 
 export const COSMIC_TARGETS = Object.freeze(['hero','education','experience','publications','teaching','projects','notes']);
 
@@ -16,7 +15,7 @@ function blackHole(scene) {
 
 export function createCosmos(name, { maps = {} } = {}) {
   const factory = { hero:createClusterVolume, education:createCollisionVolume, experience:createGalaxyVolume,
-    publications:createNebulaCloud, teaching:blackHole, projects:createQuasar, notes:createSolarSystem }[name];
+    publications:createNebulaCloud, teaching:blackHole, projects:createQuasar, notes:createGalaxyClusterVolume }[name];
   if (!factory) throw new Error(`Unknown cosmic scene: ${name}`);
   const scene = { root:new THREE.Group(), materials:new Set(), textures:new Set(),
     uniforms:{ time:{value:0}, presence:{value:1}, pixelRatio:{value:1} } };

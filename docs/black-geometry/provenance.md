@@ -10,7 +10,7 @@ The source and tests define current sampling budgets and rendering parameters.
 
 ## Current homepage
 
-The seven scenes use grayscale surface maps, procedural fields, three-dimensional
+The seven scenes use grayscale procedural fields, three-dimensional
 star populations, and a bent-ray black-hole renderer. Their presentation is
 slightly larger than the previous grayscale version, with no visible triangulation
 or wire overlays. All positions,
@@ -38,14 +38,10 @@ while navigating. The names below describe graphics rather than page assignments
   center. The silhouette references Gargantua in *Interstellar* and
   [NASA's warped-disk illustration](https://www.nasa.gov/universe/nasa-visualization-shows-a-black-holes-warped-world/).
   This is an approximate authored model, not a relativistic geodesic solution.
-- **Solar system:** an illustrative eight-planet solar system, with independent
-  orbits and one ringed planet. Its distances, sizes, and periods are chosen
-  for readability. A procedural field supplies one planet's terrain. The
-  retained [NASA CGI Moon Kit](https://svs.gsfc.nasa.gov/4720/) grayscale LROC field
-  supplies a rocky planet's detail (NASA/Goddard SVS and LROC/LRO). The central
-  star uses the retained [SDO/AIA 171 Å field](https://sdo.gsfc.nasa.gov/data/)
-  from October 29, 2026, credited to NASA/SDO and the AIA science team. The star's
-  reverse hemisphere and motion are authored.
+- **Galaxy cluster:** a three-dimensional population of distinct elliptical,
+  lenticular, and spiral galaxies, with larger central members and faint
+  intracluster light. Galaxy positions, inclinations, stellar populations, and
+  motion are authored; this is not an observed cluster or an N-body simulation.
 - **Quasar:** an authored tilted accretion disk, compact active core, and bipolar
   jets, with composition inspired by the user's quasar image. Tightly winding
   bands and loose surrounding filaments frame the disk. A narrow jet extends
@@ -55,8 +51,8 @@ while navigating. The names below describe graphics rather than page assignments
 
 The images supplied by the user in Documents are composition references for
 the black hole, globular cluster, nebula, and quasar. These reference files are
-not copied into the site or redistributed. Only the lunar and solar maps are active image-derived fields;
-archived Earth, Jupiter, Saturn, Whirlpool, and Abell 1689 derivatives retain
+not copied into the site or redistributed. No image-derived fields are active.
+Archived lunar, solar, Earth, Jupiter, Saturn, Whirlpool, and Abell 1689 derivatives retain
 their original credits and hashes in `assets/black-geometry/textures/CREDITS.txt`.
 
 Surface fields, geometry, and random seeds are deterministic. Animation changes

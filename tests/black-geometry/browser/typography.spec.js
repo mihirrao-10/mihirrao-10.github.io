@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test';
 for (const [width, height] of [[1440, 900], [390, 844], [320, 568]]) {
   test(`shared text roles stay consistent at ${width} × ${height}`, async ({ page }) => {
     await page.setViewportSize({ width, height });
-    await page.route('**/textures/*', route => route.abort());
+    await page.route('**/generated/world-*.js', route => route.abort());
     await page.goto('/');
     await expect(page.locator('.site-loader')).toBeHidden();
     for (const selector of ['.entry-title, .note-link', '.entry-detail, .course-list', '.entry-dates, .entry-location, .note-byline', '.navigation-hint, .notes-scroll-hint, .rotation-hint']) {

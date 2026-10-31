@@ -87,37 +87,35 @@ If graphics fail, static SVGs retain the content and native links. Print uses
 dark text on white.
 
 One WebGL context renders seven grayscale subjects: a globular star cluster,
-colliding galaxies, the Milky Way, a nebula, a black hole, a quasar, and a solar
-system. Each page load shuffles a one-to-one assignment across the seven pages;
+colliding galaxies, the Milky Way, a nebula, a black hole, a quasar, and a galaxy
+cluster. Each page load shuffles a one-to-one assignment across the seven pages;
 the assignment stays fixed during navigation and browser history within that
 visit. Fallback posters follow the same assignment. The quasar has a tilted,
 continuously sampled turbulent accretion disk, asymmetric filament ribbons,
 a soft surrounding gas envelope, and narrow animated bipolar jets.
-The eight-planet solar system starts at an oblique angle, with distinct planet
-sizes, Saturn's rings, and an asteroid
-belt. Its sizes, distances, and periods are illustrative.
+The galaxy cluster contains many separate elliptical and spiral galaxies,
+with larger central members, varied inclinations, and faint intracluster light.
+Its structure, distances, and motion are illustrative.
 
 The nebula is a loose cloud of 238,000 fine dust grains, curling filaments,
 and faint haze particles. Grains swirl around local knots and drift on
 independent phases; the cloud continuously changes internally while remaining
 freely rotatable. Its spread and grain echo the introductory star cluster.
-Stars occupy three dimensions with a range of resolved sizes. The cluster has
+Stars occupy three dimensions with a range of resolved sizes. The globular cluster has
 a broad core and diffuse halo; the galaxies have broken, branching arms,
 warped disks, and knotted tidal bridges. Point coverage follows viewport size
-so phone views retain the same relative density. The solar system has eight independently
-orbiting planets, thin orbital paths, and one ringed planet.
+so phone views retain the same relative density.
 All scenes share unrestricted mouse and touch rotation, with bounds that retain
 the entire object. The black hole uses an approximate bent-ray accretion model.
 Geometry stays resident while animation updates transforms and uniforms.
 
-Only the Moon and Sun image fields are loaded, for solar-system surface detail.
-Their browser downloads use lossless WebP with raw compressed fields as a
-fallback; both paths reconstruct the same grayscale samples. After changing an
-active raw field, run `python3 tools/black-geometry/prepare-map-images.py` before
-building to regenerate its image derivative and content hash. Pillow is an
-authoring dependency, not a website build dependency.
-Other NASA/Hubble derivatives and earlier scene factories remain as archived
-references. Credits are in `assets/black-geometry/textures/CREDITS.txt`.
+All active scenes are procedural and require no image-field downloads. The
+Moon, Sun, and other NASA/Hubble derivatives and earlier scene factories remain
+as archived references. Their credits are in
+`assets/black-geometry/textures/CREDITS.txt`. The archived image loader retains
+lossless WebP and raw compressed fallback support. After changing a retained raw
+field, run `python3 tools/black-geometry/prepare-map-images.py` to regenerate its
+image derivative and content hash; Pillow is an authoring dependency.
 
 Static posters embed 1600 × 1200 deterministic software-rendered PNGs in SVG
 wrappers, using the same geometry, surface fields, and black-hole ray model.
@@ -125,7 +123,7 @@ Their shading approximates the live rendering. Each visit has its own orbit and
 drag state; reversal preserves a still-visible identity's state.
 
 An initial beige loading screen shows black text with three dots that bounce in
-sequence. It fades away after fonts, surface maps, procedural scenes, shaders,
+sequence. It fades away after fonts, procedural scenes, shaders,
 uploaded GPU buffers, warm-up draws, a GPU fence, and the first live frame are
 ready. The graphics chunk is preloaded with the document, and graphics/font
 preparation runs concurrently. All seven scenes compile with visible roots and warm their complete geometry,

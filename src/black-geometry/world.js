@@ -2,7 +2,6 @@ import * as THREE from "three";
 import { QUALITY, renderingDpr, createResolutionBudget } from "./preferences.js";
 import { cameraPose } from "./scene-state.js";
 import { createCosmos, COSMIC_TARGETS } from "./cosmos.js";
-import { loadAstronomyMaps } from "./astronomy-maps.js";
 
 export const SCULPTURE_PALETTES = Object.freeze({
   education: ["#555555", "#888888", "#aaaaaa", "#dddddd"],
@@ -93,10 +92,7 @@ export class PreparedPath extends THREE.Curve {
 
 /** All pages share one renderer and keep their prepared cosmic buffers resident. */
 export async function createWorld({container,quality='high',onFailure,initialTarget='hero'}) {
-  const maps=await loadAstronomyMaps();
-  let renderer;
-  try{renderer=new THREE.WebGLRenderer({alpha:true,antialias:true,powerPreference:'high-performance'});}
-  catch(error){Object.values(maps).forEach(map=>map.dispose());throw error;}
+  const renderer=new THREE.WebGLRenderer({alpha:true,antialias:true,powerPreference:'high-performance'});
   renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.setClearColor(0xf5f2eb,0);
   const canvas=renderer.domElement;canvas.setAttribute('aria-hidden','true');container.append(canvas);
   const scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(35,1,.1,60);
@@ -121,11 +117,11 @@ export async function createWorld({container,quality='high',onFailure,initialTar
   const models=new Map();
   function disposeResources(){
     for(const model of models.values())model.cosmos.dispose();
-    models.clear();layer.dispose();quad.geometry.dispose();compositeMaterial.dispose();Object.values(maps).forEach(map=>map.dispose());renderer.dispose();canvas.remove();
+    models.clear();layer.dispose();quad.geometry.dispose();compositeMaterial.dispose();renderer.dispose();canvas.remove();
   }
   try{
     for(const name of COSMIC_TARGETS){
-      const cosmos=createCosmos(name,{maps});cosmos.root.visible=false;scene.add(cosmos.root);
+      const cosmos=createCosmos(name);cosmos.root.visible=false;scene.add(cosmos.root);
       models.set(name,{name,cosmos,orbitStart:0,orientation:[0,0,0,1]});
     }
   }catch(error){disposeResources();throw error;}
@@ -212,7 +208,7 @@ export async function createWorld({container,quality='high',onFailure,initialTar
       if(shaderFailed)throw new Error(`Cosmic shader initialization failed: ${shaderFailed}`);frames++;
     },
     snapshot:()=>({
-      frames,warmedTargets,preparedMaps:Object.keys(maps),programs:renderer.info.programs.length,preparedScenes:[...preparedScenes],gpuReady,liveFrameReady,sceneWeights:{...sceneWeights},drawCalls,triangles,
+      frames,warmedTargets,preparedMaps:[],programs:renderer.info.programs.length,preparedScenes:[...preparedScenes],gpuReady,liveFrameReady,sceneWeights:{...sceneWeights},drawCalls,triangles,
       quality:currentQuality,dpr:renderer.getPixelRatio(),geometries:renderer.info.memory.geometries,
       contextLost:renderer.getContext().isContextLost(),target:currentName,nextTarget:nextName,blend,
       depthPrepass:false,activeInteriorMeshes:0,decodedTargets:models.size,packedTargets:0,
