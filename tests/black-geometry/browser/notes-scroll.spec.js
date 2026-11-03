@@ -1,12 +1,17 @@
 import { test, expect } from '@playwright/test';
 
 for (const [width, height] of [[1440, 900], [390, 844], [320, 568]]) {
-  test(`notes scroll cue leaves space and tracks the list at ${width} × ${height}`, async ({ page }) => {
+  test(`notes scroll cue tracks overflow at ${width} × ${height}`, async ({ page }) => {
     await page.setViewportSize({ width, height });
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto('/#notes');
     const notes = page.locator('#notes');
     const cue = page.locator('.notes-scroll-hint');
+    const overflows = await notes.evaluate(element => element.scrollHeight > element.clientHeight + 4);
+    if (overflows) await expect(cue).toBeVisible();
+    else await expect(cue).toBeHidden();
+    // Exercise scrolling even when the current collection fits naturally.
+    await notes.evaluate(element => { element.style.maxHeight = '100px'; });
     await expect(cue).toBeVisible();
     await expect(notes).toHaveAttribute('data-has-more', '');
     const bounds = await notes.evaluate(element => {
